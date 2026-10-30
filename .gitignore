@@ -1,0 +1,16 @@
+/local/
+*.etl
+*.pdb
+*.tmf
+*.vhd
+*.vhdx
+*.iso
+*.wim
+*.esd
+*.swm
+*.sys
+*.cat
+*.exe
+*.zip
+*.evtx
+__pycache__/
