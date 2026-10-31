@@ -20,6 +20,22 @@ The USB4 capability is documented for this model. It must not be relabelled as a
 
 The F2 firmware UI has no exposed USB4/PCIe tunneling switch on this machine. Absence of that switch does not establish lack of PCIe tunneling support.
 
+Seven owner-supplied BIOS photographs were inspected on 31 October 2026. They show the Advanced menu, Boot, Security, I/O Interface Security, USB Interface Security and USB Configuration. These are observations of the photographed configuration, not the result of changing settings.
+
+| Visible setting | Photographed value |
+| --- | --- |
+| Fast Boot | Disabled |
+| USB Interface Security / External Ports | Unlock |
+| USB Mass Storage Driver Support | Enabled |
+| SVM Mode | Enabled |
+| Display Mode | Dynamic |
+| ErP | Disabled |
+| ArmouryCrate Control Interface Support | Disabled |
+| Auto-install app service mechanism | Toggle Off |
+| Network, audio, Bluetooth and camera interface locks shown | Unlock |
+
+No separate USB4/PCIe tunneling or DMA-security control is visible in these photographs. The Secure Boot menu entry is visible, but its submenu was not photographed; its current control value cannot be read from these images. Prior Windows observations recorded Secure Boot enabled. No Secure Boot-off comparison or other BIOS change is claimed from this inspection. Secure Boot validates boot software signatures; it is not the same control as the captured USB `_OSC` PCIe tunneling grant. See [Microsoft's Secure Boot description](https://learn.microsoft.com/en-us/windows-hardware/design/device-experiences/oem-secure-boot) and [USB4 ACPI requirements](https://learn.microsoft.com/en-us/windows-hardware/design/component-guidelines/usb4-acpi-requirements).
+
 ## eGPU assembly
 
 | Item | Configuration |
