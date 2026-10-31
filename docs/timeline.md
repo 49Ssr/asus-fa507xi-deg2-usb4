@@ -38,6 +38,8 @@ All dates below are 30 October 2026 unless specified. Times attached to trace na
 | 32, 31 October | Corrected preparation and native boot | Failed attempt preserved, separate image applied successfully, baseline drivers staged, explicit boot entry created and Audit Mode reached. |
 | 33, 03:16-03:17 on 31 October | Separate full Windows connection capture | Build 26200.8037, USB4 driver 10.0.26100.7920. Required preflight devices healthy; no external USB4 router/GPU; same fallback hub/Billboard. 7,720 events, zero reported loss; older WPP formats partly unknown. Owner returned to original Windows. |
 | 34, 31 October | Existing UGREEN dock identified | Amazon ASIN B0DRP1F6R7 maps to Revodok Pro 3121 / SKU 55767. Conventional 10 Gbps USB-C hub, so it cannot supply the missing separate USB4-peripheral comparison. No new connection test claimed. |
+| 35, 04:16 on 31 October | Seven ASUS UEFI photographs reviewed | External USB ports shown Unlock, Fast Boot Disabled, SVM Enabled and display mode Dynamic. No USB4/PCIe switch visible. Secure Boot submenu not photographed; no new setting change claimed. |
+| 36, 04:27 on 31 October | Full Task Manager live kernel snapshot captured; subsequently inspected offline | USB4KD worked with matching symbols. One host/root, zero external routers/tunnels, `PcieTunnelsDisabledInBios = 0`, fallback USB devices Started. Both logical UCM connectors report local DFP roles. Retained host recorder has 38 successful configuration-request messages, not a successful link. No demonstrated repair or cause; [report and limits](kernel-snapshot.md). |
 
 ## Corrections that matter
 

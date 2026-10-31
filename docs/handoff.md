@@ -6,6 +6,7 @@
 
 1. [Findings](findings.md), including the `_OSC`, Billboard and USB4-version caveats.
 2. [Separate full-Windows result](fresh-windows.md), including its missing drivers and partial WPP decoding.
+   [Live kernel snapshot](kernel-snapshot.md) adds offline USB4KD topology, direct PCIe policy and retained recorder results.
 3. [Experiment ledger](experiments.md), [exact hardware](hardware.md), [structured observations](../evidence/observations.json) and [trace excerpts](../evidence/trace-excerpts.txt).
 4. [Research](research.md) and [private policy audit](policy-audit.md) before proposing a registry or firmware change.
 
@@ -16,6 +17,7 @@
 - Original Windows: 25H2 26200.9818, USB4 driver 10.0.26100.9818. Original Parade SPB 1.0.8 / HID 1.0.11 restored. Related-model trial packages removed. Private v2 override absent; Secure Boot retained and test-signing disabled.
 - Separate native-boot Windows: 26200.8037, USB4 driver 10.0.26100.7920. Required host/root/UCSI/I2C/Parade devices healthy before and after connection; no external router or new GPU. The shared firmware and selected OEM drivers remain common variables.
 - ASUS host/root initialize and firmware grants USB `_OSC` controls `0xf`; only ordinary USB hub/Billboard fallback appears. This is earlier than the missing NVIDIA adapter, PCIe authorization of an enumerated external router, or GPU workload performance.
+- Offline USB4KD inspection completed on the 04:27 live kernel snapshot: one host/root, zero external routers, zero tunnels, cached `PcieTunnelsDisabledInBios = 0`; fallback devices still Started. Both logical UCM connectors report local DFP data roles. No root cause or repair emerged; the snapshot is not a PD wire capture.
 - All four plug orientations, EC reset, graphics mode changes, OS file repair, scoped controller reinstall and retimer restarts were ineffective. The v2 override was ignored and is an invalid negative test of its intended path.
 - No second suitable cable or known-working separate USB4 peripheral is available at last report. The spare UGREEN cable was reported unsuitable. The existing UGREEN 3121 is a 10 Gbps USB-C hub; its USB/Ethernet/display operation would not validate USB4/PCIe.
 - The owner prefers Windows diagnosis and existing/borrowed hardware. A detailed ASUS report has already been sent. No verified applicable FA507XI PD/USB-C or DEG2 firmware image was found in the inspected sources.
@@ -46,6 +48,8 @@ Raw traces are not public. The excerpts and manifest are curated observations, n
 
 The separate Windows image, boot entry and private results remain available. Native boot and capture completed; boot-entry removal is untested. Recreating the image, repeating blanket driver resets or revisiting the inactive registry override has low value without a new mechanism to test. Do not discard evidence or flash another model's firmware as a routine next step.
 
-## Optional remaining Windows investigation
+## Completed additional Windows investigation
 
-A full Task Manager live kernel snapshot followed by offline WinDbg/USB4KD inspection is an unperformed avenue beyond the existing ETL decoding. See [the tooling assessment and capture method](research.md#further-windows-diagnostic-tools-reviewed-31-october-2026). It aims to inspect cached host/port/adapter state, not change firmware. Dump completeness, symbols and offline extension support remain to be demonstrated; another no-link snapshot may add little. Do not turn this proposal into a claimed diagnosis or enable boot debugging to force an unsupported offline operation.
+A full Task Manager live kernel snapshot was inspected offline using Microsoft's signed debugger and matching public symbols. USB4KD topology/port/tunnel queries worked. The [report](kernel-snapshot.md) records the direct policy result, retained recorder messages, UCSI state and decoder limits. An error-looking port status was checked against the matching constructor and proved to be an initial value, not a demonstrated failed operation.
+
+This avenue is no longer unperformed. Another identical snapshot without a changed condition is unlikely to separate the remaining hypotheses. Other [reviewed tools](research.md#further-windows-diagnostic-tools-reviewed-31-october-2026) remain untested and have no verified applicable repair.

@@ -2,7 +2,7 @@
   "schema_version": 1,
   "reviewed_date": "2026-10-31",
   "status": "unresolved",
-  "provenance": "Curated local measurements and owner-supplied comparison photographs; raw ETL/XML/inventories retained privately",
+  "provenance": "Curated local trace, inventory and live kernel measurements; owner-supplied comparison photographs; raw artifacts retained privately",
   "raw_artifacts_public": false,
   "hash_meaning": "SHA-256 identifies retained bytes; a digest is not an independent external verification of the analysis",
   "missing_value_meaning": "null means not recorded here, not a measured zero",
@@ -221,6 +221,75 @@
     "fresh_windows": "docs/fresh-windows.md",
     "next_tests": "docs/handoff.md",
     "policy_audit": "docs/policy-audit.md",
-    "sources": "docs/research.md"
+    "sources": "docs/research.md",
+    "kernel_snapshot": "docs/kernel-snapshot.md"
+  },
+  "kernel_snapshot": {
+    "id": "K0",
+    "source": "Task Manager full live kernel dump; offline Microsoft KD/USB4KD, WDF, PnP and typed-object inspection",
+    "capture_utc": "2026-10-31T04:27:38.513Z",
+    "uptime": "00:16:04.448",
+    "environment": "ASUS original Windows installation",
+    "windows_build": "26200.9818",
+    "usb4_driver_version": "10.0.26100.9818",
+    "debugger_usb4kd_version": "10.0.29661.1004",
+    "debugger_signatures": "Microsoft; valid for kd.exe, dbgeng.dll and usb4kd.dll",
+    "matching_public_symbols_loaded": true,
+    "offline_usb4kd_executed": true,
+    "raw_dump_public": false,
+    "raw_dump_bytes": 2300018688,
+    "raw_dump_sha256": "7195F0B0799958785840226C5750700B49632CF932680AB976CC2BEEC0ED965B",
+    "dump_type": "x64 kernel bitmap live-system dump",
+    "live_dump_code": "0x161",
+    "host_router_count": 1,
+    "root_router_count": 1,
+    "external_router_count": 0,
+    "total_tunnel_count": 0,
+    "host_power_state": "D0",
+    "root_power_state": "D3",
+    "root_state": "RouterOperational (177)",
+    "downstream_port_state": "WaitForEventsInDisconnected (457)",
+    "plug_manager_state": "Unplugged (50)",
+    "physical_cable_absence_inferred": false,
+    "pcie_downstream_adapter_state": "WaitForTunnelRequestFromChild (83)",
+    "host_granted_controls": "0xf",
+    "pcie_tunnels_disabled_in_bios": 0,
+    "fallback_devices_started": [
+      "8087:5787 / USBHUB3",
+      "041F:D002 / WINUSB"
+    ],
+    "ucsi_pnp_state": "Started",
+    "ucsi_wdf_power_state": "D0",
+    "ucm_connector_cache": [
+      {
+        "logical_connector": 1,
+        "partner_attached": true,
+        "local_data_role": "Dfp",
+        "local_power_role": "Sink",
+        "pd_connection_state": "NegotiationSucceeded"
+      },
+      {
+        "logical_connector": 2,
+        "partner_attached": true,
+        "local_data_role": "Dfp",
+        "local_power_role": "Source",
+        "pd_connection_state": "NegotiationSucceeded"
+      }
+    ],
+    "logical_connector_physical_mapping_verified": false,
+    "retained_host_successful_config_request_messages": 38,
+    "retained_host_message_start_utc": "2026-10-31T04:27:31.698Z",
+    "retained_host_message_end_utc": "2026-10-31T04:27:32.206Z",
+    "retained_port_usb_port_is_configured": 0,
+    "port_configured_status": "0xc0000001",
+    "port_status_constructor_default_verified": true,
+    "port_status_proves_failed_operation": false,
+    "limitations": [
+      "Snapshot and finite recorder buffers, not a USB-PD wire trace",
+      "USB4KD framework power-relation helper lookup failed; direct fields and PnP/WDF used instead",
+      "No physical-port correlation established for the logical UCM connector caches",
+      "No root cause or applicable repair identified"
+    ],
+    "report": "docs/kernel-snapshot.md"
   }
 }

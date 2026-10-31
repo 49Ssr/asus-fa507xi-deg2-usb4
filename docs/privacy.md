@@ -1,6 +1,6 @@
 # Evidence and publication
 
-Raw ETL, XML, PnP inventories, BCD backups and setup logs can contain machine/user names, serial numbers, device instance suffixes, MAC addresses, router/domain UUIDs, private paths and account/support identifiers. They remain in ignored `local/` storage and are not automatically uploaded.
+Raw ETL, XML, PnP inventories, BCD backups and setup logs can contain machine/user names, serial numbers, device instance suffixes, MAC addresses, router/domain UUIDs, private paths and account/support identifiers. Kernel dumps additionally contain memory contents; debugger transcripts can expose kernel addresses and private data. They remain in ignored `local/` storage and are not automatically uploaded. The global `*.dmp` rule also excludes dumps placed elsewhere in the repository.
 
 Public excerpts retain hardware vendor/product IDs, model numbers, software/firmware versions, message text and trace-quality counts. These describe the compatibility question without identifying a particular device instance or account. Source comments must not accidentally embed the owner's absolute home directory or exact live device instance ID.
 

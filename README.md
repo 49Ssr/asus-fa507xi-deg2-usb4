@@ -12,6 +12,8 @@
 
 The separate Windows capture passed its required USB4 host/root, UCSI, I2C and Parade checks: **0 essential preflight issues, 0 external routers, 0 new display adapters**. It contains 7,720 events with 0 reported lost events; 2,441 events lacked matching WPP formats. It was a scoped driver baseline, not an ASUS factory recovery image. [Full result and limits](docs/fresh-windows.md).
 
+A [live kernel snapshot inspected with USB4KD](docs/kernel-snapshot.md) also shows **0 external routers, 0 tunnels and `PcieTunnelsDisabledInBios = 0`**, with the fallback hub/Billboard still present. Offline inspection succeeded; it identified no repair or root cause.
+
 ## Read in this order
 
 1. **[Independent review and next tests](docs/handoff.md)** - current state, remaining hypotheses, feasible comparisons and what each outcome would mean. Start here when consulting another engineer or AI.
@@ -25,7 +27,7 @@ For the underlying record: [timeline](docs/timeline.md), [private-policy correct
 
 - [Structured observations](evidence/observations.json): capture IDs, event counts, durations where recorded, SHA-256 hashes, comparison outcomes and their provenance.
 - [Trace excerpts](evidence/trace-excerpts.txt): timestamps and messages tied to specific captures; identifying prefixes removed.
-- Raw ETL/XML/PnP inventories remain private because they contain device/account identifiers. The public record permits review of the reasoning; it does not let an outside reviewer independently re-decode the unpublished traces. [Publication rules](docs/privacy.md).
+- Raw ETL/XML/PnP inventories and kernel memory remain private because they contain device/account identifiers and memory contents. The public record permits review of the reasoning; it does not let an outside reviewer independently re-decode the unpublished artifacts. [Publication rules](docs/privacy.md).
 
 The observed failure is before external-router/GPU enumeration. The fresh Windows result weakens a cause confined to the original installation, but leaves common driver/firmware interactions open. A suitable second cable and a separate known-working USB4 peripheral on this ASUS remain untested. The existing UGREEN Revodok Pro 3121 is a conventional 10 Gbps hub and cannot fill that comparison.
 

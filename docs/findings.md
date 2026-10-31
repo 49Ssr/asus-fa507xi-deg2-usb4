@@ -20,6 +20,8 @@ The host restart trace records `_OSC USB4 capabilities granted: 0xf`. The four l
 
 It does not establish signal integrity, successful USB4 mode entry, a downstream router, PCIe link training, or GPU operation. A root PCIe downstream adapter reaching `WaitForTunnelRequestFromChild` means the state machine is ready for a child request; it is not proof that a child exists.
 
+The 31 October 04:27 live kernel snapshot independently retains `m_usb4CapabilitiesGranted = 0xf` and the direct policy field `PcieTunnelsDisabledInBios = 0`. USB4KD finds one host/root, no external router and zero tunnels, while the ordinary fallback devices remain PnP Started. It also finds both logical UCM connectors in the local DFP data role. No new causal error or repair was identified. See [the snapshot report](kernel-snapshot.md), including the constructor-default status and debugger-helper caveats.
+
 ## Router versions
 
 The ASUS trace reports root router USB4 version `0x20` and connection manager version `0x10`. These fields must not be converted into a claim that the laptop provides an 80 Gbps physical port. The model's documented port is 40 Gbps.
@@ -68,7 +70,7 @@ Zero reported loss does not show every physical-layer transaction was observable
 | --- | --- | --- |
 | Cause confined to original Windows cleanup/registry | Same failure on separate full Windows with an older USB4 driver | Weaker explanation; shared OEM drivers, firmware and baseline omissions still matter |
 | Dead GPU / NVIDIA display driver is the initial cause | Identical assembly produces output on Dell; ASUS lacks the earlier external router | No evidence to prioritize replacing the GPU; revisit GPU/driver diagnosis if enumeration advances |
-| Firmware denies USB `_OSC` PCIe control | Captured grant is `0xf` | That specific permission-denial hypothesis is excluded in the captured initialization, not all firmware/security interactions |
+| Firmware denies USB `_OSC` PCIe control / cached BIOS-disable policy | Captured grant is `0xf`; kernel snapshot has `PcieTunnelsDisabledInBios = 0` | Those specific denial indicators are absent in the captured states, not all firmware/security interactions |
 | Cable-dependent negotiation or signal margins | Supplied cable works on Dell; no second suitable cable tested | N1/N2 in the [next-test matrix](handoff.md); a Dell pass does not measure ASUS signal margins |
 | ASUS host/PD/retimer hardware or firmware issue | Both Windows installations fail before external-router enumeration | N3; no known-good separate USB4 peripheral has exercised this ASUS path |
 | DEG2-specific host/dock firmware interaction | ASUS/Dell difference and other-model precedents fit this possibility | N1-N3 and exact-model vendor evidence; no applicable firmware fix verified |
