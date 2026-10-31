@@ -3,7 +3,7 @@
    and separately marked firmware-status queries. No firmware flash or driver patch. #>
 [CmdletBinding()]
 param(
-    [ValidateSet('Preview','PrepareUcsi','Capture','InspectModes','TestModeExit','UndoUcsi')][string]$Mode='Preview',
+    [ValidateSet('Preview','PrepareUcsi','Capture','InspectModes','TestModeExit','ReadLastError','UndoUcsi')][string]$Mode='Preview',
     [ValidateSet('Compare','PeerHandoff','Direct')][string]$Scenario='Compare'
 )
 Set-StrictMode -Version Latest
@@ -253,6 +253,25 @@ function Invoke-PartnerSwapModeCommand([string]$Directory,[string]$Name,[uint32]
     if(-not $ExitReportedMode -and $row.ProtocolResult -ne 'Completed'){throw ('GET '+$Name+': '+$row.ProtocolResult+'. Further firmware commands stopped.')}
     return [pscustomobject]$row
 }
+function Invoke-PartnerSwapErrorRead([string]$Directory) {
+    $status=[ordered]@{Schema=1;Kind='ASUSErrorStatusRead';StartedUtc=[DateTime]::UtcNow.ToString('o');Result='Partial';Error=$null;ErrorInformation=$null;ErrorNames=@();FirmwareSetOrResetRequested=$false;Interpretation='Post-ACK read: firmware may have cleared the original error, or a later event may have replaced it. A zero reply does not establish successful mode exit.'}
+    try{
+        Test-DeepNativeInterface -Directory (Join-Path $Directory 'InterfaceCheck') -ExactInstance
+        # This must be the first and only Send: do not query capability/status first.
+        $reply=Invoke-PartnerSwapModeCommand $Directory 'GET_ERROR_STATUS' 0 0x13
+        if($reply.Bytes.Count -ne 16){throw 'Unexpected error-status length; preserve raw reply without interpreting a cause.'}
+        $bits=[BitConverter]::ToUInt16([byte[]]$reply.Bytes,0)
+        $status.ErrorInformation='0x'+$bits.ToString('X4')
+        $names=@('Unrecognized command','Nonexistent connector','Invalid command parameters','Incompatible partner','CC communication error','Dead battery condition','Contract negotiation failure','Overcurrent','Undefined','Port partner rejected swap','Hard reset','PPM policy conflict','Swap rejected','Reserved bit 13','Reserved bit 14','Reserved bit 15')
+        for($i=0;$i -lt 16;$i++){if($bits -band (1 -shl $i)){$status.ErrorNames+=@($names[$i])}}
+        $status.Result='Recorded'
+    }catch{$status.Error=$_.Exception.Message;Write-Warning $status.Error}
+    finally{
+        $status.FinishedUtc=[DateTime]::UtcNow.ToString('o')
+        Write-PartnerSwapJson (Join-Path $Directory 'status.json') $status
+    }
+    return $status
+}
 function Assert-PartnerSwapModeExitState([object]$Capability,[object]$Connector,[object]$CurrentMode,[object]$PartnerPdos) {
     foreach($reply in @($Capability,$Connector,$CurrentMode,$PartnerPdos)){if($reply.ProtocolResult -ne 'Completed'){throw 'Every preflight GET must complete before a mode exit.'}}
     if($Capability.Bytes.Count -ne 16 -or ($Capability.Bytes[5] -band 12) -ne 12){throw 'PPM must explicitly advertise alternate-mode details and override support.'}
@@ -460,6 +479,7 @@ if($swapRequestedMode -eq 'Preview'){
     Write-Output 'UndoUcsi restores the exact saved setting and restarts the same UCSI device. No network settings, driver package, boot security or firmware image is changed.'
     Write-Output 'InspectModes reads the already-connected DEG2 mode table with the existing prepared UCSI interface. It uses the Dell-tested bounded GET engine and saves before/after snapshots.'
     Write-Output 'TestModeExit checks the observed DEG2 state and advertised mode-override support, then requests a single exit from current mode 1 on connector 1 while tracing. Reconnect DEG2 for ordinary automatic negotiation afterward if needed.'
+    Write-Output 'ReadLastError sends only GET_ERROR_STATUS once through the prepared exact ASUS interface. After an ACK, zero may mean the firmware already cleared the original error; it is not proof of successful mode exit.'
     exit 0
 }
 Assert-DeepHost
@@ -473,6 +493,16 @@ if($swapRequestedMode -eq 'InspectModes'){
     New-Item -ItemType Directory -Path $run|Out-Null
     $result=Invoke-PartnerSwapModeInspection $run
     Write-Output ('Mode-query result: '+$result.Result+'; private results: '+$run)
+    if($result.Result -ne 'Recorded'){exit 1}
+    exit 0
+}
+if($swapRequestedMode -eq 'ReadLastError'){
+    $run=Join-Path $privateRoot ('Runs\'+[DateTime]::UtcNow.ToString('yyyyMMdd-HHmmss')+'-ASUS-error-'+[guid]::NewGuid().ToString('N').Substring(0,8))
+    New-Item -ItemType Directory -Path $run|Out-Null
+    $result=Invoke-PartnerSwapErrorRead $run
+    Write-Output ('Error-status result: '+$result.Result+'; error bits: '+$result.ErrorInformation+'; flags: '+($result.ErrorNames -join ', '))
+    Write-Output $result.Interpretation
+    Write-Output ('Private results: '+$run)
     if($result.Result -ne 'Recorded'){exit 1}
     exit 0
 }

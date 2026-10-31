@@ -128,7 +128,33 @@ try{
         Check ([IO.File]::Exists((Join-Path $dir 'status.json'))) 'Status saved for every workflow case'
         if($case -notin @('NoDock','AlreadyWorking','NoOverride','TraceStartFail')){Check ($script:traceStops -eq 1) ('Owned trace stopped: '+$case)}
     }
-    Write-Output ('PASS '+$script:checks+' mode-exit guard/encoding/workflow checks in PowerShell '+$PSVersionTable.PSVersion+'. All hardware operations mocked.')
+    # The post-rejection read must not repeat EXIT or hide an empty/failed reply.
+    $script:errorReadCase='';$script:errorReadCalls=0
+    function Invoke-PartnerSwapModeCommand {
+        param($Directory,$Name,$High,$Low,[switch]$ExitReportedMode)
+        $script:errorReadCalls++
+        Check ($Name -eq 'GET_ERROR_STATUS' -and $High -eq 0 -and $Low -eq 0x13 -and -not $ExitReportedMode) 'Only one error-status GET is allowed in the reader'
+        if($script:errorReadCase -eq 'TransportFailure'){throw 'Native read failed'}
+        $bytes=New-Object byte[] 16
+        switch($script:errorReadCase){
+            InvalidParameters {$bytes[0]=4}
+            Multiple {$bytes[0]=0x18;$bytes[1]=8}
+            Short {$bytes=[byte[]]@(4)}
+        }
+        return [pscustomobject]@{ProtocolResult='Completed';Bytes=$bytes}
+    }
+    foreach($case in @('Zero','InvalidParameters','Multiple','Short','TransportFailure')){
+        $script:errorReadCase=$case;$script:errorReadCalls=0
+        $dir=Join-Path $ownedRoot ('Error-'+$case);$null=[IO.Directory]::CreateDirectory($dir)
+        $result=Invoke-PartnerSwapErrorRead $dir
+        Check ($script:errorReadCalls -eq 1) ('Exactly one GET, no retries: '+$case)
+        Check ([IO.File]::Exists((Join-Path $dir 'status.json'))) ('Error read status saved: '+$case)
+        if($case -eq 'Zero'){Check ($result.Result -eq 'Recorded' -and $result.ErrorInformation -eq '0x0000' -and $result.ErrorNames.Count -eq 0 -and $result.Interpretation -match 'zero reply does not establish') 'Zero error is retained without a success claim'}
+        if($case -eq 'InvalidParameters'){Check ($result.ErrorInformation -eq '0x0004' -and $result.ErrorNames[0] -eq 'Invalid command parameters') 'Error parameter bit decoded'}
+        if($case -eq 'Multiple'){Check ($result.ErrorInformation -eq '0x0818' -and $result.ErrorNames.Count -eq 3 -and $result.ErrorNames -contains 'PPM policy conflict') 'Multiple error flags retained'}
+        if($case -in @('Short','TransportFailure')){Check ($result.Result -eq 'Partial' -and $null -eq $result.ErrorInformation) ('Failed reader does not invent an error code: '+$case)}
+    }
+    Write-Output ('PASS '+$script:checks+' mode-exit/error-read guard/encoding/workflow checks in PowerShell '+$PSVersionTable.PSVersion+'. All hardware operations mocked.')
 }finally{
     if([IO.Path]::GetFullPath($testRoot) -cne $ownedRoot -or -not $ownedRoot.StartsWith([IO.Path]::GetFullPath($env:TEMP).TrimEnd('\')+'\Usb4ModeExitTests-',[StringComparison]::OrdinalIgnoreCase)){throw 'Test cleanup boundary failed'}
     Remove-Item -LiteralPath $ownedRoot -Recurse -Force -ErrorAction Stop

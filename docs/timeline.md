@@ -66,6 +66,8 @@ All dates below are 30 October 2026 unless specified. Times attached to trace na
 
 | 60, 21:58 on 31 October | ASUS additional-mode inspection completed; targeted exit prepared | 37/37 GETs completed, no transport/busy failure. Partner/local index 1 empty; current index 1, supported bitmap zero, local count 1; override support advertised. No external router/GPU. Network settings and ICS preserved; one link-local IP appeared on unused DEG2 Ethernet. New TestModeExit mode prepares one current-mode EXIT with fresh target guards and bounded ETW; 100 mocked PS5.1 checks pass, hardware execution pending. [Result and procedure](handoff.md#next-owner-action-one-current-mode-exit). |
 
+| 61, 22:12 on 31 October | Current-mode EXIT rejected by firmware | Seven GET checks completed; one exact connector-1/mode-1 EXIT reached firmware. CCI Error=1, Busy=0, NotSupported=0; Windows ACK completed. 22,678 trace events with zero reported loss/format errors/unknowns. Immediate device/network snapshots match; no post-error mode query/window. Original detailed error bitmap was not captured before ACK. Single retained-error GET prepared; 125 combined mocked PS5.1 checks pass. [Result and next read](handoff.md#next-owner-action-read-retained-error-status-once). |
+
 ## Corrections that matter
 
 1. **GPU fan assumptions:** No reliable source established that this exact card must spin briefly on every startup. The working Dell test was the useful evidence.

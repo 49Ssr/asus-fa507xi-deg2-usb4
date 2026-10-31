@@ -55,9 +55,13 @@ The corrected portable collector ran on the Latitude 5540: 1,096,876 events, zer
 
 The 21:58 inspection completed 37/37 GETs. Partner index 1 and local index 1 are empty; current mode remains 1 despite local count 1 and supported bitmap zero. Capability `0xbd` advertises alternate-mode override support. No external router/GPU appeared. Error status stayed zero and the existing interface value was unchanged. DNS, routes and ICS match; unused DEG2 Ethernet acquired one link-local address. [Bytes, interpretation and limits](handoff.md#next-owner-action-inspect-the-asus-mode-tables).
 
+## Current-mode exit, rejected
+
+At 22:12 the guarded TestModeExit completed seven target GETs, then sent one connector-1/current-index-1 EXIT. Firmware returned CCI Error=1, Busy=0, NotSupported=0; Windows completed the ACK. Decoding finds 22,678 events with zero reported event loss, format errors or unknown records. Immediate device and all network snapshots match. No post-error mode GET was sent, so internal mode retention is unproven. The detailed error bitmap was not captured before ACK. [Raw status interpretation and limits](handoff.md#next-owner-action-one-current-mode-exit).
+
 ## Unperformed or withdrawn tests
 
-- One current-mode exit: `TestModeExit` is prepared in the existing collector. It requires fresh matching DEG2 state and advertised override support, then sends one EXIT for connector 1/current index 1 while tracing. No ENTER, role change, reset or firmware image is requested. 100 mocked PS5.1 guard/encoding/workflow checks pass; hardware execution and effect are pending. [Procedure and recovery](handoff.md#next-owner-action-one-current-mode-exit).
+- Retained error-status read: ReadLastError sends exactly one GET with no prior status/capability command. It may find a retained reason, or zero after the automatic ACK cleared it; neither establishes successful mode exit. The combined exit/error-reader suite passes 125 mocked PS5.1 checks; actual reader execution is pending. [Procedure and limits](handoff.md#next-owner-action-read-retained-error-status-once).
 - A change to the ASUS data-role correction/advanced-mode negotiation: the successful Dell control identifies a comparison target, but no applicable supported change or causal intervention has been tested. The absence of `_DSM` function 4 does not itself establish a fault or eGPU fix.
 - Internal `UserControlOfIdleSettings` registry experiment: withdrawn before any write. The matching host driver checks test-signing at the assignment, so a production-mode override would not enable this flag. No enabled-path test or repair claimed. [Audit](policy-audit.md#follow-up-user-control-of-idle-settings).
 - A second suitable 40 Gbps cable, or a documented 20 Gbps USB4 cable: unavailable at last report. The [next-test matrix](handoff.md) separates these comparisons and their outcomes.

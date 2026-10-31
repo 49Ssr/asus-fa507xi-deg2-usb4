@@ -27,7 +27,7 @@
 
 ## Current action
 
-The deeper ASUS comparison completed on 31 October, 20:08:08-20:10:47 UTC; peer negotiation worked, both DEG2 attempts failed. The [direct Dell control](dell-control.md#measured-result) subsequently succeeded at 21:25-21:27 UTC: native USB4 at a reported 40 Gbps, external router, NVIDIA-bound GPU and display output. All 14 copied Windows images match current ASUS files. Dell performs no OS `SET_UOR` correction, whereas both ASUS DEG2 failures send one successfully before alternate-mode-only reporting. Role-policy origin and later ASUS mode entries have now been inspected. The 21:58 inspection confirms advertised override support and prepares the guarded one-exit experiment below. Hardware effect and the causal role of data-role correction remain unproven.
+The deeper ASUS comparison completed on 31 October, 20:08:08-20:10:47 UTC; peer negotiation worked, both DEG2 attempts failed. The [direct Dell control](dell-control.md#measured-result) subsequently succeeded at 21:25-21:27 UTC: native USB4 at a reported 40 Gbps, external router, NVIDIA-bound GPU and display output. All 14 copied Windows images match current ASUS files. Dell performs no OS `SET_UOR` correction, whereas both ASUS DEG2 failures send one successfully before alternate-mode-only reporting. Later ASUS mode entries and role-policy origin were inspected. At 22:12, firmware rejected a single guarded mode-exit request. Read retained error status once before any further intervention; no cause or repair is established.
 
 ### Next owner action: inspect the ASUS mode tables
 
@@ -49,21 +49,28 @@ The GET engine is shared with the successful Dell implementation. Its 43 query/w
 
 ### Next owner action: one current-mode exit
 
-**Prepared; hardware execution pending.** `TestModeExit` tests whether leaving the PPM-reported alternate mode allows USB4 negotiation to recover. This changes protocol state once. Its rationale is the current-mode report plus advertised override support, not a demonstrated cause or repair. The current index is absent from the reported local table, so firmware may reject it; this does not select or enter a guessed Thunderbolt mode.
+**Executed at 22:12; firmware rejected the request. Do not repeat it to retrieve an error.** Seven preflight/recheck GETs completed with the expected connector, current-mode, capability and DEG2 partner PDOs. One `SET_NEW_CAM` EXIT targeted connector 1/current index 1 with zero mode-specific data: CONTROL `00000000:0101000F`.
 
-Keep powered DEG2 connected to the ASUS USB4 port and run from Administrator Windows PowerShell in the prepared checkout:
+| Recorded event | Result |
+| --- | --- |
+| Class driver dispatch | 22:12:39.537447 UTC; exact requested CONTROL value reached the PPM |
+| Firmware completion | 22:12:39.563377; CCI `0xc0000000`, Error=1, CommandCompleted=1, Busy=0, NotSupported=0 |
+| Windows command result / ACK | `STATUS_UNSUCCESSFUL`; acknowledgement completed at 22:12:39.583531 |
+| Trace | 13,500,416 bytes; 22,678 events, zero reported lost events, zero format errors/unknown records; 171 UcmUcsiCx lines |
+| Device/network snapshots | All six inventoried device fields match; no new router/GPU. Adapters, IP, DHCP/interface, DNS, default routes and ICS match. |
+| Post-error actions | No further firmware request, restart, registry/firmware-image write or automatic mode entry |
 
-```powershell
-powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\tools\Capture-USB4PartnerSwap.ps1 -Mode TestModeExit
-```
+The native CLI's process exit code is zero and its transport says completed successfully; the CCI error and decoded class trace establish rejection. This is neither a timeout nor proof of a particular rejected parameter. The current index's missing local entry remains a plausible reason, not a decoded error cause. A successful exit and repaired link were not observed.
 
-The collector requires the exact healthy ASUS UCSI device, existing native-tool hashes and already-prepared interface. It checks for DEG2 Billboard fallback and refuses an already-present DEG2 router. Fresh capability, connector status, current-mode and exact DEG2 partner-PDO replies must match the captured state. It starts the existing bounded ETW profile, waits five seconds, repeats target checks and preserves a spontaneously recovered router.
+The error branch stops tracing immediately after the error/ACK; it did not run the successful-command branch's 20-second observation or subsequent current-mode GET. Matching immediate device inventories do not prove the internal mode stayed unchanged. The private ETL SHA-256 is `3D40218599CC89D6CD51F2329B20667B50F4C5E144AA2F8C670DF4918BFFBC0A`.
 
-Only then can it send `SET_NEW_CAM` once: connector 1, current index 1, EXIT, mode-specific data zero; CONTROL high `00000000`, low `0101000F`. [UCSI 1.22 tables 4-31/4-32 and section 4.6.4](https://www.intel.com/content/dam/www/public/us/en/documents/technical-specifications/usb-type-c-ucsi-spec.pdf) define the current index, enter/exit request and advertised override feature. No ENTER, data-role swap, reset, registry write, device restart or firmware-image write is requested.
+### Next owner action: read retained error status once
 
-Keep the cable connected until completion. A completed request is followed by 20 seconds of passive observation, device milestones and GET status/current-mode replies. A rejection, busy/transport result or failed GET stops further firmware commands; intent, raw replies, trace and snapshots remain private under `Runs/*-ASUS-mode-exit-*`. The dock connection may drop. After completion, ordinary disconnection/reconnection restarts normal attachment negotiation if needed; no automatic mode re-entry is attempted. A completed command alone is not a repaired link: check for the external router, new GPU and display output.
+Keep DEG2 connected and run the existing collector with `-Mode ReadLastError` in Administrator Windows PowerShell. Exact ASUS model, healthy UCSI device, native-tool hashes and prepared-interface guards remain in force. Native enumeration/help is followed by exactly one `GET_ERROR_STATUS` (`00000000:00000013`); no capability/status query comes first. Raw bytes, decoded flags and partial/failure status are saved under `Runs/*-ASUS-error-*`.
 
-`Test-ModeExit.ps1` passes 100 PS5.1 checks covering packet encoding, target/refusal guards, stopping on errors, one-request limits, spontaneous recovery and trace cleanup. All hardware operations in these tests are mocked. Actual ASUS response and effect remain unmeasured.
+[UCSI 1.22 section 4.5.18 and table 4-47](https://www.intel.com/content/dam/www/public/us/en/documents/technical-specifications/usb-type-c-ucsi-spec.pdf) define the error bitmap and permit clearing it after acknowledgement. Windows already ACKed the failed test without collecting that bitmap; the original detailed reason was not captured. A retained bit can guide parameter/partner/policy investigation, but later activity may have replaced it. A zero result cannot retroactively turn the rejected exit into success. Do not repeat the state-changing request merely to obtain a fresh error.
+
+The combined mode-exit/error-reader suite passes 125 mocked PS5.1 checks, including single-GET ordering, zero/multiple error flags, short responses and transport failure. The query/workflow and toolkit suites remain separate; mocked validation is not a hardware repair.
 
 Microsoft's [sample ACPI client](https://github.com/microsoft/Windows-driver-samples/blob/main/usb/UcmUcsiAcpiSample/UcmUcsiAcpiSample/Acpi.cpp) maps firmware role-correction policy/device-controller status into `UsbDeviceControllerEnabled`. The existing ASUS dump has that configuration and the OPM's cached value false. This explains why the correction policy is enabled; it does not establish that suppressing a necessary host-role change would repair the link. No supported registry replacement for this policy has been established.
 
