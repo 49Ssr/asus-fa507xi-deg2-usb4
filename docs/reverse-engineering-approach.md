@@ -1,6 +1,6 @@
 # Matched comparison and firmware investigation
 
-**31 October 2026. Acquisition design and evidence-gap review; new paired captures and a firmware patch are not completed.** The owner proposes deeper Dell inspection, a fresh ASUS dump, and firmware analysis. The next acquisition must answer a named question rather than repeat the existing collector unchanged.
+**31 October 2026. Acquisition design and evidence-gap review; new paired captures and a firmware patch are not completed.** The owner subsequently requested the portable kit: [prepared capture and qualification](deep-compare-capture.md). The next acquisition must answer a named question rather than repeat the existing collector unchanged.
 
 ## First question
 
@@ -30,7 +30,7 @@ Use the same assembled DEG2/GPU/PSU/cable and recorded plug orientation; normal 
 4. Extract the UCM/UCSI/USB4 objects and ACPI namespace from each dump offline with matching symbols. Discover object addresses per dump; do not reuse ASUS addresses on Dell. Record unavailable pages and command failures explicitly. If a required field is absent, change the acquisition method for that field before repeating.
 5. Stop only owned tracing, preserve hashes and network/ICS snapshots, and compare the same milestones. Acquire additional disconnected/transient snapshots only when a specific remaining question requires them.
 
-The old Dell collector does not independently recover all these policy fields; its existing START launcher is not a newly qualified matched-capture bundle. This page specifies the next acquisition, not a claim that the new automation is implemented. No live helper or new dump was taken during this review.
+The old Dell collector does not independently recover all these policy fields. Use the subsequently prepared [USB4-Deep-Compare kit](deep-compare-capture.md), not that old START launcher. It automates preparation, passive tracing and verified return transport, and guides native Task Manager dump creation. It stops ETW before the interactive dump step and records that separation explicitly. No new dump has yet been recorded with this kit.
 
 ## What a newer dump can and cannot supply
 
