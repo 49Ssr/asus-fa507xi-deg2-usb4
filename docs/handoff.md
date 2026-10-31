@@ -45,3 +45,7 @@ Raw traces are not public. The excerpts and manifest are curated observations, n
 ## State to retain
 
 The separate Windows image, boot entry and private results remain available. Native boot and capture completed; boot-entry removal is untested. Recreating the image, repeating blanket driver resets or revisiting the inactive registry override has low value without a new mechanism to test. Do not discard evidence or flash another model's firmware as a routine next step.
+
+## Optional remaining Windows investigation
+
+A full Task Manager live kernel snapshot followed by offline WinDbg/USB4KD inspection is an unperformed avenue beyond the existing ETL decoding. See [the tooling assessment and capture method](research.md#further-windows-diagnostic-tools-reviewed-31-october-2026). It aims to inspect cached host/port/adapter state, not change firmware. Dump completeness, symbols and offline extension support remain to be demonstrated; another no-link snapshot may add little. Do not turn this proposal into a claimed diagnosis or enable boot debugging to force an unsupported offline operation.
