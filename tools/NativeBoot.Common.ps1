@@ -65,7 +65,14 @@ function Invoke-NativeChecked {
         if (-not $process.Start()) { throw ('Could not start '+[IO.Path]::GetFileName($File)) }
         $outTask = $process.StandardOutput.ReadToEndAsync()
         $errTask = $process.StandardError.ReadToEndAsync()
-        while (-not $process.WaitForExit(1000)) { }
+        $clock=[Diagnostics.Stopwatch]::StartNew()
+        $lastNotice=0
+        while (-not $process.WaitForExit(1000)) {
+            if($clock.Elapsed.TotalSeconds - $lastNotice -ge 30){
+                $lastNotice=[int]$clock.Elapsed.TotalSeconds
+                Write-Host ([IO.Path]::GetFileName($File)+' is still running ('+$lastNotice+' seconds elapsed).')
+            }
+        }
         $tasks = [Threading.Tasks.Task[]]@($outTask,$errTask)
         if (-not [Threading.Tasks.Task]::WaitAll($tasks,10000)) { throw 'Native output did not finish.' }
         $output = $outTask.Result+[Environment]::NewLine+$errTask.Result
@@ -95,12 +102,26 @@ function Assert-VirtualDiskTarget {
     $disks = @($image | Get-Disk -ErrorAction Stop)
     if ($disks.Count -ne 1) { throw 'The VHDX must resolve to exactly one disk.' }
     $disk = $disks[0]
-    if ($disk.Number -ne $DiskNumber -or [int]$disk.BusType -ne 15 -or $disk.IsBoot -or $disk.IsSystem) {
+    # MSFT_Disk's formatted/deserialized BusType can be a friendly string in
+    # Windows PowerShell 5.1. Accept only the documented value or its exact label.
+    $fileBacked = ([string]$disk.BusType) -in @('15','File Backed Virtual','FileBackedVirtual')
+    if ($disk.Number -ne $DiskNumber -or -not $fileBacked -or $disk.IsBoot -or $disk.IsSystem) {
         throw 'Refusing a disk that is not the exact file-backed virtual test disk.'
     }
     if ([uint64]$disk.Size -ne [uint64](64GB)) { throw 'Unexpected virtual disk capacity.' }
     if ($RequireRaw -and [string]$disk.PartitionStyle -ne 'RAW') { throw 'Refusing a previously initialized disk.' }
     return $disk
+}
+
+function Assert-ArchivableCreationFailure {
+    param([object]$State,[object]$Image,[uint64]$FileLength,[string]$ExpectedVhdPath)
+    if($State.Schema -ne 1 -or $State.Model -ne 'FA507XI' -or $State.VhdPath -ne $ExpectedVhdPath){throw 'Failed state does not belong to this test image.'}
+    if($State.Phase -ne 'Creating' -or [string]$State.Error -notmatch 'Cannot convert value "File Backed Virtual" to type "System.Int32"'){
+        throw 'Only the recorded bus-type guard failure before initialization can be archived by this recovery mode.'
+    }
+    if($Image.Attached -or [uint64]$Image.Size -ne [uint64](64GB) -or $FileLength -gt 8MB -or $FileLength -lt 1MB){
+        throw 'The failed image must be detached and match the small, newly created VHDX.'
+    }
 }
 
 function Get-BootEntryArguments {

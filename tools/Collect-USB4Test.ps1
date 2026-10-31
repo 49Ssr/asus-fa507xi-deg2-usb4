@@ -38,6 +38,7 @@ function Get-PreflightIssues {
     param([object[]]$Rows)
     $patterns=@(
         @{Name='AMD USB4 host';Pattern='^PCI\\VEN_1022&DEV_1668.*USB4_MS_CM\\';Count=1}
+        @{Name='AMD USB4 root router';Pattern='^USB4\\ROOT_DEVICE_ROUTER&VID_1022&PID_1668';Count=1}
         @{Name='UCSI';Pattern='^ACPI\\USBC000\\';Count=1}
         @{Name='AMD I2C';Pattern='^ACPI\\AMDI0010\\';Count=3}
         @{Name='Parade SPB';Pattern='^ACPI\\PS8830(0A|0F|11|1A|1F|21)\\';Count=6}

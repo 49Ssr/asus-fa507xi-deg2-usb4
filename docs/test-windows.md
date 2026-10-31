@@ -1,6 +1,6 @@
 # Temporary full-Windows test
 
-**Preparation paused for review after its first real failure; no boot test completed.** See the [validation audit](validation-audit.md). The commands below describe the intended workflow, not a recommendation to resume it now.
+**Image preparation is the next integration-test stage after the owner's read-only VHD inspection; no boot test completed.** The bus-type correction and ArchiveFailed recovery are available. See the [validation audit](validation-audit.md). AddBoot remains a separate step after successful image preparation.
 
 This is a separate full Windows baseline on the same physical laptop. It is not WinPE or a virtual-machine USB passthrough test. It is intended to test whether the existing Windows installation is involved, not to promise an eGPU fix.
 
@@ -62,7 +62,7 @@ The prepared image requests Microsoft's Audit mode. It should reach the built-in
 
 ## Connection test
 
-1. Keep the DEG2 disconnected initially. Use the ASUS's normal barrel charger and the same known-working assembled hardware/cable.
+1. Keep the first test boot offline: unplug Ethernet and leave Wi-Fi disconnected. Keep the DEG2 disconnected initially. Use the ASUS's normal barrel charger and the same known-working assembled hardware/cable.
 2. Run **Run USB4 diagnostic.cmd** on the test desktop.
 3. Follow the disconnected baseline prompt, then connect the DEG2 when recording begins.
 4. After the warning or approximately 20 seconds, press Enter. Recording continues another 15 seconds.
@@ -76,7 +76,7 @@ An external router appearing is progress even before an NVIDIA driver is install
 
 The first real preparation attempt on 31 October created a 4 MiB VHDX container, then stopped before initialization because Windows PowerShell returned BusType as the friendly string `File Backed Virtual` rather than a numeric value. The finally block detached the image. No Windows image or driver was applied, and no boot entry was created. The guard now accepts the numeric value and exact friendly/enum labels while continuing to reject physical disks.
 
-A draft `-Mode ArchiveFailed` recovery change checks the saved phase/error, exact VHDX path/capacity, small file size, detached status and contained source/destination paths. It is designed to preserve the failed directory under a unique `local/NativeBoot-failed-*` name without deleting it. This draft is under review and is not a command to run now. Other failures and later-stage images are rejected by the draft recovery guard.
+The `-Mode ArchiveFailed` recovery checks the saved phase/error, exact VHDX path/capacity, small file size, detached status and contained source/destination paths. It preserves the failed directory under a unique `local/NativeBoot-failed-*` name without deleting it. Other failures and later-stage images are rejected. After updating the checkout and archiving this failed attempt, Prepare can be run again for the next real integration test.
 
 ## Removing the boot entry
 

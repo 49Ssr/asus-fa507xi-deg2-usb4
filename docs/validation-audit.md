@@ -20,6 +20,14 @@ Read-only inspection of the installed Windows Storage module now establishes tha
 - The ASUS System Control Interface package is broader than a USB controller driver: its INF includes OEM services, a software manager and update-related binaries. Inclusion of a System-class package alone does not prove absence of update tooling. No package from this preparation attempt was installed or executed. Its role and an offline-first test baseline require review before resuming.
 - A meaningful negative fresh-Windows result also needs a healthy USB4 root router, in addition to the host, UCSI, I2C and Parade peripherals. A draft collector change adds that explicit prerequisite.
 
-## Current instruction
+## Read-only inspection completed
 
-Preparation remains paused. Do not run AddBoot, enable test-signing, alter Secure Boot, flash firmware, or repeatedly rerun the old preparation command to work around the guard. The known failed state and original capture evidence are preserved. Corrections and mocked tests must be labelled separately from real hardware results.
+The owner mounted the existing VHD read-only, printed the real Storage properties, and detached it in finally. It reported `File Backed Virtual`, size 68719476736, partition style RAW, IsReadOnly true, IsBoot false and IsSystem false. The temporary disk number was only an observation; setup must resolve it again from the exact VHDX association rather than reuse it.
+
+This validates the specific representation that caused the failure and confirms that initialization had not occurred. It does not validate the later offline deployment or boot lifecycle.
+
+## Next stage
+
+After updating the local checkout, ArchiveFailed preserves this exact failed attempt. A fresh Prepare run is the next real integration test. AddBoot remains a separate subsequent step after inspecting preparation results. Keep the first test boot offline: the ASUS System Control Interface bundle includes broader OEM services and update tooling, so an Internet-connected first boot would add an uncontrolled variable.
+
+Do not enable test-signing, alter Secure Boot, flash firmware, or rerun the old uncorrected preparation command to work around a guard. Corrections and mocked tests must remain labelled separately from real hardware results.

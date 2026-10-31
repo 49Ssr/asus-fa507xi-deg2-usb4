@@ -1,6 +1,6 @@
 # Current state / next-session handoff
 
-Last documented: 30 October 2026. The eGPU remains unresolved on ASUS and works on the Dell comparison host.
+Last documented: 31 October 2026. The eGPU remains unresolved on ASUS and works on the Dell comparison host.
 
 ## State to preserve
 
@@ -16,9 +16,9 @@ Last documented: 30 October 2026. The eGPU remains unresolved on ASUS and works 
 
 ## Immediate work
 
-1. Native-boot toolkit is written; Windows PowerShell 5.1 parser/guard checks pass. Keep mock validation separate from real disk/boot operations and rerun the tests after edits.
-2. Obtain the owner's Windows installer image by connecting the existing USB media; no ISO or installer was visible at the last local check.
-3. Prepare the VHDX with baseline drivers, review result, then add its separate boot entry. Neither has been executed as of this handoff.
+1. First actual Prepare failed on an incorrect numeric cast of Storage's friendly BusType string. It created a 4 MiB container and stopped before initialization; image detached in finally. The read-only follow-up confirmed RAW, 64 GiB virtual size, neither boot nor system. See the validation audit.
+2. Source media is connected at `E:\sources\install.wim`; x64 Professional index 6 is Windows 11 build 26200.8037. Both host volumes are decrypted.
+3. Update the local checkout, preserve the exact failed attempt with ArchiveFailed, then retry image preparation using corrected bus handling. Image application, driver injection and native boot have not yet completed. Review results before the separate AddBoot operation.
 4. Run the fresh-Windows connection test and inspect the results after returning to the original OS.
 5. Keep the experiment ledger honest about image version, missing drivers, lost events, and untested configurations.
 
@@ -26,7 +26,7 @@ Last documented: 30 October 2026. The eGPU remains unresolved on ASUS and works 
 
 The owner explicitly requested a GitHub repo documenting the investigation and research for community benefit, stored in the existing projects area on the secondary drive. Intended local location: `D:\Projects\GitHub\asus-fa507xi-deg2-usb4`.
 
-The connected GitHub account is `49Ssr`. The connector can read/write repository contents but does not expose repository creation. The local GitHub CLI's configured account returned 401/invalid-token status. Remote creation/publication is pending working authentication; do not describe a local commit as a published repository.
+The owner copied the folder and refreshed their GitHub login, then created/pushed the public repository at `https://github.com/49Ssr/asus-fa507xi-deg2-usb4`. Connected GitHub tools can update it. The restricted process's local CLI credentials still returned 401, while the owner's terminal succeeded; do not ask the owner to repeat authentication for that process limitation.
 
 The restricted execution session cannot write directly to the requested secondary-drive projects folder. Its request for elevated filesystem permission was rejected by the session approval policy. The complete staged folder must be copied there by the owner, unless a later session has direct access. This is a tool permission boundary, not lack of owner authorization.
 

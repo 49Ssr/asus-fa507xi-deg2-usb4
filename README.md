@@ -2,7 +2,7 @@
 
 **Status: unresolved. Updated 31 October 2026.** This repository documents an ASUS TUF A15 FA507XI that operates a Minisforum DEG2 as a USB hub but never enumerates its external USB4 router or attached GPU. The same assembled dock, GPU, PSU, and supplied cable work on a Dell Intel Thunderbolt 4 laptop.
 
-**Temporary Windows preparation is paused for review.** The first real run exposed a PowerShell Storage type-handling bug after creating a small VHDX container and before initialization/formatting. Mocked guard tests had missed the actual returned type. Do not rerun Prepare/AddBoot based on the initial test count. See the [validation audit](docs/validation-audit.md).
+**Temporary Windows preparation is undergoing staged validation.** The first real run exposed a PowerShell Storage type-handling bug after creating a small VHDX container and before initialization/formatting. The owner then inspected it read-only and confirmed a RAW 64 GiB file-backed virtual disk, neither boot nor system. The correction and guarded preservation mode are now available for the next image-preparation attempt. A successful full image build and native boot are still pending. See the [validation audit](docs/validation-audit.md).
 
 The aim is to turn a difficult troubleshooting session into reproducible evidence, useful negative results, and a practical knowledge base for other owners. This is not a claim that every FA507XI or every AMD host is affected, or that a particular firmware fix exists for this model.
 

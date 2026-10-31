@@ -43,6 +43,14 @@ function Get-Disk {param([Parameter(ValueFromPipeline)]$Image);process{$script:d
 $script:attached=$true
 $script:disk=[pscustomobject]@{Number=7;BusType=15;IsBoot=$false;IsSystem=$false;Size=[uint64](64GB);PartitionStyle='RAW'}
 Check ((Assert-VirtualDiskTarget $vhd 7 -RequireRaw).Number -eq 7) 'Correct new virtual disk accepted'
+$script:disk.BusType='File Backed Virtual'
+Check ((Assert-VirtualDiskTarget $vhd 7 -RequireRaw).Number -eq 7) 'Actual Windows PowerShell friendly bus type accepted'
+$script:disk.BusType='FileBackedVirtual'
+Check ((Assert-VirtualDiskTarget $vhd 7 -RequireRaw).Number -eq 7) 'Enum-name bus type accepted'
+$script:disk.BusType='NVMe'
+MustThrow {Assert-VirtualDiskTarget $vhd 7} 'Friendly physical NVMe bus rejected'
+$script:disk.BusType='USB'
+MustThrow {Assert-VirtualDiskTarget $vhd 7} 'Friendly USB bus rejected'
 $script:disk.BusType=17
 MustThrow {Assert-VirtualDiskTarget $vhd 7} 'Physical NVMe rejected'
 $script:disk.BusType=15;$script:disk.IsBoot=$true
@@ -57,6 +65,19 @@ $script:disk.Size=[uint64](64GB);$script:disk.PartitionStyle='GPT'
 MustThrow {Assert-VirtualDiskTarget $vhd 7 -RequireRaw} 'Preinitialized disk rejected'
 $script:attached=$false
 MustThrow {Assert-VirtualDiskTarget $vhd 7} 'Detached image rejected'
+$failed=[pscustomobject]@{Schema=1;Model='FA507XI';VhdPath=$vhd;Phase='Creating';Error='Cannot convert value "File Backed Virtual" to type "System.Int32".'}
+$failedImage=[pscustomobject]@{Attached=$false;Size=[uint64](64GB)}
+Assert-ArchivableCreationFailure $failed $failedImage 4MB $vhd
+Check $true 'Recorded small detached creation failure is archivable'
+$failedImage.Attached=$true
+MustThrow {Assert-ArchivableCreationFailure $failed $failedImage 4MB $vhd} 'Attached failed VHDX cannot be moved'
+$failedImage.Attached=$false;$failed.Phase='ApplyingImage'
+MustThrow {Assert-ArchivableCreationFailure $failed $failedImage 4MB $vhd} 'Later preparation failure cannot be auto-archived'
+$failed.Phase='Creating'
+MustThrow {Assert-ArchivableCreationFailure $failed $failedImage 10GB $vhd} 'Large existing VHDX cannot be auto-archived'
+MustThrow {Assert-ArchivableCreationFailure $failed $failedImage 4MB 'D:\other.vhdx'} 'Different failed image cannot be moved'
+$failed.Error='An unrelated error'
+MustThrow {Assert-ArchivableCreationFailure $failed $failedImage 4MB $vhd} 'Unrelated error cannot trigger recovery'
 $rows=@(
     [pscustomobject]@{Id='USB4\ROOT_DEVICE_ROUTER&VID_1022';Class='USB';Status='Started';Problem='0';Name='root'}
     [pscustomobject]@{Id='USB4\VIRTUAL_POWER_PDO\x';Class='USB';Status='Started';Problem='0';Name='power'}
@@ -65,7 +86,7 @@ $rows=@(
 Check (@(Get-ExternalRouters $rows).Count -eq 0) 'Fallback hub is not an external USB4 router'
 $rows+=[pscustomobject]@{Id='USB4\VID_8087&PID_5786\x';Class='USB';Status='Started';Problem='0';Name='dock'}
 Check (@(Get-ExternalRouters $rows).Count -eq 1) 'Real external router recognized'
-Check (@(Get-PreflightIssues @()).Count -eq 5) 'Missing prerequisites are not reported as a valid negative test'
+Check (@(Get-PreflightIssues @()).Count -eq 6) 'Missing host, root and other prerequisites are not reported as a valid negative test'
 [xml]$mockXml='<PnpUtil><Device InstanceId="USB4\VID_8087&amp;PID_5786\mock"><DeviceDescription>Test dock</DeviceDescription><Status>Started</Status><Properties><Property Key="DEVPKEY_Device_DriverVersion"><Value>1.0</Value></Property></Properties></Device></PnpUtil>'
 $parsed=@(Read-DeviceRows $mockXml)
 Check ($parsed.Count -eq 1 -and $parsed[0].Driver -eq '' -and $parsed[0].Version -eq '1.0') 'Missing XML fields are safe under StrictMode'

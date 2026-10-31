@@ -8,7 +8,7 @@ RemoveBoot removes only the verified toolkit entry. It retains all files/results
 #>
 [CmdletBinding()]
 param(
-    [ValidateSet('Preview','Prepare','AddBoot','RemoveBoot')][string]$Mode='Preview',
+    [ValidateSet('Preview','Prepare','AddBoot','RemoveBoot','ArchiveFailed')][string]$Mode='Preview',
     [string]$ImagePath,
     [ValidateRange(0,100)][int]$Index=0
 )
@@ -73,6 +73,25 @@ if($Mode -eq 'Preview') {
 }
 Assert-Administrator
 $bcd=Join-Path $env:SystemRoot 'System32\bcdedit.exe'
+if($Mode -eq 'ArchiveFailed') {
+    if(-not (Test-Path -LiteralPath $statePath) -or -not (Test-Path -LiteralPath $vhdPath)){throw 'No failed preparation state/image to preserve.'}
+    $failedState=Get-Content -LiteralPath $statePath -Raw|ConvertFrom-Json
+    $failedImage=Get-DiskImage -ImagePath $vhdPath -ErrorAction Stop
+    $failedFile=Get-Item -LiteralPath $vhdPath
+    Assert-ArchivableCreationFailure -State $failedState -Image $failedImage -FileLength $failedFile.Length -ExpectedVhdPath $vhdPath
+    $archivePath=Join-Path $privateRoot ('NativeBoot-failed-'+[DateTime]::UtcNow.ToString('yyyyMMdd-HHmmss')+'-'+[guid]::NewGuid().ToString('N').Substring(0,8))
+    $source=Assert-ContainedPath -Path $testRoot -Parent $privateRoot
+    $archivePath=Assert-ContainedPath -Path $archivePath -Parent $privateRoot
+    Assert-NoReparseAncestor $source
+    Assert-NoReparseAncestor $archivePath
+    if(Test-Path -LiteralPath $archivePath){throw 'Archive path already exists.'}
+    if(@(Get-ChildItem -LiteralPath $source -Recurse -Force|Where-Object {($_.Attributes -band [IO.FileAttributes]::ReparsePoint) -ne 0}).Count){throw 'Refusing linked contents in the failed attempt.'}
+    # Both fully resolved paths were checked inside this repository's private
+    # directory. This preserves the entire failed attempt; no deletion occurs.
+    Move-Item -LiteralPath $source -Destination $archivePath -ErrorAction Stop
+    Write-Host ('Preserved the failed attempt at '+$archivePath+'. Run Prepare again.')
+    exit 0
+}
 if($Mode -in @('AddBoot','RemoveBoot')) {
     if(-not (Test-Path -LiteralPath $statePath)){throw 'No saved preparation state.'}
     $state=Get-Content -LiteralPath $statePath -Raw | ConvertFrom-Json

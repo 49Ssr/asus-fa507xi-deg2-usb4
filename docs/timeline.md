@@ -11,7 +11,7 @@ All dates below are 30 October 2026 unless specified. Times attached to trace na
 | 5 | ASUS graphics modes | Ultimate and Eco configurations, with reboot, did not make an external GPU/router appear. |
 | 6 | Investigated ordinary dock USB functionality | Mouse and USB hubs worked. This established fallback USB operation, not a working USB4/PCIe path. |
 | 7 | Separate Ethernet-sharing failure | UGREEN was the intended upstream Internet connection. Disabling and re-enabling the relevant adapter restored sharing. This was a networking detour, not evidence of eGPU recovery. |
-| 8 | DISM/SFC and scoped USB controller repair, approximately 19:08–19:27 | Repair completed and devices recovered. A later SFC run was clean. eGPU symptom unchanged. |
+| 8 | DISM/SFC and scoped USB controller repair, approximately 19:08-19:27 | Repair completed and devices recovered. A later SFC run was clean. eGPU symptom unchanged. |
 | 9 | Normal Windows restart and EC reset | No change. Owner explicitly performed the long power-button reset before powering on. |
 | 10 | Firmware UI inspection | No USB4/PCIe tunneling switch found. Secure Boot retained. No foreign firmware flashed. |
 | 11 | Initial WPR capture around 20:01 | Only 253 metadata events: inadequate for connection analysis. Later direct captures superseded it. |
@@ -34,6 +34,7 @@ All dates below are 30 October 2026 unless specified. Times attached to trace na
 | 28 | All-vendor Windows Update driver search | Result code 2 (success), package count 0. No applicable package offered by that search. |
 | 29 | BitLocker check | Both OS and secondary internal NVMe volumes reported fully decrypted, 0% encrypted, no protectors. Native-boot hosting is not blocked by encryption. |
 | 30 | Temporary full-Windows test toolkit | Being prepared with seven signed, currently installed System-class driver packages. No disk/boot operation or fresh-Windows hardware test has yet completed. |
+| 31, 31 October | First actual VHDX preparation | Created a 4 MiB container, then guard rejected Windows PowerShell's friendly BusType string. It stopped before disk initialization/formatting and detached. Correction adds friendly-string coverage and a guarded preservation/retry mode. No fresh-Windows boot result yet. |
 
 ## Corrections that matter
 
