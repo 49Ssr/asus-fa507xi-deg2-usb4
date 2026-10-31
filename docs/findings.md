@@ -14,7 +14,7 @@ The useful sequence is:
 
 This locates a boundary. It does not identify which cable, mux/retimer, PD controller, host firmware, dock firmware, or Windows interaction caused it.
 
-The later [N0 peer test](peer-test.md) shows USB4 P2P adapters Up on both ASUS and Dell using the same supplied cable. ASUS therefore establishes a USB4 host-to-host link in that pairing. This narrows a blanket nonfunctional-USB4 explanation, while leaving PCIe tunnelling, peer rate, signal margins and DEG2-specific negotiation untested.
+The later [N0 peer test](peer-test.md) shows USB4 P2P adapters Up on both ASUS and Dell using the same supplied cable. A completed rundown confirms Gen 3 with two bonded lanes, a reported 40 Gbps link, with both lane adapters Up. This narrows a blanket nonfunctional/low-rate USB4 explanation, while leaving GPU PCIe tunnelling, sustained payload throughput, signal margins with DEG2 and the specific negotiation defect untested.
 
 ## `_OSC` result `0xf`
 

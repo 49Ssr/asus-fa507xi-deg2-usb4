@@ -50,6 +50,7 @@ All dates below are 30 October 2026 unless specified. Times attached to trace na
 | 44, 12:52-12:53 on 31 October | Guided live window completed and decoded | 80 validated samples and readable normal-kernel controls; both firmware buffers unreadable in every attempt. 8,221 ETW events, zero lost events/buffers, zero formatting errors, two unknown records. Root register reads succeed but USB4 plugged/router-detected return No; Billboard follows. No external router/GPU, UCSI-labelled records or actionable patch. [Measured result](hotplug-window.md). |
 | 45, 31 October | N0 peer-link control passed | Owner-supplied ASUS text and Dell photo both show USB4 P2P adapter Up with the supplied DEG2 cable between the laptops. Host-to-host link establishment demonstrated; physical rate, data transfer and GPU PCIe tunnelling unmeasured. [Result and limits](peer-test.md). |
 | 46, 31 October | Working peer rundown prepared | Added a three-second ETW-only snapshot using already exercised helpers. PS5.1 parsing and Preview passed. Actual rundown execution and negotiated peer-rate analysis remain unperformed. |
+| 47, 13:37:49-13:37:52 on 31 October | Working peer rundown completed and decoded | 1,666 events, zero reported lost events/buffers, zero formatting errors/unknown records. Root port reports speed 0x4 (Gen 3), width 0x2 (dual), bonded lanes and both states Up: reported 40 Gbps. P2P virtual NIC separately advertises 20 Gbps. Payload throughput/GPU PCIe not tested. [Raw-field interpretation and sources](peer-test.md). |
 
 ## Corrections that matter
 

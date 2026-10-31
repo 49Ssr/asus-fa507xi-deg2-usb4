@@ -22,7 +22,7 @@
 - All four plug orientations, EC reset, graphics mode changes, OS file repair, scoped controller reinstall and retimer restarts were ineffective. The v2 override was ignored and is an invalid negative test of its intended path.
 - No second suitable cable or known-working separate USB4 peripheral is available at last report. The spare UGREEN cable was reported unsuitable. The existing UGREEN 3121 is a 10 Gbps USB-C hub; its USB/Ethernet/display operation would not validate USB4/PCIe.
 - The owner prefers Windows diagnosis and existing/borrowed hardware. A detailed ASUS report has already been sent. No verified applicable FA507XI PD/USB-C or DEG2 firmware image was found in the inspected sources.
-- N0 is now complete: the ASUS-Dell direct USB4 peer link shows P2P adapters Up on both machines with the supplied DEG2 cable. This is a working host-to-host control; physical rate, data transfer and GPU PCIe tunnelling were not measured. [Evidence and prepared working-link rundown](peer-test.md).
+- N0 is complete: the ASUS-Dell direct USB4 peer link shows P2P adapters Up on both machines with the supplied DEG2 cable. A completed 13:37 rundown confirms a reported 40 Gbps physical link, Gen 3 with two bonded lanes, both Up. The P2P virtual NIC's 20 Gbps value is not the physical-rate observation. Payload transfer and GPU PCIe tunnelling remain untested. [Evidence, register fields and limits](peer-test.md).
 
 ## Missing comparisons, in priority order
 
@@ -44,7 +44,7 @@ Get-NetAdapter -IncludeHidden |
     Select-Object Name, InterfaceDescription, Status
 ```
 
-**Observed:** ASUS Ethernet 4 and Dell Ethernet 9 both report `USB4(TM) P2P Network Adapter`, status `Up`, in owner-supplied text/photographic output. N0 passed its stated link-status milestone. The ASUS also has the signed in-box USB4P2PNetAdapter 10.0.26100.9818 package in its driver store. Physical link rate and data transfer remain unmeasured; a short [working-link rundown](peer-test.md#working-link-rundown-prepared-but-not-run) is prepared, not yet executed.
+**Observed:** ASUS Ethernet 4 and Dell Ethernet 9 both report `USB4(TM) P2P Network Adapter`, status `Up`, in owner-supplied output. The later [working-link rundown](peer-test.md#working-link-rundown-completed) confirms Gen 3, two bonded lanes and both lane adapters Up: reported aggregate 40 Gbps. It contains 1,666 events with no reported loss, formatting errors or unknown records. The ASUS also has the signed in-box USB4P2PNetAdapter 10.0.26100.9818 package. Payload transfer and GPU PCIe tunnelling remain untested.
 
 **Pass:** a newly connected, working P2P adapter provides evidence that ASUS can establish a USB4 host-to-host path with this cable and peer. It strengthens the case for pairing-dependent DEG2 interoperability, while leaving PCIe tunnelling, rate margins and GPU operation untested. Do not treat a virtual NIC's reported speed alone as measured physical USB4 bandwidth.
 

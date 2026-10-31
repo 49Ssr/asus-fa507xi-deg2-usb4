@@ -2,7 +2,7 @@
 
 **Unresolved, 31 October 2026.** The ASUS TUF A15 FA507XI detects ordinary USB functions on the DEG2 but does not enumerate its external USB4 router or RTX 4080 SUPER. The identical assembled dock, GPU, PSU and supplied cable work on a Dell Intel Thunderbolt 4 laptop. A separate full Windows installation on the ASUS reproduces the failure.
 
-**New control: [ASUS-Dell USB4 peer link passed](docs/peer-test.md).** Both machines show their USB4 P2P adapter Up using the supplied DEG2 cable. This demonstrates host-to-host link establishment on ASUS; GPU PCIe tunnelling, physical peer rate and throughput remain unmeasured. The failing condition is still the ASUS-DEG2 pairing.
+**New control: [ASUS-Dell USB4 peer link passed at a reported 40 Gbps](docs/peer-test.md).** Both P2P adapters are Up, and ASUS port telemetry confirms Gen 3 with two bonded lanes using the supplied DEG2 cable. This demonstrates host-to-host link establishment at the ASUS port's advertised negotiated rate; GPU PCIe tunnelling and payload throughput remain untested. The failing condition is still the ASUS-DEG2 pairing.
 
 ## Measured comparison
 

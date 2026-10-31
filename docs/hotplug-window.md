@@ -44,4 +44,4 @@ TraceRpt failed with WMI-service availability in the managed reader. Installed M
 | Raw ETL | 10,420,224 bytes; `40CB6A6C67E17417856C29ED13262B0C7D3B5E9EE542720CC90B79BD6C4E7307` |
 | Private probe JSON | `C2C3C643DAB782CFBADD8620E474FE37F37EA3A299C852C794B7BDB10C032839` |
 
-The subsequent [N0 ASUS-Dell peer comparison passed adapter/link checks](peer-test.md) with the supplied cable. It tests host-to-host USB4 operation, not the GPU's PCIe tunnel. Physical peer rate and data transfer remain unmeasured; a short working-link rundown is prepared. Another unchanged DEG2 memory window has no identified additional diagnostic benefit.
+The subsequent [N0 ASUS-Dell peer comparison](peer-test.md) passed adapter/link checks, and a completed rundown confirms a reported 40 Gbps Gen 3 dual-lane link with the supplied cable. Payload transfer and GPU PCIe tunnelling remain untested. This strengthens the working host/cable control without identifying the ASUS-DEG2 negotiation defect. Another unchanged DEG2 memory window has no identified additional diagnostic benefit.
