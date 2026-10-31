@@ -241,6 +241,8 @@ function Invoke-ProbeProcess([string]$Executable,[string[]]$Arguments,[string]$D
     $info.RedirectStandardOutput=$true; $info.RedirectStandardError=$true; $info.RedirectStandardInput=$true
     $info.EnvironmentVariables['_NT_SYMBOL_PATH']=$symbolRoot
     $info.EnvironmentVariables['_NT_EXECUTABLE_IMAGE_PATH']=(Join-Path $env:SystemRoot 'System32')+';'+(Join-Path $env:SystemRoot 'System32\drivers')
+    $info.EnvironmentVariables.Remove('_NT_DEBUG_LOG_FILE_APPEND')
+    $info.EnvironmentVariables['_NT_DEBUG_LOG_FILE_OPEN']=Join-Path $Directory 'debugger.txt'
     $process=New-Object Diagnostics.Process; $process.StartInfo=$info
     $ownedJob=New-Object Usb4ProbeOwnedJob
     $watch=[Diagnostics.Stopwatch]::StartNew(); $timedOut=$false; $started=$false; $stdout=$null; $stderr=$null
@@ -326,9 +328,9 @@ $jsPath=Assert-LocalPath $jsPath
 $provider=(Join-Path (Split-Path $DebuggerPath) 'winext\JsProvider.dll').Replace('\','/')
 $commands=@('.symopt- 0x40','.reload /f nt','.reload /f acpi.sys',('.load "'+$provider+'"'),('.scriptload "'+$jsPath+'"'),('dx @$scriptContents.probeFirmwareBuffers("'+$source+'")'),'q')
 [IO.File]::WriteAllLines($commandsPath,$commands,(New-Object Text.UTF8Encoding($false)))
-# LiveKD forwards KD options. Keep them short and relative to this run's working
-# directory; symbol/image paths travel in the child environment instead.
-$common=@('-noshell','-ses','-cf','probe.wds','-logo','debugger.txt')
+# LiveKD changes KD's working directory. Use an absolute command file; move the
+# absolute log, symbol and image paths into the child environment to limit options.
+$common=@('-noshell','-ses','-cf',$commandsPath)
 $status=[ordered]@{Schema=1;Mode=$Mode;Label=$Label;StartedUtc=[DateTime]::UtcNow.ToString('o');Result='NotCompleted';LiveViewBytesReturned=$false;Error=$null}
 try {
     if($Mode -eq 'Capture'){

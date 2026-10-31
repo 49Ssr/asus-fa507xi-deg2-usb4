@@ -90,8 +90,21 @@ $combined=Join-Path $testOutput 'ProbeTests.js'
 $commands=Join-Path $testOutput 'tests.wds';$log=Join-Path $testOutput 'debugger.txt'
 $provider=(Join-Path (Split-Path $DebuggerPath) 'winext\JsProvider.dll').Replace('\','/')
 [IO.File]::WriteAllLines($commands,@('.reload /f nt',('.load "'+$provider+'"'),('.scriptload "'+$combined+'"'),'dx @$scriptContents.runProbeTests()','q'),(New-Object Text.UTF8Encoding($false)))
-# Exercise relative command/log names and inherited symbol/image paths in real KD.
-$code=Invoke-ProbeProcess $DebuggerPath @('-z',$DumpPath,'-noshell','-ses','-cf','tests.wds','-logo','debugger.txt') $testOutput 60
+# Emulate LiveKD's working-directory change while executing the real offline KD.
+# Neither the command file nor output log lives in the debugger's changed directory.
+$changedDirectory=Join-Path $testOutput 'different cwd'
+New-Item -ItemType Directory -Path $changedDirectory | Out-Null
+$launcher=Join-Path $testOutput 'ChangedDirectoryLauncher.ps1'
+[IO.File]::WriteAllText($launcher,@'
+param([string]$Kd,[string]$Dump,[string]$Commands)
+$ErrorActionPreference='Stop'
+Set-Location -LiteralPath (Join-Path $PSScriptRoot 'different cwd')
+[Environment]::CurrentDirectory=(Get-Location).Path
+& $Kd -z $Dump -noshell -ses -cf $Commands
+exit $LASTEXITCODE
+'@,[Text.Encoding]::ASCII)
+$testPowerShell=Join-Path $env:SystemRoot 'System32\WindowsPowerShell\v1.0\powershell.exe'
+$code=Invoke-ProbeProcess $testPowerShell @('-NoProfile','-File',$launcher,'-Kd',$DebuggerPath,'-Dump',$DumpPath,'-Commands',$commands) $testOutput 60
 Check ($code -eq 0) 'Offline debugger completed'
 $text=[IO.File]::ReadAllText($log)
 $match=[regex]::Match($text,'(?s)UCSI_TEST_JSON_BEGIN\s*[\r\n]+(.*?)\s*[\r\n]+UCSI_TEST_JSON_END')
