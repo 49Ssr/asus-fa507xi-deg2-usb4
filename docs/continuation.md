@@ -26,6 +26,8 @@ The linked conversation's latest exchanges and the earlier Dell-bundle/results e
 
 ## What is useful next
 
+**Latest direction:** the owner proposes deeper Dell inspection, a fresh ASUS dump and firmware reverse engineering. The [acquisition and ownership review](reverse-engineering-approach.md) defines the missing data, matched phases, unavailable-memory limits and criteria for a real patch. Dell's internal policy/ACPI is the first missing comparison; a generic larger dump is not a firmware image. This review does not claim new paired captures or a prepared flash.
+
 **Subsequent owner-requested work:** the [existing-capture follow-up](negotiation-followup.md) traces the correction-flag writer and separates the hosts' initial and PD-time reports. The [initial CC-role test](initial-role-test.md#measured-result-2303-2304-utc) then ran once: Rp-only accepted, no reported attachment/PD, default DRP restored, no recovery pending. Its trace has 238,588 events, zero reported loss and 118 unknown records. It did not establish the intended causal comparison. Preserve the new evidence; repeat neither that unchanged test nor the earlier rejected mode exit. No next firmware intervention is prepared.
 
 The [research review](research.md#continuation-review-31-october-2026) distinguishes native USB4 entry from alternate-mode commands. A custom repair needs an observed failed transition, an applicable control over it and a reversible result that changes router enumeration. No such control is currently validated.

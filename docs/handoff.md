@@ -27,6 +27,8 @@
 
 ## Current action
 
+**Next acquisition design:** the owner requests a deeper Dell/ASUS comparison followed by firmware investigation. Read the [matched-capture and reverse-engineering approach](reverse-engineering-approach.md). Prioritize Dell's unrecovered persistent role policy/ACPI and a fresh ASUS ordinary-fallback snapshot, tied to passive traces. A new paired collector is not implemented; no firmware patch target is established. Existing unavailable firmware-page probes and the unchanged Rp-only test must not be repeated as substitutes.
+
 **Latest result:** the [initial CC-role experiment](initial-role-test.md#measured-result-2303-2304-utc) ran once at 23:03-23:04 UTC. Rp-only was accepted, but no attachment/PD or router/GPU was reported; default DRP restoration completed, with no recovery pending. The trace contains 238,588 events, zero reported loss/format errors and 118 unknown records. Do not repeat it unchanged. The [role-order comparison and correction-flag audit](negotiation-followup.md) remain valid; the intended source/DFP connection was not established, so the role-correction hypothesis remains unresolved. No next state-changing test is prepared.
 
 **Continuation:** the commands under the historical "Next owner action" headings below have completed. Those headings retain their existing links; they are not instructions to repeat them. Start with the [continuation record](continuation.md) and [protocol/source review](research.md#continuation-review-31-october-2026). A future offline comparison/report tool is [proposed separately](tool-scope.md). The initial-role experiment above has also completed.
