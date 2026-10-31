@@ -25,8 +25,8 @@ The private ETL SHA-256 is `2F70CDA8695179930A644ABD99B327F7FDB0C49A653A618D9FBC
 | --- | --- | --- |
 | OS-requested data-role correction | No `SET_UOR` command in the recorded sequence; role-correction decision is No | Windows requests `SET_UOR(Dfp)`; it completes successfully on both DEG2 attempts |
 | Subsequent partner report | UFP, USB flag `0x1`; operating modes stay `0x40` | UFP, alternate-mode flag `0x2`; operating modes change `0x40 -> 0x20` |
-| Partner alternate-mode replies | Index 0: Intel SVID `0x8087`, VDO `0x00000001`; index 1: DP SVID `0xff01`, VDO `0x00001c46`; index 2 empty. Repeated index 0 replies agree. | Queried index 0 reports DP SVID `0xff01`, VDO `0x00001c45`; later indexes were not queried in the ASUS batch |
-| Mode support/current index | Supported bitmap `0x0f`, current index `0` | Supported bitmap zero, current index `1` |
+| Partner alternate-mode replies | Index 0: Intel SVID `0x8087`, VDO `0x00000001`; index 1: DP SVID `0xff01`, VDO `0x00001c46`; index 2 empty. Repeated index 0 replies agree. | Index 0 reports DP SVID `0xff01`, VDO `0x001c0045`; the 21:58 inspection confirms index 1 empty and stable index 0 repeats. Earlier VDO transcription corrected against raw bytes. |
+| Mode support/current index | Supported bitmap `0x0f`, current index `0` | Supported bitmap zero, current index `1`; 21:58 inspection finds local count 1, only index 0 readable, and override support advertised |
 | Result | External router, PCIe tunnel, NVIDIA driver and image | USB/Billboard fallback; no external router/GPU |
 
 This makes the platform's data-role/advanced-link negotiation a specific investigation target. It does **not** prove `SET_UOR` caused failure: role correction may be required on ASUS, the two PPM implementations report different capabilities, alternate-mode ordering can differ, and UCSI reports do not establish the physical mux state. Intel's alternate-mode reply also does not imply the working link used Thunderbolt 3; port telemetry reports native USB4.

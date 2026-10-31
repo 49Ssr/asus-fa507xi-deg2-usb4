@@ -51,9 +51,13 @@ Owner-run preparation enabled the documented UCSI interface and saved its absent
 
 The corrected portable collector ran on the Latitude 5540: 1,096,876 events, zero reported loss, native USB4 at a reported 40 Gbps, external DEG2 router, NVIDIA-bound RTX 4080 SUPER and owner-confirmed image. All 41 GETs completed; the original diagnostic value was restored and before/after-cleanup network/ICS snapshots match. The first failed import is a separate collector defect. [Measured comparison, role-correction lead and limits](dell-control.md#measured-result).
 
+## ASUS additional-mode inspection, completed
+
+The 21:58 inspection completed 37/37 GETs. Partner index 1 and local index 1 are empty; current mode remains 1 despite local count 1 and supported bitmap zero. Capability `0xbd` advertises alternate-mode override support. No external router/GPU appeared. Error status stayed zero and the existing interface value was unchanged. DNS, routes and ICS match; unused DEG2 Ethernet acquired one link-local address. [Bytes, interpretation and limits](handoff.md#next-owner-action-inspect-the-asus-mode-tables).
+
 ## Unperformed or withdrawn tests
 
-- Additional ASUS alternate-mode indexes: `InspectModes` is prepared in the existing collector to fill the index-0-only gap. It uses the Dell-tested bounded GET engine with exact ASUS interface checks and before/after snapshots. 43 mocked PS5.1 query/workflow checks and 60 toolkit checks pass; actual execution is pending. [Purpose and interpretation](handoff.md#next-owner-action-inspect-the-asus-mode-tables).
+- One current-mode exit: `TestModeExit` is prepared in the existing collector. It requires fresh matching DEG2 state and advertised override support, then sends one EXIT for connector 1/current index 1 while tracing. No ENTER, role change, reset or firmware image is requested. 100 mocked PS5.1 guard/encoding/workflow checks pass; hardware execution and effect are pending. [Procedure and recovery](handoff.md#next-owner-action-one-current-mode-exit).
 - A change to the ASUS data-role correction/advanced-mode negotiation: the successful Dell control identifies a comparison target, but no applicable supported change or causal intervention has been tested. The absence of `_DSM` function 4 does not itself establish a fault or eGPU fix.
 - Internal `UserControlOfIdleSettings` registry experiment: withdrawn before any write. The matching host driver checks test-signing at the assignment, so a production-mode override would not enable this flag. No enabled-path test or repair claimed. [Audit](policy-audit.md#follow-up-user-control-of-idle-settings).
 - A second suitable 40 Gbps cable, or a documented 20 Gbps USB4 cable: unavailable at last report. The [next-test matrix](handoff.md) separates these comparisons and their outcomes.

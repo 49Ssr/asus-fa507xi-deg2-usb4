@@ -3,7 +3,7 @@
    and separately marked firmware-status queries. No firmware flash or driver patch. #>
 [CmdletBinding()]
 param(
-    [ValidateSet('Preview','PrepareUcsi','Capture','InspectModes','UndoUcsi')][string]$Mode='Preview',
+    [ValidateSet('Preview','PrepareUcsi','Capture','InspectModes','TestModeExit','UndoUcsi')][string]$Mode='Preview',
     [ValidateSet('Compare','PeerHandoff','Direct')][string]$Scenario='Compare'
 )
 Set-StrictMode -Version Latest
@@ -221,6 +221,101 @@ function Invoke-PartnerSwapModeInspection([string]$Directory) {
     }
     return $status
 }
+function Invoke-PartnerSwapModeCommand([string]$Directory,[string]$Name,[uint32]$High,[uint32]$Low,[switch]$ExitReportedMode) {
+    if($Name -notmatch '^[A-Z0-9_]{1,48}$'){throw 'Invalid command record name.'}
+    if($ExitReportedMode){
+        if($High -ne 0 -or $Low -ne [uint32]0x0101000f){throw 'Only connector 1, reported mode 1, EXIT with zero mode-specific data is allowed.'}
+    }elseif(($Low -band 255) -notin @(6,13,14,16,18,19)){throw 'This path permits only the required GET commands.'}
+    $path=Join-Path $Directory $Name;New-Item -ItemType Directory -Path $path|Out-Null
+    $row=[ordered]@{Name=$Name;High=$High.ToString('X8');Low=$Low.ToString('X8');ExitReportedMode=[bool]$ExitReportedMode;StartedUtc=[DateTime]::UtcNow.ToString('o');ExitCode=$null;ProtocolResult='NotSent';Output='';Error='';Bytes=@()}
+    # An immutable per-command intent must be saved before native dispatch.
+    Write-PartnerSwapJson (Join-Path $path 'intent.json') $row
+    try{
+        $row.ExitCode=Invoke-ProbeProcess $script:UcsiTool @('Send',$row.High,$row.Low) $path 5
+        $row.Output=[IO.File]::ReadAllText((Join-Path $path 'launcher-stdout.txt'))
+        $row.Error=[IO.File]::ReadAllText((Join-Path $path 'launcher-stderr.txt'))
+        if($row.ExitCode -ne 0){$row.ProtocolResult='TransportError'}
+        elseif($row.Output -match 'BusyIndicator: 1'){$row.ProtocolResult='Busy'}
+        elseif($row.Output -match 'NotSupportedIndicator: 1'){$row.ProtocolResult='NotSupported'}
+        elseif($row.Output -match 'ErrorIndicator: 1'){$row.ProtocolResult='FirmwareError'}
+        elseif($row.Output -match 'CommandCompletedIndicator: 1' -and $row.Output -match 'ErrorIndicator: 0'){
+            $row.ProtocolResult='Completed'
+            $length=[regex]::Match($row.Output,'(?s)UCSI_CCI:.*?DataLength:\s*(\d+)')
+            if(-not $length.Success){throw 'Missing CCI length.'}
+            $message=[regex]::Match($row.Output,'(?s)UCSI MESSAGE_IN:\s*=+\s*(.*?)(?:\r?\n\r?\n|$)')
+            $bytes=@();if($message.Success){$bytes=@([regex]::Matches($message.Groups[1].Value,'\b[0-9a-fA-F]{2}\b')|ForEach-Object {[Convert]::ToByte($_.Value,16)})}
+            if($bytes.Count -ne [int]$length.Groups[1].Value){throw 'Reply byte count differs from CCI length.'}
+            $row.Bytes=$bytes
+        }else{$row.ProtocolResult='Unparsed'}
+    }catch{$row.ProtocolResult='TransportError';$row.Error=$_.Exception.Message}
+    $row.FinishedUtc=[DateTime]::UtcNow.ToString('o')
+    Write-PartnerSwapJson (Join-Path $path 'reply.json') $row
+    if(-not $ExitReportedMode -and $row.ProtocolResult -ne 'Completed'){throw ('GET '+$Name+': '+$row.ProtocolResult+'. Further firmware commands stopped.')}
+    return [pscustomobject]$row
+}
+function Assert-PartnerSwapModeExitState([object]$Capability,[object]$Connector,[object]$CurrentMode,[object]$PartnerPdos) {
+    foreach($reply in @($Capability,$Connector,$CurrentMode,$PartnerPdos)){if($reply.ProtocolResult -ne 'Completed'){throw 'Every preflight GET must complete before a mode exit.'}}
+    if($Capability.Bytes.Count -ne 16 -or ($Capability.Bytes[5] -band 12) -ne 12){throw 'PPM must explicitly advertise alternate-mode details and override support.'}
+    if(($Capability.Bytes[4] -band 127) -lt 1 -or $Connector.Bytes.Count -ne 9){throw 'Unexpected connector/status layout.'}
+    $flags=[BitConverter]::ToUInt32([byte[]]$Connector.Bytes,0)
+    if(($flags -band 0x00080000) -eq 0 -or ($flags -band 0x00100000) -ne 0 -or (($flags -shr 21) -band 255) -ne 2 -or (($flags -shr 29) -band 7) -ne 2){throw 'Connector 1 must still be connected as sink with an alternate-mode-only UFP partner.'}
+    if($CurrentMode.Bytes.Count -ne 1 -or $CurrentMode.Bytes[0] -ne 1){throw 'The previously observed current mode 1 is no longer present; preserve the new state.'}
+    $pdoHex=($PartnerPdos.Bytes|ForEach-Object {([byte]$_).ToString('X2')}) -join ''
+    if($pdoHex -cne '2C91812F2CD102002CB10400E0410600'){throw 'Connector 1 partner source PDOs no longer match the captured DEG2. No mode exit sent.'}
+}
+function Invoke-PartnerSwapModeExitTest([string]$Directory) {
+    $status=[ordered]@{Schema=1;Kind='ASUSModeExitTest';StartedUtc=[DateTime]::UtcNow.ToString('o');Result='NotAttempted';Error=$null;EvidenceErrors=@();ModeExitRequested=$false;RegistryWriteRequested=$false;FirmwareImageWriteRequested=$false;DeviceRestartRequested=$false;ExitReply=$null;NewRouter=$false;NewDisplays=@();Recovery='Disconnect/reconnect DEG2 for normal automatic negotiation; no automatic mode re-entry is attempted.'}
+    $trace=$null
+    try{
+        $before=@(Get-PnpDevice -PresentOnly -ErrorAction Stop)
+        if(@($before|Where-Object {$_.InstanceId -match '^USB4\\VID_8087&PID_5786'}).Count){throw 'DEG2 USB4 router is already present; preserve that state instead of changing modes.'}
+        if(-not @($before|Where-Object {$_.InstanceId -match '^USB\\VID_041F&PID_D002'}).Count){throw 'Expected connected DEG2 Billboard fallback. Leave DEG2 connected to ASUS before this test.'}
+        Write-PartnerSwapJson (Join-Path $Directory 'network-before.private.json') (Get-DeepNetworkState)
+        Write-PartnerSwapJson (Join-Path $Directory 'interface-before.json') (Get-DeepInterfaceState)
+        Save-ConnectionInventory $Directory 'before'
+        Test-DeepNativeInterface -Directory (Join-Path $Directory 'InterfaceCheck') -ExactInstance
+        $commands=Join-Path $Directory 'Commands';New-Item -ItemType Directory -Path $commands|Out-Null
+        $cap=Invoke-PartnerSwapModeCommand $commands 'GET_CAPABILITY' 0 6
+        $connector=Invoke-PartnerSwapModeCommand $commands 'CONNECTOR_BEFORE' 0 0x00010012
+        $current=Invoke-PartnerSwapModeCommand $commands 'CURRENT_MODE_BEFORE' 0 0x0001000e
+        $pdos=Invoke-PartnerSwapModeCommand $commands 'PARTNER_PDOS_BEFORE' 7 0x00810010
+        Assert-PartnerSwapModeExitState $cap $connector $current $pdos
+        Write-PartnerSwapJson (Join-Path $Directory 'plan.json') ([ordered]@{Connector=1;ReportedCurrentMode=1;EnterOrExit=0;ModeSpecificData=0;High='00000000';Low='0101000F';Meaning='Exit the currently reported mode once; do not select or enter another mode';CurrentModeMissingFromReportedLocalTable=$true})
+        $trace=Start-ConnectionTrace $Directory
+        Start-Sleep -Seconds 5
+        # Re-check the target immediately before the single state-changing request.
+        $connector=Invoke-PartnerSwapModeCommand $commands 'CONNECTOR_RECHECK' 0 0x00010012
+        $current=Invoke-PartnerSwapModeCommand $commands 'CURRENT_MODE_RECHECK' 0 0x0001000e
+        $pdos=Invoke-PartnerSwapModeCommand $commands 'PARTNER_PDOS_RECHECK' 7 0x00810010
+        Assert-PartnerSwapModeExitState $cap $connector $current $pdos
+        if(@(Get-PnpDevice -PresentOnly -ErrorAction Stop|Where-Object {$_.InstanceId -match '^USB4\\VID_8087&PID_5786'}).Count){$status.NewRouter=$true;$status.Result='RecoveredBeforeExit';throw 'DEG2 router appeared before the exit request; preserve the recovered link. No EXIT sent.'}
+        $status.ModeExitRequested=$true
+        Write-Host 'Requesting one exit from connector 1 current mode 1. Keep DEG2 connected during observation.' -ForegroundColor Yellow
+        $status.ExitReply=Invoke-PartnerSwapModeCommand $commands 'EXIT_REPORTED_MODE' 0 0x0101000f -ExitReportedMode
+        if($status.ExitReply.ProtocolResult -ne 'Completed'){$status.Result='RejectedOrUncertain';throw ('Mode-exit request: '+$status.ExitReply.ProtocolResult+'. No further firmware commands will be sent.')}
+        Start-Sleep -Seconds 20
+        $after=@(Get-PnpDevice -PresentOnly -ErrorAction Stop)
+        $ids=@($before|ForEach-Object InstanceId)
+        $status.NewRouter=(@($after|Where-Object {$_.InstanceId -match '^USB4\\VID_8087&PID_5786'}).Count -gt 0)
+        $status.NewDisplays=@($after|Where-Object {$_.Class -eq 'Display' -and $ids -notcontains $_.InstanceId}|Select-Object Status,Class,FriendlyName,InstanceId)
+        Save-ConnectionInventory $Directory 'after-passive'
+        $status.Result='Observed'
+        $post=Invoke-PartnerSwapModeCommand $commands 'CONNECTOR_AFTER' 0 0x00010012
+        if($post.ProtocolResult -eq 'Completed'){$null=Invoke-PartnerSwapModeCommand $commands 'CURRENT_MODE_AFTER' 0 0x0001000e}
+    }catch{$status.Error=$_.Exception.Message;if($status.Result -eq 'Observed'){$status.Result='ObservedWithQueryError'};Write-Warning $status.Error}
+    finally{
+        if($null -ne $trace){
+            try{Stop-ConnectionTrace $trace $Directory;if(-not $trace.Stopped){throw 'Owned trace did not stop.'}}catch{$status.EvidenceErrors+=@($_.Exception.Message)}
+            try{Write-PartnerSwapJson (Join-Path $Directory 'trace-status.json') $trace}catch{$status.EvidenceErrors+=@($_.Exception.Message)}
+        }
+        try{Save-ConnectionInventory $Directory 'final'}catch{$status.EvidenceErrors+=@($_.Exception.Message)}
+        try{Write-PartnerSwapJson (Join-Path $Directory 'network-after.private.json') (Get-DeepNetworkState)}catch{$status.EvidenceErrors+=@($_.Exception.Message)}
+        try{Write-PartnerSwapJson (Join-Path $Directory 'interface-after.json') (Get-DeepInterfaceState)}catch{$status.EvidenceErrors+=@($_.Exception.Message)}
+        $status.FinishedUtc=[DateTime]::UtcNow.ToString('o')
+        Write-PartnerSwapJson (Join-Path $Directory 'status.json') $status
+    }
+    return $status
+}
 function New-DeepRecorderCommands {
     $tmf=Join-Path $script:DriverSymbols 'TMF'
     $images=@((Join-Path $env:SystemRoot 'System32'),(Join-Path $env:SystemRoot 'System32\drivers'))
@@ -364,6 +459,7 @@ if($swapRequestedMode -eq 'Preview'){
     Write-Output 'Raw PD/CC wire packets are not supplied by this Windows stack. Requested providers, actual events, firmware replies and recorder formatting must be checked separately.'
     Write-Output 'UndoUcsi restores the exact saved setting and restarts the same UCSI device. No network settings, driver package, boot security or firmware image is changed.'
     Write-Output 'InspectModes reads the already-connected DEG2 mode table with the existing prepared UCSI interface. It uses the Dell-tested bounded GET engine and saves before/after snapshots.'
+    Write-Output 'TestModeExit checks the observed DEG2 state and advertised mode-override support, then requests a single exit from current mode 1 on connector 1 while tracing. Reconnect DEG2 for ordinary automatic negotiation afterward if needed.'
     exit 0
 }
 Assert-DeepHost
@@ -382,6 +478,14 @@ if($swapRequestedMode -eq 'InspectModes'){
 }
 Test-DeepNativeInterface
 if((New-Object IO.DriveInfo([IO.Path]::GetPathRoot($repo))).AvailableFreeSpace -lt 3GB){throw 'Keep at least 3 GiB free for the bounded trace and temporary kernel-view work.'}
+if($swapRequestedMode -eq 'TestModeExit'){
+    $run=Join-Path $privateRoot ('Runs\'+[DateTime]::UtcNow.ToString('yyyyMMdd-HHmmss')+'-ASUS-mode-exit-'+[guid]::NewGuid().ToString('N').Substring(0,8))
+    New-Item -ItemType Directory -Path $run|Out-Null
+    $result=Invoke-PartnerSwapModeExitTest $run
+    Write-Output ('Mode-exit result: '+$result.Result+'; router present: '+$result.NewRouter+'; new displays: '+$result.NewDisplays.Count+'; private results: '+$run)
+    if($result.Result -ne 'Observed' -or $result.EvidenceErrors.Count){exit 1}
+    exit 0
+}
 $run=Join-Path $privateRoot ('Runs\'+[DateTime]::UtcNow.ToString('yyyyMMdd-HHmmss')+'-deep-negotiation-'+[guid]::NewGuid().ToString('N').Substring(0,8))
 New-Item -ItemType Directory -Path $run|Out-Null
 $result=Invoke-PartnerSwapRecording $run $swapRequestedScenario

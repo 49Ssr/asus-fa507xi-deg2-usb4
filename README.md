@@ -10,7 +10,7 @@
 
 ## Measured comparison
 
-Next prepared check: connect DEG2 to ASUS and run the existing collector with `-Mode InspectModes` in Administrator PowerShell. This reads the later alternate-mode entries missing from the first ASUS query batch. [Procedure, guards and outcome interpretation](docs/handoff.md#next-owner-action-inspect-the-asus-mode-tables).
+ASUS mode inspection completed: 37/37 GETs; partner index 1 is empty, current index 1 lacks a readable local entry, and firmware advertises mode-override support. The next prepared experiment, `-Mode TestModeExit`, requests one exit from that reported current mode while tracing; hardware effect is untested. [Measured inspection](docs/handoff.md#next-owner-action-inspect-the-asus-mode-tables) and [exit procedure, guards and recovery](docs/handoff.md#next-owner-action-one-current-mode-exit).
 
 | Environment | Windows build | Microsoft USB4 host driver | External DEG2 router | External GPU |
 | --- | --- | --- | --- | --- |
