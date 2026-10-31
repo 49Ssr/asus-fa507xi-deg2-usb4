@@ -59,9 +59,13 @@ The 21:58 inspection completed 37/37 GETs. Partner index 1 and local index 1 are
 
 At 22:12 the guarded TestModeExit completed seven target GETs, then sent one connector-1/current-index-1 EXIT. Firmware returned CCI Error=1, Busy=0, NotSupported=0; Windows completed the ACK. Decoding finds 22,678 events with zero reported event loss, format errors or unknown records. Immediate device and all network snapshots match. No post-error mode GET was sent, so internal mode retention is unproven. The detailed error bitmap was not captured before ACK. [Raw status interpretation and limits](handoff.md#next-owner-action-one-current-mode-exit).
 
+## Retained error status, completed
+
+The single 22:21:59 GET_ERROR_STATUS completed with 16 bytes, `04 00` plus fourteen zeros: invalid command parameters. The EXIT packet field positions match the standard, but the mode index is inconsistent with the returned local table and the error does not identify a field. Association with the earlier failed EXIT is plausible, not continuously traced. It does not diagnose the original USB4 mode-entry failure. No further state-changing request was made. [Result, applicability audit and limits](handoff.md#next-owner-action-read-retained-error-status-once).
+
 ## Unperformed or withdrawn tests
 
-- Retained error-status read: ReadLastError sends exactly one GET with no prior status/capability command. It may find a retained reason, or zero after the automatic ACK cleared it; neither establishes successful mode exit. The combined exit/error-reader suite passes 125 mocked PS5.1 checks; actual reader execution is pending. [Procedure and limits](handoff.md#next-owner-action-read-retained-error-status-once).
+- Private USB-host-for-no-data override: its name suggested a lead, but the matching consumer's URS target is unavailable on both laptops. No applicability or supported equivalent established; no value written. [Audit](policy-audit.md#role-switch-override-applicability).
 - A change to the ASUS data-role correction/advanced-mode negotiation: the successful Dell control identifies a comparison target, but no applicable supported change or causal intervention has been tested. The absence of `_DSM` function 4 does not itself establish a fault or eGPU fix.
 - Internal `UserControlOfIdleSettings` registry experiment: withdrawn before any write. The matching host driver checks test-signing at the assignment, so a production-mode override would not enable this flag. No enabled-path test or repair claimed. [Audit](policy-audit.md#follow-up-user-control-of-idle-settings).
 - A second suitable 40 Gbps cable, or a documented 20 Gbps USB4 cable: unavailable at last report. The [next-test matrix](handoff.md) separates these comparisons and their outcomes.

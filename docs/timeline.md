@@ -68,6 +68,8 @@ All dates below are 30 October 2026 unless specified. Times attached to trace na
 
 | 61, 22:12 on 31 October | Current-mode EXIT rejected by firmware | Seven GET checks completed; one exact connector-1/mode-1 EXIT reached firmware. CCI Error=1, Busy=0, NotSupported=0; Windows ACK completed. 22,678 trace events with zero reported loss/format errors/unknowns. Immediate device/network snapshots match; no post-error mode query/window. Original detailed error bitmap was not captured before ACK. Single retained-error GET prepared; 125 combined mocked PS5.1 checks pass. [Result and next read](handoff.md#next-owner-action-read-retained-error-status-once). |
 
+| 62, 22:21 on 31 October | Retained error read completed; role-switch lead audited | One GET_ERROR_STATUS completes with `0x0004`, invalid command parameters. Exact rejected field and continuous attribution to the earlier EXIT remain unproven; this does not identify the original USB4 failure. Matching UcmCx URS consumer returns early when its target is unavailable, as both host traces report. No registry change or software fix established. Exact-model ASUS BIOS listing rechecked: 314 remains newest found. [Meaning and limits](handoff.md#next-owner-action-read-retained-error-status-once). |
+
 ## Corrections that matter
 
 1. **GPU fan assumptions:** No reliable source established that this exact card must spin briefly on every startup. The working Dell test was the useful evidence.

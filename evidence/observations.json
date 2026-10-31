@@ -747,7 +747,7 @@
   },
   "asus_retained_error_read": {
     "prepared": true,
-    "performed": false,
+    "performed": true,
     "entry_mode": "ReadLastError",
     "only_send": "GET_ERROR_STATUS 00000000:00000013",
     "maximum_requests": 1,
@@ -755,6 +755,29 @@
     "combined_exit_error_reader_mocked_ps51_checks": 125,
     "post_ack_original_error_retention_guaranteed": false,
     "firmware_set_or_reset_requested": false,
-    "interpretation": "Zero may mean cleared after ACK; a nonzero bitmap can reflect a later event. Neither retroactively proves successful exit."
+    "start_utc": "2026-10-31T22:21:59.4202628Z",
+    "end_utc": "2026-10-31T22:21:59.8146264Z",
+    "native_requests_sent": 1,
+    "native_requests_completed": 1,
+    "cci": "0x80001000",
+    "response_bytes": "04 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00",
+    "error_information": "0x0004",
+    "error_flag": "Invalid command parameters",
+    "private_reply_json_sha256": "8E848B1C31B13704EECD5EF7E82327B91E6E342A46350D500FD00F592E54DE50",
+    "exclusive_attribution_to_prior_exit_proven": false,
+    "specific_bad_parameter_identified": false,
+    "original_usb4_failure_explained": false,
+    "interpretation": "Consistent with the earlier rejected EXIT and missing local mode index, but no continuous trace over the interval; mode-entry cause remains unresolved."
+  },
+  "ucm_urs_override_audit": {
+    "performed": true,
+    "method": "Read-only debugger on existing ASUS dump and matching image; no live kernel helper",
+    "consumer": "UcmCx!UpdateUrsState",
+    "missing_urs_target_returns_before_normal_decision": true,
+    "working_dell_and_failed_asus_report_no_urs_target": true,
+    "override_written": false,
+    "applicable_repair_established": false,
+    "consumer_offline_replay_exit_code": 0,
+    "private_consumer_transcript_sha256": "FB796FA13AD8733D26427D8886F8FE9FF886509FBAC63C3F01E49D6A08181960"
   }
 }

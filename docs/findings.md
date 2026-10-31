@@ -22,6 +22,8 @@ The [21:25-21:27 UTC Dell capture](dell-control.md#measured-result) contains 1,0
 
 All 14 returned Windows driver/kernel images match the current ASUS files byte-for-byte. The useful divergence is platform negotiation: Dell reports a USB-capable UFP partner without an OS `SET_UOR`; ASUS sends a successful DFP correction, then reports an alternate-mode-only UFP and operating modes `0x40 -> 0x20`. The Dell's alternate-mode list also includes Intel `0x8087` before DP `0xff01`; ASUS queried only index 0 and returned DP. Index/order and PPM differences limit interpretation. This localizes a candidate mechanism, not a demonstrated defective component, causal command or tested patch.
 
+The subsequent 21:58 ASUS inspection fills the index-0-only gap: partner index 1 is empty, while current mode 1 has no readable local entry despite reported override support. At 22:12 one guarded EXIT was rejected. A single 22:21 error read returned `0x0004`, invalid command parameters; that concerns the diagnostic intervention and does not explain the initial USB4 failure. Exact rejected field and continuous post-ACK attribution remain unproven. [Measured results](handoff.md#next-owner-action-read-retained-error-status-once).
+
 ## `_OSC` result `0xf`
 
 The host restart trace records `_OSC USB4 capabilities granted: 0xf`. The four low control bits are granted, including PCIe tunneling control. This rules out the specific claim that firmware is withholding that `_OSC` permission in the captured initialization.

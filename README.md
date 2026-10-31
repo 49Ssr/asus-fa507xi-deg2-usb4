@@ -10,7 +10,7 @@
 
 ## Measured comparison
 
-ASUS mode inspection completed: 37/37 GETs; current index 1 lacks a readable local entry despite advertised override support. At 22:12, firmware rejected one guarded exit request; Windows completed its ACK, and immediate device/network snapshots match. Next read, `-Mode ReadLastError`, sends one error-status GET; firmware may already have cleared the detailed reason after ACK. [Measured inspection](docs/handoff.md#next-owner-action-inspect-the-asus-mode-tables), [rejected exit](docs/handoff.md#next-owner-action-one-current-mode-exit) and [error read](docs/handoff.md#next-owner-action-read-retained-error-status-once).
+ASUS mode inspection completed: 37/37 GETs; current index 1 lacks a readable local entry despite advertised override support. At 22:12 firmware rejected one guarded exit request. The single 22:21 error-status read returned `0x0004`, invalid command parameters. This is consistent with rejection of that diagnostic request; it does not identify the original USB4 negotiation failure or a specific bad field. No software repair is established. [Inspection and exit/error results](docs/handoff.md#next-owner-action-read-retained-error-status-once) and [remaining cable/peripheral comparisons](docs/handoff.md#deg2-cable-and-peripheral-comparisons).
 
 | Environment | Windows build | Microsoft USB4 host driver | External DEG2 router | External GPU |
 | --- | --- | --- | --- | --- |
