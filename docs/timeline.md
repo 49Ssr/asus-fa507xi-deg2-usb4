@@ -53,6 +53,7 @@ All dates below are 30 October 2026 unless specified. Times attached to trace na
 | 47, 13:37:49-13:37:52 on 31 October | Working peer rundown completed and decoded | 1,666 events, zero reported lost events/buffers, zero formatting errors/unknown records. Root port reports speed 0x4 (Gen 3), width 0x2 (dual), bonded lanes and both states Up: reported 40 Gbps. P2P virtual NIC separately advertises 20 Gbps. Payload throughput/GPU PCIe not tested. [Raw-field interpretation and sources](peer-test.md). |
 | 48, 31 October | Audited possible user idle-control parameter before changing it | Matching driver also test-signing gates `UserControlOfIdleSettings`; no value written, no security change, no enabled-path test. [Read-only audit](policy-audit.md#follow-up-user-control-of-idle-settings). |
 | 49, 31 October | Proposed partner handoff using existing hardware | Start with working ASUS-Dell peer link; keep ASUS cable end connected and move Dell end into powered DEG2. No additional hub/cable needed. No result yet; startup state is a hypothesis, not a diagnosed cause. [Procedure](handoff.md#n5-existing-hardware-partner-handoff-proposed). |
+| 50, 31 October | Owner reports ASUS US support escalation commitment | A US support agent promised handover through an escalated ticket to the relevant ASUS department. Internal handover/review, a diagnosed cause and a firmware release remain unconfirmed. Private support identifiers omitted. |
 
 ## Corrections that matter
 
