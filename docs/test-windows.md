@@ -1,6 +1,6 @@
 # Temporary full-Windows test
 
-**Image preparation is the next integration-test stage after the owner's read-only VHD inspection; no boot test completed.** The bus-type correction and ArchiveFailed recovery are available. See the [validation audit](validation-audit.md). AddBoot remains a separate step after successful image preparation.
+**Completed on 31 October 2026:** image preparation, driver injection, native boot and one connection capture. The separate Windows reproduced the missing external router/GPU; see the [result and limitations](fresh-windows.md). The procedure below documents reproduction, not an instruction to redeploy Windows as the next test. Boot-entry removal remains untested.
 
 This is a separate full Windows baseline on the same physical laptop. It is not WinPE or a virtual-machine USB passthrough test. It is intended to test whether the existing Windows installation is involved, not to promise an eGPU fix.
 
@@ -35,7 +35,7 @@ On a fresh clone, `tools/Export-FA507XIBaseline.ps1 -Preview` reviews the bound 
 
 These are copied by exact INF hash from currently installed packages, with a private per-file hash manifest and valid catalog signatures. They are not claimed to be the newest possible packages. The Microsoft USB4/xHCI/UCSI drivers come from the Windows image. No Firmware-class package is injected; the physical device firmware remains shared with the existing installation. Missing CFU updater child drivers must not be mistaken for a missing primary retimer driver.
 
-ASUS SCI can have a normal null-driver binding/status rather than a running kernel service. The recorder's essential checks focus on the USB4 host, UCSI, I2C and eight Parade peripheral devices.
+ASUS SCI can have a normal null-driver binding/status rather than a running kernel service. The recorder's essential checks focus on the USB4 host and root router, UCSI, I2C and eight Parade peripheral devices.
 
 ## Workflow
 
@@ -68,7 +68,7 @@ The prepared image requests Microsoft's Audit mode. It should reach the built-in
 4. After the warning or approximately 20 seconds, press Enter. Recording continues another 15 seconds.
 5. Check the printed result and saved shared location, then restart back into the original Windows.
 
-The recorder checks the expected host/UCSI/I2C/Parade devices before interpreting a negative result. It captures ordinary USB fallback, external USB4 routers and new display adapters separately. If prerequisites are missing, the negative result is explicitly inconclusive.
+The recorder checks the expected host/root-router/UCSI/I2C/Parade devices before interpreting a negative result. It captures ordinary USB fallback, external USB4 routers and new display adapters separately. If prerequisites are missing, the negative result is explicitly inconclusive.
 
 An external router appearing is progress even before an NVIDIA driver is installed. Actual display output and GPU workloads are later checks. If the router remains absent with a valid baseline, firmware/hardware/cable interoperability becomes a stronger lead; it is not mathematically proved and a shared OS bug remains possible.
 
@@ -76,7 +76,7 @@ An external router appearing is progress even before an NVIDIA driver is install
 
 The first real preparation attempt on 31 October created a 4 MiB VHDX container, then stopped before initialization because Windows PowerShell returned BusType as the friendly string `File Backed Virtual` rather than a numeric value. The finally block detached the image. No Windows image or driver was applied, and no boot entry was created. The guard now accepts the numeric value and exact friendly/enum labels while continuing to reject physical disks.
 
-The `-Mode ArchiveFailed` recovery checks the saved phase/error, exact VHDX path/capacity, small file size, detached status and contained source/destination paths. It preserves the failed directory under a unique `local/NativeBoot-failed-*` name without deleting it. Other failures and later-stage images are rejected. After updating the checkout and archiving this failed attempt, Prepare can be run again for the next real integration test.
+The `-Mode ArchiveFailed` recovery checks the saved phase/error, exact VHDX path/capacity, small file size, detached status and contained source/destination paths. It preserves the failed directory under a unique `local/NativeBoot-failed-*` name without deleting it. Other failures and later-stage images are rejected. The owner used this path successfully before the completed deployment; it is a recovery for that specific early failure, not a general reset mode.
 
 ## Removing the boot entry
 
@@ -90,4 +90,4 @@ The removal operation checks its explicit GUID, description and VHDX path. It re
 
 ## Validation boundary
 
-Parser checks, mocked disk guards and boot-command-plan checks do not prove that this exact Windows image will boot, that every hardware dependency will be satisfied, or that the eGPU will work. Record preparation, first boot, preflight and connection results independently.
+The original mocked guard tests missed the Storage module's real BusType representation. The corrected preparation, first boot, essential preflight and connection capture have now run on this machine; the eGPU still did not enumerate. This does not validate the toolkit on other machines, prove every OEM dependency was present or exercise boot-entry removal. Keep mocked tests, observed setup execution and the hardware result separate. See the [audit](validation-audit.md).

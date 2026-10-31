@@ -33,10 +33,11 @@ All dates below are 30 October 2026 unless specified. Times attached to trace na
 | 27 | Offline code audit correction | The driver ignores the override unless test-signing is enabled. Test-signing was verified disabled. Override removed; the script now blocks the ineffective Enable operation. |
 | 28 | All-vendor Windows Update driver search | Result code 2 (success), package count 0. No applicable package offered by that search. |
 | 29 | BitLocker check | Both OS and secondary internal NVMe volumes reported fully decrypted, 0% encrypted, no protectors. Native-boot hosting is not blocked by encryption. |
-| 30 | Temporary full-Windows test toolkit | Being prepared with seven signed, currently installed System-class driver packages. No disk/boot operation or fresh-Windows hardware test has yet completed. |
+| 30 | Initial temporary full-Windows toolkit preparation | Seven signed, installed System-class driver packages selected. At this point no disk/boot operation or fresh-Windows hardware test had completed; later outcomes are in steps 31-33. |
 | 31, 31 October | First actual VHDX preparation | Created a 4 MiB container, then guard rejected Windows PowerShell's friendly BusType string. It stopped before disk initialization/formatting and detached. Correction adds friendly-string coverage and a guarded preservation/retry mode. No fresh-Windows boot result yet. |
 | 32, 31 October | Corrected preparation and native boot | Failed attempt preserved, separate image applied successfully, baseline drivers staged, explicit boot entry created and Audit Mode reached. |
 | 33, 03:16-03:17 on 31 October | Separate full Windows connection capture | Build 26200.8037, USB4 driver 10.0.26100.7920. Required preflight devices healthy; no external USB4 router/GPU; same fallback hub/Billboard. 7,720 events, zero reported loss; older WPP formats partly unknown. Owner returned to original Windows. |
+| 34, 31 October | Existing UGREEN dock identified | Amazon ASIN B0DRP1F6R7 maps to Revodok Pro 3121 / SKU 55767. Conventional 10 Gbps USB-C hub, so it cannot supply the missing separate USB4-peripheral comparison. No new connection test claimed. |
 
 ## Corrections that matter
 
@@ -45,3 +46,4 @@ All dates below are 30 October 2026 unless specified. Times attached to trace na
 3. **PnPUtil code 259:** The restore wrapper accepted only 0/3010 and stopped on an already-current package result. It was an error in wrapper handling, not proof that the original driver restoration failed.
 4. **Registry override:** Inspection initially missed the test-signing gate. The reboot did occur; the user did not cause the invalid experiment. See [the code audit](policy-audit.md).
 5. **WinPE:** A Windows installer/WinPE environment was initially proposed too strongly as a hardware isolation test. Microsoft advises against hardware validation with WinPE. The proposal was withdrawn; a full Windows installation is a different experiment.
+6. **Native-boot guard:** Numeric BusType mocks missed the real Storage module's `File Backed Virtual` string. The first actual attempt stopped before initialization. The corrected deployment and later native boot completed; removal is still untested. See the [validation audit](validation-audit.md).

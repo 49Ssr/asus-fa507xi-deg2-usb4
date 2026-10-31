@@ -1,0 +1,23 @@
+Selected local trace messages. UTC timestamps and payloads are retained.
+CPU/process/thread, host instance/topology and address prefixes are removed.
+These are selected events, not a continuous USB-PD wire capture.
+Original artifacts and metrics: observations.json. Raw files are private.
+
+[T4]
+2026-10-30T21:07:53.8290876Z [usb4drd] Transition (External): IsUSB4PortPlugged ---(No)---> ShouldCheckRouterDetectedBit
+2026-10-30T21:07:53.8291403Z [usb4drd] Transition (External): IsRouterDetectedSet ---(No)---> WaitingForRouterConnect
+2026-10-30T21:07:55.3911317Z [Microsoft-Windows-USB-USBHUB3] Billboard Detected
+2026-10-30T21:07:55.3941325Z [Microsoft-Windows-USB-USBHUB3] Alternate Mode Failed
+2026-10-30T21:07:55.4001312Z [Microsoft-Windows-USB-USBHUB3] Alternate Mode Entered
+2026-10-30T21:08:04.5615088Z [usb4hrd] No devices connected
+2026-10-30T21:08:05.4535402Z [usb4hrd] Disabling USB4 v2 support due to OS policy.
+2026-10-30T21:08:05.4548576Z [usb4hrd] _OSC USB4 capabilities granted: 0xf
+
+[T5]
+2026-10-30T22:12:32.3585292Z [usb4hrd] Disabling USB4 v2 support due to OS policy.
+2026-10-30T22:12:32.3597529Z [usb4hrd] _OSC USB4 capabilities granted: 0xf
+
+[T6]
+2026-10-31T03:16:34.4082451Z [Microsoft-Windows-USB-USBHUB3] Billboard Detected
+2026-10-31T03:16:34.4112634Z [Microsoft-Windows-USB-USBHUB3] Alternate Mode Failed
+2026-10-31T03:16:34.4172643Z [Microsoft-Windows-USB-USBHUB3] Alternate Mode Entered

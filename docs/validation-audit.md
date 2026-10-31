@@ -1,39 +1,41 @@
-# Validation audit, 31 October 2026
+# Native-boot toolkit validation audit
 
-## Actual outcome
+**Current state, 31 October 2026:** the initial failure was preserved and corrected. Image preparation, driver staging, native boot and one hardware capture subsequently completed. The eGPU failure persisted. Boot-entry removal has not been exercised. [Hardware result](fresh-windows.md).
 
-The first real Prepare run selected the x64 Professional image at index 6, version 10.0.26200.8037. Source-media checks, available-space/encryption checks and driver-bundle validation completed. DiskPart created a new VHDX with 64 GiB virtual capacity and a 4 MiB container file.
+## Initial real failure
 
-The first `Assert-VirtualDiskTarget` call then failed while casting its BusType to an integer. It stopped **before** the first `Initialize-Disk` call. The script's finally block detached the image. Saved state is phase `Creating`, with that conversion error. The directory contains only the state, creation script/log and VHDX; image application, driver injection and boot entry creation were not reached.
+The first Prepare selected the x64 Professional image at index 6, version 10.0.26200.8037. Source-media, space/encryption and driver-bundle checks completed. DiskPart created a new VHDX with 64 GiB virtual capacity and a 4 MiB container file.
 
-## Why the initial tests were insufficient
+The first `Assert-VirtualDiskTarget` call failed while casting BusType to an integer. It stopped **before `Initialize-Disk`**, image application, driver injection or boot-entry creation. The finally block detached the image. Saved phase was `Creating`, with the conversion error.
 
-The guard tests constructed a disk-shaped object with numeric BusType 15. They did not reproduce the Storage module's real PowerShell-facing property contract. Passing those tests was evidence about the constructed objects, not real disk preparation. Presenting the toolkit as ready on that basis was an error.
+## Why the tests missed it
 
-Read-only inspection of the installed Windows Storage module now establishes that `Storage.types.ps1xml` defines BusType as a script property: its underlying CIM value 15 becomes the string `File Backed Virtual`; 17 becomes `NVMe`, and 7 becomes `USB`. PartitionStyle similarly becomes `RAW`, `MBR` or `GPT`. This independently explains the observed failure. A draft correction accepts only the exact file-backed virtual representations and retains the image association, disk number, capacity, boot/system and raw-state checks.
+The tests constructed a disk-shaped object with numeric BusType 15. The Windows Storage module instead exposes BusType through a script property: underlying CIM value 15 becomes `File Backed Virtual`; 17 becomes `NVMe`, and 7 becomes `USB`. Read-only inspection of the installed `Storage.types.ps1xml` established that contract. Presenting the toolkit as ready based on the numeric mocks was an error.
 
-## Further review findings
+The owner mounted the existing VHD read-only and observed `File Backed Virtual`, 68719476736 bytes, RAW, IsReadOnly true, IsBoot false and IsSystem false. It was detached in finally. This confirmed the representation and that initialization had not occurred; it did not validate later deployment steps.
 
-- The preparation and AddBoot paths are separate. Prepare cannot reach the BCD-writing branch when invoked in Prepare mode.
-- No cleanup should delete or overwrite the failed image. A draft recovery mode preserves the exact small detached creation failure under an archived local directory; it is not yet a user instruction to resume.
-- The full offline image application, driver injection, first boot and boot-menu lifecycle have not been validated end to end on this machine.
-- The ASUS System Control Interface package is broader than a USB controller driver: its INF includes OEM services, a software manager and update-related binaries. Inclusion of a System-class package alone does not prove absence of update tooling. No package from this preparation attempt was installed or executed. Its role and an offline-first test baseline require review before resuming.
-- A meaningful negative fresh-Windows result also needs a healthy USB4 root router, in addition to the host, UCSI, I2C and Parade peripherals. A draft collector change adds that explicit prerequisite.
+## Correction and observed execution
 
-## Read-only inspection completed
+The guard accepts the exact file-backed virtual representations while retaining image-to-disk association, capacity, boot/system and RAW-state checks. Association is resolved again before each partition/format operation. The ArchiveFailed mode preserves only the verified small detached creation failure under a unique local directory; other failures are rejected.
 
-The owner mounted the existing VHD read-only, printed the real Storage properties, and detached it in finally. It reported `File Backed Virtual`, size 68719476736, partition style RAW, IsReadOnly true, IsBoot false and IsSystem false. The temporary disk number was only an observation; setup must resolve it again from the exact VHDX association rather than reuse it.
+| Stage | Observed result |
+| --- | --- |
+| Parser, disk guards and boot command plan | 51 non-mutating checks passed after correction; mocked checks do not validate real execution |
+| Archive original failed attempt | Completed; failed container retained |
+| Apply full Windows image and seven scoped System packages | Completed; state reached ImagePrepared without a recorded error |
+| Add separate BCD loader | Completed; state reached BootEntryCreated |
+| Native boot / Audit Mode | Owner reached the test desktop |
+| Recorder / shared result transfer | Completed; results read from original Windows afterward |
+| Essential USB4 path preflight | Passed; measured devices Started with problem code zero |
+| External router / external GPU | Neither enumerated |
+| Remove test boot entry | Unperformed |
 
-This validates the specific representation that caused the failure and confirms that initialization had not occurred. It does not validate the later offline deployment or boot lifecycle.
+## Baseline and operating limits
 
-## Next stage
+Prepare and AddBoot are separate modes. The setup preserves the original Windows default, boot files and UEFI order; no automatic reboot is issued. Incomplete files and raw results remain private for inspection.
 
-After updating the local checkout, ArchiveFailed preserves this exact failed attempt. A fresh Prepare run is the next real integration test. AddBoot remains a separate subsequent step after inspecting preparation results. Keep the first test boot offline: the ASUS System Control Interface bundle includes broader OEM services and update tooling, so an Internet-connected first boot would add an uncontrolled variable.
+The ASUS System Control Interface package contains broader OEM services, software management and update-related binaries. System class alone does not mean a package contains no update tooling. The first test boot was instructed to stay offline to limit uncontrolled changes; no firmware update is established by installing this package.
 
-Do not enable test-signing, alter Secure Boot, flash firmware, or rerun the old uncorrected preparation command to work around a guard. Corrections and mocked tests must remain labelled separately from real hardware results.
+The fresh environment was a scoped baseline, not a factory image. Nine other PnP problem entries remained, and older WPP formats were partly unavailable. Those limits belong to the negative hardware result even though the required host/root/UCSI/I2C/Parade checks passed. See the [full result](fresh-windows.md).
 
-## Subsequent observed execution
-
-The owner updated to the correction, preserved the small failed attempt and successfully completed full image application plus the seven scoped System driver packages. The state reached ImagePrepared without a recorded error. A later AddBoot operation reached BootEntryCreated. The owner booted the new Windows, reached Audit Mode, ran the recorder and returned to the original installation. The capture reproduced the same failure; see [fresh-Windows results](fresh-windows.md).
-
-These real steps are now observed. The recorder copied its results back across installations as designed. The boot-entry removal operation has not been exercised, and a hypothetical absence of every future bug is not claimed.
+Successful execution on this host does not establish universal toolkit safety or compatibility. Do not enable test-signing, alter Secure Boot or flash foreign firmware to work around a guard or an unresolved negotiation problem.

@@ -40,32 +40,38 @@ UCSI commands complete. The trace includes a `SET_UOR(Dfp)` operation and a subs
 
 USB Power Delivery values describe the Type-C power relationship, not the desktop GPU's separately wired PSU power. Host/router idle after failure is also a consequence of no connected USB4 device, rather than proof that a power-saving timer caused the failure.
 
-## Public trace excerpts
+## Trace provenance
 
-These are exact diagnostic message text with timestamp/thread/address and identifying prefixes removed. They are excerpts from local observations, not a complete trace or a replacement for raw evidence:
+[Trace excerpts](../evidence/trace-excerpts.txt) retain timestamps and message payloads tied to captures T4, T5 and T6. Identifying instance, process/thread and address prefixes are removed. Selection is deliberate: these are not a continuous USB-PD transaction log. In particular, the T4 `_OSC` observation occurs during a host restart after the earlier Billboard events; it must not be rearranged into one proven attachment sequence.
 
-```text
-[usb4hrd] Disabling USB4 v2 support due to OS policy.
-[usb4hrd] _OSC USB4 capabilities granted: 0xf
-[usb4drd] IsUSB4PortPlugged ---(No)---> ShouldCheckRouterDetectedBit
-[usb4drd] IsRouterDetectedSet ---(No)---> WaitingForRouterConnect
-[USBHUB3] Billboard Detected
-[USBHUB3] Alternate Mode Failed
-[USBHUB3] Alternate Mode Entered
-[usb4hrd] No devices connected
-```
-
-Some lines above shorten state-transition prefixes for readability; the message meaning and state names are preserved. The per-run manifest identifies which capture contains the relevant observations.
+[Structured observations](../evidence/observations.json) record capture hashes, sizes, counts and comparison provenance. Raw traces and inventories remain private, so an external reviewer can audit the stated reasoning but cannot independently re-decode those files from this repository alone.
 
 ## Capture quality
 
-| Local run label | Events | Lost events | Notes |
-| --- | ---: | ---: | --- |
-| Initial WPR run, 20:01 | 253 | Not used as a connection test | Metadata-only; inadequate |
-| Direct 20:08:03 | 8,403 | 0 | Useful direct trace |
-| Direct 20:47:54 | 6,500 | 0 | Valid trace despite later wrapper error |
-| Direct 21:06:31 | 9,876 | 0 | Longer connection window |
-| Direct 21:07:44 | 12,787 | 0 | Included host restart and `_OSC` grant |
-| Direct 22:12:23 | 9,229 | 0 | Included host restart; zero WPP formatting errors; policy still default |
+| ID / UTC run label | Events | Reported lost | Duration, seconds | Notes |
+| --- | ---: | ---: | ---: | --- |
+| T0: 30 Oct, initial WPR around 20:01 | 253 | 0 | 55 | Metadata-only; inadequate for the connection question |
+| T1: 30 Oct, direct 20:08:03 | 8,403 | 0 | 28 | Useful direct trace |
+| T2: 30 Oct, direct 20:47:54 | 6,500 | 0 | 30 | Valid capture despite later wrapper error |
+| T3: 30 Oct, direct 21:06:31 | 9,876 | 0 | 25 | Connection capture |
+| T4: 30 Oct, direct 21:07:44 | 12,787 | 0 | 37 | Includes host restart and `_OSC` grant |
+| T5: 30 Oct, direct 22:12:23 | 9,229 | 0 | 33 | Includes host restart; zero WPP formatting errors; policy remains default |
+| T6: 31 Oct, fresh Windows 03:16:25-03:17:19 | 7,720 | 0 | About 54 | 2,441 unknown-format events; independent PnP snapshots show fallback only |
 
-Matching Microsoft public PDBs were used to generate TMFs and decode WPP. Successful decoding is not proof that firmware had no problem. Similarly, event-loss count zero means the recording did not report lost events, not that every physical-layer transaction was observable.
+T0-T5 counts/durations come from tracerpt summaries. Matching Microsoft public PDBs supplied WPP formats for the original-installation analysis. T6 counts come from TraceFmt, with only partial decoding; see the [fresh-Windows result](fresh-windows.md). Counts from different capture windows/tools are recording metadata, not performance measurements or a repeatability percentage.
+
+Zero reported loss does not show every physical-layer transaction was observable. Neither the original WPP analysis nor T6 supplies a USB-PD wire capture proving which endpoint failed to send or accept an Enter_USB transaction.
+
+## Remaining hypotheses
+
+| Hypothesis | Evidence affecting it | What is still needed |
+| --- | --- | --- |
+| Cause confined to original Windows cleanup/registry | Same failure on separate full Windows with an older USB4 driver | Weaker explanation; shared OEM drivers, firmware and baseline omissions still matter |
+| Dead GPU / NVIDIA display driver is the initial cause | Identical assembly produces output on Dell; ASUS lacks the earlier external router | No evidence to prioritize replacing the GPU; revisit GPU/driver diagnosis if enumeration advances |
+| Firmware denies USB `_OSC` PCIe control | Captured grant is `0xf` | That specific permission-denial hypothesis is excluded in the captured initialization, not all firmware/security interactions |
+| Cable-dependent negotiation or signal margins | Supplied cable works on Dell; no second suitable cable tested | N1/N2 in the [next-test matrix](handoff.md); a Dell pass does not measure ASUS signal margins |
+| ASUS host/PD/retimer hardware or firmware issue | Both Windows installations fail before external-router enumeration | N3; no known-good separate USB4 peripheral has exercised this ASUS path |
+| DEG2-specific host/dock firmware interaction | ASUS/Dell difference and other-model precedents fit this possibility | N1-N3 and exact-model vendor evidence; no applicable firmware fix verified |
+| Common Windows/OEM driver interaction | Fresh Windows shares selected OEM drivers and physical firmware | A specific mechanism and targeted test; neither total exclusion nor another blanket reinstall is justified |
+
+These are qualitative evidence assessments, not numeric probabilities. [Next tests](handoff.md) specify observable outcomes and the limits of each inference.

@@ -1,0 +1,226 @@
+{
+  "schema_version": 1,
+  "reviewed_date": "2026-10-31",
+  "status": "unresolved",
+  "provenance": "Curated local measurements and owner-supplied comparison photographs; raw ETL/XML/inventories retained privately",
+  "raw_artifacts_public": false,
+  "hash_meaning": "SHA-256 identifies retained bytes; a digest is not an independent external verification of the analysis",
+  "missing_value_meaning": "null means not recorded here, not a measured zero",
+  "comparison_runs": [
+    {
+      "id": "DELL",
+      "source": "Owner report and USB4 Settings photographs",
+      "host": "Intel Gen12 Thunderbolt 4 Dell",
+      "windows_build": "26200.9711",
+      "usb4_host_driver_version": null,
+      "host_firmware": "23.3",
+      "host_reported_usb4_version": "1.0",
+      "external_router_present": true,
+      "router_model": "TBGAA",
+      "router_firmware": "62.62",
+      "router_reported_usb4_version": "2.0",
+      "link_down_gbps": 40,
+      "link_up_gbps": 40,
+      "gpu_driver_installed": true,
+      "hdmi_output": true
+    },
+    {
+      "id": "ASUS-ORIGINAL",
+      "source": "Original installation inventory, traces and owner observations",
+      "host": "ASUS FA507XI",
+      "bios": "314",
+      "windows_build_after_enablement_rollback": "26200.9818",
+      "usb4_host_driver_version": "10.0.26100.9818",
+      "external_router_present": false,
+      "external_gpu_present": false,
+      "ordinary_usb_fallback": true
+    },
+    {
+      "id": "ASUS-FRESH",
+      "source": "T6 summary, before/after inventories and partial trace decoding",
+      "host": "ASUS FA507XI",
+      "bios": "314",
+      "windows_build": "26200.8037",
+      "usb4_host_driver_version": "10.0.26100.7920",
+      "external_router_count": 0,
+      "new_display_adapter_count": 0,
+      "ordinary_usb_fallback": true
+    }
+  ],
+  "captures": [
+    {
+      "id": "T0",
+      "utc_run_label": "2026-10-30 around 20:01 UTC",
+      "environment": "ASUS original installation; exact OS build not assigned retrospectively to each capture",
+      "metric_source": "tracerpt summary of retained private ETL",
+      "events_processed": 253,
+      "reported_events_lost": 0,
+      "duration_seconds": 55,
+      "useful_for_connection_analysis": false,
+      "raw_etl_bytes": 1572864,
+      "raw_etl_sha256": "B8A9D38AF1FA424662119AEB18D7BC07EC086A254BF284742B2A2D7EF91B161B",
+      "notes": "Metadata-only WPR capture; inadequate for the connection question."
+    },
+    {
+      "id": "T1",
+      "utc_run_label": "2026-10-30 20:08:03 UTC",
+      "environment": "ASUS original installation; exact OS build not assigned retrospectively to each capture",
+      "metric_source": "tracerpt summary of retained private ETL",
+      "events_processed": 8403,
+      "reported_events_lost": 0,
+      "duration_seconds": 28,
+      "useful_for_connection_analysis": true,
+      "raw_etl_bytes": 7995392,
+      "raw_etl_sha256": "DBE5595C7481622E2D212899A3E30B5BC264044FE25C5D004EE33C38801B03CB",
+      "notes": "Direct connection capture."
+    },
+    {
+      "id": "T2",
+      "utc_run_label": "2026-10-30 20:47:54 UTC",
+      "environment": "ASUS original installation; exact OS build not assigned retrospectively to each capture",
+      "metric_source": "tracerpt summary of retained private ETL",
+      "events_processed": 6500,
+      "reported_events_lost": 0,
+      "duration_seconds": 30,
+      "useful_for_connection_analysis": true,
+      "raw_etl_bytes": 6881280,
+      "raw_etl_sha256": "F0A0E9DAAA8CAF64B39B1A1D5341A5EE8908A8CA0A826891651E3F4DADCF23BC",
+      "notes": "Capture valid despite a subsequent wrapper Guid-property error."
+    },
+    {
+      "id": "T3",
+      "utc_run_label": "2026-10-30 21:06:31 UTC",
+      "environment": "ASUS original installation; exact OS build not assigned retrospectively to each capture",
+      "metric_source": "tracerpt summary of retained private ETL",
+      "events_processed": 9876,
+      "reported_events_lost": 0,
+      "duration_seconds": 25,
+      "useful_for_connection_analysis": true,
+      "raw_etl_bytes": 9437184,
+      "raw_etl_sha256": "F5E4DA3011B4A2027045E662FFEEDF5677DDAC20C6210CA2D567F3CB079AD940",
+      "notes": "Direct connection capture."
+    },
+    {
+      "id": "T4",
+      "utc_run_label": "2026-10-30 21:07:44 UTC",
+      "environment": "ASUS original installation; exact OS build not assigned retrospectively to each capture",
+      "metric_source": "tracerpt summary of retained private ETL",
+      "events_processed": 12787,
+      "reported_events_lost": 0,
+      "duration_seconds": 37,
+      "useful_for_connection_analysis": true,
+      "raw_etl_bytes": 10813440,
+      "raw_etl_sha256": "4DAC566155A7EA89370D8D9FAC159508C1129865582D941C5EC4850F4B80A34D",
+      "notes": "Includes host restart, OS policy and _OSC 0xf observations."
+    },
+    {
+      "id": "T5",
+      "utc_run_label": "2026-10-30 22:12:23 UTC",
+      "environment": "ASUS original installation; exact OS build not assigned retrospectively to each capture",
+      "metric_source": "tracerpt summary of retained private ETL",
+      "events_processed": 9229,
+      "reported_events_lost": 0,
+      "duration_seconds": 33,
+      "useful_for_connection_analysis": true,
+      "raw_etl_bytes": 10354688,
+      "raw_etl_sha256": "9DCEC116B461B4D6BD3DAEA6556968AF7215BF40698DC20AD11AA0377CEC07F0",
+      "notes": "Includes host restart; default v2 policy, _OSC 0xf, zero WPP formatting errors reported."
+    },
+    {
+      "id": "T6",
+      "utc_run_label": "2026-10-31 approximately 03:16:25-03:17:19 UTC",
+      "environment": "ASUS separate full Windows, native boot from VHDX",
+      "windows_build": "26200.8037",
+      "usb4_host_driver_version": "10.0.26100.7920",
+      "metric_source": "Local TraceFmt result and saved result checkpoint; PnP values from recorder summary and before/after inventories",
+      "events_processed": 7720,
+      "reported_events_lost": 0,
+      "unknown_format_events": 2441,
+      "formatting_errors": 0,
+      "essential_preflight_issues": 0,
+      "external_router_count": 0,
+      "new_display_adapter_count": 0,
+      "trace_stopped": true,
+      "capture_error": "",
+      "fallback_hardware_ids": [
+        "8087:5787",
+        "041F:D002"
+      ],
+      "fallback_status": "Both named fallback devices Started with problem code 0",
+      "other_pnp_problem_entries": 9,
+      "raw_artifacts": [
+        {
+          "name": "connection.etl",
+          "bytes": 1024000,
+          "sha256": "4E645064B391B853C814FEBC06820C11B45AF2EBDC915D86446A6E94F060BEBF"
+        },
+        {
+          "name": "summary.json",
+          "bytes": 1825,
+          "sha256": "B59C8E1E68C6498D74D6C82535E593A7BF50A630E2C90CC96E7CC32F707B8A11"
+        },
+        {
+          "name": "before.xml",
+          "bytes": 2008432,
+          "sha256": "5B16755FB18A516C975524FCFCD9C82A4AA12993991697DC368FC590825F6F05"
+        },
+        {
+          "name": "after.xml",
+          "bytes": 2155021,
+          "sha256": "E272D77AD97A775C7F21AD306F5EEF08B3A9CA480FA20B714C4AA4D3F3388FA8"
+        }
+      ],
+      "limitations": [
+        "Scoped OEM baseline, not an ASUS factory recovery image",
+        "Physical firmware and selected OEM drivers shared with original Windows",
+        "Matching older WPP formats not supplied; complete WPP diagnosis not claimed"
+      ]
+    }
+  ],
+  "specific_findings": {
+    "osc_granted_controls": "0xf",
+    "osc_captures": [
+      "T4",
+      "T5"
+    ],
+    "osc_limit": "Captured permission grant, not an end-to-end tunnel or physical-link test",
+    "private_policy_override": {
+      "value_name": "EnableUSB4v2Support",
+      "applied_on_host": false,
+      "requires_test_signing_in_inspected_binary": true,
+      "test_signing_enabled": false,
+      "override_present_after_undo": false,
+      "intended_enabled_path_tested": false
+    },
+    "restored_parade_versions": {
+      "spb": "1.0.8.0",
+      "hid": "1.0.11.0"
+    },
+    "windows_update_driver_search": {
+      "operation_result": 2,
+      "offered_packages": 0,
+      "scope": "All-vendor applicable not-installed driver packages at search time"
+    },
+    "ugreen_existing_hub": {
+      "model": "Revodok Pro 3121",
+      "sku": "55767",
+      "amazon_uk_asin": "B0DRP1F6R7",
+      "advertised_usb_data_gbps": 10,
+      "usb4_comparison_peripheral": false,
+      "new_test_performed": false
+    }
+  },
+  "outstanding_comparisons": [
+    "N1 suitable alternate 40 Gbps USB4/TB4 cable",
+    "N2 documented 20 Gbps USB4 cable",
+    "N3 separate known-working USB4 peripheral on ASUS",
+    "N4 borrowed TB4 hub as secondary topology experiment"
+  ],
+  "report_links": {
+    "findings": "docs/findings.md",
+    "fresh_windows": "docs/fresh-windows.md",
+    "next_tests": "docs/handoff.md",
+    "policy_audit": "docs/policy-audit.md",
+    "sources": "docs/research.md"
+  }
+}

@@ -45,10 +45,10 @@ Original baseline:
 
 ## Unperformed or withdrawn tests
 
-- A second certified suitable cable: unavailable at last report.
+- A second suitable 40 Gbps cable, or a documented 20 Gbps USB4 cable: unavailable at last report. The [next-test matrix](handoff.md) separates these comparisons and their outcomes.
 - A separate known-working USB4 peripheral on the ASUS: unavailable/unconfirmed.
 - A Thunderbolt 4 hub/dock between ASUS and DEG2: possible hypothesis, not tested.
-- Fresh full Windows baseline has now completed; its negative result and limits are recorded in [fresh-Windows results](fresh-windows.md).
+- The UGREEN Revodok Pro 3121 has been identified as a conventional 10 Gbps hub. No new test was performed; it cannot stand in for a separate USB4 peripheral.
 - BIOS defaults, reflash or downgrade: not performed; no verified regression-specific reason established.
 - Foreign PD/retimer/dock firmware: not flashed.
 - GPU VBIOS update: not performed; current evidence fails before GPU enumeration.

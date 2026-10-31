@@ -1,44 +1,47 @@
-# Current state / next-session handoff
+# Independent review and next tests
 
-Last documented: 31 October 2026. The eGPU remains unresolved on ASUS and works on the Dell comparison host.
+**31 October 2026: unresolved.** This page is the entry point for a second opinion, including Claude. The goal is to identify the shortest discriminating test or a verified applicable fix. No root cause has been established.
 
-## State to preserve
+## Evidence to read first
 
-- Target: FA507XI, Ryzen 9 7940HS, internal RTX 4070 Laptop; DEG2 with RTX 4080 SUPER WINDFORCE V2 and original supplied cable.
-- Exact-model BIOS 314; Windows currently 25H2 26200.9818 after removal of the 26H2 enablement package.
-- Original Parade SPB 1.0.8 and HID 1.0.11 restored; trial related-model packages removed.
-- Private v2 registry override absent. Test-signing was disabled and Secure Boot retained. The intended override was never active.
-- USB4 root initializes and `_OSC` grants `0xf`, but no external USB4 router appears; fallback Billboard/USB hubs do.
-- Both internal drives are fully decrypted, with ample space for the proposed VHDX. The secondary volume is the intended project location.
-- An all-vendor applicable driver update search succeeded and returned zero packages.
-- Owner wants Windows-based diagnosis and prefers using existing hardware. A second suitable cable or USB4 peripheral is not confirmed available.
-- A detailed ASUS report was already sent with the owner's explicit authorization. Its public copy omits account and case identifiers. Later driver/registry results were not included in the initial message.
+1. [Findings](findings.md), including the `_OSC`, Billboard and USB4-version caveats.
+2. [Separate full-Windows result](fresh-windows.md), including its missing drivers and partial WPP decoding.
+3. [Experiment ledger](experiments.md), [exact hardware](hardware.md), [structured observations](../evidence/observations.json) and [trace excerpts](../evidence/trace-excerpts.txt).
+4. [Research](research.md) and [private policy audit](policy-audit.md) before proposing a registry or firmware change.
 
-## Immediate work
+## Current state
 
-1. Corrected image preparation, driver injection and native boot completed after the initial guard failure was preserved. State is BootEntryCreated. The owner reached Audit Mode, completed the recorder and returned to original Windows.
-2. Fresh Windows 26200.8037 with USB4 driver 10.0.26100.7920 reproduced the failure. Essential host/root/UCSI/I2C/Parade preflight passed. No external USB4 router or new display adapter; ordinary hub/Billboard fallback only. See fresh-Windows results for missing non-baseline drivers and decode limits.
-3. One suitable alternate cable, or another known-working USB4/TB peripheral on this ASUS, remains the next useful discriminator. No new verified applicable FA507XI/dock firmware fix has been found.
-4. The temporary image and boot entry remain available; removal has not been tested. Do not automatically delete them or discard private evidence.
-5. Keep the experiment ledger honest about image version, missing drivers, lost events, and untested configurations. Further repeated driver/registry changes to the main installation have lower diagnostic value than the missing hardware comparisons.
+- ASUS FA507XI, Ryzen 9 7940HS, internal RTX 4070 Laptop; BIOS 314. Its documented USB4 port is 40 Gbps; the laptop is not being described as TB4-certified.
+- DEG2 / JHL9480, Gigabyte RTX 4080 SUPER WINDFORCE V2, Cooler Master 1000 W PSU, original supplied DEG2 cable. Identical assembly works on the Intel Dell: external TBGAA router, firmware 62.62, 40/40 Gbps, NVIDIA driver and HDMI output.
+- Original Windows: 25H2 26200.9818, USB4 driver 10.0.26100.9818. Original Parade SPB 1.0.8 / HID 1.0.11 restored. Related-model trial packages removed. Private v2 override absent; Secure Boot retained and test-signing disabled.
+- Separate native-boot Windows: 26200.8037, USB4 driver 10.0.26100.7920. Required host/root/UCSI/I2C/Parade devices healthy before and after connection; no external router or new GPU. The shared firmware and selected OEM drivers remain common variables.
+- ASUS host/root initialize and firmware grants USB `_OSC` controls `0xf`; only ordinary USB hub/Billboard fallback appears. This is earlier than the missing NVIDIA adapter, PCIe authorization of an enumerated external router, or GPU workload performance.
+- All four plug orientations, EC reset, graphics mode changes, OS file repair, scoped controller reinstall and retimer restarts were ineffective. The v2 override was ignored and is an invalid negative test of its intended path.
+- No second suitable cable or known-working separate USB4 peripheral is available at last report. The spare UGREEN cable was reported unsuitable. The existing UGREEN 3121 is a 10 Gbps USB-C hub; its USB/Ethernet/display operation would not validate USB4/PCIe.
+- The owner prefers Windows diagnosis and existing/borrowed hardware. A detailed ASUS report has already been sent. No verified applicable FA507XI PD/USB-C or DEG2 firmware image was found in the inspected sources.
 
-## Repository request
+## Missing comparisons, in priority order
 
-The owner explicitly requested a GitHub repo documenting the investigation and research for community benefit, stored in the existing projects area on the secondary drive. Intended local location: `D:\Projects\GitHub\asus-fa507xi-deg2-usb4`.
+All rows below are **unperformed**. Borrowing a suitable item is sufficient; no purchase or successful fix is assumed. Keep the same assembled GPU/dock/PSU, correct upstream port/mode, laptop barrel power and other USB4 devices disconnected. Change one named variable per direct comparison. Record the exact cable/peripheral and the external-router result, not just fan activity or the Windows warning.
 
-The owner copied the folder and refreshed their GitHub login, then created/pushed the public repository at `https://github.com/49Ssr/asus-fa507xi-deg2-usb4`. Connected GitHub tools can update it. The restricted process's local CLI credentials still returned 401, while the owner's terminal succeeded; do not ask the owner to repeat authentication for that process limitation.
+| ID / comparison | Method and result to record | What the result would change |
+| --- | --- | --- |
+| N1: suitable alternate 40 Gbps cable | Verify the cable is rated for USB4/TB4 data, then connect DEG2 directly to the same ASUS port. Check Windows USB4 settings for the external router; if present, record bandwidth and GPU enumeration. Use the Dell as a control for the replacement cable if available. | ASUS success makes cable-dependent interoperability a useful lead. It does not prove the original cable is universally faulty. Failure leaves host/dock/firmware and cable interactions open. |
+| N2: documented lower-speed USB4 cable | Separately try a cable documented for 20 Gbps USB4 operation. Record the actual negotiated rate if a router appears; the printed rating alone is not the measurement. | Other-model DEG2 reports motivate this test. Success suggests rate/cable-dependent negotiation; it does not identify a specific PD or signal-integrity defect. Failure does not rule out firmware. |
+| N3: another known-working USB4/Thunderbolt peripheral | Prefer a device with a PCIe function, such as a genuine USB4 NVMe enclosure or another eGPU. Verify it on a working host first. On ASUS, separately record external router presence and its PCIe function; avoid interpreting USB 3 fallback as success. | Another router plus functioning PCIe device demonstrates that ASUS can negotiate and tunnel in that tested pairing. DEG2-specific interoperability becomes more likely. Another failure broadens suspicion to the ASUS/host path, but does not by itself prove physical port damage. |
+| N4: borrowed TB4 hub between ASUS and DEG2 | Secondary workaround test only. First verify the hub's external router on ASUS, then connect DEG2 downstream and record both routers and GPU. | A working chain is a practical workaround and constrains the failing pairing. It changes topology and cable segments, so it cannot isolate a single firmware component. Do not buy a hub on an assurance that this works. |
 
-The restricted execution session cannot write directly to the requested secondary-drive projects folder. Its request for elevated filesystem permission was rejected by the session approval policy. The complete staged folder must be copied there by the owner, unless a later session has direct access. This is a tool permission boundary, not lack of owner authorization.
+For every test, report these milestones separately: **USB fallback -> external router -> PCIe GPU/device -> working driver/output -> stable workload**. Router enumeration alone does not prove PCIe tunneling, and GPU appearance alone does not prove workload stability. If a router appears but the GPU does not, the failure stage has changed and a new PCIe/device investigation becomes justified.
 
-## Avoid repeated mistakes
+## Questions for an independent reviewer
 
-- Do not call the GPU dead because fans are stopped, or assert that this exact card must briefly spin at startup.
-- Do not claim ordinary USB hub operation proves USB4/PCIe tunneling.
-- Do not blame the internal GPU's lane usage without evidence.
-- Do not repeat EC reset, device reseating, mode switching, security toggles or registry guesses without a new reason.
-- Do not claim firmware was updated merely because an INF installed.
-- Do not treat the v2 override attempt as a valid enabled-path test.
-- Do not claim the user skipped a reboot: the restart after the override was verified.
-- Do not use WinPE as a conclusive substitute for full Windows hardware validation.
-- Do not invent an applicable FA507XI PD firmware or flash another product's image.
-- Do not assume an assistant/local agent will automatically run inside the temporary Windows. Its collector is prepared ahead of time and returns files to the shared project.
+1. Which causal conclusions in this repository are too strong? In particular, challenge the inference from no external router to a pre-enumeration problem, and the limits of the fresh Windows baseline.
+2. Is there a documented FA507XI/JHL9480 interaction or overlooked host/PD/retimer requirement that fits both Windows failures and the working Dell? Separate exact-model evidence from other ASUS/AMD reports.
+3. Choose one next feasible test. State the hypothesis, prerequisites, exact observations to collect, what both outcomes mean and any rollback. If suggesting another Windows command or driver change, explain what new information it obtains beyond the completed tests.
+4. If proposing firmware, identify the exact product/revision, official source, applicability evidence and recovery path. A compatible chip family or another model's success is insufficient.
+
+Raw traces are not public. The excerpts and manifest are curated observations, not a substitute for independently decoding the originals. Request a specific sanitized event/property extraction if a conclusion depends on omitted detail. Do not assume the public repository contains undisclosed raw evidence or that the current interpretation is correct merely because it is detailed.
+
+## State to retain
+
+The separate Windows image, boot entry and private results remain available. Native boot and capture completed; boot-entry removal is untested. Recreating the image, repeating blanket driver resets or revisiting the inactive registry override has low value without a new mechanism to test. Do not discard evidence or flash another model's firmware as a routine next step.

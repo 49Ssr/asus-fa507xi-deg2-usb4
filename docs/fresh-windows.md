@@ -2,6 +2,8 @@
 
 **Result: the same pre-router failure was reproduced.** The owner returned to the original Windows after completing the local recorder. The shared report, inventories and ETL were read directly from the secondary drive; no manual transfer was needed.
 
+Capture ID: **T6** in the [structured observations](../evidence/observations.json). The manifest records SHA-256 hashes of the retained private ETL, summary and before/after inventories. [Timestamped excerpts](../evidence/trace-excerpts.txt) and the [next-test matrix](handoff.md) link the measured outcome to the remaining comparisons.
+
 ## What actually ran
 
 | Item | Observed value |

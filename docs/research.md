@@ -1,6 +1,6 @@
 # Research and sources
 
-Checked during the 30 October 2026 investigation. Manufacturer documentation is separated from firsthand community reports. Similar symptoms on another product are a lead, not proof of this machine's cause or permission to use its firmware.
+Checked during the 30-31 October 2026 investigation. Manufacturer documentation is separated from firsthand community reports. Similar symptoms on another product are a lead, not proof of this machine's cause or permission to use its firmware. The proposed comparisons and their interpretation are in the [next-test matrix](handoff.md).
 
 ## Primary technical references
 
@@ -25,6 +25,7 @@ Checked during the 30 October 2026 investigation. Manufacturer documentation is 
 - [Official trial installer](https://dlcdnets.asus.com/pub/ASUS/GamingNB/Image/Driver/USB/38025/Parade_Retimer_ROG_Parade_B_V1.0.016.00_38025_1.exe): included for provenance, not a recommendation to install it. See the [experiment ledger](experiments.md) for the verified hash and outcome.
 - [Minisforum DEG2 product page](https://www.minisforum.com/products/deg2): vendor hardware specification, including the USB4/TB5 and OCuLink operating paths.
 - [Minisforum product support](https://www.minisforum.com/pages/product-info): no applicable, verified public DEG2 firmware image was found in the inspected support section.
+- [UGREEN Revodok Pro 3121](https://fr.ugreen.com/products/revodok-pro-3121-hub-usb-c-12-en-1): manufacturer identifies SKU 55767 and a conventional 10 Gbps USB-C hub. This is the owner's existing hub, identified from Amazon ASIN B0DRP1F6R7; its operation would not establish a USB4 router or PCIe tunnel.
 
 ## Relevant vendor firmware precedents
 
