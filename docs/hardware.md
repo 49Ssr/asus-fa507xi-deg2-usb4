@@ -67,3 +67,9 @@ This is a working end-to-end comparison. It does not prove that the cable has id
 A second UGREEN Type-C cable was tried without a change. Its exact model, advertised data rate and length were not recorded. The owner subsequently checked the listing and reported that it was unsuitable for Thunderbolt. There is therefore no confirmed second suitable cable test. Lack of a Thunderbolt logo alone would not establish that a full-featured passive cable cannot support a lower-speed USB4 link; a USB 2.0/charge-oriented cable is a different case.
 
 The Arzopa video cable was suggested as a possible free lower-speed experiment, but its availability, exact specification and result are unconfirmed. No known-good separate USB4 peripheral has yet been tested on this ASUS.
+
+## Existing UGREEN dock
+
+On 31 October 2026, the owner identified the existing UGREEN dock using Amazon UK ASIN `B0DRP1F6R7`. The product is the **UGREEN Revodok Pro 3121, SKU 55767**. The [manufacturer's product page](https://fr.ugreen.com/products/revodok-pro-3121-hub-usb-c-12-en-1) specifies a conventional 10 Gbps USB-C hub with DisplayPort Alt Mode video, rather than a USB4/Thunderbolt router.
+
+Connecting this hub can check ordinary USB and USB-C display functions, but cannot establish USB4 link negotiation or PCIe tunneling. Because ordinary USB already works through the DEG2, this is a limited comparison for the missing external USB4 router. Identification of this hub does not supply the outstanding known-good second USB4 peripheral test; no new test result is claimed.
