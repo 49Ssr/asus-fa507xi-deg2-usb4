@@ -239,7 +239,8 @@
     "next_tests": "docs/handoff.md",
     "policy_audit": "docs/policy-audit.md",
     "sources": "docs/research.md",
-    "kernel_snapshot": "docs/kernel-snapshot.md"
+    "kernel_snapshot": "docs/kernel-snapshot.md",
+    "ucsi_memory_probe": "docs/ucsi-memory-probe.md"
   },
   "kernel_snapshot": {
     "id": "K0",
@@ -357,7 +358,7 @@
         "role": "Dfp",
         "command_sequence": "0x14",
         "sent_utc": "2026-10-31T04:27:20.984Z",
-        "completed_utc": "2026-10-31T04:27:21.000Z",
+        "completed_utc": "2026-10-31T04:27:21Z",
         "ack_completed_utc": "2026-10-31T04:27:21.037Z",
         "cci_error": 0,
         "cci_not_supported": 0
@@ -373,5 +374,36 @@
       "root_cause_identified": false,
       "excerpts": "evidence/kernel-state-excerpts.txt"
     }
+  },
+  "examination_tool": {
+    "name": "Scripted UCSI/EC memory probe",
+    "report": "docs/ucsi-memory-probe.md",
+    "prepared": true,
+    "scope": "ASUS FA507XI UBTC PM08/EURM current-session virtual mappings",
+    "read_bounds_bytes": [
+      48,
+      64
+    ],
+    "livekd_version": "5.65",
+    "livekd_authenticode": "Valid Microsoft Corporation",
+    "livekd_sha256": "E2884FA2BAA44A092FC7E8A6FE59FC02AF754FF18B1E10ECAEBD91A7097D5FB9",
+    "powershell_51_checks_passed": 19,
+    "actual_windbg_js_checks_passed": 20,
+    "offline_replay": {
+      "source": "OfflineReplay",
+      "discovery": "Validated",
+      "result": "RegionsUnavailable",
+      "ucsi_bytes_returned": false,
+      "ec_bytes_returned": false
+    },
+    "live_helper_loading_tested": false,
+    "live_firmware_bytes_obtained": false,
+    "firmware_writes_requested": false,
+    "aml_methods_executed": false,
+    "ucsi_commands_injected": false,
+    "security_or_boot_changes": false,
+    "repair_mode": false,
+    "root_cause_identified": false,
+    "private_results_public": false
   }
 }
