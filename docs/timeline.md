@@ -35,6 +35,8 @@ All dates below are 30 October 2026 unless specified. Times attached to trace na
 | 29 | BitLocker check | Both OS and secondary internal NVMe volumes reported fully decrypted, 0% encrypted, no protectors. Native-boot hosting is not blocked by encryption. |
 | 30 | Temporary full-Windows test toolkit | Being prepared with seven signed, currently installed System-class driver packages. No disk/boot operation or fresh-Windows hardware test has yet completed. |
 | 31, 31 October | First actual VHDX preparation | Created a 4 MiB container, then guard rejected Windows PowerShell's friendly BusType string. It stopped before disk initialization/formatting and detached. Correction adds friendly-string coverage and a guarded preservation/retry mode. No fresh-Windows boot result yet. |
+| 32, 31 October | Corrected preparation and native boot | Failed attempt preserved, separate image applied successfully, baseline drivers staged, explicit boot entry created and Audit Mode reached. |
+| 33, 03:16-03:17 on 31 October | Separate full Windows connection capture | Build 26200.8037, USB4 driver 10.0.26100.7920. Required preflight devices healthy; no external USB4 router/GPU; same fallback hub/Billboard. 7,720 events, zero reported loss; older WPP formats partly unknown. Owner returned to original Windows. |
 
 ## Corrections that matter
 

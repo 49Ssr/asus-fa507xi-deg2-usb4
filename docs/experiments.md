@@ -19,6 +19,7 @@
 | Private v2 registry override | One driver parameter, normal restart, host-restart capture | Ignored by test-signing gate; removed afterward | Intended enabled path was not tested; relevance unproven |
 | Parade-only update scan | Applicable Windows Update driver packages filtered for Parade | Success, no match | Other vendors were initially untested |
 | All-vendor driver update scan | `IsInstalled=0 and Type='Driver'` | Result 2, zero packages | Manual/vendor-unpublished firmware remains a possibility |
+| Separate full Windows baseline | Native VHDX boot, build 26200.8037, USB4 driver 10.0.26100.7920, scoped OEM baseline | Essential preflight healthy; same fallback and no external router/GPU | Not a factory image; not every platform driver was present. Common firmware/driver/cable interactions remain possible. See fresh-Windows results. |
 
 ## Newer Parade package, precisely
 
@@ -47,7 +48,7 @@ Original baseline:
 - A second certified suitable cable: unavailable at last report.
 - A separate known-working USB4 peripheral on the ASUS: unavailable/unconfirmed.
 - A Thunderbolt 4 hub/dock between ASUS and DEG2: possible hypothesis, not tested.
-- Fresh full Windows baseline: toolkit preparation underway; no hardware result yet.
+- Fresh full Windows baseline has now completed; its negative result and limits are recorded in [fresh-Windows results](fresh-windows.md).
 - BIOS defaults, reflash or downgrade: not performed; no verified regression-specific reason established.
 - Foreign PD/retimer/dock firmware: not flashed.
 - GPU VBIOS update: not performed; current evidence fails before GPU enumeration.

@@ -31,3 +31,9 @@ This validates the specific representation that caused the failure and confirms 
 After updating the local checkout, ArchiveFailed preserves this exact failed attempt. A fresh Prepare run is the next real integration test. AddBoot remains a separate subsequent step after inspecting preparation results. Keep the first test boot offline: the ASUS System Control Interface bundle includes broader OEM services and update tooling, so an Internet-connected first boot would add an uncontrolled variable.
 
 Do not enable test-signing, alter Secure Boot, flash firmware, or rerun the old uncorrected preparation command to work around a guard. Corrections and mocked tests must remain labelled separately from real hardware results.
+
+## Subsequent observed execution
+
+The owner updated to the correction, preserved the small failed attempt and successfully completed full image application plus the seven scoped System driver packages. The state reached ImagePrepared without a recorded error. A later AddBoot operation reached BootEntryCreated. The owner booted the new Windows, reached Audit Mode, ran the recorder and returned to the original installation. The capture reproduced the same failure; see [fresh-Windows results](fresh-windows.md).
+
+These real steps are now observed. The recorder copied its results back across installations as designed. The boot-entry removal operation has not been exercised, and a hypothetical absence of every future bug is not claimed.

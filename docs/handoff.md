@@ -16,11 +16,11 @@ Last documented: 31 October 2026. The eGPU remains unresolved on ASUS and works 
 
 ## Immediate work
 
-1. First actual Prepare failed on an incorrect numeric cast of Storage's friendly BusType string. It created a 4 MiB container and stopped before initialization; image detached in finally. The read-only follow-up confirmed RAW, 64 GiB virtual size, neither boot nor system. See the validation audit.
-2. Source media is connected at `E:\sources\install.wim`; x64 Professional index 6 is Windows 11 build 26200.8037. Both host volumes are decrypted.
-3. Update the local checkout, preserve the exact failed attempt with ArchiveFailed, then retry image preparation using corrected bus handling. Image application, driver injection and native boot have not yet completed. Review results before the separate AddBoot operation.
-4. Run the fresh-Windows connection test and inspect the results after returning to the original OS.
-5. Keep the experiment ledger honest about image version, missing drivers, lost events, and untested configurations.
+1. Corrected image preparation, driver injection and native boot completed after the initial guard failure was preserved. State is BootEntryCreated. The owner reached Audit Mode, completed the recorder and returned to original Windows.
+2. Fresh Windows 26200.8037 with USB4 driver 10.0.26100.7920 reproduced the failure. Essential host/root/UCSI/I2C/Parade preflight passed. No external USB4 router or new display adapter; ordinary hub/Billboard fallback only. See fresh-Windows results for missing non-baseline drivers and decode limits.
+3. One suitable alternate cable, or another known-working USB4/TB peripheral on this ASUS, remains the next useful discriminator. No new verified applicable FA507XI/dock firmware fix has been found.
+4. The temporary image and boot entry remain available; removal has not been tested. Do not automatically delete them or discard private evidence.
+5. Keep the experiment ledger honest about image version, missing drivers, lost events, and untested configurations. Further repeated driver/registry changes to the main installation have lower diagnostic value than the missing hardware comparisons.
 
 ## Repository request
 
