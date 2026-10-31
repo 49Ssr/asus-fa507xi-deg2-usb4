@@ -1,6 +1,6 @@
 # Role negotiation: follow-up on the existing captures
 
-**31 October 2026. Offline analysis completed; initial-role hardware experiment unperformed.** The existing comparison supports a new, narrowly defined Windows-initiated test. It does not yet establish a firmware defect or a working repair.
+**31 October 2026. Offline analysis completed; initial-role hardware test subsequently completed without reported attachment.** The comparison justified a narrowly defined Windows-initiated test, but it did not establish the requested connection or a working repair. [Measured result](initial-role-test.md#measured-result-2303-2304-utc).
 
 ## What was examined
 
@@ -38,4 +38,4 @@ The ASUS advertises SET_CCOM support, connector-1 DRP operation and provider cap
 
 [UCSI 1.22 section 4.5.8](https://www.intel.com/content/dam/www/public/us/en/documents/technical-specifications/usb-type-c-ucsi-spec.pdf) defines SET_CCOM and DRP as its reset/default for a DRP-capable connector. Microsoft's [UCSI test documentation](https://learn.microsoft.com/en-us/windows-hardware/drivers/usbcon/ucsi#ucsicontrol-exe) names the command SET_UOM and supplies the corresponding DFP/DRP examples. These are names for command `0x08`; this is not SET_NEW_CAM.
 
-The prepared [test](initial-role-test.md) saves restoration intent before sending one Rp-only request, requires disconnection for both SETs and returns to documented default DRP afterward. The exact prior CC policy cannot be read, so restoration is deliberately described as default DRP. Whether DEG2 accepts the resulting source/sink arrangement and whether USB4 improves remain untested. No attachment under Rp-only would be an inconclusive compatibility experiment, not proof that the ASUS USB4 port is damaged.
+The [test](initial-role-test.md) saves restoration intent before sending one Rp-only request, requires disconnection for both SETs and returns to documented default DRP afterward. The exact prior CC policy cannot be read, so restoration is deliberately described as default DRP. The owner ran it at 23:03-23:04 UTC: Rp-only completed but there was no reported attachment or PD negotiation in the 30.886-second trace. Default DRP restoration completed; no recovery is pending. This closes the unchanged Rp-only candidate for now without establishing the intended causal comparison or disproving the later-role-correction hypothesis. Do not repeat it unchanged. The [result](../evidence/initial-role-result.json) retains coverage limits, including 118 unknown records and absence of wire-level CC evidence. A disconnected SET_UOR is not a supported pre-arming alternative under section 4.5.9.

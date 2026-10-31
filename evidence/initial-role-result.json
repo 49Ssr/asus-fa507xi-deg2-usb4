@@ -1,0 +1,104 @@
+{
+  "Schema": 1,
+  "Date": "2026-10-31",
+  "Id": "ASUS-INITIAL-ROLE-20261031T230326Z",
+  "Performed": true,
+  "Result": "NoAttachment_ChangedConditionNotEstablished",
+  "Interpretation": "No recorded attachment under requested Rp-only; the intended source/DFP PD path was not established. Original role-correction hypothesis remains unresolved.",
+  "Trace": {
+    "StartUtc": "2026-10-31T23:03:26.3771574Z",
+    "EndUtc": "2026-10-31T23:03:57.2632432Z",
+    "DurationSeconds": 30.8860858,
+    "Bytes": 81526784,
+    "Sha256": "E6C741FB2860AC85196473CC579E76874ACE492123ABA271B7CC500CDF46BDDD",
+    "Events": 238588,
+    "EventsLost": 0,
+    "BuffersLost": 0,
+    "FormatErrors": 0,
+    "UnknownRecords": 118,
+    "DecodedDriverLines": {
+      "UcmUcsiCx": 86,
+      "UcmUcsiAcpiClient": 4
+    },
+    "ReportedAttachmentEvents": 0,
+    "ReportedPdEvents": 0,
+    "RecordedSetUorRequests": 0,
+    "DecodedControlCommands": [
+      "UcsiCommandSetUom",
+      "UcsiCommandAckCcCi",
+      "UcsiCommandGetConnectorStatus",
+      "UcsiCommandAckCcCi"
+    ],
+    "SelectedEvents": [
+      {
+        "TimeUtc": "23:03:26.4182447",
+        "DecodedSourceLine": 12,
+        "Observation": "Connector-1 Rp-only command dispatched (CONTROL 0x00810008)."
+      },
+      {
+        "TimeUtc": "23:03:26.4478714",
+        "DecodedSourceLine": 21,
+        "Observation": "Rp-only command completion reported; CCI Error/Busy/NotSupported all zero."
+      },
+      {
+        "TimeUtc": "23:03:26.4650851",
+        "DecodedSourceLine": 39,
+        "Observation": "Automatic command acknowledgement completed."
+      },
+      {
+        "TimeUtc": "23:03:57.2133174",
+        "DecodedSourceLine": 69,
+        "Observation": "Connected:0 UcsiPowerDirectionConsumer UcsiBatteryChargingNotCharging UcsiPowerOperationModeNoConsumer RDO:0x0"
+      },
+      {
+        "TimeUtc": "23:03:57.2133176",
+        "DecodedSourceLine": 70,
+        "Observation": "UcsiConnectorPartnerTypeUndefined PartnerFlags:0x0[   ]"
+      }
+    ]
+  },
+  "Commands": {
+    "Total": 9,
+    "Gets": 7,
+    "Sets": 2,
+    "AllCompleted": true,
+    "RpOnlyControl": "00000000/00810008",
+    "DefaultDrpControl": "00000000/02010008",
+    "RpOnlyStartedUtc": "2026-10-31T23:03:26.3927534Z",
+    "RpOnlyCompletedUtc": "2026-10-31T23:03:26.4536983Z",
+    "DefaultDrpCompletedUtc": "2026-10-31T23:04:06.5161941Z",
+    "PostObservationConnectorStatus": "00 00 00 00 00 00 00 00 00"
+  },
+  "Enumeration": {
+    "ExternalRouter": false,
+    "NewDisplays": 0,
+    "BillboardPresentBefore": true,
+    "BillboardPresentAfter": false
+  },
+  "Restoration": {
+    "DefaultDrpCommandCompleted": true,
+    "Pending": false,
+    "SavedPhase": "DefaultDrpRestored",
+    "OriginalCcPolicyReadable": false,
+    "NormalReconnectAfterRestore": "Not recorded"
+  },
+  "Network": {
+    "RetainedAdapterAndSettingsRowsEqual": {
+      "Adapters": true,
+      "IP": true,
+      "Interfaces": true,
+      "DNS": true,
+      "DefaultRoutes": true,
+      "Sharing": true
+    },
+    "ExpectedRemovedDockEthernetAdapters": 1,
+    "ActiveIcsBindingsEqual": true
+  },
+  "Limits": [
+    "Windows/firmware reports, not physical CC or USB-PD wire packets.",
+    "Command completion does not prove physical Rp signaling or explain the absent attachment.",
+    "118 unknown records remain; do not claim complete wire/protocol coverage.",
+    "Restoration completed after ETW stopped; proof is the separately retained native reply and durable state.",
+    "No unchanged repeat or disconnected SET_UOR test is justified by this result."
+  ]
+}

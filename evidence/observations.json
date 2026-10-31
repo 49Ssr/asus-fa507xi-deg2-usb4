@@ -687,7 +687,13 @@
     "new_display_adapter_present": false,
     "diagnostic_value_before_and_after": 1,
     "network_settings_written": false,
-    "network_settings_equal_parts": ["Adapters", "Interfaces", "DNS", "DefaultRoutes", "Sharing"],
+    "network_settings_equal_parts": [
+      "Adapters",
+      "Interfaces",
+      "DNS",
+      "DefaultRoutes",
+      "Sharing"
+    ],
     "ip_snapshot_difference": "One additional link-local IPv4 address on unused DEG2 Ethernet; acquisition cause not established",
     "firmware_set_or_reset_requested": false,
     "raw_pd_wire_capture": false,
@@ -779,5 +785,22 @@
     "applicable_repair_established": false,
     "consumer_offline_replay_exit_code": 0,
     "private_consumer_transcript_sha256": "FB796FA13AD8733D26427D8886F8FE9FF886509FBAC63C3F01E49D6A08181960"
+  },
+  "initial_cc_role_test": {
+    "id": "ASUS-INITIAL-ROLE-20261031T230326Z",
+    "performed": true,
+    "result": "NoAttachment_ChangedConditionNotEstablished",
+    "etl_sha256": "E6C741FB2860AC85196473CC579E76874ACE492123ABA271B7CC500CDF46BDDD",
+    "etl_bytes": 81526784,
+    "etw_events": 238588,
+    "events_lost": 0,
+    "buffers_lost": 0,
+    "format_errors": 0,
+    "unknown_records": 118,
+    "default_drp_restored": true,
+    "restoration_pending": false,
+    "intended_source_dfp_pd_path_established": false,
+    "windows_fix_validated": false,
+    "details": "initial-role-result.json"
   }
 }

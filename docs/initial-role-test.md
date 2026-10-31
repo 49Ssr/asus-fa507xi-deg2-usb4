@@ -1,10 +1,32 @@
 # One initial-role comparison with existing hardware
 
-**Prepared, not run on hardware.** [Why this tests a new variable](negotiation-followup.md). This is an experiment, not a verified Windows fix. It changes connector 1's CC operating policy for one attachment using the existing documented UCSI interface; it does not flash firmware.
+**Run once on hardware, 31 October 2026: no reported attachment under Rp-only; default DRP restored.** [Why this tested a new variable](negotiation-followup.md). No working Windows fix was established. Do not repeat the same test unchanged. The historical procedure below is retained for reproducibility and recovery.
 
 Entry point: [Test-USB4InitialRole.ps1](../tools/Test-USB4InitialRole.ps1). Default mode is Preview. It imports the existing exercised primitives without changing their ASUS model, native-tool or mode-exit guards. The new packet allowlist is separate; the earlier TestModeExit path is unchanged.
 
-## Preconditions and run
+## Measured result, 23:03-23:04 UTC
+
+The owner followed the cable prompts. [Structured result and capture hash](../evidence/initial-role-result.json).
+
+| Check | Recorded result |
+| --- | --- |
+| Target and capabilities | Known ASUS/DEG2 fallback and PDOs matched; disconnected status verified before both SETs |
+| Rp-only request | `00810008`, accepted; ETW completion at 23:03:26.4478701, ACK at .4650836; Error/Busy/NotSupported all zero |
+| Observation | 23:03:26.3771574-23:03:57.2632432 UTC, 30.8860858 seconds; 238,588 events; zero reported lost events/buffers and format errors; 118 unknown records |
+| Decoded UCSI | 86 class-driver lines and four ACPI-client lines; no reported attachment, PD contract or SET_UOR; only the diagnostic CC request/status read and their ACKs |
+| End status / enumeration | Nine zero status bytes: disconnected, no partner; no Billboard, external router or new display adapter |
+| Default-DRP restoration | Separate native `02010008` reply completed at 23:04:06.5161941; durable record says `DefaultDrpRestored`, `RestoreRequired=false` |
+| Networking | Retained adapter/settings rows and active Internet-sharing bindings match; the disconnected dock Ethernet adapter and its rows disappear as expected |
+
+This attempt did not establish the requested source/DFP PD connection, so it cannot determine whether avoiding ASUS's later role correction fixes USB4. It also does not establish what prevented attachment, whether physical Rp signaling changed, or that the port is damaged. A source/source incompatibility is a possible explanation, not a captured CC-wire finding. Normal reconnection after restoration was not recorded; restoration proof is the completed native command and saved state, after ETW stopped.
+
+No additional RestoreDrp call is needed for this completed run. Reconnect normally to return to the existing baseline. The unresolved comparison remains Dell's role change during PD without an OS request versus ASUS's later correction/alternate-mode-only path.
+
+### Follow-up control audit
+
+Pre-arming `SET_UOR` while disconnected would not test a valid substitute. [UCSI 1.22 section 4.5.9](https://www.intel.com/content/dam/www/public/us/en/documents/technical-specifications/usb-type-c-ucsi-spec.pdf) specifies that it applies to the current active connection; a disconnected request has no effect and should fail, and its policy resets on detach. No such request was sent. Another connected `SET_UOR` would repeat a transition already completed in the original failing captures unless a new timing/control variable is independently justified.
+
+## Historical preconditions and run
 
 - Exact ASUS FA507XI and the analyzed UCSI class-driver/native-tool hashes; existing prepared UCSI interface. No automatic enabling, driver restart or registry write.
 - Laptop on its normal barrel charger. Keep the assembled DEG2/PSU powered and use its supplied cable at the same ASUS USB4 port.

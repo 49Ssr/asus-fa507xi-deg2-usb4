@@ -151,7 +151,8 @@ function Invoke-InitialRoleTest([string]$Directory) {
 
 if($MyInvocation.InvocationName -eq '.'){return}
 if($initialRoleMode -eq 'Preview'){
-    Write-Output 'Unperformed experiment: one connector-1 SET_CCOM Rp-only request while disconnected, then one DEG2 attachment under bounded ETW.'
+    Write-Output 'Experiment plan: one connector-1 SET_CCOM Rp-only request while disconnected, then one DEG2 attachment under bounded ETW.'
+    Write-Output 'Recorded result, 31 October: accepted but no reported attachment/PD; default DRP restored. Do not repeat unchanged. Read docs/initial-role-test.md.'
     Write-Output 'The hypothesis is to change the initial CC/data-role path, not disable Windows policy or force a guessed alternate mode.'
     Write-Output 'Start with powered DEG2 in its known ASUS fallback state. Read-only target/capability checks run first. No registry, driver, boot-security or network setting is written.'
     Write-Output 'Normal completion asks for disconnection, then restores documented default DRP. Exact pre-test CC policy is not readable. An interrupted/failed run can leave restoration pending; use RestoreDrp separately.'

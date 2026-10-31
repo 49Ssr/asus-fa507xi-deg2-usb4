@@ -1,7 +1,7 @@
 {
   "Schema": 1,
   "Date": "2026-10-31",
-  "HardwareResult": "No new hardware test",
+  "HardwareResult": "Offline comparison; subsequent initial-role hardware result recorded separately in initial-role-result.json",
   "Provenance": {
     "ASUS": {
       "DecodedLogSHA256": "88D79391B2CABFA2AB70942F785714B53C88C4002FF5D6D65DC1A39BC5D65720",
@@ -298,6 +298,6 @@
     "Decoded retained observations, not USB-PD wire packets.",
     "Source-line numbers refer to private decoded logs.",
     "Dell firmware changes its report without a recorded OS SET_UOR; Dell device-controller policy was not separately recovered.",
-    "Initial Rp-only experiment prepared, not executed."
+    "Initial Rp-only experiment subsequently completed without reported attachment/PD; default DRP restored. See initial-role-result.json."
   ]
 }

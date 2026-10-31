@@ -63,10 +63,16 @@ At 22:12 the guarded TestModeExit completed seven target GETs, then sent one con
 
 The single 22:21:59 GET_ERROR_STATUS completed with 16 bytes, `04 00` plus fourteen zeros: invalid command parameters. The EXIT packet field positions match the standard, but the mode index is inconsistent with the returned local table and the error does not identify a field. Association with the earlier failed EXIT is plausible, not continuously traced. It does not diagnose the original USB4 mode-entry failure. No further state-changing request was made. [Result, applicability audit and limits](handoff.md#next-owner-action-read-retained-error-status-once).
 
+## Initial CC-role test, no reported attachment
+
+At 23:03-23:04 UTC on 31 October, the owner performed the guarded connector-1 Rp-only-before-attachment experiment using existing hardware. All nine requests completed: seven GETs, one Rp-only and one default-DRP restoration. The 30.886-second trace contains 238,588 events, zero reported loss/format errors, 118 unknown records and no decoded attachment, PD contract or SET_UOR. End status is disconnected; neither Billboard nor external router/new GPU appears. Default DRP restoration completed, with no recovery pending. Retained network settings and active ICS bindings match. Normal reconnection after restoration is unrecorded.
+
+This failed to establish the intended source/DFP comparison; it does not settle the original role-correction hypothesis or identify why attachment was absent. Do not repeat unchanged. A disconnected SET_UOR is not a valid substitute because the specification limits it to the current active connection. [Measured result and provenance](initial-role-test.md#measured-result-2303-2304-utc).
+
 ## Unperformed or withdrawn tests
 
 - Private USB-host-for-no-data override: its name suggested a lead, but the matching consumer's URS target is unavailable on both laptops. No applicability or supported equivalent established; no value written. [Audit](policy-audit.md#role-switch-override-applicability).
-- A change to the ASUS data-role correction/advanced-mode negotiation: the successful Dell control identifies a comparison target, but no applicable supported change or causal intervention has been tested. The absence of `_DSM` function 4 does not itself establish a fault or eGPU fix.
+- A change that specifically suppresses ASUS's data-role correction/controls native USB4 entry remains untested. The Rp-only experiment above never established attachment and therefore did not validate that causal comparison. The absence of `_DSM` function 4 does not itself establish a fault or eGPU fix.
 - Internal `UserControlOfIdleSettings` registry experiment: withdrawn before any write. The matching host driver checks test-signing at the assignment, so a production-mode override would not enable this flag. No enabled-path test or repair claimed. [Audit](policy-audit.md#follow-up-user-control-of-idle-settings).
 - A second suitable 40 Gbps cable, or a documented 20 Gbps USB4 cable: unavailable at last report. The [next-test matrix](handoff.md) separates these comparisons and their outcomes.
 - A separate known-working USB4 peripheral on the ASUS: unavailable/unconfirmed.
