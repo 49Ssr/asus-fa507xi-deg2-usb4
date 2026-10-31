@@ -3,7 +3,7 @@
    and separately marked firmware-status queries. No firmware flash or driver patch. #>
 [CmdletBinding()]
 param(
-    [ValidateSet('Preview','PrepareUcsi','Capture','UndoUcsi')][string]$Mode='Preview',
+    [ValidateSet('Preview','PrepareUcsi','Capture','InspectModes','UndoUcsi')][string]$Mode='Preview',
     [ValidateSet('Compare','PeerHandoff','Direct')][string]$Scenario='Compare'
 )
 Set-StrictMode -Version Latest
@@ -83,8 +83,8 @@ function Restart-DeepUcsi {
 function Test-DeepInterfaceEqual([object]$Left,[object]$Right) {
     return ($Left.Present -eq $Right.Present -and (-not $Left.Present -or $Left.Value -eq $Right.Value))
 }
-function Test-DeepNativeInterface {
-    $dir=Join-Path $privateRoot 'UcsiInterfaceCheck'
+function Test-DeepNativeInterface([string]$Directory=$null,[switch]$ExactInstance) {
+    $dir=if([string]::IsNullOrWhiteSpace($Directory)){Join-Path $privateRoot 'UcsiInterfaceCheck'}else{$Directory}
     if(-not(Test-Path -LiteralPath $dir)){New-Item -ItemType Directory -Path $dir|Out-Null}
     $code=Invoke-ProbeProcess $script:UcsiTool @('/?') $dir 5
     $output=[IO.File]::ReadAllText((Join-Path $dir 'launcher-stdout.txt'))
@@ -93,6 +93,10 @@ function Test-DeepNativeInterface {
         throw ('The native UCSI test interface is not usable after restart. Details: '+$dir+'. Original setting is saved for UndoUcsi.')
     }
     if($output -notmatch 'UcsiControl\.exe.*Send|Usage:'){throw ('Native interface readiness was not established; inspect '+$dir)}
+    if($ExactInstance){
+        $devices=@([regex]::Matches($output,'(?m)^#\d+\*?\s+(ACPI\\[^\r\n]+)'))
+        if($code -notin @(0,1) -or $devices.Count -ne 1 -or $devices[0].Groups[1].Value.Trim() -ine $script:UcsiInstance){throw 'Expected exactly the selected ASUS UCSI interface in native enumeration; no firmware queries were sent.'}
+    }
     Write-PartnerSwapJson (Join-Path $dir 'status.json') ([ordered]@{Utc=[DateTime]::UtcNow.ToString('o');ExitCode=$code;InterfaceEnumerationFailed=$false;ReadinessCommand='/?';SendCommandIssued=$false})
 }
 function Set-DeepUcsiInterface([bool]$Undo) {
@@ -193,6 +197,29 @@ function Invoke-DeepUcsiQueries([string]$Directory) {
         if($null -eq $row.ExitCode -or ($row.Output+$row.Error) -match 'No UCSI device found|Failed to get UCSI device info'){break}
     }
     return [ordered]@{CommandsAttempted=$rows.Count;BudgetSeconds=60;ElapsedSeconds=$watch.Elapsed.TotalSeconds;CompletePlanAttempted=($rows.Count -eq @(New-DeepUcsiQueries).Count);RepliesRequireAnalysis=$true}
+}
+function Invoke-PartnerSwapModeInspection([string]$Directory) {
+    $status=[ordered]@{Schema=1;Kind='ASUSModeInspection';StartedUtc=[DateTime]::UtcNow.ToString('o');Result='NotCompleted';Error=$null;Queries=$null;RegistryWriteRequested=$false;DeviceRestartRequested=$false;FirmwareSetOrResetRequested=$false}
+    try{
+        $dock=@(Get-PnpDevice -PresentOnly -ErrorAction Stop|Where-Object {$_.InstanceId -match '^USB4\\VID_8087&PID_5786|^USB\\VID_8087&PID_5787|^USB\\VID_041F&PID_D002'})
+        if($dock.Count -eq 0){throw 'Connect powered DEG2 to the ASUS USB4 port, wait for its notification, then run InspectModes again.'}
+        Write-PartnerSwapJson (Join-Path $Directory 'interface-before.json') (Get-DeepInterfaceState)
+        Write-PartnerSwapJson (Join-Path $Directory 'network-before.private.json') (Get-DeepNetworkState)
+        Save-ConnectionInventory $Directory 'before'
+        Test-DeepNativeInterface -Directory (Join-Path $Directory 'InterfaceCheck') -ExactInstance
+        Write-Host 'Reading ASUS connector and alternate-mode tables. Keep DEG2 connected.' -ForegroundColor Cyan
+        $queries=Join-Path $Directory 'UCSI'
+        $status.Queries=Invoke-Usb4FirmwareQueries $queries
+        $status.Result=if($status.Queries.TransportFailedOrBusy -or $status.Queries.BudgetExpired -or $status.Queries.Completed -ne $status.Queries.CommandsAttempted){'Partial'}else{'Recorded'}
+    }catch{$status.Error=$_.Exception.Message;Write-Warning $status.Error}
+    finally{
+        try{Save-ConnectionInventory $Directory 'after'}catch{$status.InventoryAfterError=$_.Exception.Message}
+        try{Write-PartnerSwapJson (Join-Path $Directory 'interface-after.json') (Get-DeepInterfaceState)}catch{$status.InterfaceAfterError=$_.Exception.Message}
+        try{Write-PartnerSwapJson (Join-Path $Directory 'network-after.private.json') (Get-DeepNetworkState)}catch{$status.NetworkAfterError=$_.Exception.Message}
+        $status.FinishedUtc=[DateTime]::UtcNow.ToString('o')
+        Write-PartnerSwapJson (Join-Path $Directory 'status.json') $status
+    }
+    return $status
 }
 function New-DeepRecorderCommands {
     $tmf=Join-Path $script:DriverSymbols 'TMF'
@@ -336,6 +363,7 @@ if($swapRequestedMode -eq 'Preview'){
     Write-Output 'Compare starts before a fresh Dell peer negotiation, then records handoff and (if no new graphics/router milestone) fresh DEG2 attach. Each phase reads current driver IFRs via signed LiveKD, then separately marked status queries via the official UcsiControl tool.'
     Write-Output 'Raw PD/CC wire packets are not supplied by this Windows stack. Requested providers, actual events, firmware replies and recorder formatting must be checked separately.'
     Write-Output 'UndoUcsi restores the exact saved setting and restarts the same UCSI device. No network settings, driver package, boot security or firmware image is changed.'
+    Write-Output 'InspectModes reads the already-connected DEG2 mode table with the existing prepared UCSI interface. It uses the Dell-tested bounded GET engine and saves before/after snapshots.'
     exit 0
 }
 Assert-DeepHost
@@ -343,7 +371,15 @@ if($swapRequestedMode -eq 'PrepareUcsi'){Set-DeepUcsiInterface $false;exit 0}
 if($swapRequestedMode -eq 'UndoUcsi'){Set-DeepUcsiInterface $true;exit 0}
 Assert-DeepTools
 $interface=Get-DeepInterfaceState
-if(-not $interface.Present -or $interface.Value -eq 0){throw 'First run this same script with -Mode PrepareUcsi. Capture needs the documented UCSI interface; it will not silently omit firmware queries.'}
+if(-not $interface.Present -or $interface.Value -eq 0){throw 'This mode needs the existing prepared UCSI interface. It will not enable the interface automatically; inspect the saved preparation state before proceeding.'}
+if($swapRequestedMode -eq 'InspectModes'){
+    $run=Join-Path $privateRoot ('Runs\'+[DateTime]::UtcNow.ToString('yyyyMMdd-HHmmss')+'-ASUS-modes-'+[guid]::NewGuid().ToString('N').Substring(0,8))
+    New-Item -ItemType Directory -Path $run|Out-Null
+    $result=Invoke-PartnerSwapModeInspection $run
+    Write-Output ('Mode-query result: '+$result.Result+'; private results: '+$run)
+    if($result.Result -ne 'Recorded'){exit 1}
+    exit 0
+}
 Test-DeepNativeInterface
 if((New-Object IO.DriveInfo([IO.Path]::GetPathRoot($repo))).AvailableFreeSpace -lt 3GB){throw 'Keep at least 3 GiB free for the bounded trace and temporary kernel-view work.'}
 $run=Join-Path $privateRoot ('Runs\'+[DateTime]::UtcNow.ToString('yyyyMMdd-HHmmss')+'-deep-negotiation-'+[guid]::NewGuid().ToString('N').Substring(0,8))

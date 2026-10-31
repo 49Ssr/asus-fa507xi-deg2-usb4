@@ -10,6 +10,8 @@
 
 ## Measured comparison
 
+Next prepared check: connect DEG2 to ASUS and run the existing collector with `-Mode InspectModes` in Administrator PowerShell. This reads the later alternate-mode entries missing from the first ASUS query batch. [Procedure, guards and outcome interpretation](docs/handoff.md#next-owner-action-inspect-the-asus-mode-tables).
+
 | Environment | Windows build | Microsoft USB4 host driver | External DEG2 router | External GPU |
 | --- | --- | --- | --- | --- |
 | Dell Intel TB4, initial owner test | 26200.9711 | Not recorded | Present; 40/40 Gbps | Driver installed; HDMI output works |

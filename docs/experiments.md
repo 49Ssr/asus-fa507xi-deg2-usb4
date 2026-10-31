@@ -53,6 +53,7 @@ The corrected portable collector ran on the Latitude 5540: 1,096,876 events, zer
 
 ## Unperformed or withdrawn tests
 
+- Additional ASUS alternate-mode indexes: `InspectModes` is prepared in the existing collector to fill the index-0-only gap. It uses the Dell-tested bounded GET engine with exact ASUS interface checks and before/after snapshots. 43 mocked PS5.1 query/workflow checks and 60 toolkit checks pass; actual execution is pending. [Purpose and interpretation](handoff.md#next-owner-action-inspect-the-asus-mode-tables).
 - A change to the ASUS data-role correction/advanced-mode negotiation: the successful Dell control identifies a comparison target, but no applicable supported change or causal intervention has been tested. The absence of `_DSM` function 4 does not itself establish a fault or eGPU fix.
 - Internal `UserControlOfIdleSettings` registry experiment: withdrawn before any write. The matching host driver checks test-signing at the assignment, so a production-mode override would not enable this flag. No enabled-path test or repair claimed. [Audit](policy-audit.md#follow-up-user-control-of-idle-settings).
 - A second suitable 40 Gbps cable, or a documented 20 Gbps USB4 cable: unavailable at last report. The [next-test matrix](handoff.md) separates these comparisons and their outcomes.

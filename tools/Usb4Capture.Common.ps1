@@ -135,6 +135,50 @@ function Invoke-ProbeProcess([string]$Executable,[string[]]$Arguments,[string]$D
     }
 }
 
+function Invoke-Usb4FirmwareQueries([string]$Directory) {
+    New-Item -ItemType Directory -Path $Directory|Out-Null
+    $rows=New-Object 'System.Collections.Generic.List[object]';$budget=[Diagnostics.Stopwatch]::StartNew();$script:Usb4QueryTransportFailed=$false
+    function Read-OneDellQuery([string]$Name,[uint32]$High,[uint32]$Low) {
+        if($budget.Elapsed.TotalSeconds -ge 90 -or $script:Usb4QueryTransportFailed){return $null}
+        if(($Low -band 255) -notin @(6,7,12,13,14,16,17,18,19)){throw 'A non-GET firmware command was refused.'}
+        $row=[ordered]@{Name=$Name;High=$High.ToString('X8');Low=$Low.ToString('X8');StartedUtc=[DateTime]::UtcNow.ToString('o');FinishedUtc=$null;ExitCode=$null;Output='';Error='';ProtocolResult='Unparsed';DataLength=$null}
+        try{
+            $row.ExitCode=Invoke-ProbeProcess $script:UcsiTool @('Send',$row.High,$row.Low) $Directory 5
+            $row.Output=[IO.File]::ReadAllText((Join-Path $Directory 'launcher-stdout.txt'));$row.Error=[IO.File]::ReadAllText((Join-Path $Directory 'launcher-stderr.txt'))
+            if($row.ExitCode -ne 0){$row.ProtocolResult='TransportError';$script:Usb4QueryTransportFailed=$true}
+            elseif($row.Output -match 'BusyIndicator: 1'){$row.ProtocolResult='Busy';$script:Usb4QueryTransportFailed=$true}
+            elseif($row.Output -match 'NotSupportedIndicator: 1'){$row.ProtocolResult='NotSupported'}
+            elseif($row.Output -match 'ErrorIndicator: 1'){$row.ProtocolResult='FirmwareError'}
+            elseif($row.Output -match 'CommandCompletedIndicator: 1' -and $row.Output -match 'ErrorIndicator: 0'){$row.ProtocolResult='Completed';$m=[regex]::Match($row.Output,'(?s)UCSI_CCI:.*?DataLength:\s*(\d+)');if($m.Success){$row.DataLength=[int]$m.Groups[1].Value}}
+        }catch{$row.Error=$_.Exception.Message;$row.ProtocolResult='TransportError';$script:Usb4QueryTransportFailed=$true}
+        $row.FinishedUtc=[DateTime]::UtcNow.ToString('o');$rows.Add([pscustomobject]$row)
+        Write-PartnerSwapJson (Join-Path $Directory 'ucsi-queries.json') @($rows.ToArray())
+        return [pscustomobject]$row
+    }
+    $null=Read-OneDellQuery 'ERROR_STATUS_BEFORE_PROBES' 0 19
+    $cap=Read-OneDellQuery 'GET_CAPABILITY' 0 6
+    $connectors=0;$localModes=0
+    if($null -ne $cap -and $cap.ProtocolResult -eq 'Completed'){
+        $m=[regex]::Match($cap.Output,'bNumConnectors:\s*(\d+)');if($m.Success){$connectors=[int]$m.Groups[1].Value}
+        $m=[regex]::Match($cap.Output,'bNumAltModes:\s*(\d+)');if($m.Success){$localModes=[int]$m.Groups[1].Value}
+    }
+    foreach($connector in @(1..([Math]::Min($connectors,8))|Where-Object {$_ -ge 1 -and $_ -le $connectors})){
+        $prefix=[uint32]($connector -shl 16)
+        foreach($entry in @(@('CONNECTOR_STATUS',18),@('CONNECTOR_CAPABILITY',7),@('CABLE_PROPERTY',17),@('CAM_SUPPORTED',13),@('CURRENT_CAM',14))){$null=Read-OneDellQuery ('C'+$connector+'_'+$entry[0]) 0 ([uint32]($prefix -bor [uint32]$entry[1]))}
+        foreach($role in @(@('LOCAL_SOURCE',7,0),@('LOCAL_SINK',3,0),@('PARTNER_SOURCE',7,8388608),@('PARTNER_SINK',3,8388608))){$null=Read-OneDellQuery ('C'+$connector+'_PDOS_'+$role[0]) ([uint32]$role[1]) ([uint32]($prefix -bor 16 -bor [uint32]$role[2]))}
+        foreach($recipient in 0,1,2,3){
+            $limit=if($recipient -eq 0){[Math]::Min([Math]::Max($localModes,2),8)}elseif($recipient -eq 1){8}else{1}
+            for($offset=0;$offset -lt $limit;$offset++){
+                $row=Read-OneDellQuery ('C'+$connector+'_ALT_RECIPIENT_'+$recipient+'_OFFSET_'+$offset) ([uint32]$offset) ([uint32](($connector -shl 24) -bor ($recipient -shl 16) -bor 12))
+                if($null -eq $row -or $row.ProtocolResult -ne 'Completed' -or $row.DataLength -eq 0){break}
+            }
+        }
+        foreach($repeat in 1,2){$null=Read-OneDellQuery ('C'+$connector+'_ALT_PARTNER_0_REPEAT_'+$repeat) 0 ([uint32](($connector -shl 24) -bor 65536 -bor 12))}
+    }
+    $null=Read-OneDellQuery 'ERROR_STATUS_AFTER_PROBES' 0 19
+    return [ordered]@{Available=$true;ReportedConnectors=$connectors;ReportedLocalModes=$localModes;ConnectorLimit=8;ConnectorsTruncated=($connectors -gt 8);ModeOffsetLimit=8;BudgetSeconds=90;CommandsAttempted=$rows.Count;Completed=@($rows|Where-Object {$_.ProtocolResult -eq 'Completed'}).Count;TransportFailedOrBusy=$script:Usb4QueryTransportFailed;BudgetExpired=($budget.Elapsed.TotalSeconds -ge 90);RawRepliesRequireAnalysis=$true}
+}
+
 function Get-ConnectionProviderRows {
     # Audited against Microsoft's busiotools profile and this host's provider metadata.
     # USB transfer headers/payloads were excluded by the earlier 0xF861B mask.
