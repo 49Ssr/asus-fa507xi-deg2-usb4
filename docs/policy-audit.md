@@ -51,3 +51,15 @@ Disabling USB4 v2 support due to OS policy.
 - The Dell already runs the dock at 40 Gbps with a host USB4 version reported as 1.0; v2 is not inherently required just because the dock advertises v2.
 
 This is a version-specific private implementation finding, not a supported Microsoft registry configuration or a community fix. Addresses and internal enum meanings may change with another binary. Changing a boot-security mode merely to force this experiment is not part of the current workflow.
+
+## Follow-up: user control of idle settings
+
+On 31 October, a possible idle-power experiment was investigated before making another registry change. The startup recorder reports `m_UserControlOfIdleSettings: false`. The same matching driver recognizes a parameter named `UserControlOfIdleSettings`, but recognition alone again does not establish that a production system can use it.
+
+Read-only disassembly of `QueryAndCacheDriverParametersFromRegistry` shows that the final assignment requires both `m_isTestSigningOn` and a nonzero parameter. With test-signing off, the assignment is false regardless of the requested value. This was checked at the actual assignment, rather than inferred from the parameter's name or existence.
+
+**Outcome:** no idle-control registry value was written and no security setting changed. No runtime enabled-path or repair result is claimed. The consumer of this internal flag was not exhaustively traced, so its precise downstream effect is not asserted here.
+
+Microsoft's [WDF user-control documentation](https://learn.microsoft.com/en-us/windows-hardware/drivers/wdf/user-control-of-device-idle-and-wake-behavior) also explains that ordinary user idle preferences depend on the driver allowing user control. It specifically warns against directly changing the framework-owned `IdleInWorkingState` value. A generic per-device registry edit is therefore not a justified substitute for a verified supported power control.
+
+The working ASUS-Dell rundown has the USB4 domain awake; the failed DEG2 recording starts with the cable disconnected and the domain asleep, then records a successful wake. Those are different starting conditions, not proof that idle caused the DEG2 failure. The [existing-hardware partner handoff](handoff.md#n5-existing-hardware-partner-handoff-proposed) is a way to test startup state without forcing an unsupported registry path.

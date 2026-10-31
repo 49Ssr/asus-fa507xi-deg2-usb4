@@ -21,12 +21,29 @@
 - Expanded inspection recovered all 12 available WPP buffers and decoded three USB4 histories plus both UCSI rings. Register reads succeed but USB4 plugged/router-detected checks return No. The BIOS's UCSI and EC shared-memory pages are absent from the dump; that gap cannot be repaired by another decoder. [Detailed result](kernel-snapshot.md#expanded-recorder-state-machine-and-acpi-inspection).
 - All four plug orientations, EC reset, graphics mode changes, OS file repair, scoped controller reinstall and retimer restarts were ineffective. The v2 override was ignored and is an invalid negative test of its intended path.
 - No second suitable cable or known-working separate USB4 peripheral is available at last report. The spare UGREEN cable was reported unsuitable. The existing UGREEN 3121 is a 10 Gbps USB-C hub; its USB/Ethernet/display operation would not validate USB4/PCIe.
-- The owner prefers Windows diagnosis and existing/borrowed hardware. A detailed ASUS report has already been sent. No verified applicable FA507XI PD/USB-C or DEG2 firmware image was found in the inspected sources.
+- The owner prefers Windows diagnosis using the hardware already available. There is no spare suitable cable or USB4 hub; do not make obtaining another hub the required next step. A detailed ASUS report has already been sent. No verified applicable FA507XI PD/USB-C or DEG2 firmware image was found in the inspected sources.
 - N0 is complete: the ASUS-Dell direct USB4 peer link shows P2P adapters Up on both machines with the supplied DEG2 cable. A completed 13:37 rundown confirms a reported 40 Gbps physical link, Gen 3 with two bonded lanes, both Up. The P2P virtual NIC's 20 Gbps value is not the physical-rate observation. Payload transfer and GPU PCIe tunnelling remain untested. [Evidence, register fields and limits](peer-test.md).
 
-## Missing comparisons, in priority order
+## Next feasible check with current hardware
 
-**N0 passed its adapter/link-status check; N1-N4 remain unperformed.** Those remaining comparisons need a suitable additional cable/peripheral. No purchase or successful fix is assumed. For DEG2 comparisons, keep the same assembled GPU/dock/PSU, correct upstream port/mode and laptop barrel power. Change one named variable per comparison. Record the protocol/device milestone, not just fan activity or the Windows warning.
+### N5: existing-hardware partner handoff, proposed
+
+**Not yet reported as performed. No fix claimed.** This uses the working ASUS-Dell peer connection as a starting condition, then changes the far-end partner to DEG2. It needs no additional hub or cable.
+
+1. Keep both laptops awake on their normal chargers. Leave the DEG2 assembled and powered, in the same TB5 mode and with the same upstream port used successfully on Dell.
+2. Establish the direct ASUS-Dell peer connection with the supplied DEG2 cable. Confirm its P2P adapter is Up on ASUS using the read-only command below.
+3. Leave the ASUS cable end connected. Move only the Dell end directly into the DEG2 upstream port, without an intentional disconnected waiting period. Do not force a connector or rush the physical connection.
+4. Check for an external USB4 router and the external GPU in Device Manager. Record those separately, and whether the Windows warning appears. Fan motion alone is not the result.
+
+**Hypothesis:** an already-active host/domain or retained Type-C state changes the outcome of partner startup. The working peer rundown shows the domain awake; the failed DEG2 recording began disconnected/asleep and subsequently woke. That contrast is expected in many normal scenarios and does not diagnose an idle-power defect. The handoff also changes partner/role history, so success would be a practical workaround to reproduce, not proof of a single cause.
+
+**If it fails:** a manual negative does not prove that the controller stayed awake during the swap. A targeted trace could distinguish that condition; do not claim that the held-awake hypothesis was comprehensively excluded. Repeating the old disconnected-baseline capture unchanged would not test the new starting condition.
+
+Rollback is simply disconnecting the test cable and returning to the normal connection. No registry, driver, firmware, firewall or Internet-sharing change is involved. An internal idle-control parameter was checked and rejected before any write because it is test-signing gated; [audit](policy-audit.md#follow-up-user-control-of-idle-settings).
+
+## Additional hardware comparisons, currently unavailable
+
+**N0 passed its adapter/link-status check; N1-N4 remain unperformed and need unavailable additional hardware.** These are optional comparisons for future access, not instructions to buy or obtain another hub now. For DEG2 comparisons, keep the same assembled GPU/dock/PSU, correct upstream port/mode and laptop barrel power. Change one named variable per comparison. Record the protocol/device milestone, not just fan activity or the Windows warning.
 
 ### N0: existing-hardware USB4 peer test
 
