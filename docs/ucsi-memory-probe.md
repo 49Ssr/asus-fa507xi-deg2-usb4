@@ -1,6 +1,6 @@
 # Scripted UCSI / EC buffer examination
 
-**The second attempt opened the LiveKD view but never executed the probe script. No firmware bytes were collected. An absolute-path correction has passed offline checks, including a changed-directory test; a live rerun is pending. This is an examination tool, not a fix.**
+**The corrected live capture completed on 31 October at 12:35 UTC. Both mappings were validated, but LiveKD could read neither buffer. No firmware bytes or actionable repair were obtained.**
 
 [Invoke-UcsiMemoryProbe.ps1](../tools/Invoke-UcsiMemoryProbe.ps1) wraps Microsoft's signed LiveKD and KD with [UcsiMemory.js](../tools/UcsiMemory.js). It tests whether a live kernel view exposes the two buffers omitted from the Task Manager dump. Microsoft describes LiveKD as a simulated kernel-debugging view; it does not promise access to these particular firmware pages.
 
@@ -42,7 +42,11 @@ At 12:18:59 UTC on 31 October, the first Administrator run returned `NotComplete
 
 The first correction removed unnecessary quoting of simple arguments and used relative command/log filenames with inherited symbol/image paths. At 12:26:17 UTC, the next live run opened the simulated kernel dump and loaded kernel symbols, then waited at KD's initial command prompt until the 120-second timeout. The log was found in the debugger executable's directory, rather than the requested per-run directory. The probe script was absent from that changed working directory. Microsoft documents that `-cf` resolves relative paths there and silently ignores a missing file. No probe command or firmware read ran.
 
-The current correction passes an absolute command-file path and puts the absolute log path in the child environment, alongside symbol/image paths. The regression test deliberately changes directory before launching actual offline KD; the script executes and the log lands in the intended output directory. Full offline replay also passes. This tests the observed path-resolution failure without loading LiveKD; the current live invocation still awaits a rerun. The exact internal cause of the first attempt's argument truncation remains unestablished.
+The correction passes an absolute command-file path and puts the absolute log path in the child environment, alongside symbol/image paths. The regression test deliberately changes directory before launching actual offline KD; the script executes and the log lands in the intended output directory. Full offline replay also passes. The exact internal cause of the first attempt's argument truncation remains unestablished.
+
+The third live capture ran from 12:35:05.241 to 12:35:06.810 UTC. KD opened the current LiveKD view, executed the JavaScript probe, emitted one complete result and exited normally; LiveKD returned 0. Discovery was `Validated` and the result was `RegionsUnavailable`: the 48-byte PM08 and 64-byte EURM virtual reads each returned an unable-to-read-memory error. No complete or partial buffer contents were returned to the probe. Its private result SHA-256 is `5C942C82FC093430D3CBE61AC9EE09AF2DE65AC602616CF7E6249A726C4AFB5E`.
+
+This establishes that the tested LiveKD view could not expose these mappings. It does not establish why those reads are unavailable, whether the firmware state is faulty, or a GPU defect. There is no firmware payload to compare or basis for a targeted patch from this result. No firmware write, AML execution, explicit physical-memory command or security change occurred. An identical rerun has no identified new variable to test.
 
 | Result | Meaning |
 | --- | --- |
@@ -58,7 +62,7 @@ The current correction passes an absolute command-file path and puts the absolut
 - Windows PowerShell 5.1: 20 checks, including actual PE/PDB identity matching, invalid inputs, native argument quoting, report framing and owned-process timeout cleanup. Actual offline KD is launched through a test launcher that changes its directory; absolute script/log paths and inherited symbol/image paths work across that change.
 - Actual WinDbg JavaScript engine: 20 checks covering mapping/length/address guards, unavailable and partial reads, legacy decoding, unknown versions and native byte-provider types.
 - End-to-end replay of the retained Task Manager dump with the absolute script path and inherited log/symbol/image paths: discovery validated, both regions unavailable, correctly labelled OfflineReplay. No LiveKD helper was loaded during these checks.
-- LiveKD 5.65 signature: Valid, Microsoft Corporation. The second attempt opened its live view, but the automated firmware reads never executed. The timeout wrapper confirms its launcher stopped; it does not verify helper unloading or live firmware-page visibility.
+- LiveKD 5.65 signature: Valid, Microsoft Corporation. The third live attempt completed with validated mappings and both reads unavailable. The debugger and launcher exited normally; helper unloading was not independently verified.
 
 The [test script](../tests/Test-UcsiMemoryProbe.ps1) operates on an existing offline dump. It does not perform firmware or live-kernel tests.
 
