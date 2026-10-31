@@ -16,7 +16,7 @@ A [live kernel snapshot inspected with USB4KD](docs/kernel-snapshot.md) also sho
 
 Expanded inspection recovered 12 recorder buffers and decoded the USB4/UCSI histories. Successful register reads are followed by negative USB4 plugged/router-detected checks. The firmware shared-memory pages are absent from this dump. A newly identified [USB4 peer comparison using the existing Dell and cable](docs/handoff.md#n0-existing-hardware-usb4-peer-test) is available without another peripheral; it remains unperformed and does not test GPU PCIe tunnelling.
 
-A [scripted UCSI/EC memory probe](docs/ucsi-memory-probe.md) completed a live capture at 12:35 UTC after two launcher corrections. Current-session mapping discovery succeeded, but LiveKD could read neither the 48-byte UCSI block nor the 64-byte EC shadow. No firmware contents or actionable repair were obtained. A guided before/during/after mode now combines repeated reads with ETW and a timed plug-in prompt. Offline replay and 64 checks pass; the combined live connection run remains unperformed. Software checks do not establish hardware compatibility.
+A [guided live connection window](docs/hotplug-window.md) completed at 12:52-12:53 UTC: **80 validated samples, 0 readable firmware buffers, 8,221 ETW events and 0 reported lost events**. Normal kernel memory was readable throughout. Successful root-port register reads still reported USB4 plugged No and router-detected No; Billboard fallback followed. The connection was recorded, but no targeted repair was identified. The [tool](docs/ucsi-memory-probe.md) also passes 64 offline checks; those checks do not establish hardware compatibility.
 
 ## Read in this order
 

@@ -2,7 +2,7 @@
 
 **The corrected live capture completed on 31 October at 12:35 UTC. Both mappings were validated, but LiveKD could read neither buffer. No firmware bytes or actionable repair were obtained.**
 
-**A guided connection-window mode is now implemented and offline-tested. Its combined live sampling/ETW run remains unperformed.** It tests the additional condition of plugging in during recording; the completed single reading did not test that transition.
+**The guided connection-window run is complete.** All 80 samples validated both mappings, but neither firmware buffer was readable. ETW captured the connection with 8,221 events and zero reported loss; external-router/GPU enumeration still failed. See the [measured result and decoded sequence](hotplug-window.md).
 
 [Invoke-UcsiMemoryProbe.ps1](../tools/Invoke-UcsiMemoryProbe.ps1) wraps Microsoft's signed LiveKD and KD with [UcsiMemory.js](../tools/UcsiMemory.js). It tests whether a live kernel view exposes the two buffers omitted from the Task Manager dump. Microsoft describes LiveKD as a simulated kernel-debugging view; it does not promise access to these particular firmware pages.
 
@@ -87,7 +87,7 @@ This is periodic sampling, not continuous capture of every firmware register cha
 
 The [test script](../tests/Test-UcsiMemoryProbe.ps1) operates on an existing offline dump. It does not perform firmware or live-kernel tests.
 
-The guided combined live run, ETW start/stop in that run and any transient firmware readability remain untested. The ETW provider set itself was used in prior connection recordings. No controller reset, driver replacement, boot/security edit or firmware write is part of this mode.
+The guided combined live run and ETW start/stop have now completed normally. Normal kernel controls were readable in all 80 samples; firmware reads were unavailable in all samples with KD's cache disabled. This does not rule out changes between samples or establish the cause of the unavailable reads. No UCSI-labelled records were observed in the decoded ETL. No controller reset, driver replacement, boot/security edit or firmware write was part of the run.
 
 ## Interface choice and sources
 
