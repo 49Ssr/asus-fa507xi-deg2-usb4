@@ -27,11 +27,34 @@
 
 ## Current action
 
-The owner explicitly requested a deeper negotiation capture after cleanup, with the aim of identifying an actionable firmware/driver sequence or a reproducible workaround. The existing handoff collector has been expanded rather than restoring the retired reset scripts. Preparation is complete; Administrator preparation and the actual hardware comparison are unperformed. No patch or repair result is claimed.
+The deeper comparison completed on 31 October, 20:08:08-20:10:47 UTC. The documented UCSI test interface was enabled successfully; original setting and network state are saved privately. Peer negotiation succeeded; DEG2 handoff and fresh attachment both failed to enumerate the external router/GPU. The next proposed control is direct Dell-DEG2 enumeration with comparable tracing, driver inventory and firmware queries where supported. No additional ASUS capture or reset is justified merely by repeating the same conditions.
 
 ### N5: existing-hardware partner handoff, proposed
 
-**Prepared, not executed.** The previous attempt stopped before trace creation because the peer adapter was not Up. That precondition refusal is not a hardware handoff result. The revised [collector](../tools/Capture-USB4PartnerSwap.ps1) and [shared library](../tools/Usb4Capture.Common.ps1) address actual coverage gaps found during review:
+**Executed, unresolved.** The earlier attempt stopped before trace creation because the peer adapter was not Up. The revised [collector](../tools/Capture-USB4PartnerSwap.ps1) and [shared library](../tools/Usb4Capture.Common.ps1) subsequently completed all three phases. Their instrumentation is described below the measured result.
+
+| Measurement | Observed result |
+| --- | --- |
+| ETL interval and retained size | 20:08:08.754-20:10:47.787 UTC; 159.033 seconds; 590,479,360 bytes, below the cap |
+| Trace decoding | 3,097,071 events; zero reported lost events/buffers; zero formatting errors; 726 unknown records remain |
+| Decoded driver messages | 4,735 UcmUcsiCx; 62 UcmCx; 5,285 USB4 host; 3,048 USB4 device-router lines |
+| Live recorder snapshots | All three debugger transcripts reached their start/end markers; ACPI client WDF logs supplement its unavailable WPP log header |
+| Firmware GET batches | 28 per phase, 84 total; every native request returned a completed response with CCI ErrorIndicator zero |
+| Working peer | Reconnected; peer adapter Up and interdomain tunnel created |
+| DEG2 handoff and fresh attachment | No external router/new display adapter before or after active queries |
+| Existing Internet sharing | Upstream/downstream ICS bindings preserved. Expected device change was P2P removal and appearance of unshared DEG2 Ethernet. |
+
+Both failed attachments have the same recorded order. For the handoff, firmware reports the connector at 20:09:25.659, PD state succeeds, then `SET_UOR(Dfp)` completes at 20:09:25.903. At 20:09:25.955 a connector-status reply reports partner UFP with `PartnerFlags:0x2[AltMode]`; Windows reports operating modes `0x40 -> 0x20`. The fresh attachment repeats this order at 20:10:24.108, .360 and .421. These reports precede our active query batches. No USB4 router follows. This identifies a useful comparison boundary; the mode change is not established as the cause or a confirmed DisplayPort-only mux selection.
+
+The trace contains 108 UCSI command sends: 107 successful completion indications and one error completion, with all 108 ACK completions accounted for. The error is `SET_UOR` during the **working peer** connection, not either failed DEG2 attachment. No UCSI timeout was observed. The first peer GET_ERROR_STATUS returns `0x0010` (CC communication error); both DEG2 batches return zero. This weighs against a command-mailbox stall as the recorded failure mechanism, while not excluding a lost unsolicited firmware notification.
+
+There are also firmware-interface consistency questions. Connector 1 reports supported CAM mask `0000`, current CAM `01`, and total PPM mode count one; its repeated partner-mode replies are stable. Cable speed bytes `0002` are the same in working-peer and DEG2 phases and decode implausibly under the published UCSI speed field. The CLI displays UCSI version `ff.f.f`. These values need validation against firmware/tool interpretation and further mode-list offsets. They do not establish a slow cable, the identity of mode 1, or an actionable register patch. [UCSI specification, tables 4-24, 4-29, 4-31 and 4-39](https://www.intel.com/content/dam/www/public/us/en/documents/technical-specifications/usb-type-c-ucsi-spec.pdf).
+
+The procedure did not preserve every power-state condition: the root router FDO exits D0 at 20:09:19.619 after peer removal, before DEG2 attachment. Parent host and child-router state must be distinguished. This is not a controlled proof that holding the whole domain awake does or does not help.
+
+ETL SHA-256: `9DD59171EF0D8164652EDE617D7CC5813D1E36A62F986A83F9D42C44AEDBA114`. Raw trace, per-phase firmware replies, snapshots and networking inventories remain private. The public observations record counts and conclusions, not a full independently decodable trace.
+
+### Instrumentation and recorded procedure
 
 | Layer | Requested evidence | Limits to check during analysis |
 | --- | --- | --- |
@@ -70,7 +93,7 @@ The collector defaults to Preview. It uses a unique sequential ETL capped at 1 G
 
 **Tool provenance:** UcsiControl 10.0.26572.1000 was extracted without executing/installing Microsoft's MUTT 3.0.1 MSI. The native EXE is unsigned; it is a user-mode program from the official package, pinned by SHA-256 `22AC51EF4503E4FF3344B7C33FFB7509F43D26F5F4942A2C382DD91F4FB7B9A7`. The package hash is `093BD7FB8DBC4A3B8EED909657CA58701235B328C101BDE0AB63099FD4EB95A1`. Debugger executables have valid Microsoft signatures. Binaries, symbols and machine-specific state are not redistributed; this public source is not a standalone install bundle.
 
-**Candidate mechanism, unproven:** the extracted FA507XI `UBTC.M318` AML copies firmware status into the OS mailbox and then clears parts of the firmware shadow. An upstream ASUS UM325 UCSI fix avoids an extra status read because a similar destructive copy can lose a pending notification. This supplies a concrete read/ACK-ordering hypothesis; it does not show that the Windows client makes the faulty read or that the Linux quirk applies to this model. The next analysis must correlate command/completion/notification ordering and physical-link milestones before proposing a targeted workaround.
+**Candidate mechanism, unproven:** the extracted FA507XI `UBTC.M318` AML copies firmware status into the OS mailbox and then clears parts of the firmware shadow. An upstream ASUS UM325 UCSI fix avoids an extra status read because a similar destructive copy can lose a pending notification. The new trace accounts for all observed command/ACK completions, including successful role correction on both DEG2 attachments; it does not demonstrate that mailbox quirk. Unsolicited notifications and physical mode entry remain separate questions. Comparing direct successful Dell-DEG2 enumeration is more discriminating than patching a completed command path on speculation.
 
 Windows UCSI exposes firmware commands/status rather than every packet on the USB-C CC wires. This capture does not supply a complete USB-PD wire transcript. If the failure remains entirely inside firmware, vendor firmware logging or a suitable physical PD analyzer is the next instrumentation layer. [Primary sources and exact precedent](research.md#deeper-negotiation-capture-and-ucsi-workaround-precedent).
 

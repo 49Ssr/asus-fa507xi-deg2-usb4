@@ -43,9 +43,13 @@ Original baseline:
 | Reported existing Parade firmware | 1.3.0.2 |
 | ASUS System Control Interface | 3.1.73.0 |
 
+## Deeper negotiation comparison, completed
+
+Owner-run preparation enabled the documented UCSI interface and saved its absent original state. The 20:08-20:10 UTC comparison recorded 3,097,071 events, zero reported loss, 4,735 decoded UCSI lines and 84 completed diagnostic GETs. Peer negotiation succeeded; DEG2 handoff and fresh attachment did not enumerate a router/GPU. Both failures complete PD and data-role correction, followed by alternate-mode-only partner reporting and operating-mode value `0x40 -> 0x20`. No command-mailbox stall or patch target was established. [Measured order, query anomalies and limits](handoff.md#n5-existing-hardware-partner-handoff-proposed).
+
 ## Unperformed or withdrawn tests
 
-- Deeper peer/DEG2 negotiation comparison: prepared after the owner's explicit request to resume with stronger instrumentation. Includes fresh peer negotiation, handoff and fresh DEG2 attachment, expanded ETW, per-phase flight recorders and separately marked UCSI GET queries. The earlier attempt stopped before trace creation; no hardware handoff result obtained. Documented UCSI interface preparation and the new live capture remain unperformed. [Procedure, rollback and limits](handoff.md#n5-existing-hardware-partner-handoff-proposed).
+- Direct Dell-DEG2 capture under a comparable profile: proposed by the owner after the ASUS comparison. A portable collection on USB would provide a successful router/GPU enumeration control with actual Dell driver versions and, where supported, firmware replies. Not yet prepared or executed. The ASUS-specific preparation guard must not be removed just to run that script on another host.
 - Internal `UserControlOfIdleSettings` registry experiment: withdrawn before any write. The matching host driver checks test-signing at the assignment, so a production-mode override would not enable this flag. No enabled-path test or repair claimed. [Audit](policy-audit.md#follow-up-user-control-of-idle-settings).
 - A second suitable 40 Gbps cable, or a documented 20 Gbps USB4 cable: unavailable at last report. The [next-test matrix](handoff.md) separates these comparisons and their outcomes.
 - A separate known-working USB4 peripheral on the ASUS: unavailable/unconfirmed.
