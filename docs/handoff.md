@@ -25,29 +25,21 @@
 - Support update, 31 October: the owner reports that an ASUS US support agent promised handover through an escalated ticket to the relevant ASUS department. Completed internal handover, engineering review, a diagnosed cause and an applicable firmware release remain unconfirmed. Case and agent identifiers remain private.
 - N0 is complete: the ASUS-Dell direct USB4 peer link shows P2P adapters Up on both machines with the supplied DEG2 cable. A completed 13:37 rundown confirms a reported 40 Gbps physical link, Gen 3 with two bonded lanes, both Up. The P2P virtual NIC's 20 Gbps value is not the physical-rate observation. Payload transfer and GPU PCIe tunnelling remain untested. [Evidence, register fields and limits](peer-test.md).
 
-## Next feasible check with current hardware
+## Current action
+
+The owner requested stopping additional diagnostic scripts and cleaning up the accumulated experiments. Experimental collectors, reset/policy scripts and disposable software-test output have been retired from active paths. Real captures, memory evidence and support records are retained. Await an applicable, evidence-backed fix or vendor findings; do not make another scripted capture the default next step.
 
 ### N5: existing-hardware partner handoff, proposed
 
-**Not yet reported as performed. No fix claimed.** This uses the working ASUS-Dell peer connection as a starting condition, then changes the far-end partner to DEG2. It needs no additional hub or cable.
+**Recorder withdrawn during cleanup. No hardware handoff result obtained.** The proposal was to keep the ASUS cable end attached while moving the far end from a working Dell peer link to powered DEG2, changing the initial partner/power history without adding hardware.
 
-1. Keep both laptops awake on their normal chargers. Leave the DEG2 assembled and powered, in the same TB5 mode and with the same upstream port used successfully on Dell.
-2. Establish the direct ASUS-Dell peer connection with the supplied DEG2 cable. Confirm its P2P adapter is Up on ASUS using the read-only command below.
-3. For the instrumented test, run the command below in Administrator PowerShell on ASUS. Keep both ends connected until its green prompt. Then leave the ASUS cable end connected and move only the Dell end directly into the DEG2 upstream port, without an intentional disconnected waiting period. Do not force a connector or rush the physical connection.
-4. Check for an external USB4 router and the external GPU in Device Manager. Record those separately, and whether the Windows warning appears. Fan motion alone is not the result.
+The owner's attempted run stopped at the initial requirement for exactly one Up USB4 P2P adapter. This happened before trace creation or the handoff prompt. It is a precondition refusal, not a demonstrated failure of the proposed hardware test and not another GPU fault.
 
-```powershell
-# From this repository, Administrator on ASUS; peer link already Up.
-powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\tools\Capture-USB4PartnerSwap.ps1 -Mode Capture
-```
-
-[Capture-USB4PartnerSwap.ps1](../tools/Capture-USB4PartnerSwap.ps1) defaults to Preview. Capture checks for exactly one Up USB4 P2P adapter again after the readiness prompt and inventory, starts the previously exercised ETW helpers, marks the instruction time, records twenty seconds plus inventory time, and stops only its own trace in `finally`. It permits the peer adapter to go down during the partner change. Output stays under ignored `local/`; inventories are best-effort and retain query errors. Normal recording completion does not establish GPU/router success, actual physical switch times or an awake domain: those fields remain unknown pending analysis.
-
-Windows PowerShell 5.1 parsing and actual Preview pass. [Ten mocked workflow cases](../tests/Test-USB4PartnerSwap.ps1) cover changed/missing/ambiguous peer state, readiness cancellation, start/query/stop failures, a stop-log exception after session stop, a missing ETL, and normal recording with expected peer disconnection. They validate cleanup/status handling without ETW or hardware operations. The actual instrumented handoff has not yet run.
+The [historical recorder](https://github.com/49Ssr/asus-fa507xi-deg2-usb4/blob/90ad1d612df03fef1875bcefebe554b1afab42a3/tools/Capture-USB4PartnerSwap.ps1) and its [ten mocked workflow cases](https://github.com/49Ssr/asus-fa507xi-deg2-usb4/blob/90ad1d612df03fef1875bcefebe554b1afab42a3/tests/Test-USB4PartnerSwap.ps1) remain available at the last revision before cleanup. Windows PowerShell 5.1 parsing, Preview and those software checks passed; no successful live handoff capture occurred. The collector is no longer shipped in current `tools/`.
 
 **Hypothesis:** an already-active host/domain or retained Type-C state changes the outcome of partner startup. The working peer rundown shows the domain awake; the failed DEG2 recording began disconnected/asleep and subsequently woke. That contrast is expected in many normal scenarios and does not diagnose an idle-power defect. The handoff also changes partner/role history, so success would be a practical workaround to reproduce, not proof of a single cause.
 
-**If it fails:** a manual negative does not prove that the controller stayed awake during the swap. A targeted trace could distinguish that condition; do not claim that the held-awake hypothesis was comprehensively excluded. Repeating the old disconnected-baseline capture unchanged would not test the new starting condition.
+The failed preflight does not resolve this hypothesis. A manual negative would not independently establish whether the controller stayed awake during the swap. No new capture is requested after the owner's cleanup instruction.
 
 Rollback is simply disconnecting the test cable and returning to the normal connection. No registry, driver, firmware, firewall or Internet-sharing change is involved. An internal idle-control parameter was checked and rejected before any write because it is test-signing gated; [audit](policy-audit.md#follow-up-user-control-of-idle-settings).
 

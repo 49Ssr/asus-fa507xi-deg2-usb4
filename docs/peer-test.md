@@ -16,7 +16,7 @@ No ping, file transfer or throughput measurement was reported. The Dell photogra
 
 ## Working-link rundown, completed
 
-[Capture-USB4Peer.ps1](../tools/Capture-USB4Peer.ps1) completed its live run on ASUS from 13:37:49.185 to 13:37:52.305 UTC, about 3.12 seconds. Both adapter inventories stayed Up. Xperf and TraceFmt processed 1,666 events, zero lost events/buffers, zero formatting errors and zero unknown records. An `InterDomainPeerInformation` record corroborates the peer connection.
+[Capture-USB4Peer.ps1](https://github.com/49Ssr/asus-fa507xi-deg2-usb4/blob/90ad1d612df03fef1875bcefebe554b1afab42a3/tools/Capture-USB4Peer.ps1) completed its live run on ASUS from 13:37:49.185 to 13:37:52.305 UTC, about 3.12 seconds. Both adapter inventories stayed Up. Xperf and TraceFmt processed 1,666 events, zero lost events/buffers, zero formatting errors and zero unknown records. An `InterDomainPeerInformation` record corroborates the peer connection.
 
 The root port's rundown at 13:37:49.187 UTC reports:
 
@@ -39,15 +39,7 @@ For comparison, the failed DEG2 recording's post-attachment WPP reads yield USB4
 
 The raw peer ETL is 524,288 bytes; SHA-256 `9A77EEFACB155F79585B536000347500133A61D5FD907AC28A4C4A5EA6BF6D77`. Raw identifiers, peer UUIDs and device paths remain private.
 
-Reproduction:
-
-```powershell
-# Safe default: print the plan.
-powershell.exe -NoProfile -File .\tools\Capture-USB4Peer.ps1
-
-# Administrator on ASUS; keep both peer-link ends connected and Up.
-powershell.exe -NoProfile -File .\tools\Capture-USB4Peer.ps1 -Mode Capture
-```
+The completed run used the historical collector's `-Mode Capture`. That collector was retired during the owner's subsequent cleanup; its source link above identifies the revision used for reproduction. Current `tools/` no longer includes it, and another capture is not requested.
 
 The script reuses ETW helpers that completed the guided DEG2 recording. It requires exactly one Up USB4 P2P adapter, checks its state again after capture, stops only its own uniquely named trace, and keeps output under ignored `local/`. It does not load LiveKD, restart a controller, flash firmware or configure networking. Windows PowerShell 5.1 parsing, Preview and this live capture completed. A three-second snapshot is not a sustained stability test.
 

@@ -1,10 +1,12 @@
 # Scripted UCSI / EC buffer examination
 
+**Retired during owner-requested cleanup on 31 October.** This page records a completed experiment. Source links identify the historical revision; the collector and its tests are no longer in current `tools/` or `tests/`. The invocation examples below are historical, not the current next action.
+
 **The corrected live capture completed on 31 October at 12:35 UTC. Both mappings were validated, but LiveKD could read neither buffer. No firmware bytes or actionable repair were obtained.**
 
 **The guided connection-window run is complete.** All 80 samples validated both mappings, but neither firmware buffer was readable. ETW captured the connection with 8,221 events and zero reported loss; external-router/GPU enumeration still failed. See the [measured result and decoded sequence](hotplug-window.md).
 
-[Invoke-UcsiMemoryProbe.ps1](../tools/Invoke-UcsiMemoryProbe.ps1) wraps Microsoft's signed LiveKD and KD with [UcsiMemory.js](../tools/UcsiMemory.js). It tests whether a live kernel view exposes the two buffers omitted from the Task Manager dump. Microsoft describes LiveKD as a simulated kernel-debugging view; it does not promise access to these particular firmware pages.
+[Invoke-UcsiMemoryProbe.ps1](https://github.com/49Ssr/asus-fa507xi-deg2-usb4/blob/90ad1d612df03fef1875bcefebe554b1afab42a3/tools/Invoke-UcsiMemoryProbe.ps1) wraps Microsoft's signed LiveKD and KD with [UcsiMemory.js](https://github.com/49Ssr/asus-fa507xi-deg2-usb4/blob/90ad1d612df03fef1875bcefebe554b1afab42a3/tools/UcsiMemory.js). It tests whether a live kernel view exposes the two buffers omitted from the Task Manager dump. Microsoft describes LiveKD as a simulated kernel-debugging view; it does not promise access to these particular firmware pages.
 
 ## What it examines
 
@@ -21,7 +23,7 @@ The script sends no firmware writes, UCSI requests or AML method executions. It 
 
 LiveKD's view and the separate buffer reads are **not an atomic firmware snapshot**. Receiving bytes does not prove their freshness, validity or that USB4 negotiation succeeded.
 
-## Run
+## Historical invocation
 
 Use 64-bit Windows PowerShell 5.1 or later. The debugger must be an official x64 KD distribution containing JsProvider.dll. The default debugger path is the privately extracted copy used for the earlier dump analysis; elsewhere supply `-DebuggerPath`.
 
@@ -39,7 +41,7 @@ powershell.exe -NoProfile -File .\tools\Invoke-UcsiMemoryProbe.ps1 -Mode Capture
 powershell.exe -NoProfile -File .\tools\Invoke-UcsiMemoryProbe.ps1 -Mode Capture -Connection -Label hotplug
 ```
 
-The current owner's C-drive staging copy is already prepared. All Microsoft executable signatures and PDB identities are checked. Preparation can reuse the existing matching private symbol cache, or an explicitly supplied `-SymbolCache`; otherwise it downloads from Microsoft's symbol server. The managed Windows PowerShell process could not reach that server here, so existing verified symbols were reused. DbgEng additionally enforces strict symbol matching.
+The staging copy used for the completed captures was prepared with checked Microsoft executable signatures and PDB identities. Preparation could reuse the existing matching private symbol cache, or an explicitly supplied `-SymbolCache`; otherwise it downloaded from Microsoft's symbol server. The managed Windows PowerShell process could not reach that server here, so existing verified symbols were reused. DbgEng additionally enforced strict symbol matching.
 
 Each run creates a new ignored `local/UcsiMemoryProbe/Runs/` folder containing `status.json`, `probe.json` when available, and private debugger/launcher logs. It never uploads these files. The default launcher timeout is 120 seconds; an unnamed Windows job contains its processes. The timeout path was tested with a disposable child process, not LiveKD. Forced process cleanup does not establish that a loaded kernel helper was unloaded.
 
@@ -85,7 +87,7 @@ This is periodic sampling, not continuous capture of every firmware register cha
 - End-to-end replay of the retained Task Manager dump with the absolute script path and inherited log/symbol/image paths: discovery validated, both regions unavailable, correctly labelled OfflineReplay. No LiveKD helper was loaded during these checks.
 - LiveKD 5.65 signature: Valid, Microsoft Corporation. The third live attempt completed with validated mappings and both reads unavailable. The debugger and launcher exited normally; helper unloading was not independently verified.
 
-The [test script](../tests/Test-UcsiMemoryProbe.ps1) operates on an existing offline dump. It does not perform firmware or live-kernel tests.
+The [test script](https://github.com/49Ssr/asus-fa507xi-deg2-usb4/blob/90ad1d612df03fef1875bcefebe554b1afab42a3/tests/Test-UcsiMemoryProbe.ps1) operates on an existing offline dump. It does not perform firmware or live-kernel tests.
 
 The guided combined live run and ETW start/stop have now completed normally. Normal kernel controls were readable in all 80 samples; firmware reads were unavailable in all samples with KD's cache disabled. This does not rule out changes between samples or establish the cause of the unavailable reads. No UCSI-labelled records were observed in the decoded ETL. No controller reset, driver replacement, boot/security edit or firmware write was part of the run.
 

@@ -45,7 +45,7 @@ Original baseline:
 
 ## Unperformed or withdrawn tests
 
-- Partner handoff from the established ASUS-Dell peer link to powered DEG2, keeping the ASUS cable end connected: no hardware result yet. An ETW-only recorder is prepared; PS5.1 parsing, Preview and ten mocked workflow/cleanup cases pass. Tests startup/partner history; an unanalysed failure alone does not establish whether the domain stayed awake. [Procedure and limits](handoff.md#n5-existing-hardware-partner-handoff-proposed).
+- Partner handoff from the established ASUS-Dell peer link to powered DEG2: recorder withdrawn during owner-requested cleanup. The attempted run stopped at its initial exactly-one-Up-peer requirement before trace creation; no hardware handoff result obtained. Historical PS5.1/Preview and ten mocked workflow checks passed. [Status and limits](handoff.md#n5-existing-hardware-partner-handoff-proposed).
 - Internal `UserControlOfIdleSettings` registry experiment: withdrawn before any write. The matching host driver checks test-signing at the assignment, so a production-mode override would not enable this flag. No enabled-path test or repair claimed. [Audit](policy-audit.md#follow-up-user-control-of-idle-settings).
 - A second suitable 40 Gbps cable, or a documented 20 Gbps USB4 cable: unavailable at last report. The [next-test matrix](handoff.md) separates these comparisons and their outcomes.
 - A separate known-working USB4 peripheral on the ASUS: unavailable/unconfirmed.

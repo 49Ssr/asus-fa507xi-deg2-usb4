@@ -4,6 +4,8 @@
 
 **New control: [ASUS-Dell USB4 peer link passed at a reported 40 Gbps](docs/peer-test.md).** Both P2P adapters are Up, and ASUS port telemetry confirms Gen 3 with two bonded lanes using the supplied DEG2 cable. This demonstrates host-to-host link establishment at the ASUS port's advertised negotiated rate; GPU PCIe tunnelling and payload throughput remain untested. The failing condition is still the ASUS-DEG2 pairing.
 
+**Cleanup, 31 October:** experimental collectors and reset/policy scripts are retired at the owner's request. Current `tools/` contains only the existing temporary-Windows toolkit. Historical source links below point to the [last revision before cleanup](https://github.com/49Ssr/asus-fa507xi-deg2-usb4/tree/90ad1d612df03fef1875bcefebe554b1afab42a3); no further scripted diagnostic test is the current next step.
+
 ## Measured comparison
 
 | Environment | Windows build | Microsoft USB4 host driver | External DEG2 router | External GPU |
