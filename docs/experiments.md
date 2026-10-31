@@ -49,7 +49,7 @@ Owner-run preparation enabled the documented UCSI interface and saved its absent
 
 ## Unperformed or withdrawn tests
 
-- Direct Dell-DEG2 capture under a comparable profile: portable bundle prepared at the owner's request, with a separate Dell entry point and unchanged ASUS guards. PS5.1 software checks and actual bundled debugger replay passed; Dell hardware capture remains unperformed. [Procedure and exact validation limits](dell-control.md).
+- Direct Dell-DEG2 capture under a comparable profile: first launch stopped during import because the folder was directly below a drive root. The corrected bundle retains ASUS guards, adds a storage preflight and survives final logging failures during cleanup. PS5.1 checks and actual bundled debugger replay passed; Dell recording remains unperformed. [Procedure and exact validation limits](dell-control.md).
 - Internal `UserControlOfIdleSettings` registry experiment: withdrawn before any write. The matching host driver checks test-signing at the assignment, so a production-mode override would not enable this flag. No enabled-path test or repair claimed. [Audit](policy-audit.md#follow-up-user-control-of-idle-settings).
 - A second suitable 40 Gbps cable, or a documented 20 Gbps USB4 cable: unavailable at last report. The [next-test matrix](handoff.md) separates these comparisons and their outcomes.
 - A separate known-working USB4 peripheral on the ASUS: unavailable/unconfirmed.

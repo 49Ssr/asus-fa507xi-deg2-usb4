@@ -16,7 +16,9 @@ $script:UcsiKey='HKLM:\SYSTEM\CurrentControlSet\Enum\ACPI\USBC000\0\Device Param
 $script:UcsiState=Join-Path $privateRoot 'ucsi-test-interface-state.json'
 $script:UcsiTool=Join-Path $toolRoot 'MUTT-UCSI\UcsiControl.exe'
 $script:UcsiToolHash='22AC51EF4503E4FF3344B7C33FFB7509F43D26F5F4942A2C382DD91F4FB7B9A7'
-$script:DriverSymbols=Join-Path (Split-Path $repo) 'USB4-Diagnostics\Symbols'
+$captureSymbolParent=Split-Path $repo -Parent
+if([string]::IsNullOrWhiteSpace($captureSymbolParent)){$captureSymbolParent=$repo}
+$script:DriverSymbols=Join-Path $captureSymbolParent 'USB4-Diagnostics\Symbols'
 $script:DeepKd=Join-Path $repo 'local\WinDbg\extracted\amd64\kd.exe'
 
 function Write-PartnerSwapJson([string]$Path,[object]$Value) {

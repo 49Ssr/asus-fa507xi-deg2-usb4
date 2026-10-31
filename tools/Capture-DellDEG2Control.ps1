@@ -32,6 +32,25 @@ function Assert-DellBundle([switch]$SourcesOnly) {
     }
     if(-not $SourcesOnly){Assert-DeepTools}
 }
+function Test-DellResultStorage([string]$Run) {
+    # Exercise both creation and replacement before changing the diagnostic DWORD.
+    $path=Join-Path $Run ('storage-check-'+[guid]::NewGuid().ToString('N')+'.json')
+    try{
+        Write-PartnerSwapJson $path ([ordered]@{Step=1})
+        Write-PartnerSwapJson $path ([ordered]@{Step=2})
+        if((Get-Content -LiteralPath $path -Raw|ConvertFrom-Json).Step -ne 2){throw 'Replacement readback failed.'}
+    }catch{throw ('Result storage cannot safely create/replace its state files. Copy the complete bundle onto the Dell SSD and retry. Details: '+$_.Exception.Message)}
+    finally{if([IO.File]::Exists($path)){[IO.File]::Delete($path)}}
+}
+function Write-DellFinalEvidence([string]$Path,[object]$Value,[object]$Status) {
+    # Evidence I/O must not prevent original-state restoration in the caller.
+    try{Write-PartnerSwapJson $Path $Value}catch{
+        $message=[IO.Path]::GetFileName($Path)+': '+$_.Exception.Message
+        $Status.EvidenceErrors+=@($message)
+        $Status.Result='NotCompleted'
+        Write-Warning ('Could not save final evidence; cleanup will still be attempted. '+$message)
+    }
+}
 function Get-DellContext([switch]$ForUndo) {
     if(-not [Environment]::Is64BitProcess){throw 'Use 64-bit Windows PowerShell.'}
     $principal=New-Object Security.Principal.WindowsPrincipal([Security.Principal.WindowsIdentity]::GetCurrent())
@@ -154,8 +173,8 @@ function Restore-DellUcsi([object]$Context) {
     }
     if(-not(Test-DeepInterfaceEqual (Get-DeepInterfaceState) $saved.Original)){throw 'Original-value verification failed.'}
     if($saved.Modified){
-        $saved.Stage='RegistryRestoredRestartPending';Write-PartnerSwapJson $script:UcsiState $saved
-        Restart-DeepUcsi
+        $saved.Stage='RegistryRestoredRestartPending'
+        try{Write-PartnerSwapJson $script:UcsiState $saved}finally{Restart-DeepUcsi}
     }
     $saved.Stage='Restored';Write-PartnerSwapJson $script:UcsiState $saved
     Write-Host 'Original Dell diagnostic setting restored.' -ForegroundColor Green
@@ -263,7 +282,7 @@ function Get-DellMilestones([object]$Before,[object]$After) {
     return [ordered]@{Deg2RouterPresent=(@($After.Devices|Where-Object {$_.InstanceId -match '^USB4\\VID_8087&PID_5786'}).Count -gt 0);NewDisplayAdapters=$newDisplays;NewNvidiaPresent=(@($newDisplays|Where-Object {$_.InstanceId -match '^PCI\\VEN_10DE'}).Count -gt 0);NvidiaDriverBound=(@($newDisplays|Where-Object {$_.Properties['DEVPKEY_Device_Service'] -eq 'nvlddmkm' -and $_.Status -eq 'OK'}).Count -gt 0)}
 }
 function Invoke-DellRun([object]$Context,[string]$Run) {
-    $status=[ordered]@{Schema=1;Kind='DellDEG2Control';StartedUtc=[DateTime]::UtcNow.ToString('o');Result='NotCompleted';Error=$null;Markers=@();Firmware=$null;Warmup=$null;Recorders=$null;Milestones=$null;OwnerDisplayImage=$null;Cleanup=$null;WirePacketsCaptured=$false;CoverageRequiresAnalysis=$true}
+    $status=[ordered]@{Schema=1;Kind='DellDEG2Control';StartedUtc=[DateTime]::UtcNow.ToString('o');Result='NotCompleted';Error=$null;EvidenceErrors=@();Markers=@();Firmware=$null;Warmup=$null;Recorders=$null;Milestones=$null;OwnerDisplayImage=$null;Cleanup=$null;WirePacketsCaptured=$false;CoverageRequiresAnalysis=$true}
     $trace=$null;$greenShown=$false;$awaitRestart=$false
     try{
         Assert-DellDisconnected -Ask
@@ -295,16 +314,16 @@ function Invoke-DellRun([object]$Context,[string]$Run) {
     }finally{
         if($null -ne $trace){
             try{Stop-ConnectionTrace $trace $Run;if(-not $trace.Stopped){throw 'Owned ETW session did not stop normally.'}}catch{$status.Result='NotCompleted';$status.Error=$_.Exception.Message}
-            Write-PartnerSwapJson (Join-Path $Run 'trace-status.json') $trace
+            Write-DellFinalEvidence (Join-Path $Run 'trace-status.json') $trace $status
         }
         $etl=Join-Path $Run 'connection.etl'
-        $status.EtlBytes=if(Test-Path -LiteralPath $etl -PathType Leaf){(Get-Item -LiteralPath $etl).Length}else{0}
+        try{$status.EtlBytes=if(Test-Path -LiteralPath $etl -PathType Leaf){(Get-Item -LiteralPath $etl).Length}else{0}}catch{$status.EtlBytes=0;$status.EvidenceErrors+=@('ETL metadata: '+$_.Exception.Message);$status.Result='NotCompleted'}
         $status.FileCapRisk=($status.EtlBytes -ge 1000MB)
         if($status.Result -eq 'Recorded' -and $status.EtlBytes -eq 0){$status.Result='NotCompleted';$status.Error='ETL is absent or empty.'}
         if($greenShown){try{$answer=Read-Host 'Recording stopped. Did the GPU HDMI/DP display show an image? Type Y, N, or Unknown';$status.OwnerDisplayImage=if($answer -match '^(?i:y|yes)$'){$true}elseif($answer -match '^(?i:n|no)$'){$false}else{$null}}catch{$status.OwnerObservationError=$_.Exception.Message}}
         try{Write-PartnerSwapJson (Join-Path $Run 'network-after.private.json') (Get-DeepNetworkState)}catch{$status.NetworkAfterError=$_.Exception.Message}
         $status.FinishedUtc=[DateTime]::UtcNow.ToString('o')
-        Write-PartnerSwapJson (Join-Path $Run 'status.json') $status
+        Write-DellFinalEvidence (Join-Path $Run 'status.json') $status $status
         if($awaitRestart){$status.Cleanup='AwaitingWindowsRestart';Write-Warning 'Restart Windows normally, then run START.cmd again. No automatic restart was issued. Keep this USB state backup.'}
         else{
             try{
@@ -315,8 +334,9 @@ function Invoke-DellRun([object]$Context,[string]$Run) {
         }
         try{Write-PartnerSwapJson (Join-Path $Run 'network-after-cleanup.private.json') (Get-DeepNetworkState)}catch{$status.NetworkCleanupSnapshotError=$_.Exception.Message}
         $status.CleanupFinishedUtc=[DateTime]::UtcNow.ToString('o')
-        Write-PartnerSwapJson (Join-Path $Run 'status.json') $status
-        Write-Host ('Results saved on this drive: '+$Run) -ForegroundColor Green
+        Write-DellFinalEvidence (Join-Path $Run 'status.json') $status $status
+        Write-Host ('Results directory: '+$Run) -ForegroundColor Cyan
+        Write-Host ('Capture result: '+$status.Result+'; cleanup: '+$status.Cleanup)
     }
     return $status
 }
@@ -381,6 +401,7 @@ if($script:DellRequestedMode -eq 'UndoUcsi'){Assert-DellDisconnected -Ask;Restor
 if((New-Object IO.DriveInfo([IO.Path]::GetPathRoot($script:BundleRoot))).AvailableFreeSpace -lt 3GB){throw 'Keep at least 3 GiB free on the USB drive for trace/symbol results.'}
 $run=Join-Path $script:privateRoot ([DateTime]::UtcNow.ToString('yyyyMMdd-HHmmss')+'-Dell-DEG2-'+[guid]::NewGuid().ToString('N').Substring(0,8))
 New-Item -ItemType Directory -Path $run -Force|Out-Null
+Test-DellResultStorage $run
 Write-PartnerSwapJson (Join-Path $run 'host.private.json') $context
 $result=Invoke-DellRun $context $run
 if($result.Cleanup -eq 'AwaitingWindowsRestart'){exit 3010}

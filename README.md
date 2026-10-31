@@ -6,7 +6,7 @@
 
 **New result: [deeper negotiation comparison completed](docs/handoff.md#n5-existing-hardware-partner-handoff-proposed).** The 20:08-20:10 UTC run contains 3,097,071 events, zero reported loss and 4,735 decoded UCSI lines. All 84 diagnostic GET requests completed without a CCI error. The peer reconnected; neither DEG2 attachment produced its router/GPU. Both failures show completed PD/data-role negotiation followed by alternate-mode-only partner reporting. Root cause remains unresolved. A direct Dell-DEG2 recording is the next proposed control. Earlier reset/policy scripts and the standalone memory probe remain retired; their source is available at the [revision before cleanup](https://github.com/49Ssr/asus-fa507xi-deg2-usb4/tree/90ad1d612df03fef1875bcefebe554b1afab42a3).
 
-**[Portable Dell-DEG2 capture prepared](docs/dell-control.md).** The USB bundle uses the same trace profile and adds Dell driver/PDB identities, matching-symbol preparation and bounded alternate-mode/cable queries. Software guards and the bundled debugger were validated locally; the direct Dell hardware recording remains unperformed. The existing ASUS collector is unchanged.
+**[Portable Dell-DEG2 capture corrected](docs/dell-control.md).** The first Dell launch exposed a drive-root import bug and stopped before diagnostic preparation. The corrected bundle adds a storage check and cleanup that survives final log-write failures. Run the complete folder from the Dell SSD, then return its results on USB. ASUS hardware/driver guards are retained; the direct Dell recording remains unperformed.
 
 ## Measured comparison
 

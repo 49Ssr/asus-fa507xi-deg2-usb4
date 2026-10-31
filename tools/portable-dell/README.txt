@@ -1,7 +1,10 @@
 DELL -> DEG2 SUCCESSFUL-CONNECTION CONTROL
 
-1. Keep this entire USB4-Dell-Control folder together on the USB drive.
-   Leave at least 3 GiB free. Keep the Dell awake on its normal charger.
+1. Copy the entire USB4-Dell-Control folder from USB onto the Dell SSD,
+   preferably C:\USB4-Dell-Control. Keep the folder together; do not copy
+   just START.cmd or the PowerShell files. Leave at least 3 GiB free.
+   Keep the Dell awake on its normal charger. Local recording avoids logging
+   the USB stick's own trace-writing traffic and reduces USB I/O overhead.
    Keep DEG2 powered and the display connected to the GPU.
 2. On the Intel Dell, right-click START.cmd and choose Run as administrator.
 3. Disconnect DEG2 USB-C from the Dell when prompted. Symbol preparation
@@ -11,8 +14,13 @@ DELL -> DEG2 SUCCESSFUL-CONNECTION CONTROL
    that worked before. Leave it connected while recording and queries finish.
 5. Answer whether the GPU display showed an image. Then DISCONNECT DEG2
    when prompted so the original diagnostic setting can be restored safely.
-6. After the console finishes, safely eject the USB and bring it back to ASUS.
-   Keep the complete Results folder, including SymbolCache and State.
+6. After the console finishes, copy the complete Results folder back into
+   USB4-Dell-Control on the USB, including SymbolCache and State. Eject the
+   USB safely and bring it back to ASUS. Retain the Dell copy until reviewed.
+
+Running directly from USB is supported if the storage check passes. Connect
+the stick directly to the Dell, never through DEG2, because DEG2 must be
+disconnected during preparation and cleanup. Drive letters may differ.
 
 The collector uses the same 27-provider trace profile as the ASUS comparison,
 including USB transfer/header/payload keywords. It saves disconnected and
@@ -23,7 +31,9 @@ Actual provider emission, decoding and physical insertion time need analysis.
 
 One documented UCSI diagnostic-interface DWORD is enabled where the Dell
 exposes the expected Microsoft ACPI UCSI device. Its original presence/value
-and networking/ICS configuration are saved before any change. The collector
+and networking/ICS configuration are saved before any change. Result-file
+creation/replacement is tested first. Final logging errors do not skip cleanup.
+The collector
 restarts only that UCSI device, then restores its original setting at cleanup.
 If Windows says a normal restart is required, restart normally and run START
 again; the original backup is retained. No automatic reboot is issued.

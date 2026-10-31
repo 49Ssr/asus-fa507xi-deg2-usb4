@@ -6,7 +6,7 @@ if exist "%SystemRoot%\Sysnative\WindowsPowerShell\v1.0\powershell.exe" set "Cap
 set "CaptureExit=%ERRORLEVEL%"
 echo.
 echo Collector exit code: %CaptureExit%
-echo Keep the Results folder on this USB drive.
+echo Keep the Results folder beside the collector, including State and SymbolCache.
 echo If cleanup could not finish, disconnect DEG2 and run UNDO.cmd as administrator on this same Dell.
 pause
 exit /b %CaptureExit%

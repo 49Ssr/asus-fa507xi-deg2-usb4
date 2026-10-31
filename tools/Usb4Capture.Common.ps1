@@ -177,8 +177,18 @@ function Start-ConnectionTrace([string]$Directory) {
     $logman=Join-Path $env:SystemRoot 'System32\logman.exe'
     $output=& $logman create trace $name -ets -o $etl -pf $providerFile -f bin -max 1024 -bs 128 -nb 32 256 -ct perf -ft 1 2>&1
     $code=$LASTEXITCODE
-    [IO.File]::WriteAllText((Join-Path $Directory 'trace-start.txt'),($output -join [Environment]::NewLine),(New-Object Text.UTF8Encoding($false)))
-    if($code -ne 0){throw ('ETW trace did not start; exit '+$code+'. Do not change the current cable connection.')}
+    if($code -ne 0){
+        try{[IO.File]::WriteAllText((Join-Path $Directory 'trace-start.txt'),($output -join [Environment]::NewLine),(New-Object Text.UTF8Encoding($false)))}catch{Write-Warning ('Could not save ETW startup error: '+$_.Exception.Message)}
+        throw ('ETW trace did not start; exit '+$code+': '+($output -join ' ')+'. Do not change the current cable connection.')
+    }
+    try{
+        [IO.File]::WriteAllText((Join-Path $Directory 'trace-start.txt'),($output -join [Environment]::NewLine),(New-Object Text.UTF8Encoding($false)))
+    }catch{
+        # Start succeeded, but no ownership record can reach the caller. Stop here.
+        $writeError=$_
+        try{$null=& $logman stop $name -ets 2>&1;if($LASTEXITCODE -ne 0){Write-Warning ('Could not stop just-created session: logman stop '+$name+' -ets')}}catch{Write-Warning ('Check just-created session '+$name+': '+$_.Exception.Message)}
+        throw $writeError
+    }
     return [ordered]@{Name=$name;Etl='connection.etl';StartedUtc=[DateTime]::UtcNow.ToString('o');Stopped=$false;StopExitCode=$null;EventsLost=$null;FileMode='Sequential';MaxMiB=1024;ProviderCoverage='Requested; emitted coverage requires analysis'}
 }
 

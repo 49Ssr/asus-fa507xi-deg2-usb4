@@ -96,4 +96,22 @@ MustThrow {Find-ResultBridge ([pscustomobject]@{RepositoryRelativePath='D:\outsi
 $prepare=Get-Content -LiteralPath (Join-Path $repo 'tools\Prepare-USB4Test.ps1') -Raw
 Check (-not ($prepare -match '(?im)^\s*clean\s*$|Clear-Disk|Remove-Partition|Resize-Partition|bcdboot')) 'No physical partition deletion/resize or boot-file replacement'
 Check ($prepare.Contains('Assert-VirtualDiskTarget -ImagePath $vhdPath -DiskNumber $number -RequireRaw')) 'Raw VHD guard present before initialization'
+# Import-only portable-path and final-log regressions; no hardware calls.
+& {
+    param([string]$ResearchRepo)
+    . (Join-Path $ResearchRepo 'tools\Capture-DellDEG2Control.ps1')
+    $lines=[IO.File]::ReadAllLines((Join-Path $ResearchRepo 'tools\Capture-USB4PartnerSwap.ps1'))
+    $start=[Array]::FindIndex($lines,[Predicate[string]]{param($s)$s.StartsWith('$captureSymbolParent=')})
+    Check ($start -ge 0) 'Portable symbol initializer exists'
+    $initializer=[scriptblock]::Create(($lines[$start..($start+2)] -join [Environment]::NewLine))
+    foreach($entry in @(@('C:\','C:\USB4-Diagnostics\Symbols'),@('D:\','D:\USB4-Diagnostics\Symbols'),@('E:\','E:\USB4-Diagnostics\Symbols'),@('C:\nested\repo','C:\nested\USB4-Diagnostics\Symbols'))){
+        $value=&{param($repo,$code). $code;$script:DriverSymbols} $entry[0] $initializer
+        Check ($value -eq $entry[1]) ('Portable initializer accepts '+$entry[0])
+    }
+    function Write-PartnerSwapJson {param($Path,$Value);throw 'Simulated result-volume failure'}
+    function Write-Warning {param($Message)}
+    $status=[ordered]@{Result='Recorded';EvidenceErrors=@()}
+    Write-DellFinalEvidence 'C:\in-memory-run\status.json' @{} $status
+    Check ($status.Result -eq 'NotCompleted' -and $status.EvidenceErrors.Count -eq 1) 'Final evidence failure returns control for cleanup'
+} $repo
 Write-Host ('Passed '+$script:checks+' checks. No disk, BCD, driver-installation, or firmware operations executed.') -ForegroundColor Green
