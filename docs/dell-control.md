@@ -1,6 +1,45 @@
 # Portable Intel Dell-DEG2 control
 
-**Startup corrected; Dell recording pending.** The first invocation stopped during import, before preparation or hardware actions. The same assembled DEG2/GPU/PSU/cable already works on the Dell. A trace starting before successful attachment can compare Type-C/PD decisions, USB4 link/router creation and PCIe/GPU enumeration against the [recorded ASUS sequence](handoff.md#n5-existing-hardware-partner-handoff-proposed).
+**Successful control recorded, 31 October 2026.** The corrected collector recorded the Intel Dell Latitude 5540 establishing native USB4 and enumerating the DEG2 and RTX 4080 SUPER. NVIDIA binding was present before diagnostic GET requests; after recording, the owner confirmed display output. The ASUS remains unresolved. The first invocation had stopped during import; that separate startup defect is documented below.
+
+## Measured result
+
+| Measurement | Observed result |
+| --- | --- |
+| System | Dell Latitude 5540; BIOS 1.32.0; Windows 25H2, build 26200.9818 |
+| ETL | 21:25:02.961-21:27:31.350 UTC; 148.389 seconds; 291,241,984 bytes, below the 1 GiB cap |
+| Decode | 1,096,876 events; zero reported lost events/buffers; zero format errors; 294 unknown records remain |
+| New DEG2 uplink telemetry | Speed `0x04` (Gen 3), width `0x02`, bonded lanes, both adapter states `0x02`; reported 40 Gbps. `Tbt3CompatibleMode = 0`: this successful control uses native USB4. |
+| GPU/output observations | Prequery inventory: new RTX 4080 SUPER, Status OK, problem code zero, `nvlddmkm` bound. After recording, owner confirmed an image on the GPU-connected display. |
+| Diagnostic GETs | 41/41 completed; no transport failure, final busy response or CCI error. Both error-status replies are zero. |
+| UCSI command sequence | 48 commands and 48 ACKs; all 48 terminal command completions and ACK completions present; no UCSI errors/timeouts. Seven normal commands plus 41 diagnostic GETs. |
+| Formatted driver messages | 2,167 UcmUcsiCx; 20 UcmCx; 3,050 USB4 host; 3,781 USB4 device-router lines |
+| Driver comparison | All 14 copied driver/kernel images match the current ASUS installation byte-for-byte by SHA-256, including both USB4 drivers, UCM/UCSI, ACPI and PCI. This compares installed files; loaded module metadata also confirms USB4/UCSI version 10.0.26100.9818 on Dell. |
+| Cleanup | Saved original diagnostic value was absent; state finished Restored. Before/after-cleanup adapters, IP, DHCP/interface, DNS, default-route and ICS snapshots match. |
+
+The private ETL SHA-256 is `2F70CDA8695179930A644ABD99B327F7FDB0C49A653A618D9FBCB6CE6447B9FB`. Import verified all 55 returned files against their source hashes. Raw captures, driver files, PDBs, identities and network snapshots remain private.
+
+### Difference from the ASUS failure
+
+| Observation | Working Dell | Failed ASUS handoff and fresh attachment |
+| --- | --- | --- |
+| OS-requested data-role correction | No `SET_UOR` command in the recorded sequence; role-correction decision is No | Windows requests `SET_UOR(Dfp)`; it completes successfully on both DEG2 attempts |
+| Subsequent partner report | UFP, USB flag `0x1`; operating modes stay `0x40` | UFP, alternate-mode flag `0x2`; operating modes change `0x40 -> 0x20` |
+| Partner alternate-mode replies | Index 0: Intel SVID `0x8087`, VDO `0x00000001`; index 1: DP SVID `0xff01`, VDO `0x00001c46`; index 2 empty. Repeated index 0 replies agree. | Queried index 0 reports DP SVID `0xff01`, VDO `0x00001c45`; later indexes were not queried in the ASUS batch |
+| Mode support/current index | Supported bitmap `0x0f`, current index `0` | Supported bitmap zero, current index `1` |
+| Result | External router, PCIe tunnel, NVIDIA driver and image | USB/Billboard fallback; no external router/GPU |
+
+This makes the platform's data-role/advanced-link negotiation a specific investigation target. It does **not** prove `SET_UOR` caused failure: role correction may be required on ASUS, the two PPM implementations report different capabilities, alternate-mode ordering can differ, and UCSI reports do not establish the physical mux state. Intel's alternate-mode reply also does not imply the working link used Thunderbolt 3; port telemetry reports native USB4.
+
+Microsoft documents [UCSI `_DSM` function 4](https://learn.microsoft.com/en-us/windows-hardware/design/component-guidelines/usb4-acpi-requirements#device-specific-method-to-prevent-data-role-swap-for-host-to-host-connections) to disable OS data-role correction for platforms affected by host-to-host swaps. Existing ASUS AML advertises mask `0x0f`, omitting function 4. That is a vendor-evaluation lead, not a BIOS compliance finding or an established eGPU workaround; Microsoft's stated scenario is host-to-host. Offline inspection confirms the class driver's role-correction decision consumes and clears the connector's `PerformRoleCorrectionOnNextPdContract` flag. No supported registry workaround, runtime patch or successful repair was established.
+
+### Coverage limits that affect interpretation
+
+- Recording started before attachment. GREEN appeared at 21:25:07.990; the first attachment-related UCSI notification is at 21:25:17.350. The nominal 25-second passive window is measured from GREEN, leaving about 15.66 seconds after that notification before inventory; IFR and active queries start later. The physical insertion instant is not independently measured.
+- Both debugger transcripts reached their markers. Some individual commands still report errors: the ACPI client's WPP header is unavailable, its WDF records supplement it, and USB4KD reports an error before supplying a partial topology containing the DEG2 and PCIe tunnel. Transcript completion does not prove every decoder succeeded. Helper unloading remains unverified.
+- Dell does not advertise cable-detail support and returns zero cable-property bytes despite a working 40 Gbps link. Those replies cannot establish cable speed or absence of an e-marker. ASUS's implausible cable-speed/version fields also remain unresolved.
+- Identical Windows files weaken a corrupt/different-build explanation; hardware, ACPI, firmware, state and configuration still differ. This is not an exclusion of every Windows interaction.
+- Repeating the identical Dell capture has no identified benefit. Before another experiment, audit how the ASUS correction flag is set and whether its firmware role/mode transition can be changed through an applicable, reversible interface. A generic controller reinstall does not test this difference.
 
 ## Run the prepared private bundle
 
@@ -46,7 +85,7 @@ The private bundle contains 419 hashed members plus its manifest, approximately 
 | Capture lifecycle | 19 in-memory cases passed: ordering, driver milestones, partial coverage, trace/phase failures, ETL guard, cleanup, interrupted observation and final log/metadata I/O failures |
 | GET encoding / protocol | Nine assertions passed, including PDO/mode-offset/cable encodings, bounded list termination, firmware errors and transport/busy stopping |
 | Packaged binaries/extensions | All manifest hashes verified; native debugger signatures checked. Actual packaged KD/recorder replay on the existing offline dump reached both markers and decoded UCSI records. No live helper loaded for this replay. |
-| Dell hardware capture | Unperformed |
+| Dell hardware capture | Completed; native USB4 router/PCIe GPU, NVIDIA binding and display image confirmed. Measured results and decoder limits above. |
 
 ### First-launch correction
 

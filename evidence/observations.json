@@ -2,7 +2,7 @@
   "schema_version": 1,
   "reviewed_date": "2026-10-31",
   "status": "unresolved",
-  "provenance": "Curated local trace, inventory and live kernel measurements; owner-supplied comparison photographs; raw artifacts retained privately",
+  "provenance": "Curated local traces, inventories and kernel measurements; returned Dell capture/driver/query/state files; owner-supplied comparison photographs; raw artifacts retained privately",
   "raw_artifacts_public": false,
   "deep_negotiation_comparison": {
     "id": "ASUS-DEEP-20261031T200808Z",
@@ -17,7 +17,12 @@
     "buffers_lost": 0,
     "format_errors": 0,
     "unknown_records": 726,
-    "decoded_lines": {"UcmUcsiCx": 4735, "UcmCx": 62, "Usb4HostRouter": 5285, "Usb4DeviceRouter": 3048},
+    "decoded_lines": {
+      "UcmUcsiCx": 4735,
+      "UcmCx": 62,
+      "Usb4HostRouter": 5285,
+      "Usb4DeviceRouter": 3048
+    },
     "recorder_transcripts_completed": 3,
     "native_get_requests": 84,
     "native_get_cci_errors": 0,
@@ -273,7 +278,7 @@
       "working_peer_rundown_executed": true,
       "rundown_script_validation": "Windows PowerShell 5.1 parse, Preview and live capture completed",
       "working_peer_rundown": {
-        "start_utc": "2026-10-31T13:37:49.1851530Z",
+        "start_utc": "2026-10-31T13:37:49.185153Z",
         "end_utc": "2026-10-31T13:37:52.3048867Z",
         "etw_events": 1666,
         "lost_events": 0,
@@ -282,7 +287,10 @@
         "unknown_records": 0,
         "current_link_speed_raw": "0x4",
         "negotiated_link_width_raw": "0x2",
-        "lane_states_raw": ["0x2", "0x2"],
+        "lane_states_raw": [
+          "0x2",
+          "0x2"
+        ],
         "lane_bonded": true,
         "hec_error": 0,
         "flow_control_error": 0,
@@ -576,5 +584,79 @@
     "repair_mode": false,
     "root_cause_identified": false,
     "private_results_public": false
+  },
+  "dell_deg2_control": {
+    "id": "DELL-DEG2-20261031T212502Z",
+    "performed": true,
+    "model": "Latitude 5540",
+    "windows_build": "26200.9818",
+    "usb4_driver_version": "10.0.26100.9818",
+    "start_utc": "2026-10-31T21:25:02.9614833Z",
+    "end_utc": "2026-10-31T21:27:31.3503721Z",
+    "duration_seconds": 148.3888888,
+    "etl_bytes": 291241984,
+    "etl_sha256": "2F70CDA8695179930A644ABD99B327F7FDB0C49A653A618D9FBCB6CE6447B9FB",
+    "etw_events": 1096876,
+    "events_lost": 0,
+    "buffers_lost": 0,
+    "format_errors": 0,
+    "unknown_records": 294,
+    "native_firmware_gets": 41,
+    "native_firmware_gets_completed": 41,
+    "ucsi_commands": 48,
+    "ucsi_command_completions": 48,
+    "ucsi_acks": 48,
+    "ucsi_ack_completions": 48,
+    "ucsi_error_completions": 0,
+    "ucsi_timeouts": 0,
+    "set_uor_sends": 0,
+    "usb4_rate_reported_gbps": 40,
+    "tbt3_compatible_mode": false,
+    "new_router_present": true,
+    "new_nvidia_present": true,
+    "nvidia_driver_bound_before_queries": true,
+    "owner_display_image_confirmed": true,
+    "owner_display_observation_after_recording": true,
+    "original_diagnostic_value": "Absent",
+    "cleanup_state": "Restored",
+    "network_snapshot_parts_equal": [
+      "Adapters",
+      "IP",
+      "Interfaces",
+      "DNS",
+      "DefaultRoutes",
+      "Sharing"
+    ],
+    "copied_images_matching_current_asus": 14,
+    "copied_image_comparison_basis": "SHA-256 of copied installed images; not an assertion that all 14 were loaded identically",
+    "partner_flags": "0x1 USB",
+    "operating_modes": "0x40 unchanged",
+    "partner_modes": [
+      {
+        "svid": "0x8087",
+        "index": 0,
+        "vdo": "0x00000001"
+      },
+      {
+        "svid": "0xff01",
+        "index": 1,
+        "vdo": "0x00001c46"
+      }
+    ],
+    "current_cam_index": 0,
+    "supported_cam_bitmap": "0x0f",
+    "raw_pd_wire_capture": false,
+    "helper_unloading_verified": false,
+    "cause_proven": false,
+    "repair_claimed": false,
+    "next_analysis": "ASUS platform data-role correction / advanced-link negotiation; inspect origin of PerformRoleCorrectionOnNextPdContract and supported interfaces before an intervention.",
+    "limits": [
+      "294 undecoded events remain",
+      "Some individual debugger commands report errors despite completed transcript",
+      "ASUS queried only partner alternate-mode index 0",
+      "Role correction may be necessary on ASUS; absence on Dell does not establish causation",
+      "UCSI reports do not prove physical mux selection",
+      "Physical insertion time not independently measured"
+    ]
   }
 }

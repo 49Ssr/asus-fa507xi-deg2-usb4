@@ -4,15 +4,16 @@
 
 **New control: [ASUS-Dell USB4 peer link passed at a reported 40 Gbps](docs/peer-test.md).** Both P2P adapters are Up, and ASUS port telemetry confirms Gen 3 with two bonded lanes using the supplied DEG2 cable. This demonstrates host-to-host link establishment at the ASUS port's advertised negotiated rate; GPU PCIe tunnelling and payload throughput remain untested. The failing condition is still the ASUS-DEG2 pairing.
 
-**New result: [deeper negotiation comparison completed](docs/handoff.md#n5-existing-hardware-partner-handoff-proposed).** The 20:08-20:10 UTC run contains 3,097,071 events, zero reported loss and 4,735 decoded UCSI lines. All 84 diagnostic GET requests completed without a CCI error. The peer reconnected; neither DEG2 attachment produced its router/GPU. Both failures show completed PD/data-role negotiation followed by alternate-mode-only partner reporting. Root cause remains unresolved. A direct Dell-DEG2 recording is the next proposed control. Earlier reset/policy scripts and the standalone memory probe remain retired; their source is available at the [revision before cleanup](https://github.com/49Ssr/asus-fa507xi-deg2-usb4/tree/90ad1d612df03fef1875bcefebe554b1afab42a3).
+**New result: [deeper negotiation comparison completed](docs/handoff.md#n5-existing-hardware-partner-handoff-proposed).** The 20:08-20:10 UTC run contains 3,097,071 events, zero reported loss and 4,735 decoded UCSI lines. All 84 diagnostic GET requests completed without a CCI error. The peer reconnected; neither DEG2 attachment produced its router/GPU. Both failures show completed PD/data-role negotiation followed by alternate-mode-only partner reporting. Root cause remains unresolved. The successful direct Dell-DEG2 control below supplies the next comparison. Earlier reset/policy scripts and the standalone memory probe remain retired; their source is available at the [revision before cleanup](https://github.com/49Ssr/asus-fa507xi-deg2-usb4/tree/90ad1d612df03fef1875bcefebe554b1afab42a3).
 
-**[Portable Dell-DEG2 capture corrected](docs/dell-control.md).** The first Dell launch exposed a drive-root import bug and stopped before diagnostic preparation. The corrected bundle adds a storage check and cleanup that survives final log-write failures. Run the complete folder from the Dell SSD, then return its results on USB. ASUS hardware/driver guards are retained; the direct Dell recording remains unperformed.
+**[Direct Dell control completed](docs/dell-control.md).** The corrected collector recorded 1,096,876 events with zero reported loss, native USB4 at a reported 40 Gbps, the DEG2 router, NVIDIA binding and working display output. All 41 diagnostic GETs completed; original setting and network snapshots were preserved. All 14 copied Windows images match the current ASUS files by SHA-256. Dell needs no OS `SET_UOR` correction; both ASUS failures perform that correction before alternate-mode-only reporting. This is a targeted negotiation lead, not a proven cause or fix.
 
 ## Measured comparison
 
 | Environment | Windows build | Microsoft USB4 host driver | External DEG2 router | External GPU |
 | --- | --- | --- | --- | --- |
-| Dell Intel TB4 | 26200.9711 | Not recorded | Present; 40/40 Gbps | Driver installed; HDMI output works |
+| Dell Intel TB4, initial owner test | 26200.9711 | Not recorded | Present; 40/40 Gbps | Driver installed; HDMI output works |
+| Dell Latitude 5540, recorded control | 26200.9818 | 10.0.26100.9818 | Present; native USB4, reported 40 Gbps | NVIDIA bound; image confirmed |
 | ASUS, original installation after rollback | 26200.9818 | 10.0.26100.9818 | Absent | Absent |
 | ASUS, separate native-boot Windows | 26200.8037 | 10.0.26100.7920 | Absent | Absent |
 

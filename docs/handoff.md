@@ -27,7 +27,7 @@
 
 ## Current action
 
-The deeper comparison completed on 31 October, 20:08:08-20:10:47 UTC. The documented UCSI test interface was enabled successfully; original setting and network state are saved privately. Peer negotiation succeeded; DEG2 handoff and fresh attachment both failed to enumerate the external router/GPU. The next proposed control is direct Dell-DEG2 enumeration with comparable tracing, driver inventory and firmware queries where supported. No additional ASUS capture or reset is justified merely by repeating the same conditions.
+The deeper ASUS comparison completed on 31 October, 20:08:08-20:10:47 UTC; peer negotiation worked, both DEG2 attempts failed. The [direct Dell control](dell-control.md#measured-result) subsequently succeeded at 21:25-21:27 UTC: native USB4 at a reported 40 Gbps, external router, NVIDIA-bound GPU and display output. All 14 copied Windows images match current ASUS files. Dell performs no OS `SET_UOR` correction, whereas both ASUS DEG2 failures send one successfully before alternate-mode-only reporting. Audit that platform-dependent correction/negotiation path before another experiment. The causal role of the command and a supported repair remain unproven; unchanged captures or blanket resets do not test a new variable.
 
 ### N5: existing-hardware partner handoff, proposed
 

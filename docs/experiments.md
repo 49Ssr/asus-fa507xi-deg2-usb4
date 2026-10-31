@@ -47,9 +47,13 @@ Original baseline:
 
 Owner-run preparation enabled the documented UCSI interface and saved its absent original state. The 20:08-20:10 UTC comparison recorded 3,097,071 events, zero reported loss, 4,735 decoded UCSI lines and 84 completed diagnostic GETs. Peer negotiation succeeded; DEG2 handoff and fresh attachment did not enumerate a router/GPU. Both failures complete PD and data-role correction, followed by alternate-mode-only partner reporting and operating-mode value `0x40 -> 0x20`. No command-mailbox stall or patch target was established. [Measured order, query anomalies and limits](handoff.md#n5-existing-hardware-partner-handoff-proposed).
 
+## Direct Dell control, completed
+
+The corrected portable collector ran on the Latitude 5540: 1,096,876 events, zero reported loss, native USB4 at a reported 40 Gbps, external DEG2 router, NVIDIA-bound RTX 4080 SUPER and owner-confirmed image. All 41 GETs completed; the original diagnostic value was restored and before/after-cleanup network/ICS snapshots match. The first failed import is a separate collector defect. [Measured comparison, role-correction lead and limits](dell-control.md#measured-result).
+
 ## Unperformed or withdrawn tests
 
-- Direct Dell-DEG2 capture under a comparable profile: first launch stopped during import because the folder was directly below a drive root. The corrected bundle retains ASUS guards, adds a storage preflight and survives final logging failures during cleanup. PS5.1 checks and actual bundled debugger replay passed; Dell recording remains unperformed. [Procedure and exact validation limits](dell-control.md).
+- A change to the ASUS data-role correction/advanced-mode negotiation: the successful Dell control identifies a comparison target, but no applicable supported change or causal intervention has been tested. The absence of `_DSM` function 4 does not itself establish a fault or eGPU fix.
 - Internal `UserControlOfIdleSettings` registry experiment: withdrawn before any write. The matching host driver checks test-signing at the assignment, so a production-mode override would not enable this flag. No enabled-path test or repair claimed. [Audit](policy-audit.md#follow-up-user-control-of-idle-settings).
 - A second suitable 40 Gbps cable, or a documented 20 Gbps USB4 cable: unavailable at last report. The [next-test matrix](handoff.md) separates these comparisons and their outcomes.
 - A separate known-working USB4 peripheral on the ASUS: unavailable/unconfirmed.

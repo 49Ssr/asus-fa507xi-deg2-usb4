@@ -16,6 +16,12 @@ This locates a boundary. It does not identify which cable, mux/retimer, PD contr
 
 The later [N0 peer test](peer-test.md) shows USB4 P2P adapters Up on both ASUS and Dell using the same supplied cable. A completed rundown confirms Gen 3 with two bonded lanes, a reported 40 Gbps link, with both lane adapters Up. This narrows a blanket nonfunctional/low-rate USB4 explanation, while leaving GPU PCIe tunnelling, sustained payload throughput, signal margins with DEG2 and the specific negotiation defect untested.
 
+## Recorded successful Dell control
+
+The [21:25-21:27 UTC Dell capture](dell-control.md#measured-result) contains 1,096,876 events with zero reported loss. Native USB4 at a reported 40 Gbps, the DEG2 router, PCIe tunnel and NVIDIA-bound RTX 4080 SUPER are present before diagnostic GETs. The owner confirmed display output after recording. All 41 GETs and all 48 UCSI command/ACK pairs complete. Original diagnostic state was restored; network/ICS snapshots match before/after cleanup.
+
+All 14 returned Windows driver/kernel images match the current ASUS files byte-for-byte. The useful divergence is platform negotiation: Dell reports a USB-capable UFP partner without an OS `SET_UOR`; ASUS sends a successful DFP correction, then reports an alternate-mode-only UFP and operating modes `0x40 -> 0x20`. The Dell's alternate-mode list also includes Intel `0x8087` before DP `0xff01`; ASUS queried only index 0 and returned DP. Index/order and PPM differences limit interpretation. This localizes a candidate mechanism, not a demonstrated defective component, causal command or tested patch.
+
 ## `_OSC` result `0xf`
 
 The host restart trace records `_OSC USB4 capabilities granted: 0xf`. The four low control bits are granted, including PCIe tunneling control. This rules out the specific claim that firmware is withholding that `_OSC` permission in the captured initialization.
