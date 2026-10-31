@@ -26,6 +26,8 @@ The linked conversation's latest exchanges and the earlier Dell-bundle/results e
 
 ## What is useful next
 
+**Subsequent owner-requested work:** the [existing-capture follow-up](negotiation-followup.md) traces the correction-flag writer and separates the hosts' initial and PD-time reports. A guarded [initial CC-role test](initial-role-test.md) is now prepared with the existing equipment. Hardware execution remains unperformed; the earlier mode exit must not be repeated.
+
 The [research review](research.md#continuation-review-31-october-2026) distinguishes native USB4 entry from alternate-mode commands. A custom repair needs an observed failed transition, an applicable control over it and a reversible result that changes router enumeration. No such control is currently validated.
 
 The immediate development opportunity is an [offline evidence comparer and report generator](tool-scope.md), using existing captures first. It can make the negotiation divergence and coverage gaps easier to inspect without sending another firmware command. A successful comparison report must still label the cause unresolved. Optional changed-hardware tests remain in the [existing matrix](handoff.md#deg2-cable-and-peripheral-comparisons).

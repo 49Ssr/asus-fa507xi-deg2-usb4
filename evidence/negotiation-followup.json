@@ -1,0 +1,303 @@
+{
+  "Schema": 1,
+  "Date": "2026-10-31",
+  "HardwareResult": "No new hardware test",
+  "Provenance": {
+    "ASUS": {
+      "DecodedLogSHA256": "88D79391B2CABFA2AB70942F785714B53C88C4002FF5D6D65DC1A39BC5D65720",
+      "Bytes": 2092204
+    },
+    "Dell": {
+      "DecodedLogSHA256": "F10798811B521BEA4E093D0B609AB271BAA19E7B7D60A77C047E8A39FCBD3C06",
+      "Bytes": 1397230
+    }
+  },
+  "Comparisons": [
+    {
+      "Comparison": "ASUS-peer",
+      "WindowStartUtc": "20:08:40",
+      "WindowEndUtc": "20:08:59",
+      "Events": [
+        {
+          "TimeUtc": "20:08:42.845",
+          "Module": "UcmUcsiCx",
+          "DecodedSourceLine": 477,
+          "Observation": "Connected:1 UcsiPowerDirectionProvider UcsiBatteryChargingNotCharging UcsiPowerOperationModeTypeC3000 RDO:0x0"
+        },
+        {
+          "TimeUtc": "20:08:42.845",
+          "Module": "UcmUcsiCx",
+          "DecodedSourceLine": 478,
+          "Observation": "UcsiConnectorPartnerTypeUfp PartnerFlags:0x1[USB   ]"
+        },
+        {
+          "TimeUtc": "20:08:42.883",
+          "Module": "UcmUcsiCx",
+          "DecodedSourceLine": 550,
+          "Observation": "UcsiConnectorPartnerTypeUndefined PartnerFlags:0x0[   ]"
+        },
+        {
+          "TimeUtc": "20:08:43.047",
+          "Module": "UcmUcsiCx",
+          "DecodedSourceLine": 918,
+          "Observation": "Connected:1 UcsiPowerDirectionConsumer UcsiBatteryChargingNominal UcsiPowerOperationModeTypeC3000 RDO:0x0"
+        },
+        {
+          "TimeUtc": "20:08:43.047",
+          "Module": "UcmUcsiCx",
+          "DecodedSourceLine": 919,
+          "Observation": "UcsiConnectorPartnerTypeDfp PartnerFlags:0x1[USB   ]"
+        },
+        {
+          "TimeUtc": "20:08:43.079",
+          "Module": "usb4drd",
+          "DecodedSourceLine": 1107,
+          "Observation": "ASUS root port 2 USB4-plugged check: No"
+        },
+        {
+          "TimeUtc": "20:08:43.227",
+          "Module": "UcmUcsiCx",
+          "DecodedSourceLine": 1580,
+          "Observation": "Connected:1 UcsiPowerDirectionConsumer UcsiBatteryChargingNominal UcsiPowerOperationModePd RDO:0x1384b12c"
+        },
+        {
+          "TimeUtc": "20:08:43.227",
+          "Module": "UcmUcsiCx",
+          "DecodedSourceLine": 1581,
+          "Observation": "UcsiConnectorPartnerTypeDfp PartnerFlags:0x1[USB   ]"
+        },
+        {
+          "TimeUtc": "20:08:43.310",
+          "Module": "UcmUcsiCx",
+          "DecodedSourceLine": 1679,
+          "Observation": "Role-correction decision: Yes"
+        },
+        {
+          "TimeUtc": "20:08:43.330",
+          "Module": "UcmUcsiCx",
+          "DecodedSourceLine": 1701,
+          "Observation": "Sending UcsiCommandSetUor (ConnectorNumber:1 UcsiUsbOperationRoleDfp) OpmCmdSeqNum:0x1b"
+        },
+        {
+          "TimeUtc": "20:08:43.375",
+          "Module": "UcmUcsiCx",
+          "DecodedSourceLine": 1713,
+          "Observation": "SET_UOR firmware error"
+        }
+      ]
+    },
+    {
+      "Comparison": "ASUS-DEG2-handoff",
+      "WindowStartUtc": "20:09:25",
+      "WindowEndUtc": "20:09:33",
+      "Events": [
+        {
+          "TimeUtc": "20:09:25.659",
+          "Module": "UcmUcsiCx",
+          "DecodedSourceLine": 6960,
+          "Observation": "Connected:1 UcsiPowerDirectionConsumer UcsiBatteryChargingNominal UcsiPowerOperationModeTypeC3000 RDO:0x0"
+        },
+        {
+          "TimeUtc": "20:09:25.659",
+          "Module": "UcmUcsiCx",
+          "DecodedSourceLine": 6961,
+          "Observation": "UcsiConnectorPartnerTypeDfp PartnerFlags:0x1[USB   ]"
+        },
+        {
+          "TimeUtc": "20:09:25.751",
+          "Module": "UcmUcsiCx",
+          "DecodedSourceLine": 7034,
+          "Observation": "Connected:1 UcsiPowerDirectionConsumer UcsiBatteryChargingNominal UcsiPowerOperationModePd RDO:0x1384b12c"
+        },
+        {
+          "TimeUtc": "20:09:25.751",
+          "Module": "UcmUcsiCx",
+          "DecodedSourceLine": 7035,
+          "Observation": "UcsiConnectorPartnerTypeDfp PartnerFlags:0x1[USB   ]"
+        },
+        {
+          "TimeUtc": "20:09:25.863",
+          "Module": "UcmUcsiCx",
+          "DecodedSourceLine": 7173,
+          "Observation": "Role-correction decision: Yes"
+        },
+        {
+          "TimeUtc": "20:09:25.878",
+          "Module": "UcmUcsiCx",
+          "DecodedSourceLine": 7195,
+          "Observation": "Sending UcsiCommandSetUor (ConnectorNumber:1 UcsiUsbOperationRoleDfp) OpmCmdSeqNum:0x3e"
+        },
+        {
+          "TimeUtc": "20:09:25.903",
+          "Module": "UcmUcsiCx",
+          "DecodedSourceLine": 7203,
+          "Observation": "SET_UOR completed"
+        },
+        {
+          "TimeUtc": "20:09:25.955",
+          "Module": "UcmUcsiCx",
+          "DecodedSourceLine": 7268,
+          "Observation": "Connected:1 UcsiPowerDirectionConsumer UcsiBatteryChargingNominal UcsiPowerOperationModePd RDO:0x1384b12c"
+        },
+        {
+          "TimeUtc": "20:09:25.955",
+          "Module": "UcmUcsiCx",
+          "DecodedSourceLine": 7269,
+          "Observation": "UcsiConnectorPartnerTypeUfp PartnerFlags:0x2[ AltMode  ]"
+        },
+        {
+          "TimeUtc": "20:09:25.955",
+          "Module": "UcmCx",
+          "DecodedSourceLine": 7282,
+          "Observation": "OperatingModes changed 0x40 => 0x20"
+        }
+      ]
+    },
+    {
+      "Comparison": "ASUS-DEG2-fresh",
+      "WindowStartUtc": "20:10:24",
+      "WindowEndUtc": "20:10:38",
+      "Events": [
+        {
+          "TimeUtc": "20:10:24.108",
+          "Module": "UcmUcsiCx",
+          "DecodedSourceLine": 10164,
+          "Observation": "Connected:1 UcsiPowerDirectionConsumer UcsiBatteryChargingNominal UcsiPowerOperationModeTypeC3000 RDO:0x0"
+        },
+        {
+          "TimeUtc": "20:10:24.108",
+          "Module": "UcmUcsiCx",
+          "DecodedSourceLine": 10165,
+          "Observation": "UcsiConnectorPartnerTypeDfp PartnerFlags:0x1[USB   ]"
+        },
+        {
+          "TimeUtc": "20:10:24.198",
+          "Module": "UcmUcsiCx",
+          "DecodedSourceLine": 10238,
+          "Observation": "Connected:1 UcsiPowerDirectionConsumer UcsiBatteryChargingNominal UcsiPowerOperationModePd RDO:0x1384b12c"
+        },
+        {
+          "TimeUtc": "20:10:24.198",
+          "Module": "UcmUcsiCx",
+          "DecodedSourceLine": 10239,
+          "Observation": "UcsiConnectorPartnerTypeDfp PartnerFlags:0x1[USB   ]"
+        },
+        {
+          "TimeUtc": "20:10:24.272",
+          "Module": "usb4drd",
+          "DecodedSourceLine": 10803,
+          "Observation": "ASUS root port 2 USB4-plugged check: No"
+        },
+        {
+          "TimeUtc": "20:10:24.313",
+          "Module": "UcmUcsiCx",
+          "DecodedSourceLine": 11275,
+          "Observation": "Role-correction decision: Yes"
+        },
+        {
+          "TimeUtc": "20:10:24.333",
+          "Module": "UcmUcsiCx",
+          "DecodedSourceLine": 11297,
+          "Observation": "Sending UcsiCommandSetUor (ConnectorNumber:1 UcsiUsbOperationRoleDfp) OpmCmdSeqNum:0x62"
+        },
+        {
+          "TimeUtc": "20:10:24.361",
+          "Module": "UcmUcsiCx",
+          "DecodedSourceLine": 11305,
+          "Observation": "SET_UOR completed"
+        },
+        {
+          "TimeUtc": "20:10:24.421",
+          "Module": "UcmUcsiCx",
+          "DecodedSourceLine": 11370,
+          "Observation": "Connected:1 UcsiPowerDirectionConsumer UcsiBatteryChargingNominal UcsiPowerOperationModePd RDO:0x1384b12c"
+        },
+        {
+          "TimeUtc": "20:10:24.421",
+          "Module": "UcmUcsiCx",
+          "DecodedSourceLine": 11371,
+          "Observation": "UcsiConnectorPartnerTypeUfp PartnerFlags:0x2[ AltMode  ]"
+        },
+        {
+          "TimeUtc": "20:10:24.421",
+          "Module": "UcmCx",
+          "DecodedSourceLine": 11384,
+          "Observation": "OperatingModes changed 0x40 => 0x20"
+        },
+        {
+          "TimeUtc": "20:10:35.079",
+          "Module": "usb4drd",
+          "DecodedSourceLine": 12305,
+          "Observation": "ASUS root port 2 USB4-plugged check: No"
+        }
+      ]
+    },
+    {
+      "Comparison": "Dell-DEG2",
+      "WindowStartUtc": "21:25:17",
+      "WindowEndUtc": "21:25:23",
+      "Events": [
+        {
+          "TimeUtc": "21:25:17.386",
+          "Module": "UcmUcsiCx",
+          "DecodedSourceLine": 41,
+          "Observation": "Connected:1 UcsiPowerDirectionConsumer UcsiBatteryChargingNominal UcsiPowerOperationModeTypeC3000 RDO:0x0"
+        },
+        {
+          "TimeUtc": "21:25:17.386",
+          "Module": "UcmUcsiCx",
+          "DecodedSourceLine": 42,
+          "Observation": "UcsiConnectorPartnerTypeDfp PartnerFlags:0x1[USB   ]"
+        },
+        {
+          "TimeUtc": "21:25:17.790",
+          "Module": "UcmUcsiCx",
+          "DecodedSourceLine": 1230,
+          "Observation": "Connected:1 UcsiPowerDirectionConsumer UcsiBatteryChargingNominal UcsiPowerOperationModePd RDO:0x438781e0"
+        },
+        {
+          "TimeUtc": "21:25:17.790",
+          "Module": "UcmUcsiCx",
+          "DecodedSourceLine": 1231,
+          "Observation": "UcsiConnectorPartnerTypeUfp PartnerFlags:0x1[USB   ]"
+        },
+        {
+          "TimeUtc": "21:25:18.110",
+          "Module": "UcmUcsiCx",
+          "DecodedSourceLine": 1880,
+          "Observation": "Role-correction decision: No"
+        },
+        {
+          "TimeUtc": "21:25:18.209",
+          "Module": "UcmUcsiCx",
+          "DecodedSourceLine": 1926,
+          "Observation": "Connected:1 UcsiPowerDirectionConsumer UcsiBatteryChargingNominal UcsiPowerOperationModePd RDO:0x438781e0"
+        },
+        {
+          "TimeUtc": "21:25:18.209",
+          "Module": "UcmUcsiCx",
+          "DecodedSourceLine": 1927,
+          "Observation": "UcsiConnectorPartnerTypeUfp PartnerFlags:0x1[USB   ]"
+        },
+        {
+          "TimeUtc": "21:25:22.351",
+          "Module": "UcmUcsiCx",
+          "DecodedSourceLine": 7186,
+          "Observation": "Connected:1 UcsiPowerDirectionConsumer UcsiBatteryChargingNominal UcsiPowerOperationModePd RDO:0x438781e0"
+        },
+        {
+          "TimeUtc": "21:25:22.351",
+          "Module": "UcmUcsiCx",
+          "DecodedSourceLine": 7187,
+          "Observation": "UcsiConnectorPartnerTypeUfp PartnerFlags:0x1[USB   ]"
+        }
+      ]
+    }
+  ],
+  "Limits": [
+    "Decoded retained observations, not USB-PD wire packets.",
+    "Source-line numbers refer to private decoded logs.",
+    "Dell firmware changes its report without a recorded OS SET_UOR; Dell device-controller policy was not separately recovered.",
+    "Initial Rp-only experiment prepared, not executed."
+  ]
+}
