@@ -27,21 +27,52 @@
 
 ## Current action
 
-The owner requested stopping additional diagnostic scripts and cleaning up the accumulated experiments. Experimental collectors, reset/policy scripts and disposable software-test output have been retired from active paths. Real captures, memory evidence and support records are retained. Await an applicable, evidence-backed fix or vendor findings; do not make another scripted capture the default next step.
+The owner explicitly requested a deeper negotiation capture after cleanup, with the aim of identifying an actionable firmware/driver sequence or a reproducible workaround. The existing handoff collector has been expanded rather than restoring the retired reset scripts. Preparation is complete; Administrator preparation and the actual hardware comparison are unperformed. No patch or repair result is claimed.
 
 ### N5: existing-hardware partner handoff, proposed
 
-**Recorder withdrawn during cleanup. No hardware handoff result obtained.** The proposal was to keep the ASUS cable end attached while moving the far end from a working Dell peer link to powered DEG2, changing the initial partner/power history without adding hardware.
+**Prepared, not executed.** The previous attempt stopped before trace creation because the peer adapter was not Up. That precondition refusal is not a hardware handoff result. The revised [collector](../tools/Capture-USB4PartnerSwap.ps1) and [shared library](../tools/Usb4Capture.Common.ps1) address actual coverage gaps found during review:
 
-The owner's attempted run stopped at the initial requirement for exactly one Up USB4 P2P adapter. This happened before trace creation or the handoff prompt. It is a precondition refusal, not a demonstrated failure of the proposed hardware test and not another GPU fault.
+| Layer | Requested evidence | Limits to check during analysis |
+| --- | --- | --- |
+| Windows bus trace | 27 USB4/UCM/UCSI, USB-stack, SPB, ACPI, power and PnP/PCI providers; USB transfer/header/payload flags included | Requested providers can emit no events. FullDataBusTrace includes at most 4 KiB from a supported transfer, not arbitrary firmware traffic. Check actual provider coverage, event loss and time bounds. |
+| Driver flight recorders | All available buffers for five USB4/UCM/UCSI modules, WDF logs and USB4 topology, collected through signed LiveKD/KD after each passive observation | Finite circular histories; formatter availability differs by module. Transcript completion does not establish successful decoding of every buffer. |
+| Supported firmware interface | Up to 28 GET requests per phase: error status first, capabilities, connector/cable/CAM status, local/partner PDOs and repeated partner alternate-mode reads | Queries actively exercise the firmware. They follow the passive window and its recorder snapshot, with separate timestamps and a second PnP inventory. Unsupported commands or raw CLI exit codes require interpretation. |
 
-The [historical recorder](https://github.com/49Ssr/asus-fa507xi-deg2-usb4/blob/90ad1d612df03fef1875bcefebe554b1afab42a3/tools/Capture-USB4PartnerSwap.ps1) and its [ten mocked workflow cases](https://github.com/49Ssr/asus-fa507xi-deg2-usb4/blob/90ad1d612df03fef1875bcefebe554b1afab42a3/tests/Test-USB4PartnerSwap.ps1) remain available at the last revision before cleanup. Windows PowerShell 5.1 parsing, Preview and those software checks passed; no successful live handoff capture occurred. The collector is no longer shipped in current `tools/`.
+The earlier USB keyword mask `0xF861B` omitted transfer headers and payload. A policy-manager WPP GUID present in the matching UCM symbols was also missing from the request list; it is not currently registered, so adding it is not evidence it will emit. Five additional matching PDBs were verified and processed for available formatting. USBHUB3 private WPP formats may remain unavailable.
 
-**Hypothesis:** an already-active host/domain or retained Type-C state changes the outcome of partner startup. The working peer rundown shows the domain awake; the failed DEG2 recording began disconnected/asleep and subsequently woke. That contrast is expected in many normal scenarios and does not diagnose an idle-power defect. The handoff also changes partner/role history, so success would be a practical workaround to reproduce, not proof of a single cause.
+**Comparison sequence:** verify the ASUS-Dell peer link, start ETW, disconnect/reconnect only the Dell end to capture a fresh working peer negotiation, then leave the ASUS end attached and move the Dell end into powered DEG2 upstream. If no new display adapter or DEG2 router appears, record a second DEG2 attachment by disconnecting/reconnecting the ASUS end. ETW remains active across these transitions. Green prompts mark requested insertion times; actual physical timing must be correlated with events. A newly appearing router/display adapter stops the comparison from deliberately disconnecting that potentially useful connection.
 
-The failed preflight does not resolve this hypothesis. A manual negative would not independently establish whether the controller stayed awake during the swap. No new capture is requested after the owner's cleanup instruction.
+The already-awake peer domain is a hypothesis to test, not an established idle-power cause. Peer negotiation is a successful physical-link control, not a test of GPU PCIe tunnelling. The second DEG2 attachment also changes connection history and is not a full hardware cold reset.
 
-Rollback is simply disconnecting the test cable and returning to the normal connection. No registry, driver, firmware, firewall or Internet-sharing change is involved. An internal idle-control parameter was checked and rejected before any write because it is test-signing gated; [audit](policy-audit.md#follow-up-user-control-of-idle-settings).
+**Preparation:** Microsoft documents `TestInterfaceEnabled` for the existing UCSI driver. Read-only examination of this machine's matching `UcmUcsiCx.sys` confirms that its enable function reads the per-device DWORD without the private USB4 test-signing gate. `PrepareUcsi` is restricted to the FA507XI, exact healthy UCSI instance and audited driver hash. It saves the original DWORD state and private Ethernet/IP/DNS/route/ICS configuration before changing that single value, then restarts only the UCSI device. A USB-C link can reconnect during that restart. Network configuration is not edited.
+
+On the owner's already-prepared checkout, from Administrator Windows PowerShell:
+
+```powershell
+$test = Join-Path $PWD 'tools\Capture-USB4PartnerSwap.ps1'
+powershell.exe -NoProfile -ExecutionPolicy Bypass -File $test -Mode PrepareUcsi
+```
+
+After preparation succeeds, connect ASUS directly to Dell with the supplied cable, keep both awake and DEG2 powered, then follow the collector's prompts:
+
+```powershell
+powershell.exe -NoProfile -ExecutionPolicy Bypass -File $test -Mode Capture -Scenario Compare
+```
+
+After examination, restore the exact original setting and restart the same UCSI device:
+
+```powershell
+powershell.exe -NoProfile -ExecutionPolicy Bypass -File $test -Mode UndoUcsi
+```
+
+The collector defaults to Preview. It uses a unique sequential ETL capped at 1 GiB, closes only its own session, and records file-cap risk. Each recorder call is limited to 60 seconds; firmware probes have a 60-second phase budget and five-second command limits. Native child processes use an owned job. Kernel-helper unloading is not independently verified. Raw results remain private in `local/`. No firmware flash, driver-package installation, boot-security change or private USB4 policy override is performed.
+
+**Tool provenance:** UcsiControl 10.0.26572.1000 was extracted without executing/installing Microsoft's MUTT 3.0.1 MSI. The native EXE is unsigned; it is a user-mode program from the official package, pinned by SHA-256 `22AC51EF4503E4FF3344B7C33FFB7509F43D26F5F4942A2C382DD91F4FB7B9A7`. The package hash is `093BD7FB8DBC4A3B8EED909657CA58701235B328C101BDE0AB63099FD4EB95A1`. Debugger executables have valid Microsoft signatures. Binaries, symbols and machine-specific state are not redistributed; this public source is not a standalone install bundle.
+
+**Candidate mechanism, unproven:** the extracted FA507XI `UBTC.M318` AML copies firmware status into the OS mailbox and then clears parts of the firmware shadow. An upstream ASUS UM325 UCSI fix avoids an extra status read because a similar destructive copy can lose a pending notification. This supplies a concrete read/ACK-ordering hypothesis; it does not show that the Windows client makes the faulty read or that the Linux quirk applies to this model. The next analysis must correlate command/completion/notification ordering and physical-link milestones before proposing a targeted workaround.
+
+Windows UCSI exposes firmware commands/status rather than every packet on the USB-C CC wires. This capture does not supply a complete USB-PD wire transcript. If the failure remains entirely inside firmware, vendor firmware logging or a suitable physical PD analyzer is the next instrumentation layer. [Primary sources and exact precedent](research.md#deeper-negotiation-capture-and-ucsi-workaround-precedent).
 
 ## Additional hardware comparisons, currently unavailable
 
