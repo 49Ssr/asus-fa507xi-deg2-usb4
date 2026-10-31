@@ -1,6 +1,8 @@
 # Temporary full-Windows test
 
-**Current hardware-test status: pending.** This is a separate full Windows baseline on the same physical laptop. It is not WinPE or a virtual-machine USB passthrough test. It is intended to test whether the existing Windows installation is involved, not to promise an eGPU fix.
+**Preparation paused for review after its first real failure; no boot test completed.** See the [validation audit](validation-audit.md). The commands below describe the intended workflow, not a recommendation to resume it now.
+
+This is a separate full Windows baseline on the same physical laptop. It is not WinPE or a virtual-machine USB passthrough test. It is intended to test whether the existing Windows installation is involved, not to promise an eGPU fix.
 
 ## Control and data flow
 
@@ -69,6 +71,12 @@ The prepared image requests Microsoft's Audit mode. It should reach the built-in
 The recorder checks the expected host/UCSI/I2C/Parade devices before interpreting a negative result. It captures ordinary USB fallback, external USB4 routers and new display adapters separately. If prerequisites are missing, the negative result is explicitly inconclusive.
 
 An external router appearing is progress even before an NVIDIA driver is installed. Actual display output and GPU workloads are later checks. If the router remains absent with a valid baseline, firmware/hardware/cable interoperability becomes a stronger lead; it is not mathematically proved and a shared OS bug remains possible.
+
+## Recovering the first preparation guard failure
+
+The first real preparation attempt on 31 October created a 4 MiB VHDX container, then stopped before initialization because Windows PowerShell returned BusType as the friendly string `File Backed Virtual` rather than a numeric value. The finally block detached the image. No Windows image or driver was applied, and no boot entry was created. The guard now accepts the numeric value and exact friendly/enum labels while continuing to reject physical disks.
+
+A draft `-Mode ArchiveFailed` recovery change checks the saved phase/error, exact VHDX path/capacity, small file size, detached status and contained source/destination paths. It is designed to preserve the failed directory under a unique `local/NativeBoot-failed-*` name without deleting it. This draft is under review and is not a command to run now. Other failures and later-stage images are rejected by the draft recovery guard.
 
 ## Removing the boot entry
 
