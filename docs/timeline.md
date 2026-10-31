@@ -54,6 +54,7 @@ All dates below are 30 October 2026 unless specified. Times attached to trace na
 | 48, 31 October | Audited possible user idle-control parameter before changing it | Matching driver also test-signing gates `UserControlOfIdleSettings`; no value written, no security change, no enabled-path test. [Read-only audit](policy-audit.md#follow-up-user-control-of-idle-settings). |
 | 49, 31 October | Proposed partner handoff using existing hardware | Start with working ASUS-Dell peer link; keep ASUS cable end connected and move Dell end into powered DEG2. No additional hub/cable needed. No result yet; startup state is a hypothesis, not a diagnosed cause. [Procedure](handoff.md#n5-existing-hardware-partner-handoff-proposed). |
 | 50, 31 October | Owner reports ASUS US support escalation commitment | A US support agent promised handover through an escalated ticket to the relevant ASUS department. Internal handover/review, a diagnosed cause and a firmware release remain unconfirmed. Private support identifiers omitted. |
+| 51, 31 October | Instrumented partner handoff prepared | ETW-only recorder starts on the working peer link, marks a green handoff prompt, records twenty seconds plus inventories and stops its own session. PS5.1 parsing, actual Preview and ten mocked guard/cleanup cases pass. No actual handoff capture or repair result yet. [Procedure and limits](handoff.md#n5-existing-hardware-partner-handoff-proposed). |
 
 ## Corrections that matter
 

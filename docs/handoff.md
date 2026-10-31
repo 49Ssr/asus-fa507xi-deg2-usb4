@@ -33,8 +33,17 @@
 
 1. Keep both laptops awake on their normal chargers. Leave the DEG2 assembled and powered, in the same TB5 mode and with the same upstream port used successfully on Dell.
 2. Establish the direct ASUS-Dell peer connection with the supplied DEG2 cable. Confirm its P2P adapter is Up on ASUS using the read-only command below.
-3. Leave the ASUS cable end connected. Move only the Dell end directly into the DEG2 upstream port, without an intentional disconnected waiting period. Do not force a connector or rush the physical connection.
+3. For the instrumented test, run the command below in Administrator PowerShell on ASUS. Keep both ends connected until its green prompt. Then leave the ASUS cable end connected and move only the Dell end directly into the DEG2 upstream port, without an intentional disconnected waiting period. Do not force a connector or rush the physical connection.
 4. Check for an external USB4 router and the external GPU in Device Manager. Record those separately, and whether the Windows warning appears. Fan motion alone is not the result.
+
+```powershell
+# From this repository, Administrator on ASUS; peer link already Up.
+powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\tools\Capture-USB4PartnerSwap.ps1 -Mode Capture
+```
+
+[Capture-USB4PartnerSwap.ps1](../tools/Capture-USB4PartnerSwap.ps1) defaults to Preview. Capture checks for exactly one Up USB4 P2P adapter again after the readiness prompt and inventory, starts the previously exercised ETW helpers, marks the instruction time, records twenty seconds plus inventory time, and stops only its own trace in `finally`. It permits the peer adapter to go down during the partner change. Output stays under ignored `local/`; inventories are best-effort and retain query errors. Normal recording completion does not establish GPU/router success, actual physical switch times or an awake domain: those fields remain unknown pending analysis.
+
+Windows PowerShell 5.1 parsing and actual Preview pass. [Ten mocked workflow cases](../tests/Test-USB4PartnerSwap.ps1) cover changed/missing/ambiguous peer state, readiness cancellation, start/query/stop failures, a stop-log exception after session stop, a missing ETL, and normal recording with expected peer disconnection. They validate cleanup/status handling without ETW or hardware operations. The actual instrumented handoff has not yet run.
 
 **Hypothesis:** an already-active host/domain or retained Type-C state changes the outcome of partner startup. The working peer rundown shows the domain awake; the failed DEG2 recording began disconnected/asleep and subsequently woke. That contrast is expected in many normal scenarios and does not diagnose an idle-power defect. The handoff also changes partner/role history, so success would be a practical workaround to reproduce, not proof of a single cause.
 
