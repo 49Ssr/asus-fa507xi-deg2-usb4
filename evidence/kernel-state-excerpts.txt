@@ -1,0 +1,46 @@
+K0: Task Manager live kernel snapshot, 2026-10-31 04:27:38.513 UTC.
+Selected offline debugger output; raw logs, memory and kernel addresses private.
+Not a continuous PD transaction trace. State histories have no timestamps.
+
+USB4 port: selected transitions in their execution order within one retained path.
+  ReadingPluggedStateForUSB4 --(Success)--> IsUSB4PortPlugged
+  IsUSB4PortPlugged --(No)--> ShouldCheckRouterDetectedBit
+  ShouldCheckRouterDetectedBit --(Yes)--> ReadingRouterDetected
+  ReadingRouterDetected --(Success)--> IsRouterDetectedSet
+  IsRouterDetectedSet --(No)--> WaitingForRouterConnect
+  ReadCurrentPlugState --(Unplugged)--> IncrementingGenerationCounterOnStartUnplugged
+  ReportingNothingAttached --(Done)--> CheckingIfRootForDfpResetNotificationOnNothingAttached
+  ReleasePowerReferenceOnDisconnectComplete --(Done)--> WaitForEventsInDisconnected
+
+Plug-state manager stack, most recent at top:
+  [EvtFolder] Unplugged
+  [EnableDisable] Enabled
+  [PowerManagement] DxNoChangePwrRefTrackingEnabled
+  [MainMachine] Operational
+
+Root-router stack, most recent at top:
+  [StartedMachine] RouterOperational
+  [MainMachine] Started
+
+Port, plug-state manager and root-router engines each report:
+  Event queue: 0; Exceptions: 0; Transitions retained: 64.
+Zero retained exceptions is not proof of no earlier failure.
+
+UCSI recorder: identifying prefixes removed; payload facts retained.
+  04:27:20.963 GET_ALTERNATE_MODES command 0x13: CommandCompleted=1,
+               DataLength=0, Error=0, NotSupported=0, Busy=0.
+  04:27:20.984 GET_ALTERNATE_MODES acknowledgement completes.
+  04:27:20.984 SET_UOR: ConnectorNumber=1, DFP, command 0x14.
+  04:27:21.000 SET_UOR: CommandCompleted=1, Error=0, NotSupported=0.
+  04:27:21.000 UCM: ConnectorId=1, data change Success=TRUE, DFP.
+  04:27:21.037 SET_UOR acknowledgement: AckCompleted=1, Error=0.
+
+UCSI stacks decoded separately from cached objects and public enum types:
+  OPM: Started / PpmOperational / WaitingForCommandOrNotification.
+  Command handler: Started / WaitingForCommand.
+
+ACPI read attempts, addresses removed:
+  UCSI shared-memory region: Page not present in the dump file.
+  EC shadow region: Page not present in the dump file.
+  Physical UCSI region: Physical memory read failed on the offline dump.
+These are missing captured pages, not proof of failing live firmware memory.

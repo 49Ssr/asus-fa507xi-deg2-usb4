@@ -53,10 +53,44 @@ The UCM cable-property caches do not establish the supplied cable's USB4 rating:
 
 USB4KD emitted `Couldn't find FX Relation Type` while trying to describe framework power relations. That helper lookup failed; it is not a controller error. The findings above use the topology, direct state fields and corroborating PnP/WDF results rather than treating that helper output as evidence of missing hardware.
 
+## Expanded recorder, state-machine and ACPI inspection
+
+The initial two targeted recorder reads were followed by enumeration of **all 12 available WPP recorder buffers**: seven in Usb4HostRouter, three in Usb4DeviceRouter, one in UcmUcsiCx and one in UcmCx. This recovered **334 timestamped formatted records**, including 74 UcmUcsiCx records. The retained timestamps range from 04:11:39.347 to 04:27:34.233 UTC, with gaps; this is not a continuous recording of that interval. The ACPI client has no compatible WPP autolog header; its separate WDF recorder was also read.
+
+Microsoft's signed `SmFxDbg.dll` decoded the USB4 port, plug-state manager and root-router engines. Each retained 64 transitions, an empty event queue and zero recorded exceptions. Their current states are respectively `WaitForEventsInDisconnected`, `Unplugged` under `Enabled`, and `RouterOperational`. An engine labelled `Stopped` here is idle between events, not evidence that the driver crashed.
+
+The port history supplies a more specific boundary than topology alone:
+
+1. `ReadingPluggedStateForUSB4` completes with `Success`.
+2. `IsUSB4PortPlugged` returns `No`.
+3. `ReadingRouterDetected` completes with `Success`.
+4. `IsRouterDetectedSet` returns `No`; the path ultimately reports nothing attached and waits disconnected.
+
+These are retained state-machine outcomes, not a time-stamped USB-PD transaction sequence. They show successful register-access handling without a reported USB4 connection. They do not distinguish an Enter_USB exchange that never occurred from failed physical/link training or another firmware interaction.
+
+SmFxDbg could not obtain the UcmUcsiCx engine implementation type from that module's public symbols. The two UCSI rings were instead read using the shared record layout, checked against direct memory reads, and decoded with UcmUcsiCx's own public `StateIndex` and `EventId` enumerations. All **128 retained source-state/event records** mapped to known enums. None contains the enumerated failure, command-timeout, unrecoverable-failure or exhausted-retry indicators checked. The current OPM and command-handler stacks end in `WaitingForCommandOrNotification` and `WaitingForCommand`. Ring records describe a transition's source; destination states must not be guessed from an adjacent record across submachine calls.
+
+The formatted UCSI recorder independently supplies this short sequence:
+
+| UTC time | Retained observation |
+| --- | --- |
+| 04:27:20.963 | GET_ALTERNATE_MODES command 0x13 completes with data length 0; Error and NotSupported flags clear |
+| 04:27:20.984 | Its acknowledgement completes; SET_UOR for logical connector 1 requests DFP, command 0x14 |
+| 04:27:21.000 | SET_UOR completes; UCM reports a successful change to DFP |
+| 04:27:21.037 | Command/connector-change acknowledgement completes |
+
+The empty alternate-mode result is not a recorded Enter_USB rejection. UCSI and USB4 mode entry must not be treated as the same protocol; Microsoft's [design requirements](https://learn.microsoft.com/en-us/windows-hardware/design/component-guidelines/usb4-design-details-and-general-requirements) explicitly describe the USB4 connection manager as independent of the UCSI software stack. Earlier failures may have been overwritten from these finite buffers.
+
+Matching ACPI symbols also allowed namespace and AML disassembly from the dump. The UCSI device is `\_SB_.UBTC`, with two connector children. Its USB `_DSM` query returns mask `0x0f`; it does not advertise optional function 4, the [data-role-correction override](https://learn.microsoft.com/en-us/windows-hardware/design/component-guidelines/usb4-acpi-requirements#device-specific-method-to-prevent-data-role-swap-for-host-to-host-connections). Absence of that optional function is not itself a demonstrated defect.
+
+The firmware describes a 48-byte UCSI shared-memory region and a 64-byte EC shadow region. **The pages backing both regions are absent from this kernel bitmap dump.** Reads of the mapped regions report missing dump pages; a physical read of the UCSI region also fails. This is a limitation of the artifact, not evidence that those memory reads fail on the running laptop. A different decoder cannot recover those uncaptured bytes. AML was disassembled only; no firmware method was executed and no live MMIO access was performed.
+
+Selected reviewed lines are in [kernel-state excerpts](../evidence/kernel-state-excerpts.txt). They omit addresses and identifying prefixes. No newly established root cause or software repair emerged from the expanded inspection.
+
 ## Consequence for the next test
 
 The dump adds a direct check of the cached BIOS PCIe-disable flag and confirms disconnected USB4 state despite USB fallback. It supplies no demonstrated software switch or firmware repair. Cable-dependent negotiation, the ASUS host/PD/retimer path, DEG2 interoperability and shared driver/firmware interactions remain unresolved.
 
-The shortest missing comparisons remain a suitable alternate cable and a separate known-working USB4/PCIe peripheral on the ASUS. See [N1-N4 and their outcome limits](handoff.md#missing-comparisons-in-priority-order). Repeating this same snapshot without a changed condition is unlikely to separate those hypotheses.
+An additional comparison uses hardware already available: connect the ASUS directly to the working Dell using the supplied DEG2 cable and check for a live USB4 P2P network adapter. This tests host-to-host USB4 negotiation, not GPU PCIe tunnelling; see [N0 and its limits](handoff.md#n0-existing-hardware-usb4-peer-test). Suitable alternate-cable and separate USB4/PCIe-peripheral comparisons remain unperformed. Repeating the same snapshot without a changed condition cannot recover the omitted firmware-region pages.
 
 Raw memory, debugger transcripts, symbols and kernel addresses remain private. Only the reviewed findings and artifact hash are published. Method references: [Microsoft USB4KD](https://learn.microsoft.com/en-us/windows-hardware/design/component-guidelines/usb4-kernel-debugger-extension) and [Task Manager live kernel dumps](https://learn.microsoft.com/en-us/windows-hardware/drivers/debugger/task-manager-live-dump).

@@ -14,6 +14,8 @@ The separate Windows capture passed its required USB4 host/root, UCSI, I2C and P
 
 A [live kernel snapshot inspected with USB4KD](docs/kernel-snapshot.md) also shows **0 external routers, 0 tunnels and `PcieTunnelsDisabledInBios = 0`**, with the fallback hub/Billboard still present. Offline inspection succeeded; it identified no repair or root cause.
 
+Expanded inspection recovered 12 recorder buffers and decoded the USB4/UCSI histories. Successful register reads are followed by negative USB4 plugged/router-detected checks. The firmware shared-memory pages are absent from this dump. A newly identified [USB4 peer comparison using the existing Dell and cable](docs/handoff.md#n0-existing-hardware-usb4-peer-test) is available without another peripheral; it remains unperformed and does not test GPU PCIe tunnelling.
+
 ## Read in this order
 
 1. **[Independent review and next tests](docs/handoff.md)** - current state, remaining hypotheses, feasible comparisons and what each outcome would mean. Start here when consulting another engineer or AI.

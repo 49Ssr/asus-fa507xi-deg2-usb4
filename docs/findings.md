@@ -22,6 +22,8 @@ It does not establish signal integrity, successful USB4 mode entry, a downstream
 
 The 31 October 04:27 live kernel snapshot independently retains `m_usb4CapabilitiesGranted = 0xf` and the direct policy field `PcieTunnelsDisabledInBios = 0`. USB4KD finds one host/root, no external router and zero tunnels, while the ordinary fallback devices remain PnP Started. It also finds both logical UCM connectors in the local DFP data role. No new causal error or repair was identified. See [the snapshot report](kernel-snapshot.md), including the constructor-default status and debugger-helper caveats.
 
+The expanded pass decoded the port's retained transition history: register reads complete successfully, while `IsUSB4PortPlugged` and `IsRouterDetectedSet` return No. The plug-state manager is Enabled. UCSI's retained SET_UOR command completes and is acknowledged. These are stronger observations of the no-connection boundary, but do not expose the missing PD/firmware exchange. The UCSI/EC shared-memory pages are not included in the dump. [Selected state and command excerpts](../evidence/kernel-state-excerpts.txt).
+
 ## Router versions
 
 The ASUS trace reports root router USB4 version `0x20` and connection manager version `0x10`. These fields must not be converted into a claim that the laptop provides an 80 Gbps physical port. The model's documented port is 40 Gbps.

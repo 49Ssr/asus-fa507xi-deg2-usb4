@@ -208,9 +208,26 @@
       "advertised_usb_data_gbps": 10,
       "usb4_comparison_peripheral": false,
       "new_test_performed": false
+    },
+    "usb4_peer_comparison": {
+      "id": "N0",
+      "performed": false,
+      "hardware": "Existing ASUS, Dell Intel TB4 host and supplied DEG2 cable",
+      "asus_inbox_driver_package_present": true,
+      "asus_inbox_driver_version": "10.0.26100.9818",
+      "network_configuration_changed": false,
+      "tests": "USB4 host-to-host negotiation and P2P adapter link state",
+      "does_not_test": "GPU PCIe tunnelling or workload stability",
+      "negative_result_limits": [
+        "Peer data-role negotiation",
+        "Host interoperability",
+        "Work-device installation policy"
+      ],
+      "source": "https://learn.microsoft.com/en-us/windows-hardware/design/component-guidelines/usb4-interdomain-connections"
     }
   },
   "outstanding_comparisons": [
+    "N0 direct ASUS-Dell USB4NET with existing DEG2 cable",
     "N1 suitable alternate 40 Gbps USB4/TB4 cable",
     "N2 documented 20 Gbps USB4 cable",
     "N3 separate known-working USB4 peripheral on ASUS",
@@ -290,6 +307,71 @@
       "No physical-port correlation established for the logical UCM connector caches",
       "No root cause or applicable repair identified"
     ],
-    "report": "docs/kernel-snapshot.md"
+    "report": "docs/kernel-snapshot.md",
+    "deeper_inspection": {
+      "methods": [
+        "All available WPP recorders",
+        "WDF framework recorders",
+        "SmFxDbg USB4 state-machine histories",
+        "UCSI source-state/event enum decoding",
+        "ACPI namespace and AML disassembly",
+        "Offline shared-memory read attempts"
+      ],
+      "wpp_buffers_available": 12,
+      "timestamped_formatted_records": 334,
+      "ucsi_formatted_records": 74,
+      "retained_record_start_utc": "2026-10-31T04:11:39.347Z",
+      "retained_record_end_utc": "2026-10-31T04:27:34.233Z",
+      "continuous_history": false,
+      "native_smfx_histories": [
+        {
+          "machine": "USB4 port",
+          "transitions_retained": 64,
+          "queued_events": 0,
+          "recorded_exceptions": 0
+        },
+        {
+          "machine": "USB4 plug-state manager",
+          "transitions_retained": 64,
+          "queued_events": 0,
+          "recorded_exceptions": 0
+        },
+        {
+          "machine": "USB4 root router",
+          "transitions_retained": 64,
+          "queued_events": 0,
+          "recorded_exceptions": 0
+        }
+      ],
+      "register_read_completion": "Success",
+      "usb4_port_plugged_check": "No",
+      "router_detected_check": "No",
+      "plug_manager_enabled": true,
+      "ucsi_manual_source_event_records": 128,
+      "ucsi_manual_checked_failure_or_timeout_records": 0,
+      "ucsi_manual_layout": "Shared SmFx record layout; direct memory check; UcmUcsiCx StateIndex/EventId enums; source states only",
+      "ucsi_current_opm": "WaitingForCommandOrNotification",
+      "ucsi_current_command_handler": "WaitingForCommand",
+      "retained_set_uor": {
+        "logical_connector": 1,
+        "role": "Dfp",
+        "command_sequence": "0x14",
+        "sent_utc": "2026-10-31T04:27:20.984Z",
+        "completed_utc": "2026-10-31T04:27:21.000Z",
+        "ack_completed_utc": "2026-10-31T04:27:21.037Z",
+        "cci_error": 0,
+        "cci_not_supported": 0
+      },
+      "firmware_usb_dsm_query_mask": "0x0f",
+      "firmware_optional_role_correction_function4_advertised": false,
+      "ucsi_shared_region_bytes": 48,
+      "ec_shadow_region_bytes": 64,
+      "both_region_backing_pages_missing_from_dump": true,
+      "missing_pages_prove_live_hardware_read_failure": false,
+      "aml_methods_executed": false,
+      "live_mmio_access_performed": false,
+      "root_cause_identified": false,
+      "excerpts": "evidence/kernel-state-excerpts.txt"
+    }
   }
 }

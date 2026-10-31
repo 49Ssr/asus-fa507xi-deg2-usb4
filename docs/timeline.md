@@ -40,6 +40,8 @@ All dates below are 30 October 2026 unless specified. Times attached to trace na
 | 34, 31 October | Existing UGREEN dock identified | Amazon ASIN B0DRP1F6R7 maps to Revodok Pro 3121 / SKU 55767. Conventional 10 Gbps USB-C hub, so it cannot supply the missing separate USB4-peripheral comparison. No new connection test claimed. |
 | 35, 04:16 on 31 October | Seven ASUS UEFI photographs reviewed | External USB ports shown Unlock, Fast Boot Disabled, SVM Enabled and display mode Dynamic. No USB4/PCIe switch visible. Secure Boot submenu not photographed; no new setting change claimed. |
 | 36, 04:27 on 31 October | Full Task Manager live kernel snapshot captured; subsequently inspected offline | USB4KD worked with matching symbols. One host/root, zero external routers/tunnels, `PcieTunnelsDisabledInBios = 0`, fallback USB devices Started. Both logical UCM connectors report local DFP roles. Retained host recorder has 38 successful configuration-request messages, not a successful link. No demonstrated repair or cause; [report and limits](kernel-snapshot.md). |
+| 37, 31 October | Expanded offline snapshot inspection | All 12 available WPP buffers, 334 timestamped formatted records; three USB4 histories decoded with SmFxDbg, two UCSI rings decoded from public enums. Register reads succeed but USB4 plugged/router-detected checks return No. The firmware's UCSI and EC shared-memory pages are missing from this dump. No repair identified. |
+| 38, 31 October | Additional existing-hardware comparison identified | Microsoft's USB4NET supports a direct Dell-to-ASUS peer test with the supplied DEG2 cable. ASUS in-box P2P driver package verified present. Proposed N0 is unperformed; no sharing or network configuration changed. |
 
 ## Corrections that matter
 
