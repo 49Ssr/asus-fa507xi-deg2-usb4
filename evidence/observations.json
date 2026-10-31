@@ -387,7 +387,7 @@
     "livekd_version": "5.65",
     "livekd_authenticode": "Valid Microsoft Corporation",
     "livekd_sha256": "E2884FA2BAA44A092FC7E8A6FE59FC02AF754FF18B1E10ECAEBD91A7097D5FB9",
-    "powershell_51_checks_passed": 19,
+    "powershell_51_checks_passed": 20,
     "actual_windbg_js_checks_passed": 20,
     "offline_replay": {
       "source": "OfflineReplay",
@@ -396,7 +396,21 @@
       "ucsi_bytes_returned": false,
       "ec_bytes_returned": false
     },
-    "live_helper_loading_tested": false,
+    "live_capture_attempted": true,
+    "first_live_attempt": {
+      "started_utc": "2026-10-31T12:18:59.1304223Z",
+      "result": "NotCompleted",
+      "failure_stage": "Debugger launch; truncated log path and COM1 initialization instead of LiveKD attachment",
+      "launcher_exit_code": 0,
+      "completed_probe_result": false,
+      "firmware_bytes_collected": 0,
+      "hardware_conclusion": "None"
+    },
+    "launch_correction": "Short relative command/log options; simple arguments unquoted; symbol/image paths in child environment",
+    "corrected_live_invocation_tested": false,
+    "live_helper_loading_confirmed": false,
+    "live_debugger_attachment_confirmed": false,
+    "helper_unloading_verified": false,
     "live_firmware_bytes_obtained": false,
     "firmware_writes_requested": false,
     "aml_methods_executed": false,

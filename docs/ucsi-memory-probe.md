@@ -1,6 +1,6 @@
 # Scripted UCSI / EC buffer examination
 
-**Prepared and offline-tested; live firmware-buffer access remains untested. This is an examination tool, not a fix.**
+**The first live attempt failed during debugger launch. No firmware bytes were collected. The corrected launch has passed offline checks; a live rerun is pending. This is an examination tool, not a fix.**
 
 [Invoke-UcsiMemoryProbe.ps1](../tools/Invoke-UcsiMemoryProbe.ps1) wraps Microsoft's signed LiveKD and KD with [UcsiMemory.js](../tools/UcsiMemory.js). It tests whether a live kernel view exposes the two buffers omitted from the Task Manager dump. Microsoft describes LiveKD as a simulated kernel-debugging view; it does not promise access to these particular firmware pages.
 
@@ -38,6 +38,10 @@ The current owner's C-drive staging copy is already prepared. All Microsoft exec
 
 Each run creates a new ignored `local/UcsiMemoryProbe/Runs/` folder containing `status.json`, `probe.json` when available, and private debugger/launcher logs. It never uploads these files. The default launcher timeout is 120 seconds; an unnamed Windows job contains its processes. The timeout path was tested with a disposable child process, not LiveKD. Forced process cleanup does not establish that a loaded kernel helper was unloaded.
 
+At 12:18:59 UTC on 31 October, the first Administrator run returned `NotCompleted`: KD opened a truncated log pathname and attempted COM1 instead of attaching to LiveKD's simulated dump. LiveKD returned exit code 0 despite that failure; the wrapper correctly rejected the missing transcript/result. This is a launch failure, not evidence about GPU compatibility or firmware-page readability. The logs do not establish whether the helper loaded or unloaded.
+
+The correction removes unnecessary quoting of simple arguments, forwards only short relative command/log filenames, and supplies symbol/image paths through the child process environment. Real KD replay verifies the relative files and inherited paths. The exact internal cause of the original argument truncation has not been established, and the corrected LiveKD invocation still requires a live rerun.
+
 | Result | Meaning |
 | --- | --- |
 | BothRegionsReadable / OneRegionReadable | The provider returned complete byte buffers; inspect raw values and version before inferring firmware state |
@@ -49,10 +53,10 @@ Each run creates a new ignored `local/UcsiMemoryProbe/Runs/` folder containing `
 
 ## Validation actually completed
 
-- Windows PowerShell 5.1: 19 checks, including actual PE/PDB identity matching, invalid inputs, report framing and owned-process timeout cleanup.
+- Windows PowerShell 5.1: 20 checks, including actual PE/PDB identity matching, invalid inputs, native argument quoting, report framing and owned-process timeout cleanup.
 - Actual WinDbg JavaScript engine: 20 checks covering mapping/length/address guards, unavailable and partial reads, legacy decoding, unknown versions and native byte-provider types.
-- End-to-end replay of the retained Task Manager dump: discovery validated, both regions unavailable, correctly labelled OfflineReplay. No LiveKD helper was loaded during these checks.
-- LiveKD 5.65 signature: Valid, Microsoft Corporation. Actual live helper loading, firmware-page visibility and helper cleanup remain unverified.
+- End-to-end replay of the retained Task Manager dump with the shortened options and inherited symbol/image paths: discovery validated, both regions unavailable, correctly labelled OfflineReplay. No LiveKD helper was loaded during these checks.
+- LiveKD 5.65 signature: Valid, Microsoft Corporation. A live launch was attempted and failed before debugger attachment; live helper loading, firmware-page visibility and helper cleanup remain unverified.
 
 The [test script](../tests/Test-UcsiMemoryProbe.ps1) operates on an existing offline dump. It does not perform firmware or live-kernel tests.
 
@@ -60,4 +64,4 @@ The [test script](../tests/Test-UcsiMemoryProbe.ps1) operates on an existing off
 
 An Administrator PowerShell process does not gain a general kernel-memory mapping API. GetSystemFirmwareTable retrieves firmware tables, not these current ACPI/EC buffer contents. The UCSI GET-data IOCTL is a driver-to-driver transport interface requiring a PPM object. On this BIOS, disassembly of its receive method also shows writes clearing shadow notification bytes. Direct command injection is therefore not used for this examination.
 
-Primary references: [Microsoft LiveKD](https://learn.microsoft.com/en-us/sysinternals/downloads/livekd), [local kernel debugging and LiveKD limitations](https://learn.microsoft.com/en-us/windows-hardware/drivers/debugger/performing-local-kernel-debugging), [GetSystemFirmwareTable](https://learn.microsoft.com/en-us/windows/win32/api/sysinfoapi/nf-sysinfoapi-getsystemfirmwaretable), [UCSI client architecture](https://learn.microsoft.com/en-us/windows-hardware/drivers/usbcon/write-a-ucsi-driver), [UCSI GET-data IOCTL](https://learn.microsoft.com/en-us/windows-hardware/drivers/ddi/ucmucsippmrequests/ni-ucmucsippmrequests-ioctl_ucmucsi_ppm_get_ucsi_data_block), and [WinDbg JavaScript host memory API](https://learn.microsoft.com/en-us/windows-hardware/drivers/debugger/native-objects-in-javascript-extensions-debugger-objects).
+Primary references: [Microsoft LiveKD](https://learn.microsoft.com/en-us/sysinternals/downloads/livekd), [debugger environment variables](https://learn.microsoft.com/en-us/windows-hardware/drivers/debugger/general-environment-variables), [local kernel debugging and LiveKD limitations](https://learn.microsoft.com/en-us/windows-hardware/drivers/debugger/performing-local-kernel-debugging), [GetSystemFirmwareTable](https://learn.microsoft.com/en-us/windows/win32/api/sysinfoapi/nf-sysinfoapi-getsystemfirmwaretable), [UCSI client architecture](https://learn.microsoft.com/en-us/windows-hardware/drivers/usbcon/write-a-ucsi-driver), [UCSI GET-data IOCTL](https://learn.microsoft.com/en-us/windows-hardware/drivers/ddi/ucmucsippmrequests/ni-ucmucsippmrequests-ioctl_ucmucsi_ppm_get_ucsi_data_block), and [WinDbg JavaScript host memory API](https://learn.microsoft.com/en-us/windows-hardware/drivers/debugger/native-objects-in-javascript-extensions-debugger-objects).

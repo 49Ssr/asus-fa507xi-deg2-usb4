@@ -24,6 +24,7 @@ Check ($parseErrors.Count -eq 0) 'PowerShell 5.1 syntax'
 MustThrow {Assert-LocalPath '\\server\file'} 'Network path rejected'
 MustThrow {Assert-LocalPath 'C:\fake;command'} 'Debugger command delimiter rejected'
 MustThrow {Quote-NativeArgument ('a'+[char]34+'b')} 'Quote injection rejected'
+Check ((Quote-NativeArgument '-ses') -eq '-ses' -and (Quote-NativeArgument 'probe.wds') -eq 'probe.wds') 'Simple LiveKD arguments remain unquoted'
 Check ((Quote-NativeArgument 'C:\space dir\') -eq '"C:\space dir\\"') 'Trailing backslash quoted correctly'
 $sample='{"schema":1,"source":"OfflineReplay"}'
 $parsed=Read-ProbeJson ("UCSI_PROBE_JSON_BEGIN`r`r`n"+$sample+"`r`r`nUCSI_PROBE_JSON_END")
@@ -89,8 +90,8 @@ $combined=Join-Path $testOutput 'ProbeTests.js'
 $commands=Join-Path $testOutput 'tests.wds';$log=Join-Path $testOutput 'debugger.txt'
 $provider=(Join-Path (Split-Path $DebuggerPath) 'winext\JsProvider.dll').Replace('\','/')
 [IO.File]::WriteAllLines($commands,@('.reload /f nt',('.load "'+$provider+'"'),('.scriptload "'+$combined+'"'),'dx @$scriptContents.runProbeTests()','q'),(New-Object Text.UTF8Encoding($false)))
-$images=(Join-Path $env:SystemRoot 'System32')+';'+(Join-Path $env:SystemRoot 'System32\drivers')
-$code=Invoke-ProbeProcess $DebuggerPath @('-z',$DumpPath,'-noshell','-ses','-i',$images,'-y',$symbolRoot,'-cf',$commands,'-logo',$log) $testOutput 60
+# Exercise relative command/log names and inherited symbol/image paths in real KD.
+$code=Invoke-ProbeProcess $DebuggerPath @('-z',$DumpPath,'-noshell','-ses','-cf','tests.wds','-logo','debugger.txt') $testOutput 60
 Check ($code -eq 0) 'Offline debugger completed'
 $text=[IO.File]::ReadAllText($log)
 $match=[regex]::Match($text,'(?s)UCSI_TEST_JSON_BEGIN\s*[\r\n]+(.*?)\s*[\r\n]+UCSI_TEST_JSON_END')

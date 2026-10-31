@@ -42,7 +42,9 @@ function Assert-MicrosoftExecutable([string]$Path,[string]$ExpectedName) {
 }
 function Quote-NativeArgument([string]$Value) {
     if($Value -match '[\r\n"]'){throw 'Invalid native argument.'}
-    # All arguments are quoted. Double final slashes before the closing quote.
+    # Leave switches/simple names bare for LiveKD's legacy argument forwarding.
+    if($Value.Length -gt 0 -and $Value -notmatch '\s'){return $Value}
+    # Double final slashes before a required closing quote.
     return '"'+[regex]::Replace($Value,'(\\+)$','$1$1')+'"'
 }
 function Get-ImagePdbInfo([string]$Path) {
@@ -238,6 +240,7 @@ function Invoke-ProbeProcess([string]$Executable,[string[]]$Arguments,[string]$D
     $info.WorkingDirectory=$Directory; $info.UseShellExecute=$false; $info.CreateNoWindow=$true
     $info.RedirectStandardOutput=$true; $info.RedirectStandardError=$true; $info.RedirectStandardInput=$true
     $info.EnvironmentVariables['_NT_SYMBOL_PATH']=$symbolRoot
+    $info.EnvironmentVariables['_NT_EXECUTABLE_IMAGE_PATH']=(Join-Path $env:SystemRoot 'System32')+';'+(Join-Path $env:SystemRoot 'System32\drivers')
     $process=New-Object Diagnostics.Process; $process.StartInfo=$info
     $ownedJob=New-Object Usb4ProbeOwnedJob
     $watch=[Diagnostics.Stopwatch]::StartNew(); $timedOut=$false; $started=$false; $stdout=$null; $stderr=$null
@@ -323,8 +326,9 @@ $jsPath=Assert-LocalPath $jsPath
 $provider=(Join-Path (Split-Path $DebuggerPath) 'winext\JsProvider.dll').Replace('\','/')
 $commands=@('.symopt- 0x40','.reload /f nt','.reload /f acpi.sys',('.load "'+$provider+'"'),('.scriptload "'+$jsPath+'"'),('dx @$scriptContents.probeFirmwareBuffers("'+$source+'")'),'q')
 [IO.File]::WriteAllLines($commandsPath,$commands,(New-Object Text.UTF8Encoding($false)))
-$images=(Join-Path $env:SystemRoot 'System32')+';'+(Join-Path $env:SystemRoot 'System32\drivers')
-$common=@('-noshell','-ses','-i',$images,'-y',$symbolRoot,'-cf',$commandsPath,'-logo',$debuggerLog)
+# LiveKD forwards KD options. Keep them short and relative to this run's working
+# directory; symbol/image paths travel in the child environment instead.
+$common=@('-noshell','-ses','-cf','probe.wds','-logo','debugger.txt')
 $status=[ordered]@{Schema=1;Mode=$Mode;Label=$Label;StartedUtc=[DateTime]::UtcNow.ToString('o');Result='NotCompleted';LiveViewBytesReturned=$false;Error=$null}
 try {
     if($Mode -eq 'Capture'){
