@@ -2,6 +2,8 @@
 
 **The corrected live capture completed on 31 October at 12:35 UTC. Both mappings were validated, but LiveKD could read neither buffer. No firmware bytes or actionable repair were obtained.**
 
+**A guided connection-window mode is now implemented and offline-tested. Its combined live sampling/ETW run remains unperformed.** It tests the additional condition of plugging in during recording; the completed single reading did not test that transition.
+
 [Invoke-UcsiMemoryProbe.ps1](../tools/Invoke-UcsiMemoryProbe.ps1) wraps Microsoft's signed LiveKD and KD with [UcsiMemory.js](../tools/UcsiMemory.js). It tests whether a live kernel view exposes the two buffers omitted from the Task Manager dump. Microsoft describes LiveKD as a simulated kernel-debugging view; it does not promise access to these particular firmware pages.
 
 ## What it examines
@@ -32,6 +34,9 @@ powershell.exe -NoProfile -File .\tools\Invoke-UcsiMemoryProbe.ps1 -Mode Prepare
 
 # Administrator console; keep DEG2 connected in its failing state.
 powershell.exe -NoProfile -File .\tools\Invoke-UcsiMemoryProbe.ps1 -Mode Capture -Label attached
+
+# Administrator console; guided disconnect/baseline/connect window plus ETW.
+powershell.exe -NoProfile -File .\tools\Invoke-UcsiMemoryProbe.ps1 -Mode Capture -Connection -Label hotplug
 ```
 
 The current owner's C-drive staging copy is already prepared. All Microsoft executable signatures and PDB identities are checked. Preparation can reuse the existing matching private symbol cache, or an explicitly supplied `-SymbolCache`; otherwise it downloads from Microsoft's symbol server. The managed Windows PowerShell process could not reach that server here, so existing verified symbols were reused. DbgEng additionally enforces strict symbol matching.
@@ -55,19 +60,39 @@ This establishes that the tested LiveKD view could not expose these mappings. It
 | DiscoveryFailed | Expected namespace, symbol support or mapping could not be validated |
 | NotCompleted | Launcher, permission, helper, timeout or report-generation failure; inspect the private logs |
 
+## Guided connection window
+
+1. Run `-Mode Capture -Connection`. Disconnect DEG2's upstream USB-C cable from ASUS when asked, leave the dock/PSU powered, and press Enter.
+2. ETW starts before LiveKD. Wait while the first validated sample and a five-second disconnected baseline are recorded.
+3. Connect only when the green **CONNECT DEG2 NOW** message appears. Keep it attached until completion; no second Enter press is needed.
+4. Preserve the private output directory. The default is 80 samples with a requested 500 ms pause between them, plus read/diagnostic overhead: approximately a minute in total. The existing 120-second launcher timeout remains active.
+
+Every sample rediscovers and validates the current mappings, records UTC read times and attempts the same two bounded firmware reads. KD's memory cache is disabled and flushed before sampling. First/last samples include `!pte` mapping metadata, not explicit physical firmware reads. A four-byte `nt!NtBuildNumber` read checks normal kernel-memory access. An optional twelve-byte `nt!KeTickCount` control checks for changing values when its public symbol is available; that symbol is absent from the prepared symbols here. Unavailable/static control data does not verify freshness or imply a fault.
+
+The same fifteen USB4/UCSI/PnP/USB providers used by earlier connection traces run concurrently in a uniquely named, 256 MiB capped circular ETW session. The script stops only that session in `finally`; stop status and any failure are retained. USB packet-header/payload keywords remain excluded. Before/after inventories are restricted to USB4, display and known fallback-device rows. All raw output stays under ignored `local/`.
+
+The wrapper reads a streamed readiness marker while KD is still running. It requests connection only after the baseline and while at least ten seconds of requested sampling pauses remain. `connection-markers.json` records the prompt time; it is **not a verified physical insertion timestamp**. Actual transitions must be correlated with ETW. A missed prompt or incomplete sample set is rejected. Partial sample lines remain in the logs if a timeout prevents the final report.
+
+This is periodic sampling, not continuous capture of every firmware register change. Read overhead changes the cadence; transitions between samples can be missed. Disabling KD's cache does not guarantee firmware freshness or an atomic snapshot. If all reads remain unavailable, the result still cannot identify firmware contents or justify a patch. ETW loss/decoding must be assessed separately; no zero-loss claim is made at recording time.
+
 `source: OfflineReplay` must never be presented as live access. If live bytes become available, a separately labelled disconnected/attached comparison can test whether firmware and OS caches disagree. A specific mismatch could justify a targeted recovery or vendor investigation; buffer access alone does not establish a repair.
 
 ## Validation actually completed
 
-- Windows PowerShell 5.1: 20 checks, including actual PE/PDB identity matching, invalid inputs, native argument quoting, report framing and owned-process timeout cleanup. Actual offline KD is launched through a test launcher that changes its directory; absolute script/log paths and inherited symbol/image paths work across that change.
-- Actual WinDbg JavaScript engine: 20 checks covering mapping/length/address guards, unavailable and partial reads, legacy decoding, unknown versions and native byte-provider types.
+- Windows PowerShell 5.1: 37 checks, including actual PE/PDB identity matching, invalid inputs, native argument quoting, report framing, window bounds, phase timing, duplicate/late prompts and owned-process timeout cleanup. Actual offline KD is launched through a test launcher that changes its directory; absolute script/log paths and inherited symbol/image paths work across that change.
+- Actual WinDbg JavaScript engine: 27 checks covering mapping/length/address guards, unavailable and partial reads, legacy decoding, unknown versions, bounded controls, sample ordering and incomplete windows.
+- Real KD executed a six-sample window, rediscovered both mappings six times and retained first/last page-table metadata. Normal kernel control reads succeeded while firmware reads remained unavailable. The live readiness marker was readable before that debugger exited; `.cache 0`, decimal `.sleep` intervals and a large chunked JSON result were exercised. This was OfflineReplay, not a hardware connection test.
 - End-to-end replay of the retained Task Manager dump with the absolute script path and inherited log/symbol/image paths: discovery validated, both regions unavailable, correctly labelled OfflineReplay. No LiveKD helper was loaded during these checks.
 - LiveKD 5.65 signature: Valid, Microsoft Corporation. The third live attempt completed with validated mappings and both reads unavailable. The debugger and launcher exited normally; helper unloading was not independently verified.
 
 The [test script](../tests/Test-UcsiMemoryProbe.ps1) operates on an existing offline dump. It does not perform firmware or live-kernel tests.
+
+The guided combined live run, ETW start/stop in that run and any transient firmware readability remain untested. The ETW provider set itself was used in prior connection recordings. No controller reset, driver replacement, boot/security edit or firmware write is part of this mode.
 
 ## Interface choice and sources
 
 An Administrator PowerShell process does not gain a general kernel-memory mapping API. GetSystemFirmwareTable retrieves firmware tables, not these current ACPI/EC buffer contents. The UCSI GET-data IOCTL is a driver-to-driver transport interface requiring a PPM object. On this BIOS, disassembly of its receive method also shows writes clearing shadow notification bytes. Direct command injection is therefore not used for this examination.
 
 Primary references: [Microsoft LiveKD](https://learn.microsoft.com/en-us/sysinternals/downloads/livekd), [KD command-line options and missing command files](https://learn.microsoft.com/en-us/windows-hardware/drivers/debugger/kd-command-line-options), [debugger environment variables](https://learn.microsoft.com/en-us/windows-hardware/drivers/debugger/general-environment-variables), [local kernel debugging and LiveKD limitations](https://learn.microsoft.com/en-us/windows-hardware/drivers/debugger/performing-local-kernel-debugging), [GetSystemFirmwareTable](https://learn.microsoft.com/en-us/windows/win32/api/sysinfoapi/nf-sysinfoapi-getsystemfirmwaretable), [UCSI client architecture](https://learn.microsoft.com/en-us/windows-hardware/drivers/usbcon/write-a-ucsi-driver), [UCSI GET-data IOCTL](https://learn.microsoft.com/en-us/windows-hardware/drivers/ddi/ucmucsippmrequests/ni-ucmucsippmrequests-ioctl_ucmucsi_ppm_get_ucsi_data_block), and [WinDbg JavaScript host memory API](https://learn.microsoft.com/en-us/windows-hardware/drivers/debugger/native-objects-in-javascript-extensions-debugger-objects).
+
+Connection-window commands: [KD cache controls](https://learn.microsoft.com/en-us/windows-hardware/drivers/debuggercmds/-cache--set-cache-size-), [decimal sleep intervals](https://learn.microsoft.com/en-us/windows-hardware/drivers/debuggercmds/-sleep--pause-debugger-) and [page-table metadata](https://learn.microsoft.com/en-us/windows-hardware/drivers/debuggercmds/-pte).

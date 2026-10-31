@@ -2,6 +2,7 @@
 <#
 FA507XI examination only. Live mode uses Microsoft's signed LiveKD helper.
 It discovers this session's ACPI mappings and attempts 48/64-byte virtual reads.
+Connection mode adds fixed 4/12-byte symbol controls, PTE metadata and bounded ETW.
 No arbitrary addresses, firmware/UCSI commands, repair mode, security or boot edits.
 #>
 [CmdletBinding()]
@@ -11,6 +12,9 @@ param(
     [string]$SymbolCache,
     [string]$DumpPath,
     [ValidatePattern('^[a-zA-Z0-9_-]{1,40}$')][string]$Label='attached',
+    [switch]$Connection,
+    [ValidateRange(6,120)][int]$Samples=80,
+    [ValidateRange(100,2000)][int]$IntervalMs=500,
     [ValidateRange(30,300)][int]$TimeoutSeconds=120
 )
 Set-StrictMode -Version Latest
@@ -233,7 +237,7 @@ public sealed class Usb4ProbeOwnedJob : IDisposable {
 }
 '@
 }
-function Invoke-ProbeProcess([string]$Executable,[string[]]$Arguments,[string]$Directory,[int]$Timeout) {
+function Invoke-ProbeProcess([string]$Executable,[string[]]$Arguments,[string]$Directory,[int]$Timeout,[scriptblock]$OnTick=$null) {
     Initialize-ProbeJobType
     $info=New-Object Diagnostics.ProcessStartInfo
     $info.FileName=$Executable; $info.Arguments=($Arguments|ForEach-Object {Quote-NativeArgument $_}) -join ' '
@@ -254,6 +258,7 @@ function Invoke-ProbeProcess([string]$Executable,[string[]]$Arguments,[string]$D
         $stdout=$process.StandardOutput.ReadToEndAsync(); $stderr=$process.StandardError.ReadToEndAsync()
         while(-not $process.WaitForExit(1000)){
             if($watch.Elapsed.TotalSeconds -ge $Timeout){$timedOut=$true;break}
+            if($null -ne $OnTick){& $OnTick}
             if([int]$watch.Elapsed.TotalSeconds%10 -eq 0){Write-Host ('Examining kernel view... '+[int]$watch.Elapsed.TotalSeconds+' seconds')}
         }
         if($timedOut){throw 'Probe timeout. Its owned launcher/debugger process tree will be stopped; helper unloading is not established by this wrapper.'}
@@ -290,10 +295,99 @@ function Invoke-ProbeProcess([string]$Executable,[string[]]$Arguments,[string]$D
     }
 }
 
+function Read-SharedProbeLog([string]$Path) {
+    if(-not(Test-Path -LiteralPath $Path -PathType Leaf)){return ''}
+    $stream=[IO.File]::Open($Path,[IO.FileMode]::Open,[IO.FileAccess]::Read,[IO.FileShare]::ReadWrite)
+    try {
+        if($stream.Length -gt 4MB){throw 'Unexpectedly large probe log.'}
+        $reader=New-Object IO.StreamReader($stream,[Text.Encoding]::UTF8,$true)
+        try {return $reader.ReadToEnd()} finally {$reader.Dispose()}
+    } finally {$stream.Dispose()}
+}
+function Update-ConnectionPhase([hashtable]$State,[string]$LogText,[int]$Count,[int]$PauseMs,[datetime]$NowUtc=[DateTime]::UtcNow) {
+    if($null -ne $State.ConnectPromptUtc){return 'Waiting'}
+    if($null -eq $State.ReadyObservedUtc){
+        if($LogText -match '(?m)^UCSI_CONNECTION_READY\r*$'){$State.ReadyObservedUtc=$NowUtc;return 'BaselineStarted'}
+        return 'Waiting'
+    }
+    if(($NowUtc-[datetime]$State.ReadyObservedUtc).TotalSeconds -lt 5){return 'Waiting'}
+    $samplesSeen=[regex]::Matches($LogText,'(?m)^UCSI_CONNECTION_SAMPLE \{"sequence":([0-9]+),')
+    if($samplesSeen.Count -eq 0){throw 'Ready marker has no completed sample; leave DEG2 disconnected.'}
+    $lastSample=[int]$samplesSeen[$samplesSeen.Count-1].Groups[1].Value
+    if($lastSample -ge $Count -or ($Count-1-$lastSample)*$PauseMs -lt 10000){throw 'Insufficient sampling time remains to request a connection; leave DEG2 disconnected.'}
+    $State.ConnectPromptUtc=$NowUtc.ToString('o');return 'ConnectNow'
+}
+function New-ProbeCommands([string]$Source,[string]$ScriptPath,[string]$ProviderPath,[bool]$Window,[int]$Count=80,[int]$PauseMs=500) {
+    if($Source -notin @('LiveKD','OfflineReplay')){throw 'Invalid probe source.'}
+    $ScriptPath=Assert-LocalPath $ScriptPath
+    $ProviderPath=(Assert-LocalPath $ProviderPath).Replace('\','/')
+    $lines=New-Object 'System.Collections.Generic.List[string]'
+    foreach($line in @('.symopt- 0x40','.reload /f nt','.reload /f acpi.sys',('.load "'+$ProviderPath+'"'),('.scriptload "'+$ScriptPath+'"'))){$lines.Add($line)}
+    if($Window){
+        if($Count -lt 6 -or $Count -gt 120 -or $PauseMs -lt 100 -or $PauseMs -gt 2000 -or ($Count-1)*$PauseMs -gt 70000){throw 'Unsupported sampling window.'}
+        $lines.Add('.cache 0');$lines.Add('.cache flushall')
+        $lines.Add(('dx @$scriptContents.beginConnectionWindow("{0}",{1},{2})' -f $Source,$Count,$PauseMs))
+        for($index=0;$index -lt $Count;$index++){
+            $lines.Add(('dx @$scriptContents.sampleConnectionWindow({0})' -f $index))
+            if($index -lt $Count-1){$lines.Add('.sleep 0n'+$PauseMs)}
+        }
+        $lines.Add('.cache');$lines.Add('dx @$scriptContents.endConnectionWindow()')
+    }else{$lines.Add('dx @$scriptContents.probeFirmwareBuffers("'+$Source+'")')}
+    $lines.Add('q');return $lines.ToArray()
+}
+function Get-ConnectionProviderRows {
+    # Same providers/filtered USB keywords used by the completed connection traces.
+    return @(
+        '{30E1D284-5D88-459C-83FD-6345B39B19EC} 0x00000000000F861B 5'
+        '{36DA592D-E43A-4E28-AF6F-4BC57C5A11E8} 0x00000000000F861B 5'
+        '{AC52AD17-CC01-4F85-8DF5-4DCE4333C99B} 0x00000000000F861B 5'
+        '{575BA31F-2B45-58C2-64FD-F5DC757B6137} 0xFFFFFFFFFFFFFFFF 5'
+        '{AE795D36-2B11-5EFB-C7E0-5D552BC55D6C} 0xFFFFFFFFFFFFFFFF 5'
+        '{505A6797-992E-43E6-B84E-235E41E3FD82} 0xFFFFFFFFFFFFFFFF 5'
+        '{1B502FCB-68CD-4407-A59E-1EAF8AB9EA26} 0xFFFFFFFFFFFFFFFF 5'
+        '{11434984-9AB6-57F0-FC34-DF79EA15C255} 0xFFFFFFFFFFFFFFFF 5'
+        '{569D11AA-5068-5EE5-DA22-CE541C0B1481} 0xFFFFFFFFFFFFFFFF 5'
+        '{C5964C90-1824-4835-857A-5E95F8AA33B2} 0xFFFFFFFFFFFFFFFF 5'
+        '{EAD1EE75-4BFE-4E28-8AFA-E94B0A1BAF37} 0xFFFFFFFFFFFFFFFF 5'
+        '{C500C63A-6EFE-433B-84A7-C0740D5DC97F} 0xFFFFFFFFFFFFFFFF 5'
+        '{EDEF8E04-4E22-4A95-9D04-539EBD112A5E} 0xFFFFFFFFFFFFFFFF 5'
+        '{9C205A39-1250-487D-ABD7-E831C6290539} 0x0000000000C9A000 5'
+        '{D07E8C3F-78FB-4C22-B77C-2203D00BFDF3} 0xFFFFFFFFFFFFFFFF 5'
+    )
+}
+function Start-ConnectionTrace([string]$Directory) {
+    $name='USB4_Ucsi_'+[guid]::NewGuid().ToString('N').Substring(0,12)
+    $providerFile=Join-Path $Directory 'providers.txt';$etl=Join-Path $Directory 'connection.etl'
+    [IO.File]::WriteAllLines($providerFile,(Get-ConnectionProviderRows),[Text.Encoding]::ASCII)
+    $logman=Join-Path $env:SystemRoot 'System32\logman.exe'
+    $output=& $logman create trace $name -ets -o $etl -pf $providerFile -f bincirc -max 256 -bs 64 -nb 16 128 -ct perf -ft 1 2>&1
+    $code=$LASTEXITCODE
+    [IO.File]::WriteAllText((Join-Path $Directory 'trace-start.txt'),($output -join [Environment]::NewLine),(New-Object Text.UTF8Encoding($false)))
+    if($code -ne 0){throw ('ETW trace did not start; exit '+$code+'. DEG2 should remain disconnected.')}
+    return [ordered]@{Name=$name;Etl='connection.etl';StartedUtc=[DateTime]::UtcNow.ToString('o');Stopped=$false;StopExitCode=$null;EventsLost=$null}
+}
+function Stop-ConnectionTrace([object]$Trace,[string]$Directory) {
+    $output=& (Join-Path $env:SystemRoot 'System32\logman.exe') stop $Trace.Name -ets 2>&1
+    $Trace.StopExitCode=$LASTEXITCODE;$Trace.Stopped=($Trace.StopExitCode -eq 0)
+    $Trace.FinishedUtc=[DateTime]::UtcNow.ToString('o')
+    [IO.File]::WriteAllText((Join-Path $Directory 'trace-stop.txt'),($output -join [Environment]::NewLine),(New-Object Text.UTF8Encoding($false)))
+    if(-not $Trace.Stopped){Write-Warning ('Own trace session did not stop: logman stop '+$Trace.Name+' -ets')}
+}
+function Save-ConnectionInventory([string]$Directory,[string]$Phase) {
+    try {
+        $rows=@(Get-PnpDevice -PresentOnly -ErrorAction Stop | Where-Object {
+            $_.Class -eq 'Display' -or $_.InstanceId -like 'USB4\*' -or $_.InstanceId -match '^USB\\VID_(8087|041F)'
+        } | Select-Object Status,Class,FriendlyName,InstanceId)
+        $result=[ordered]@{Utc=[DateTime]::UtcNow.ToString('o');Devices=$rows;Error=$null}
+    }catch{$result=[ordered]@{Utc=[DateTime]::UtcNow.ToString('o');Devices=@();Error=$_.Exception.Message}}
+    [IO.File]::WriteAllText((Join-Path $Directory ('devices-'+$Phase+'.json')),($result|ConvertTo-Json -Depth 5),(New-Object Text.UTF8Encoding($false)))
+}
+
 if($MyInvocation.InvocationName -eq '.'){return}
 if($Mode -eq 'Preview') {
     Write-Output 'FA507XI examination: Prepare downloads signed LiveKD and matching kernel/ACPI public symbols.'
     Write-Output 'Capture requires Administrator, loads the LiveKD helper, discovers current UBTC mappings, and attempts 48/64-byte virtual reads.'
+    Write-Output 'Add -Connection for before/during/after sampling and concurrent ETW. Disconnect first; connect only at the green prompt.'
     Write-Output 'The helper may be blocked or may not expose firmware pages. Missing/unreadable bytes are reported, not replaced with zeros.'
     Write-Output 'No repair, raw physical-memory access, AML evaluation, UCSI commands, security/boot/driver-binding changes or uploads.'
     exit 0
@@ -307,6 +401,9 @@ foreach($dependency in @('dbgeng.dll','winext\JsProvider.dll')){
 }
 if($Mode -eq 'Prepare'){Ensure-ProbeTooling;Write-Output 'Tooling prepared. No kernel helper was loaded.';exit 0}
 Assert-PreparedSymbols
+if($Connection -and $Mode -notin @('Capture','Offline')){throw 'Connection sampling requires Capture or Offline.'}
+if($Connection -and (($Samples-1)*$IntervalMs -gt 70000 -or $TimeoutSeconds*1000 -lt ($Samples-1)*$IntervalMs+30000)){throw 'Sampling window exceeds its bounded duration or leaves insufficient launcher time.'}
+if($Connection -and $Mode -eq 'Capture' -and ($Samples-1)*$IntervalMs -lt 20000){throw 'Live connection sampling needs at least a twenty-second window.'}
 $source='OfflineReplay'
 if($Mode -eq 'Capture') {
     $identity=[Security.Principal.WindowsIdentity]::GetCurrent()
@@ -326,30 +423,65 @@ New-Item -ItemType Directory -Path $run | Out-Null
 $commandsPath=Join-Path $run 'probe.wds'; $debuggerLog=Join-Path $run 'debugger.txt'
 $jsPath=Assert-LocalPath $jsPath
 $provider=(Join-Path (Split-Path $DebuggerPath) 'winext\JsProvider.dll').Replace('\','/')
-$commands=@('.symopt- 0x40','.reload /f nt','.reload /f acpi.sys',('.load "'+$provider+'"'),('.scriptload "'+$jsPath+'"'),('dx @$scriptContents.probeFirmwareBuffers("'+$source+'")'),'q')
+$commands=New-ProbeCommands $source $jsPath $provider ([bool]$Connection) $Samples $IntervalMs
 [IO.File]::WriteAllLines($commandsPath,$commands,(New-Object Text.UTF8Encoding($false)))
 # LiveKD changes KD's working directory. Use an absolute command file; move the
 # absolute log, symbol and image paths into the child environment to limit options.
 $common=@('-noshell','-ses','-cf',$commandsPath)
 $status=[ordered]@{Schema=1;Mode=$Mode;Label=$Label;StartedUtc=[DateTime]::UtcNow.ToString('o');Result='NotCompleted';LiveViewBytesReturned=$false;Error=$null}
+$trace=$null;$onTick=$null
+$connectionState=@{ReadyObservedUtc=$null;ConnectPromptUtc=$null;CaptureStartedUtc=$null;InsertionTimeVerified=$false}
 try {
+    if($Connection -and $Mode -eq 'Capture'){
+        Write-Host 'Disconnect only the DEG2 USB-C upstream cable from the ASUS. Leave the dock/PSU powered.' -ForegroundColor Cyan
+        $null=Read-Host 'Press Enter when the cable is disconnected'
+        Save-ConnectionInventory $run 'before'
+        $trace=Start-ConnectionTrace $run
+        $connectionState.CaptureStartedUtc=[DateTime]::UtcNow.ToString('o')
+        $onTick={
+            $liveText=Read-SharedProbeLog $debuggerLog
+            $phase=Update-ConnectionPhase $connectionState $liveText $Samples $IntervalMs
+            if($phase -eq 'BaselineStarted'){
+                Write-Host 'Sampling is running. Keep DEG2 disconnected for the short baseline...' -ForegroundColor Cyan
+            }
+            if($phase -eq 'ConnectNow'){
+                Write-Host 'CONNECT DEG2 NOW. Leave it connected until capture finishes; no further Enter press is needed.' -ForegroundColor Green
+                [IO.File]::WriteAllText((Join-Path $run 'connection-markers.json'),($connectionState|ConvertTo-Json -Depth 3),(New-Object Text.UTF8Encoding($false)))
+            }
+        }
+    }
     if($Mode -eq 'Capture'){
         Write-Host 'Starting signed LiveKD examination. This may temporarily load its kernel helper.' -ForegroundColor Cyan
-        $code=Invoke-ProbeProcess $liveKd (@('-accepteula','-b','-k',$DebuggerPath)+$common) $run $TimeoutSeconds
+        $code=Invoke-ProbeProcess $liveKd (@('-accepteula','-b','-k',$DebuggerPath)+$common) $run $TimeoutSeconds $onTick
     }else{$code=Invoke-ProbeProcess $DebuggerPath (@('-z',$DumpPath)+$common) $run $TimeoutSeconds}
     if(-not(Test-Path -LiteralPath $debuggerLog)){throw ('No debugger transcript; launcher exit '+$code+'. Inspect launcher output.')}
     $result=Read-ProbeJson ([IO.File]::ReadAllText($debuggerLog))
     if($result.source -ne $source){throw 'Capture source mismatch.'}
+    if($Connection -and ($result.kind -ne 'ConnectionWindow' -or $result.samples.Count -ne $Samples)){throw 'Incomplete connection sampling result.'}
     [IO.File]::WriteAllText((Join-Path $run 'probe.json'),($result|ConvertTo-Json -Depth 12),(New-Object Text.UTF8Encoding($false)))
     $readable=@($result.regions|Where-Object {$_.status -eq 'Readable'}).Count
     if($result.discovery -ne 'Validated'){$status.Result='DiscoveryFailed'}elseif($readable -eq 2){$status.Result='BothRegionsReadable'}elseif($readable -gt 0){$status.Result='OneRegionReadable'}else{$status.Result='RegionsUnavailable'}
     $status.LiveViewBytesReturned=($Mode -eq 'Capture' -and $readable -gt 0)
     $status.LauncherExitCode=$code
+    if($Connection){
+        $status.ConnectionWindow=$true;$status.SamplesCollected=$result.samples.Count
+        $status.ChangingKernelClockObserved=$result.changingKernelClockObserved
+        $status.DebuggerCacheDisabled=([IO.File]::ReadAllText($debuggerLog) -match 'cache is off')
+        if($Mode -eq 'Capture' -and $null -eq $connectionState.ConnectPromptUtc){throw 'Sampling completed without a connect prompt; the connection transition was not tested.'}
+    }
     Write-Host ('Result: '+$status.Result+'; source: '+$source)
     $result.regions|Select-Object name,status,expectedBytes|Format-Table -AutoSize
 } catch {
     $status.Error=$_.Exception.Message; $status.Result='NotCompleted'; Write-Warning $status.Error
 } finally {
+    if($null -ne $trace){
+        try{Stop-ConnectionTrace $trace $run}catch{$trace.StopError=$_.Exception.Message;Write-Warning ('ETW stop error for '+$trace.Name+': '+$_.Exception.Message)}
+        [IO.File]::WriteAllText((Join-Path $run 'trace-status.json'),($trace|ConvertTo-Json -Depth 4),(New-Object Text.UTF8Encoding($false)))
+    }
+    if($Connection){
+        [IO.File]::WriteAllText((Join-Path $run 'connection-markers.json'),($connectionState|ConvertTo-Json -Depth 3),(New-Object Text.UTF8Encoding($false)))
+        if($Mode -eq 'Capture'){Save-ConnectionInventory $run 'after'}
+    }
     $status.FinishedUtc=[DateTime]::UtcNow.ToString('o')
     [IO.File]::WriteAllText((Join-Path $run 'status.json'),($status|ConvertTo-Json -Depth 6),(New-Object Text.UTF8Encoding($false)))
     Write-Host ('Private results: '+$run)

@@ -1,6 +1,6 @@
 "use strict";
 
-// WinDbg JavaScript. No memory writes, AML evaluation, UCSI commands or physical reads.
+// WinDbg JavaScript. No writes, AML evaluation, UCSI commands or explicit physical-memory commands.
 const UCSI_NODE = "\\_SB_.UBTC";
 const REGION_RULES = [{name: "PM08", bytes: 48}, {name: "EURM", bytes: 64}];
 
@@ -64,6 +64,16 @@ function discoverUcsiRegions(lines) {
 
 function byteHex(bytes) {
     return bytes.map(function(value) { return ("0" + value.toString(16)).slice(-2); }).join(" ");
+}
+
+function emitProbeJson(result) {
+    // DbgEng truncates sufficiently large individual output calls. Keep frames intact.
+    const text = JSON.stringify(result);
+    host.diagnostics.debugLog("UCSI_PROBE_JSON_BEGIN\n");
+    for (let index = 0; index < text.length; index += 1024) {
+        host.diagnostics.debugLog(text.slice(index, index + 1024));
+    }
+    host.diagnostics.debugLog("\nUCSI_PROBE_JSON_END\n");
 }
 
 function decodeLegacyUcsi(bytes) {
@@ -132,7 +142,103 @@ function probeFirmwareBuffers(source) {
     } catch (error) { result.discoveryError = String(error.message || error); }
     result.finishedUtc = new Date().toISOString();
     // A wrapper and a returned object permit both batch extraction and interactive inspection.
-    host.diagnostics.debugLog("UCSI_PROBE_JSON_BEGIN\n" + JSON.stringify(result) + "\nUCSI_PROBE_JSON_END\n");
+    emitProbeJson(result);
+    return result;
+}
+
+let connectionWindow = null;
+
+function beginConnectionWindow(source, count, intervalMs) {
+    if (source !== "LiveKD" && source !== "OfflineReplay") { throw new Error("Invalid capture source"); }
+    if (!Number.isInteger(count) || count < 6 || count > 120 ||
+        !Number.isInteger(intervalMs) || intervalMs < 100 || intervalMs > 2000 ||
+        (count - 1) * intervalMs > 70000) { throw new Error("Unapproved sampling window"); }
+    connectionWindow = {schema: 1, kind: "ConnectionWindow", source: source,
+        startedUtc: new Date().toISOString(), expectedSamples: count, intervalMs: intervalMs,
+        namespace: UCSI_NODE, namespaceOutput: [], samples: [], regions: [], discovery: "Failed",
+        consistentSnapshot: false, firmwareWritesRequested: false, amlMethodsExecuted: false,
+        explicitPhysicalMemoryCommands: false, readyEmitted: false};
+    return "Bounded connection sampling initialized";
+}
+
+function readKernelControl(symbol, count) {
+    if (!((symbol === "NtBuildNumber" && count === 4) || (symbol === "KeTickCount" && count === 12))) {
+        throw new Error("Unapproved kernel control read");
+    }
+    const result = {symbol: symbol, expectedBytes: count, status: "Unavailable"};
+    try {
+        const address = host.getModuleSymbolAddress("nt", symbol);
+        if (address === null || address === undefined) { throw new Error("Public symbol unavailable"); }
+        canonicalKernelAddress(address.toString(16));
+        const bytes = Array.from(host.memory.readMemoryValues(address, count, 1, false));
+        if (bytes.length !== count || bytes.some(function(b) {
+            return typeof b !== "number" || !Number.isInteger(b) || b < 0 || b > 255;
+        })) { throw new Error("Incomplete kernel control"); }
+        result.status = "Readable"; result.rawHex = byteHex(bytes);
+    } catch (error) { result.error = String(error.message || error); }
+    return result;
+}
+
+function sampleConnectionWindow(sequence) {
+    if (connectionWindow === null || !Number.isInteger(sequence) ||
+        sequence !== connectionWindow.samples.length || sequence >= connectionWindow.expectedSamples) {
+        throw new Error("Unexpected sample sequence");
+    }
+    const sample = {sequence: sequence, startedUtc: new Date().toISOString(), discovery: "Failed", regions: []};
+    // Fixed public-symbol controls: four build-number bytes and twelve tick-counter bytes.
+    sample.controls = [readKernelControl("NtBuildNumber", 4), readKernelControl("KeTickCount", 12)];
+    try {
+        const lines = Array.from(host.namespace.Debugger.Utility.Control.ExecuteCommand("!amli dns /s " + UCSI_NODE));
+        const regions = discoverUcsiRegions(lines);
+        if (connectionWindow.namespaceOutput.length === 0) { connectionWindow.namespaceOutput = lines; }
+        sample.discovery = "Validated";
+        sample.regions = examineRegions(regions, function(address, count) {
+            return host.memory.readMemoryValues(host.parseInt64(address), count, 1, false);
+        });
+        // Page-table metadata only; never read the physical firmware pages directly.
+        if (sequence === 0 || sequence === connectionWindow.expectedSamples - 1) {
+            sample.pageTables = regions.map(function(region) {
+                const diagnostic = {name: region.name};
+                try {
+                    diagnostic.lines = Array.from(host.namespace.Debugger.Utility.Control.ExecuteCommand("!pte " + region.mappedVirtualAddress));
+                } catch (error) { diagnostic.error = String(error.message || error); }
+                return diagnostic;
+            });
+        }
+    } catch (error) { sample.discoveryError = String(error.message || error); }
+    sample.finishedUtc = new Date().toISOString();
+    connectionWindow.samples.push(sample);
+    host.diagnostics.debugLog("UCSI_CONNECTION_SAMPLE " + JSON.stringify(sample) + "\n");
+    if (sample.discovery === "Validated" && !connectionWindow.readyEmitted) {
+        connectionWindow.readyEmitted = true;
+        host.diagnostics.debugLog("UCSI_CONNECTION_READY\n");
+    }
+    return sequence;
+}
+
+function endConnectionWindow() {
+    if (connectionWindow === null || connectionWindow.samples.length !== connectionWindow.expectedSamples) {
+        throw new Error("Incomplete connection window");
+    }
+    const result = connectionWindow;
+    result.validatedSamples = result.samples.filter(function(s) { return s.discovery === "Validated"; }).length;
+    result.discovery = result.validatedSamples > 0 ? "Validated" : "Failed";
+    result.regions = REGION_RULES.map(function(rule) {
+        const reads = [];
+        for (const sample of result.samples) {
+            for (const region of sample.regions) { if (region.name === rule.name) { reads.push(region); } }
+        }
+        const readable = reads.filter(function(r) { return r.status === "Readable"; });
+        return {name: rule.name, expectedBytes: rule.bytes, attemptedSamples: reads.length,
+            readableSamples: readable.length, status: readable.length > 0 ? "Readable" : "Unavailable"};
+    });
+    const tickValues = result.samples.map(function(sample) {
+        return sample.controls.filter(function(c) { return c.symbol === "KeTickCount" && c.status === "Readable"; });
+    }).filter(function(items) { return items.length === 1; }).map(function(items) { return items[0].rawHex; });
+    result.changingKernelClockObserved = tickValues.some(function(value) { return value !== tickValues[0]; });
+    result.finishedUtc = new Date().toISOString();
+    emitProbeJson(result);
+    connectionWindow = null;
     return result;
 }
 

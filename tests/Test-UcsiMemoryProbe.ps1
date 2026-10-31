@@ -39,6 +39,21 @@ foreach($image in Get-SymbolImages){
 $badPe=Join-Path $testOutput 'bad-pe.bin';[IO.File]::WriteAllBytes($badPe,(New-Object byte[] 64))
 MustThrow {Get-ImagePdbInfo $badPe} 'Invalid PE refused before symbol download'
 MustThrow {Get-PdbKey $badPe} 'Invalid PDB refused before kernel inspection'
+$testProviderPath=Join-Path (Split-Path $DebuggerPath) 'winext\JsProvider.dll'
+MustThrow {New-ProbeCommands 'bad-source' $probeSource $testProviderPath $true 6 100} 'Unsupported window source rejected'
+MustThrow {New-ProbeCommands 'OfflineReplay' $probeSource $testProviderPath $true 121 500} 'Oversized window rejected'
+MustThrow {New-ProbeCommands 'OfflineReplay' $probeSource $testProviderPath $true 120 2000} 'Overlong window rejected'
+Check (@(Get-ConnectionProviderRows).Count -eq 15) 'Established connection providers available without starting tracing'
+$phaseClock=[DateTime]::UtcNow
+$phaseState=@{ReadyObservedUtc=$null;ConnectPromptUtc=$null}
+Check ((Update-ConnectionPhase $phaseState '' 80 500 $phaseClock) -eq 'Waiting') 'No plug prompt before debugger readiness'
+$phaseLog="UCSI_CONNECTION_SAMPLE {`"sequence`":0,`"synthetic`":true}`r`r`nUCSI_CONNECTION_READY`r`r`n"
+Check ((Update-ConnectionPhase $phaseState $phaseLog 80 500 $phaseClock) -eq 'BaselineStarted') 'Double-CR readiness starts baseline'
+Check ((Update-ConnectionPhase $phaseState $phaseLog 80 500 $phaseClock.AddSeconds(4)) -eq 'Waiting') 'Disconnected baseline retained'
+Check ((Update-ConnectionPhase $phaseState $phaseLog 80 500 $phaseClock.AddSeconds(5)) -eq 'ConnectNow') 'Connect prompt follows baseline while samples remain'
+Check ((Update-ConnectionPhase $phaseState $phaseLog 80 500 $phaseClock.AddSeconds(6)) -eq 'Waiting') 'Connect prompt emitted once'
+$lateState=@{ReadyObservedUtc=$phaseClock;ConnectPromptUtc=$null}
+MustThrow {Update-ConnectionPhase $lateState $phaseLog 6 500 $phaseClock.AddSeconds(5)} 'Late readiness never requests a connection after the usable window'
 
 # Synthetic namespace and memory-provider cases, executed by the actual WinDbg JS engine.
 $jsTests=@'
@@ -80,6 +95,14 @@ function runProbeTests() {
     bytes[0]=0;bytes[1]=2;check(decodeLegacyUcsi(bytes).interpretation === "RawOnly", "Version 2 layout not guessed");
     const native=Array.from(host.memory.readMemoryValues(host.getModuleSymbolAddress("nt","NtBuildNumber"),4,1,false));
     check(native.length === 4 && native.every(function(x) {return typeof x === "number";}), "Actual debugger byte-provider type");
+    rejects(function() {beginConnectionWindow("bad-source",6,100);}, "Window source rejected");
+    rejects(function() {beginConnectionWindow("OfflineReplay",121,500);}, "Window count bounded");
+    rejects(function() {beginConnectionWindow("OfflineReplay",120,2000);}, "Window duration bounded");
+    rejects(function() {readKernelControl("NtBuildNumber",4096);}, "Control read length bounded");
+    rejects(function() {readKernelControl("AnotherSymbol",4);}, "Control symbol bounded");
+    beginConnectionWindow("OfflineReplay",6,100);
+    rejects(function() {sampleConnectionWindow(2);}, "Out-of-order sample rejected before memory reads");
+    rejects(function() {endConnectionWindow();}, "Incomplete window refused");
     const result={passed:passed};
     host.diagnostics.debugLog("UCSI_TEST_JSON_BEGIN\n"+JSON.stringify(result)+"\nUCSI_TEST_JSON_END\n");
     return result;
@@ -89,7 +112,10 @@ $combined=Join-Path $testOutput 'ProbeTests.js'
 [IO.File]::WriteAllText($combined,([IO.File]::ReadAllText((Join-Path $probeTestRepo 'tools\UcsiMemory.js'))+"`n"+$jsTests),(New-Object Text.UTF8Encoding($false)))
 $commands=Join-Path $testOutput 'tests.wds';$log=Join-Path $testOutput 'debugger.txt'
 $provider=(Join-Path (Split-Path $DebuggerPath) 'winext\JsProvider.dll').Replace('\','/')
-[IO.File]::WriteAllLines($commands,@('.reload /f nt',('.load "'+$provider+'"'),('.scriptload "'+$combined+'"'),'dx @$scriptContents.runProbeTests()','q'),(New-Object Text.UTF8Encoding($false)))
+$windowCommands=New-ProbeCommands 'OfflineReplay' $combined $provider $true 6 500
+$windowCommands=@('dx @$scriptContents.runProbeTests()')+$windowCommands[5..($windowCommands.Count-1)]
+$testCommands=@('.reload /f nt',('.load "'+$provider+'"'),('.scriptload "'+$combined+'"'))+$windowCommands
+[IO.File]::WriteAllLines($commands,$testCommands,(New-Object Text.UTF8Encoding($false)))
 # Emulate LiveKD's working-directory change while executing the real offline KD.
 # Neither the command file nor output log lives in the debugger's changed directory.
 $changedDirectory=Join-Path $testOutput 'different cwd'
@@ -104,13 +130,23 @@ Set-Location -LiteralPath (Join-Path $PSScriptRoot 'different cwd')
 exit $LASTEXITCODE
 '@,[Text.Encoding]::ASCII)
 $testPowerShell=Join-Path $env:SystemRoot 'System32\WindowsPowerShell\v1.0\powershell.exe'
-$code=Invoke-ProbeProcess $testPowerShell @('-NoProfile','-File',$launcher,'-Kd',$DebuggerPath,'-Dump',$DumpPath,'-Commands',$commands) $testOutput 60
+$callbackState=@{ReadySeenWhileRunning=$false}
+$testTick={if((Read-SharedProbeLog $log) -match '(?m)^UCSI_CONNECTION_READY\r*$'){$callbackState.ReadySeenWhileRunning=$true}}
+$code=Invoke-ProbeProcess $testPowerShell @('-NoProfile','-File',$launcher,'-Kd',$DebuggerPath,'-Dump',$DumpPath,'-Commands',$commands) $testOutput 60 $testTick
 Check ($code -eq 0) 'Offline debugger completed'
 $text=[IO.File]::ReadAllText($log)
 $match=[regex]::Match($text,'(?s)UCSI_TEST_JSON_BEGIN\s*[\r\n]+(.*?)\s*[\r\n]+UCSI_TEST_JSON_END')
 Check $match.Success 'JavaScript tests emitted a result'
 $jsResult=$match.Groups[1].Value|ConvertFrom-Json
 Check ($jsResult.passed -ge 20) 'JavaScript guard/decoder cases passed'
+$window=Read-ProbeJson $text
+Check ($window.kind -eq 'ConnectionWindow' -and $window.samples.Count -eq 6) 'Actual offline window completed all samples'
+Check ($window.validatedSamples -eq 6 -and $window.regions[0].attemptedSamples -eq 6) 'Mappings rediscovered for each sample'
+Check ($callbackState.ReadySeenWhileRunning) 'Ready marker readable from still-running debugger log'
+Check ($text -match 'cache is off') 'Debugger cache disabled in actual KD'
+Check (-not $window.changingKernelClockObserved) 'Offline clock is correctly not reported as changing'
+Check (@($window.samples[0].controls | Where-Object {$_.symbol -eq 'NtBuildNumber' -and $_.status -eq 'Readable'}).Count -eq 1) 'Kernel control readable while firmware buffers are unavailable'
+Check ($window.samples[0].pageTables.Count -eq 2 -and $window.samples[5].pageTables.Count -eq 2) 'Bounded mapping metadata captured at both ends'
 $timeoutFolder=Join-Path $testOutput 'timeout';New-Item -ItemType Directory -Path $timeoutFolder|Out-Null
 $sleeper=Join-Path $timeoutFolder 'sleeper.ps1'
 [IO.File]::WriteAllText($sleeper,'Start-Sleep -Seconds 20',[Text.Encoding]::ASCII)
