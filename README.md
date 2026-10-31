@@ -2,6 +2,8 @@
 
 **Unresolved, 31 October 2026.** The ASUS TUF A15 FA507XI detects ordinary USB functions on the DEG2 but does not enumerate its external USB4 router or RTX 4080 SUPER. The identical assembled dock, GPU, PSU and supplied cable work on a Dell Intel Thunderbolt 4 laptop. A separate full Windows installation on the ASUS reproduces the failure.
 
+**New control: [ASUS-Dell USB4 peer link passed](docs/peer-test.md).** Both machines show their USB4 P2P adapter Up using the supplied DEG2 cable. This demonstrates host-to-host link establishment on ASUS; GPU PCIe tunnelling, physical peer rate and throughput remain unmeasured. The failing condition is still the ASUS-DEG2 pairing.
+
 ## Measured comparison
 
 | Environment | Windows build | Microsoft USB4 host driver | External DEG2 router | External GPU |
@@ -14,7 +16,7 @@ The separate Windows capture passed its required USB4 host/root, UCSI, I2C and P
 
 A [live kernel snapshot inspected with USB4KD](docs/kernel-snapshot.md) also shows **0 external routers, 0 tunnels and `PcieTunnelsDisabledInBios = 0`**, with the fallback hub/Billboard still present. Offline inspection succeeded; it identified no repair or root cause.
 
-Expanded inspection recovered 12 recorder buffers and decoded the USB4/UCSI histories. Successful register reads are followed by negative USB4 plugged/router-detected checks. The firmware shared-memory pages are absent from this dump. A newly identified [USB4 peer comparison using the existing Dell and cable](docs/handoff.md#n0-existing-hardware-usb4-peer-test) is available without another peripheral; it remains unperformed and does not test GPU PCIe tunnelling.
+Expanded inspection recovered 12 recorder buffers and decoded the USB4/UCSI histories. Successful register reads are followed by negative USB4 plugged/router-detected checks. The firmware shared-memory pages are absent from this dump. The subsequently completed [USB4 peer comparison](docs/peer-test.md) adds a working host-to-host control, not a GPU PCIe-tunnelling result.
 
 A [guided live connection window](docs/hotplug-window.md) completed at 12:52-12:53 UTC: **80 validated samples, 0 readable firmware buffers, 8,221 ETW events and 0 reported lost events**. Normal kernel memory was readable throughout. Successful root-port register reads still reported USB4 plugged No and router-detected No; Billboard fallback followed. The connection was recorded, but no targeted repair was identified. The [tool](docs/ucsi-memory-probe.md) also passes 64 offline checks; those checks do not establish hardware compatibility.
 

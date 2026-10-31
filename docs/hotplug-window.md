@@ -44,4 +44,4 @@ TraceRpt failed with WMI-service availability in the managed reader. Installed M
 | Raw ETL | 10,420,224 bytes; `40CB6A6C67E17417856C29ED13262B0C7D3B5E9EE542720CC90B79BD6C4E7307` |
 | Private probe JSON | `C2C3C643DAB782CFBADD8620E474FE37F37EA3A299C852C794B7BDB10C032839` |
 
-The next existing-hardware comparison is [N0, a direct ASUS-Dell USB4 peer connection](handoff.md#n0-existing-hardware-usb4-peer-test). It changes the peer without purchasing another device. It remains unperformed and tests host-to-host USB4 operation, not the GPU's PCIe tunnel. Another unchanged DEG2 memory window has no identified additional diagnostic benefit.
+The subsequent [N0 ASUS-Dell peer comparison passed adapter/link checks](peer-test.md) with the supplied cable. It tests host-to-host USB4 operation, not the GPU's PCIe tunnel. Physical peer rate and data transfer remain unmeasured; a short working-link rundown is prepared. Another unchanged DEG2 memory window has no identified additional diagnostic benefit.

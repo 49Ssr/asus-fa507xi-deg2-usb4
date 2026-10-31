@@ -14,6 +14,8 @@ The useful sequence is:
 
 This locates a boundary. It does not identify which cable, mux/retimer, PD controller, host firmware, dock firmware, or Windows interaction caused it.
 
+The later [N0 peer test](peer-test.md) shows USB4 P2P adapters Up on both ASUS and Dell using the same supplied cable. ASUS therefore establishes a USB4 host-to-host link in that pairing. This narrows a blanket nonfunctional-USB4 explanation, while leaving PCIe tunnelling, peer rate, signal margins and DEG2-specific negotiation untested.
+
 ## `_OSC` result `0xf`
 
 The host restart trace records `_OSC USB4 capabilities granted: 0xf`. The four low control bits are granted, including PCIe tunneling control. This rules out the specific claim that firmware is withholding that `_OSC` permission in the captured initialization.
@@ -74,7 +76,7 @@ Zero reported loss does not show every physical-layer transaction was observable
 | Dead GPU / NVIDIA display driver is the initial cause | Identical assembly produces output on Dell; ASUS lacks the earlier external router | No evidence to prioritize replacing the GPU; revisit GPU/driver diagnosis if enumeration advances |
 | Firmware denies USB `_OSC` PCIe control / cached BIOS-disable policy | Captured grant is `0xf`; kernel snapshot has `PcieTunnelsDisabledInBios = 0` | Those specific denial indicators are absent in the captured states, not all firmware/security interactions |
 | Cable-dependent negotiation or signal margins | Supplied cable works on Dell; no second suitable cable tested | N1/N2 in the [next-test matrix](handoff.md); a Dell pass does not measure ASUS signal margins |
-| ASUS host/PD/retimer hardware or firmware issue | Both Windows installations fail before external-router enumeration | N3; no known-good separate USB4 peripheral has exercised this ASUS path |
+| ASUS host/PD/retimer hardware or firmware issue | Both Windows installations fail before DEG2 router enumeration; N0 establishes a USB4 peer link with Dell | Broad USB4 nonoperation is weaker; N3 still needed for a separate managed USB4/PCIe peripheral |
 | DEG2-specific host/dock firmware interaction | ASUS/Dell difference and other-model precedents fit this possibility | N1-N3 and exact-model vendor evidence; no applicable firmware fix verified |
 | Common Windows/OEM driver interaction | Fresh Windows shares selected OEM drivers and physical firmware | A specific mechanism and targeted test; neither total exclusion nor another blanket reinstall is justified |
 
