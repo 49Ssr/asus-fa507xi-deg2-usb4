@@ -72,6 +72,8 @@ All dates below are 30 October 2026 unless specified. Times attached to trace na
 
 ## Corrections that matter
 
+Continuation after step 62, 31 October: context was reconstructed from the accessible chat exchanges and the repository record; complete older chat loading remained unavailable. Primary documentation was refreshed, native USB4 entry was distinguished from alternate-mode commands, one stale index-0-only statement was corrected, and a future offline evidence comparer was scoped. No new hardware experiment or repair was performed. Six verified duplicate directories (68 files, 345,985,244 bytes) were recycled; retained copies passed SHA-256 verification before and after. [Continuation and cleanup record](continuation.md).
+
 1. **GPU fan assumptions:** No reliable source established that this exact card must spin briefly on every startup. The working Dell test was the useful evidence.
 2. **Capture postprocessing:** A `Guid` property assumption under StrictMode caused the wrapper to report an error after a successful trace recording. Capture validity and report-generation success are different facts.
 3. **PnPUtil code 259:** The restore wrapper accepted only 0/3010 and stopped on an already-current package result. It was an error in wrapper handling, not proof that the original driver restoration failed.

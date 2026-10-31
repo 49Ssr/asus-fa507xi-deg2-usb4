@@ -4,6 +4,8 @@ This is an unresolved hardware compatibility investigation, not a published fix.
 Keep confirmed observations, hypotheses, ineffective tests, and unperformed tests distinct.
 Record meaningful mistakes and corrections. Never claim that successful driver installation proves a firmware update or working USB4 link.
 
+For continuation after the previous chat limit, read docs/continuation.md and docs/tool-scope.md first. The full earlier conversation was not recovered verbatim; preserve that provenance limit. The local Git index predates many API-published changes: compare with the current GitHub tree before treating local status as unpublished work or resetting it. The proposed general diagnostic tool is not implemented, and no repair is validated. Historical "Next owner action" sections in docs/handoff.md contain completed experiments, not queued instructions.
+
 `local/` contains private evidence, signed third-party driver copies, and temporary operating-system files. It is excluded from Git. Do not publish its contents or raw ETL/XML/PnP inventories. Public evidence must remove serial numbers, computer/user names, account addresses, device instance suffixes, MAC addresses, router/domain UUIDs, private paths, and support case identifiers.
 
 Use original FA507XI driver packages for the temporary Windows baseline. Never inject a Firmware-class package, cross-flash another model's firmware, alter Secure Boot/test-signing, or patch Windows binaries as a routine troubleshooting step.

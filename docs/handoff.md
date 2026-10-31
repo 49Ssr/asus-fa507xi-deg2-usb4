@@ -27,6 +27,8 @@
 
 ## Current action
 
+**Continuation:** the commands under the historical "Next owner action" headings below have completed. Those headings retain their existing links; they are not instructions to repeat them. Start with the [continuation record](continuation.md) and [protocol/source review](research.md#continuation-review-31-october-2026). A future offline comparison/report tool is [proposed separately](tool-scope.md); no new firmware intervention is prepared by this review.
+
 The deeper ASUS comparison completed on 31 October, 20:08:08-20:10:47 UTC; peer negotiation worked, both DEG2 attempts failed. The [direct Dell control](dell-control.md#measured-result) subsequently succeeded at 21:25-21:27 UTC: native USB4 at a reported 40 Gbps, external router, NVIDIA-bound GPU and display output. All 14 copied Windows images match current ASUS files. Dell performs no OS `SET_UOR` correction, whereas both ASUS DEG2 failures send one successfully before alternate-mode-only reporting. Later mode entries and role-policy origin were inspected. A guarded mode exit was rejected; the subsequent single error read returned invalid command parameters. Neither that result nor the audited URS override supplies an applicable Windows fix. The remaining cable comparison is unperformed because no second qualified cable is available. Firmware-specific negotiation evidence or an exact-model vendor correction is still needed for a justified custom fix.
 
 ### Next owner action: inspect the ASUS mode tables

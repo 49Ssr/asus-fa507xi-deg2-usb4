@@ -29,6 +29,7 @@ A [guided live connection window](docs/hotplug-window.md) completed at 12:52-12:
 
 ## Read in this order
 
+0. **[Continuation record](docs/continuation.md)** - recovered context after the previous chat reached its limit, decisions to retain, and the [future diagnostic-tool scope](docs/tool-scope.md).
 1. **[Independent review and next tests](docs/handoff.md)** - current state, remaining hypotheses, feasible comparisons and what each outcome would mean. Start here when consulting another engineer or AI.
 2. **[Findings](docs/findings.md)** - the failure boundary, `_OSC` grant, Billboard interpretation, evidence limits and hypothesis table.
 3. **[Experiment ledger](docs/experiments.md)** and **[hardware](docs/hardware.md)** - completed attempts, invalid tests, exact versions and working comparison.
