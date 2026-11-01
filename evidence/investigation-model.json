@@ -179,7 +179,10 @@
         "C52",
         "C53",
         "C54",
-        "C55"
+        "C55",
+        "C56",
+        "C57",
+        "C58"
       ]
     },
     {
@@ -848,6 +851,36 @@
         "PS8830-CFU-REFERENCE"
       ],
       "value_sha256": "124c487b9315e0c5a586884e78ba43f8600fb188eb1fea596b56ce5b112b499e"
+    },
+    {
+      "id": "RETIMER-INTERNAL-GATE",
+      "path": "evidence/ps8830-mode-input-branches.json",
+      "pointer": "/internal_gate_code",
+      "kind": "code",
+      "cases": [
+        "PS8830-CFU-REFERENCE"
+      ],
+      "value_sha256": "ca8b7b25192e991f9b210fb7d15392094e98e669170e2d9bdc7ae3368469028d"
+    },
+    {
+      "id": "RETIMER-MODE-CODE",
+      "path": "evidence/ps8830-mode-input-branches.json",
+      "pointer": "/mode_code",
+      "kind": "code",
+      "cases": [
+        "PS8830-CFU-REFERENCE"
+      ],
+      "value_sha256": "30773085f4926bd14d37afb47c6163c349bbdc0d02b8393ca417cd89a9880b06"
+    },
+    {
+      "id": "RETIMER-MODE-DEFINITIONS",
+      "path": "evidence/ps8830-mode-input-branches.json",
+      "pointer": "/upstream_definitions",
+      "kind": "code",
+      "cases": [
+        "PS8830-REFERENCE"
+      ],
+      "value_sha256": "3bc22d740b966ea8daacf8c5991310961c322321899af7b594656da88c7d4eaa"
     }
   ],
   "claims": [
@@ -1632,6 +1665,48 @@
         "PS8830-CFU-REFERENCE"
       ],
       "limit": "The arm also depends on unidentified internal gate/read values. No captured ASUS state, electrical bit meaning, Windows access path or cause of missing router detection follows from this code fact."
+    },
+    {
+      "id": "C56",
+      "basis": "code_fact",
+      "stage": "link",
+      "statement": "Two reviewed retimer event paths set the same control bit before testing a software gate, then select an internal read. Results1 or10 start timer6; gate setup and clear sites are identified.",
+      "sources": [
+        "RETIMER-INTERNAL-GATE"
+      ],
+      "cases": [
+        "PS8830-CFU-REFERENCE"
+      ],
+      "limit": "The read is behind an unidentified internal window. Electrical event meaning, live gate/reply and host alias remain unknown; timer6 is not the sole bit writer or a complete reset sequence."
+    },
+    {
+      "id": "C57",
+      "basis": "code_fact",
+      "stage": "link",
+      "statement": "The retained PS8830 code has separate byte2 bit0 and bit7 configuration branches, a byte2 mask81 main-loop gate, byte1 bit0 selection, byte0 bit1 lane-mask selection, and a byte0 bit2 plus byte2 bit4 predicate.",
+      "sources": [
+        "RETIMER-MODE-CODE"
+      ],
+      "cases": [
+        "PS8830-CFU-REFERENCE"
+      ],
+      "limit": "These are original code reads and branches. Actual input values, host aliases and ASUS attachment-time execution were not captured."
+    },
+    {
+      "id": "C58",
+      "basis": "inference",
+      "stage": "link",
+      "statement": "The six field positions match pinned Linux PS883x connection-mode definitions, supporting the internal bytes as candidate mode/orientation inputs and identifying a USB4-shaped bit7 configuration branch to trace.",
+      "sources": [
+        "RETIMER-MODE-CODE",
+        "RETIMER-MODE-DEFINITIONS"
+      ],
+      "cases": [
+        "PS8830-CFU-REFERENCE",
+        "PS8830-REFERENCE"
+      ],
+      "limit": "Inference from matching fields and code behavior. It does not establish the ASUS writer, host-I2C alias, physical port, failing mode value or a Windows override.",
+      "reason": "Six independently defined field positions match the original reads and branching behavior, including orientation-dependent lane selection; an unmeasured host alias remains a separate gap."
     }
   ],
   "timeline_limit": "T0 is the first recorded Windows attachment report in each run, not physical insertion. Different runs, platforms, power contracts and capture dates are explicit. These tables align software reports only; proximity does not establish wire order or causation. The earlier Dell control supplies the Dell timeline; the deep Dell dump supplies cached-state comparison.",
@@ -2146,6 +2221,14 @@
         "interface": "Word divided by5 -> counter -> interrupt -> queue -> callback",
         "limit": "One conditional set/clear path traced; electrical meaning, live branch and host access unknown.",
         "decision": false
+      },
+      {
+        "id": "RET_MODE_CODE",
+        "label": "Retimer mode-shaped input branches; live values UNKNOWN",
+        "owner": "Retained PS8830 image; ASUS writer unverified",
+        "interface": "Separate bit0/bit7 configuration branches and orientation-dependent control masks",
+        "limit": "Matches reference fields by inference; host alias and failing-state values unknown.",
+        "decision": true
       }
     ],
     "edges": [
@@ -2544,6 +2627,28 @@
         "claims": [
           "C54",
           "C55"
+        ],
+        "standards": []
+      },
+      {
+        "from": "RET_CFG",
+        "to": "RET_MODE_CODE",
+        "label": "ASUS writer and host-to-internal-byte mapping remain unverified",
+        "basis": "unknown",
+        "claims": [
+          "C57",
+          "C58"
+        ],
+        "standards": []
+      },
+      {
+        "from": "RET_MODE_CODE",
+        "to": "LINK",
+        "label": "Configuration code found; execution and physical result during DEG2 failure remain unknown",
+        "basis": "unknown",
+        "claims": [
+          "C57",
+          "C58"
         ],
         "standards": []
       }

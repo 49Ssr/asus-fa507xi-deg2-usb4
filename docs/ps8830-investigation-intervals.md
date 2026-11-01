@@ -2,11 +2,15 @@
 
 ## Authorization and limits
 
+Latest owner change before sleep: the stop point is **1% remaining**, superseding the earlier10% threshold. The existing15-minute heartbeat was updated and its stored prompt/readback verified.
+
+Before overnight work, the owner requested more frequent research and explicitly welcomed controller/USB4 documentation, published papers, specifications, component images and public schematics. Use them to resolve concrete mode-control or wiring questions, identifying model/revision differences. Existing captures are sufficient for the saved offline tasks; no further general dump is requested now. Hardware evidence gaps and the absence of a working repair remain explicit. Project cleanup preserves originals and failed attempts.
+
 On 1 November 2026 the owner requested recurring research intervals tracing what configures the ASUS PS8830 and why native USB4 router detection stays clear with DEG2, using existing captures and updating GitHub. This supersedes the earlier offline-runner-only scheduling preference. Hardware access remains offline-only: no new device/EC/I2C/vendor requests, driver installs, test boots, firmware flashes, security or network changes.
 
-Before each interval, read current Codex usage limits. Stop and disable the heartbeat at 10% or less remaining in any applicable allowance window, if ordinary usage is unavailable, or if the limit cannot be checked reliably. Do not buy credits, use resets, or automatically resume after a reset. Usage is account-wide; the check is a boundary guard, not an exact per-token billing cap. Recheck before expanding work and at the end.
+Before each interval, read current Codex usage limits. Stop and disable the heartbeat at 1% or less remaining in any applicable allowance window, if ordinary usage is unavailable, or if the limit cannot be checked reliably. Do not buy credits, use resets, or automatically resume after a reset. Usage is account-wide; the check is a boundary guard, not an exact per-token billing cap. Recheck before expanding work and at the end.
 
-Heartbeat: `trace-asus-ps8830-configuration`, every 30 minutes in this chat. Keep each research interval to at most 15 minutes. Notify only for meaningful findings, failures, completion, a usage stop or needed owner input. Stop if useful offline paths are exhausted; credit consumption is not a research objective.
+Heartbeat: `trace-asus-ps8830-configuration`, every 15 minutes in this chat (owner update before overnight work). Keep each research interval to at most 15 minutes. Notify only for meaningful findings, failures, completion, a usage stop or needed owner input. Stop if useful offline paths are exhausted; credit consumption is not a research objective.
 
 ## Starting evidence
 
@@ -16,6 +20,12 @@ Heartbeat: `trace-asus-ps8830-configuration`, every 30 minutes in this chat. Kee
 - [Updater evidence](parade-updater-failure.md) and [I2C prerequisites](i2c-read-prerequisites.md): real CFU target-lifetime issue, but working ASUS peer link is counterevidence to a universal USB4 blocker. No blind retry or updater patch deployment.
 
 ## Current interval
+
+**Interval 11, completed:** the timer branch depends on two event paths, a software gate and a selected internal read. Both event paths set the control bit before the gate test; the timer is not its sole writer. The internal return remains unidentified. Separately, the original code has distinct bit0/bit7 configuration branches and orientation-dependent lane masks. Six field positions match the pinned Linux PS883x connection-mode definitions. This supports a specific USB4-shaped branch to follow, as an inference rather than a proven ASUS host-register mapping. [Code, comparison and limits](../evidence/ps8830-mode-input-branches.json).
+
+No failed-connection value or physical bit meaning was measured. No hardware test or dump is needed for the saved code work. The owner requested overnight work more often: the existing heartbeat was updated and read back at15-minute intervals, then the stop limit was changed to1% at the owner's explicit request. Useful code tracing remains; no new hardware request, driver, boot, firmware write or deletion occurred.
+
+### Interval 10
 
 **Interval 10, completed:** the retained PS8830 code uses the training-related words. Two routines calculate the record address, divide its word by5 and load a counter. The timer interrupt decrements active counters, queues expiry events and the main loop calls the indexed handler. For the receiver-PLL-delay record, a conditional arm sets a control bit and starts40 counts; the callback clears the same bit. [Original-code relationships](../evidence/ps8830-timer-consumers.json).
 
@@ -85,7 +95,7 @@ Two primary references add a concrete architecture to follow. TI [ZHCAG60](https
 
 Next concrete tasks:
 
-1. **Next work:** trace the source and meaning of the internal reply used by the timed receiver-PLL branch at image317a..31b0. It selects an internal read and tests the result for1 or10 before starting index6; locate the register-access implementation or original writers that qualify this value. Compare only with existing captured fields whose alias/ownership is established. Do not call it cable, orientation or mode from the number alone. If the relation to host mode requests cannot be recovered, record that boundary rather than expanding to unnamed-register scans. No new live access, timing patch or flash.
+1. **Next work:** trace the caller/change-processing path feeding the separate retained-firmware byte2 bit7 configuration branch at457b, and its byte0 bit1 orientation selection. Establish how these candidate connection-mode bytes reach the code, using original image consumers and existing Parade driver/firmware interfaces. Six matching Linux fields are useful reference evidence, not permission to assume an ASUS I2C alias. The earlier selected internal reply remains unidentified; do not relabel it or keep scanning unrelated registers. No live access, writes or new general dump. Inspect the official ASUS service-guide board images only for concrete package/board identification, without treating service photos or third-party model lists as electrical schematics.
 2. The named EC candidate queue is classified/deferred. Do not repeat those scans without a new mode-control relationship. Bank2 CPUb5d4 address42/channel1 is mapped and deferred pending target/signal identity. Bank1 CPUc0d6 prepares70/channel1, and bank3 CPUc720 prepares98/channel4 and is now classified as shared read setup; none of these numbers is automatically a PS8830 address. Linear disassembly offsets must be translated through the8051 bank window. This initial static triage is not exhaustive/reachability proof; no new emulator was built.
 3. Follow captured native port-control writes and status ordering if the candidate suggests a distinguishing field. Do not force router detection, interpret a wake latch as a diagnosed fault, or apply TI/Linux values to unqualified ASUS hardware. Qualify any future read for read-clear/side effects and history coverage first.
 

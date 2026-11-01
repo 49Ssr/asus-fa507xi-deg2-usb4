@@ -50,6 +50,7 @@ flowchart TD
     PD_VENDOR_SELECT{"Caller/global-flag selection for D8/D9"}
     RET_PARAM_TABLE["Retained retimer training words feed counters"]
     RET_TIMER_FLOW["Retimer counters and timed control-bit callback"]
+    RET_MODE_CODE{"Retimer mode-shaped input branches; live values UNKNOWN"}
     ATTACH -->|"documented: controller discovery and mode negotiation"| PD
     PD -.->|"unknown: candidate mode-control path; ASUS ownership/wiring unproven"| RET_CFG
     LINK -.->|"unknown: what makes the native host-port status assert remains untraced"| PORT_REGS
@@ -88,6 +89,8 @@ flowchart TD
     RET_PARAM_TABLE -.->|"unknown: Relationship of record consumers to active link training remains unqualified"| LINK
     RET_PARAM_TABLE -->|"traced_code: Original indexed word reads load counters; expiry dispatch reaches the paired control-bit clear"| RET_TIMER_FLOW
     RET_TIMER_FLOW -.->|"unknown: Execution and effect during the failed ASUS connection remain unobserved"| LINK
+    RET_CFG -.->|"unknown: ASUS writer and host-to-internal-byte mapping remain unverified"| RET_MODE_CODE
+    RET_MODE_CODE -.->|"unknown: Configuration code found; execution and physical result during DEG2 failure remain unknown"| LINK
 ```
 
 ### Who owns each part
@@ -126,6 +129,7 @@ flowchart TD
 | PD_VENDOR_SELECT | EC bank1 caller, bank3 selector and setup/host-write paths | Caller gate, global selector, pair-enable gate and private latch | No measured flag state or USB4 meaning. Partial pair failure does not certify unchanged hardware. |
 | RET_PARAM_TABLE | Offered PS8830 image; timer consumers traced | Indexed code-word loads, counter expiry queue and callback dispatch | Static code path, not measured active state or a Windows control interface. |
 | RET_TIMER_FLOW | Retained PS8830 firmware code | Word divided by5 -> counter -> interrupt -> queue -> callback | One conditional set/clear path traced; electrical meaning, live branch and host access unknown. |
+| RET_MODE_CODE | Retained PS8830 image; ASUS writer unverified | Separate bit0/bit7 configuration branches and orientation-dependent control masks | Matches reference fields by inference; host alias and failing-state values unknown. |
 
 ### Branch evidence
 
@@ -169,6 +173,8 @@ flowchart TD
 | RET_PARAM_TABLE → LINK | Relationship of record consumers to active link training remains unqualified | unknown | C53 |
 | RET_PARAM_TABLE → RET_TIMER_FLOW | Original indexed word reads load counters; expiry dispatch reaches the paired control-bit clear | traced_code | C54, C55 |
 | RET_TIMER_FLOW → LINK | Execution and effect during the failed ASUS connection remain unobserved | unknown | C54, C55 |
+| RET_CFG → RET_MODE_CODE | ASUS writer and host-to-internal-byte mapping remain unverified | unknown | C57, C58 |
+| RET_MODE_CODE → LINK | Configuration code found; execution and physical result during DEG2 failure remain unknown | unknown | C57, C58 |
 
 ### Candidate intervention locations
 
@@ -551,6 +557,26 @@ Scope: PS8830-CFU-REFERENCE. Code relationships in an offered image, not observe
 Scope: PS8830-CFU-REFERENCE. The arm also depends on unidentified internal gate/read values. No captured ASUS state, electrical bit meaning, Windows access path or cause of missing router detection follows from this code fact.
 
 [RETIMER-PLL-PATH](../evidence/ps8830-timer-consumers.json) `/pll_path`
+
+**C56 — code_fact:** Two reviewed retimer event paths set the same control bit before testing a software gate, then select an internal read. Results1 or10 start timer6; gate setup and clear sites are identified.
+
+Scope: PS8830-CFU-REFERENCE. The read is behind an unidentified internal window. Electrical event meaning, live gate/reply and host alias remain unknown; timer6 is not the sole bit writer or a complete reset sequence.
+
+[RETIMER-INTERNAL-GATE](../evidence/ps8830-mode-input-branches.json) `/internal_gate_code`
+
+**C57 — code_fact:** The retained PS8830 code has separate byte2 bit0 and bit7 configuration branches, a byte2 mask81 main-loop gate, byte1 bit0 selection, byte0 bit1 lane-mask selection, and a byte0 bit2 plus byte2 bit4 predicate.
+
+Scope: PS8830-CFU-REFERENCE. These are original code reads and branches. Actual input values, host aliases and ASUS attachment-time execution were not captured.
+
+[RETIMER-MODE-CODE](../evidence/ps8830-mode-input-branches.json) `/mode_code`
+
+**C58 — inference:** The six field positions match pinned Linux PS883x connection-mode definitions, supporting the internal bytes as candidate mode/orientation inputs and identifying a USB4-shaped bit7 configuration branch to trace.
+
+Scope: PS8830-CFU-REFERENCE, PS8830-REFERENCE. Inference from matching fields and code behavior. It does not establish the ASUS writer, host-I2C alias, physical port, failing mode value or a Windows override.
+
+Reason: Six independently defined field positions match the original reads and branching behavior, including orientation-dependent lane selection; an unmeasured host alias remains a separate gap.
+
+[RETIMER-MODE-CODE](../evidence/ps8830-mode-input-branches.json) `/mode_code`, [RETIMER-MODE-DEFINITIONS](../evidence/ps8830-mode-input-branches.json) `/upstream_definitions`
 
 ## Separate runs and observation limits
 
