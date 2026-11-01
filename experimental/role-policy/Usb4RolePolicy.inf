@@ -1,0 +1,49 @@
+; Experimental device extension. Microsoft UCSI remains the base function driver.
+[Version]
+Signature="$WINDOWS NT$"
+Class=Extension
+ClassGuid={e2f84ce7-8efa-411c-aa69-97454ca4cb57}
+ExtensionId={22d27041-38b8-4ab3-8243-d380169fcdce}
+Provider=%Provider%
+DriverVer=11/01/2026,0.1.0.0
+CatalogFile=Usb4RolePolicy.cat
+PnpLockdown=1
+
+[Manufacturer]
+%Provider%=Models,NTamd64.10.0...26100
+[Models.NTamd64.10.0...26100]
+%Device%=Policy,ACPI\USBC000
+
+[Policy.NT]
+CopyFiles=DriverCopy
+[Policy.NT.Services]
+AddService=Usb4RolePolicy,0,PolicyService
+[PolicyService]
+DisplayName=%Service%
+ServiceType=1
+StartType=3
+ErrorControl=1
+ServiceBinary=%13%\Usb4RolePolicy.sys
+
+[Policy.NT.Filters]
+AddFilter=Usb4RolePolicy,,PolicyFilter
+[PolicyFilter]
+FilterPosition=Lower
+
+[Policy.NT.Wdf]
+KmdfService=Usb4RolePolicy,Framework
+[Framework]
+KmdfLibraryVersion=1.15
+[DestinationDirs]
+DriverCopy=13
+[DriverCopy]
+Usb4RolePolicy.sys
+[SourceDisksNames]
+1=%Disk%,,,
+[SourceDisksFiles]
+Usb4RolePolicy.sys=1
+[Strings]
+Provider="USB4 Research Experiment"
+Device="FA507XI UCSI role-policy experiment"
+Service="USB4 Role Policy Experiment"
+Disk="USB4 Role Policy Experiment"

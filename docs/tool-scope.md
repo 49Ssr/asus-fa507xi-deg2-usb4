@@ -1,5 +1,7 @@
 # Scope of a future USB4 diagnostic tool
 
+**Pre-attachment experiment prepared, 1 November:** [role-policy source, controlled test and rollback](role-policy-experiment.md). The unsigned KMDF filter supplies the documented disable-correction policy at UCSI startup; it has **not been installed or loaded**. Native core: 4,631 assertions; PS5.1 workflow: 57 checks with device operations mocked. The real Microsoft client must confirm policy acceptance before a single attachment is allowed. Windows-accepted signing is unresolved; Secure Boot, firmware, drivers and ICS were not changed. This is a causal test, not a verified USB4 fix.
+
 **Design proposal, 31 October 2026. Not implemented or release-qualified.** The existing collectors are research instruments for exercised ASUS/Dell workflows with private dependencies. A public source repository is not yet a standalone, general-purpose repair package.
 
 ## First useful deliverable

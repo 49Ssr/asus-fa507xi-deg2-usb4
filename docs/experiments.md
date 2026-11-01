@@ -1,5 +1,7 @@
 # Experiment ledger
 
+**Pre-attachment experiment prepared, 1 November:** [role-policy source, controlled test and rollback](role-policy-experiment.md). The unsigned KMDF filter supplies the documented disable-correction policy at UCSI startup; it has **not been installed or loaded**. Native core: 4,631 assertions; PS5.1 workflow: 57 checks with device operations mocked. The real Microsoft client must confirm policy acceptance before a single attachment is allowed. Windows-accepted signing is unresolved; Secure Boot, firmware, drivers and ICS were not changed. This is a causal test, not a verified USB4 fix.
+
 ## Completed attempts
 
 | Experiment | Scope | Observed outcome | What remains open |
