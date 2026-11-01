@@ -44,6 +44,7 @@ flowchart TD
     NOTIFY_ARM["Software plug notifications armed; cached unplugged"]
     RX_PLUG["Host RX PLUG records: ASUS internal DP6/7, none logged for2"]
     TOPO_PLUG["Matching packets reach host topology handler"]
+    EC42_CFG["EC channel1/address42 staged configuration; target UNKNOWN"]
     ATTACH -->|"documented: controller discovery and mode negotiation"| PD
     PD -.->|"unknown: candidate mode-control path; ASUS ownership/wiring unproven"| RET_CFG
     LINK -.->|"unknown: what makes the native host-port status assert remains untraced"| PORT_REGS
@@ -75,6 +76,7 @@ flowchart TD
     WAIT_RD -.->|"unknown: relation to final no-router snapshots; transient history unmeasured"| ABSENT
     WAIT_RD -->|"measured: ASUS RD No followed by successful pump start and ReadAndArm"| NOTIFY_ARM
     RX_PLUG -->|"measured: Four ASUS internal-adapter packets match across the two logged stages"| TOPO_PLUG
+    EC42_CFG -.->|"unknown: Candidate relation to PS8830 configuration unqualified"| RET_CFG
 ```
 
 ### Who owns each part
@@ -107,6 +109,7 @@ flowchart TD
 | NOTIFY_ARM | Windows USB4 native plug-state manager and host callback | StartNotificationPump, ReadAndArm and cached-state return | Software state is not an independent physical link or PD-wire observation. |
 | RX_PLUG | Windows USB4HostRouter ring receive | Length check and route/adapter/event log | Different adapters are an internal path control, not a DEG2 link measurement. |
 | TOPO_PLUG | Windows USB4HostRouter topology manager | Receipt logged before adapter lookup/client delivery | Receipt does not certify final client completion or explain missing port2 events. |
+| EC42_CFG | Retained EC bank2 code | Two-byte register/data writes; desired/last-written cache and initialisation stages | No chip identity, USB4 signal ownership or live execution established. |
 
 ### Branch evidence
 
@@ -143,6 +146,7 @@ flowchart TD
 | WAIT_RD → ABSENT | relation to final no-router snapshots; transient history unmeasured | unknown | C34, C36 |
 | WAIT_RD → NOTIFY_ARM | ASUS RD No followed by successful pump start and ReadAndArm | measured | C40 |
 | RX_PLUG → TOPO_PLUG | Four ASUS internal-adapter packets match across the two logged stages | measured | C41 |
+| EC42_CFG → RET_CFG | Candidate relation to PS8830 configuration unqualified | unknown | C45 |
 
 ### Candidate intervention locations
 
@@ -449,6 +453,20 @@ Scope: ASUS-DEEP, DELL-DEEP, WINDOWS-USB4HRD. Per-port or transient faults remai
 Reason: The same saved ASUS host logs ring receipt and topology handling for four packets but no adapter2 packet at either stage. Static code places these observation points before final client delivery.
 
 [HOST-PLUG-PAIRS](../evidence/usb4-host-notification-boundary.json) `/captured`, [HOST-PLUG-COVERAGE](../evidence/usb4-host-notification-boundary.json) `/coverage`, [HOST-PLUG-CODE](../evidence/usb4-host-notification-boundary.json) `/native_code`
+
+**C44 — code_fact:** The pinned EC bank2 address-byte42/channel1 candidate prepares two-byte register/data writes with zero receive length, staged initialisation and three desired/last-written cached control bytes. Only successful firmware transport returns update the last-written copies.
+
+Scope: ASUS-BIOS314. Static code, not a captured bus transaction, live target identity, physical acceptance or current stage/cache value. GPIO-like bit operations do not identify the controlled signals.
+
+[EC42-CODE](../evidence/ec-address42-control-path.json) `/code`
+
+**C45 — inference:** The address42 candidate is not yet a qualified PS8830 mode-control intervention; its numeric address and cached bit writes do not establish physical target or USB4 signal ownership.
+
+Scope: ASUS-BIOS314. Indirect routing/power/reset effects remain possible. This deferral does not prove the path is unrelated or that a Windows repair is impossible.
+
+Reason: The reviewed functions expose a staged register-write protocol and generic bit setters, but no validated chip/register identity, board connection or attachment-time execution.
+
+[EC42-CODE](../evidence/ec-address42-control-path.json) `/code`
 
 ## Separate runs and observation limits
 

@@ -1,0 +1,188 @@
+{
+  "schema": 1,
+  "date": "2026-11-01",
+  "interval": 6,
+  "status": "EC address42/channel1 candidate mapped; peripheral and USB4 signal ownership remain unverified",
+  "code": {
+    "full_ec_sha256": "103721578b66daed81dcf7a0bed06709c072f9da1dc75a6d7887321e6e32b060",
+    "bank2_view_sha256": "20940ba27ff630e81df2e13d9659278ecdc7b5af9e5ecd28f38e308f4d0ce1b3",
+    "architecture": "8051",
+    "mapping": {
+      "common_bytes": 32768,
+      "window_bytes": 32768,
+      "selector": "P1 low3 bits =2",
+      "upper_window_full_image_offset_hex": "10000",
+      "cpu_to_full_upper_rule": "full offset = CPU address +0x8000",
+      "live_flash_match_verified": false
+    },
+    "spans": [
+      {
+        "label": "prepare_shared_transaction",
+        "cpu_start_hex": "b5cd",
+        "cpu_end_exclusive_hex": "b5f7",
+        "sha256": "3190ef9af9181219b94d6fe148900017899bc49a638692f6e42eacffe52de1f1"
+      },
+      {
+        "label": "changed_register_writer",
+        "cpu_start_hex": "b17e",
+        "cpu_end_exclusive_hex": "b1e8",
+        "sha256": "b4bfa0df949fdaf43557b8458db4d510654d698b7b6c82bf0b3db8a85ee6a54e"
+      },
+      {
+        "label": "initialisation_groups",
+        "cpu_start_hex": "b1e8",
+        "cpu_end_exclusive_hex": "b457",
+        "sha256": "3be0a81041171ae3ef366b7ec8070b8e75d08a734d2dfc34a730fc3691fd1ca6"
+      },
+      {
+        "label": "bit_update_helpers",
+        "cpu_start_hex": "b457",
+        "cpu_end_exclusive_hex": "b5cb",
+        "sha256": "6659a58623c0d2aece368ed34da841ec2bfb654ef353a7ae33fbdd86588bfdec"
+      },
+      {
+        "label": "payload_helpers",
+        "cpu_start_hex": "b61f",
+        "cpu_end_exclusive_hex": "b649",
+        "sha256": "b410f85cd957371ef7d4027a38ef09b3dc8d8b094ff164c266fe53ae87ef3175"
+      },
+      {
+        "label": "upstream_call",
+        "cpu_start_hex": "c5e0",
+        "cpu_end_exclusive_hex": "c600",
+        "sha256": "97eeda626da518485887ed093293e8ac51e0564d2dcd48a33924f3424955dc7a"
+      }
+    ],
+    "shared_transfer": {
+      "preparation_entries_hex": [
+        "b5cd",
+        "b5d0",
+        "b5d4"
+      ],
+      "bus_function_cpu_hex": "1ff4",
+      "channel": 1,
+      "address_byte_hex": "42",
+      "write_length": 2,
+      "read_length": 0,
+      "payload": "One register selector followed by one data byte. Preparation fills the shared TX/RX descriptors and sets R3=2, R2=0, R5=42, R7=1.",
+      "return_handling": "Callers treat returned R7 nonzero as success; zero takes failure handling. This is firmware transport status, not independently measured device acceptance."
+    },
+    "steady_writer": {
+      "entry_cpu_hex": "b17e",
+      "minimum_initialisation_stage": 6,
+      "register_selectors_hex": [
+        "01",
+        "03",
+        "05"
+      ],
+      "cache_labels": [
+        "desiredA / last_writtenA",
+        "desiredB / last_writtenB",
+        "desiredC / last_writtenC"
+      ],
+      "rule": "Skip equal desired/last-written values. Write changed values with the shared transfer. Update the corresponding last-written byte only on nonzero return.",
+      "verified_bus_calls_cpu_hex": [
+        "b199",
+        "b1b9",
+        "b1d9"
+      ]
+    },
+    "initialisation": {
+      "entry_cpu_hex": "b1e8",
+      "upstream_call_cpu_hex": "c5ec",
+      "groups": [
+        {
+          "stage": 0,
+          "operation": "Set desired A/B/C to19/01/01 and additional cached bytes to zero, then advance."
+        },
+        {
+          "stage": 1,
+          "register_selectors_hex": [
+            "01",
+            "03",
+            "05"
+          ],
+          "data": "desired A/B/C",
+          "last_written_cache_updated_on_success": true
+        },
+        {
+          "stage": 2,
+          "register_selectors_hex": [
+            "39",
+            "3b",
+            "3d"
+          ],
+          "data": "three additional cached bytes, initially zero"
+        },
+        {
+          "stage": 3,
+          "register_selectors_hex": [
+            "10",
+            "11",
+            "12",
+            "13",
+            "14",
+            "15",
+            "16",
+            "17"
+          ],
+          "data_hex": "40"
+        },
+        {
+          "stage": 4,
+          "register_selectors_hex": [
+            "20",
+            "21",
+            "22",
+            "23"
+          ],
+          "data_hex": "40"
+        },
+        {
+          "stage": 5,
+          "register_selectors_hex": [
+            "32",
+            "34",
+            "35",
+            "36",
+            "37",
+            "38"
+          ],
+          "data_hex": "40"
+        }
+      ],
+      "progression": "The invocation clears a shared failure count. Each group records failed transfers and advances the stage only when that count remains zero. Successful groups may fall through within the same invocation. A failed group retains its stage for a later invocation; no real-time interval is assigned.",
+      "after_groups": "The changed-value writer is available once stage>=6."
+    },
+    "upstream_bit_helpers": {
+      "cpu_range_hex": "b457..b5ca",
+      "scope": "Reviewed helpers set/clear individual bits in one of the three desired bytes and branch/call the changed-value writer. Some also change a separate local flag.",
+      "signal_names_and_board_connections": "Unidentified. These are GPIO-like operations by structure, not a qualified chip identity or USB4 mode-register definition."
+    },
+    "scope": "Original code facts and exact byte/span assertions only. No runtime execution, peripheral simulation, target read, live flash hash, bus measurement or physical timing qualification in this interval."
+  },
+  "assessment": {
+    "supported": "This candidate is a staged peripheral configuration and three-byte cached control-image write path; it is not a captured retimer status read.",
+    "unproven": [
+      "Identity of the peripheral at EC channel1/address-byte42",
+      "Whether this bus/address is the same physical target as any ACPI PS8830 endpoint",
+      "Meaning of its register selectors and individual control bits",
+      "Whether a reviewed bit drives USB4 routing, power, reset or something unrelated",
+      "Execution and returned status during the failed ASUS-DEG2 connection"
+    ],
+    "disposition": "Defer this candidate as a PS8830-specific intervention until target/signal ownership can be tied to original code or board evidence. Do not reject all possible indirect USB4 effects.",
+    "next_task": "Follow the existing bank3 CPUc720 channel4/address98 candidate with exact caller/payload/status handling. Compare with already recovered UCSI relay to identify any genuinely separate private PD/mode operation; if it is the same relay preparation, record that and do not rediscover it.",
+    "live_requests": 0,
+    "driver_installs": 0,
+    "test_boots": 0,
+    "firmware_writes": 0,
+    "working_windows_fix": false
+  },
+  "analysis_quality": {
+    "asserted_byte_anchors": 12,
+    "verified_bank_view_against_full_image": true,
+    "linear_full_image_is_not_cpu_address_space": true,
+    "candidate_b5d4_is_valid_shared_entry": "Callers deliberately enter at b5d4 after preparing the command and data; it is not necessarily a standalone function prologue.",
+    "preserved_attempts": "Initial broad range began between instructions; only reviewed shared entries/call boundaries support the result. A second range also began mid-instruction and one range ended with a truncated instruction; neither fragment is used as evidence. All original outputs remain private."
+  }
+}

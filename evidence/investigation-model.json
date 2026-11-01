@@ -157,7 +157,9 @@
       "claims": [
         "C02",
         "C13",
-        "C23"
+        "C23",
+        "C44",
+        "C45"
       ]
     },
     {
@@ -726,6 +728,16 @@
         "WINDOWS-USB4HRD"
       ],
       "value_sha256": "a24d5c792aafbd37f33b16a2c317eb35345197d19b3410385902bd85ac831565"
+    },
+    {
+      "id": "EC42-CODE",
+      "path": "evidence/ec-address42-control-path.json",
+      "pointer": "/code",
+      "kind": "code",
+      "cases": [
+        "ASUS-BIOS314"
+      ],
+      "value_sha256": "65d830a4efc14c47da9c4606affea796b037f35b58fcc1303284953aaeb45a5b"
     }
   ],
   "claims": [
@@ -1349,6 +1361,33 @@
       ],
       "reason": "The same saved ASUS host logs ring receipt and topology handling for four packets but no adapter2 packet at either stage. Static code places these observation points before final client delivery.",
       "limit": "Per-port or transient faults remain possible. This does not identify why RD stays clear or prove that the PD/retimer hardware failed."
+    },
+    {
+      "id": "C44",
+      "basis": "code_fact",
+      "stage": "link",
+      "statement": "The pinned EC bank2 address-byte42/channel1 candidate prepares two-byte register/data writes with zero receive length, staged initialisation and three desired/last-written cached control bytes. Only successful firmware transport returns update the last-written copies.",
+      "sources": [
+        "EC42-CODE"
+      ],
+      "cases": [
+        "ASUS-BIOS314"
+      ],
+      "limit": "Static code, not a captured bus transaction, live target identity, physical acceptance or current stage/cache value. GPIO-like bit operations do not identify the controlled signals."
+    },
+    {
+      "id": "C45",
+      "basis": "inference",
+      "stage": "link",
+      "statement": "The address42 candidate is not yet a qualified PS8830 mode-control intervention; its numeric address and cached bit writes do not establish physical target or USB4 signal ownership.",
+      "sources": [
+        "EC42-CODE"
+      ],
+      "cases": [
+        "ASUS-BIOS314"
+      ],
+      "reason": "The reviewed functions expose a staged register-write protocol and generic bit setters, but no validated chip/register identity, board connection or attachment-time execution.",
+      "limit": "Indirect routing/power/reset effects remain possible. This deferral does not prove the path is unrelated or that a Windows repair is impossible."
     }
   ],
   "timeline_limit": "T0 is the first recorded Windows attachment report in each run, not physical insertion. Different runs, platforms, power contracts and capture dates are explicit. These tables align software reports only; proximity does not establish wire order or causation. The earlier Dell control supplies the Dell timeline; the deep Dell dump supplies cached-state comparison.",
@@ -1815,6 +1854,14 @@
         "interface": "Receipt logged before adapter lookup/client delivery",
         "limit": "Receipt does not certify final client completion or explain missing port2 events.",
         "decision": false
+      },
+      {
+        "id": "EC42_CFG",
+        "label": "EC channel1/address42 staged configuration; target UNKNOWN",
+        "owner": "Retained EC bank2 code",
+        "interface": "Two-byte register/data writes; desired/last-written cache and initialisation stages",
+        "limit": "No chip identity, USB4 signal ownership or live execution established.",
+        "decision": false
       }
     ],
     "edges": [
@@ -2140,6 +2187,16 @@
         "basis": "measured",
         "claims": [
           "C41"
+        ],
+        "standards": []
+      },
+      {
+        "from": "EC42_CFG",
+        "to": "RET_CFG",
+        "label": "Candidate relation to PS8830 configuration unqualified",
+        "basis": "unknown",
+        "claims": [
+          "C45"
         ],
         "standards": []
       }
