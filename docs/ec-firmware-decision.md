@@ -1,5 +1,7 @@
 # BIOS314 EC firmware: silent telemetry stub and UCSI relay
 
+**Subsequent bus-engine work:** the original common1ff4 transfer engine and helpers now execute in10 offline scenarios, with peripheral registers simulated. This is additional coverage beyond the relay tests below, which still stop at a doubled bus call. An internal bus gate and its original vendor-handler set/clear paths are identified, but its live state and relevance to USB4 failure remain unknown. [Full results and decoded trace gaps](trace-gaps-and-ec-bus.md).
+
 **1 November 2026:** executable EC firmware has now been recovered from another region of the exact ASUS BIOS314 package. Its OEM table6 handler returns without writing a reply. Its capability17 and `IT8853` identity getters also reproduce the live results. This explains the diagnostic timeout in this EC build; it does **not** establish the cause of the ASUS-DEG2 USB4 failure. A separate UCSI relay forwards command/data bytes to the PD controller without a mode-policy substitution in the routines tested. **No working Windows USB4 repair has been established.** [Structured evidence](../evidence/ec-firmware-decision.json).
 
 ## Exact input and address model

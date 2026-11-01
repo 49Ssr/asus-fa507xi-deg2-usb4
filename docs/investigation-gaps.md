@@ -1,5 +1,7 @@
 # What we know, what we are missing, and what can be tested without another boot
 
+**Completed follow-up:** the data fields in all342 previously unread trace records have now been decoded. They do not supply the USB-C entry exchange. Ten original EC bus-engine scenarios also pass with modeled peripherals; this includes the code previously replaced by a whole-call test double. [What those records and tests actually show](trace-gaps-and-ec-bus.md).
+
 **1 November 2026: the failure is unresolved, not proved impossible to fix.** We have narrowed several explanations. We have not observed the whole connection attempt, recovered all firmware involved, or identified a working Windows repair. Test counts below describe software checks, not thousands of real connection attempts.
 
 ## The connection in plain language
@@ -55,9 +57,9 @@ These checks expand coverage of a previously skipped caller. They do not reprodu
 
 The next offline checks should connect a specific failure hypothesis to actual code and retained data:
 
-1. Follow the original bus engine and the callers that set or clear the EC's service gates. Check whether saved command failures fit a specific path. Do not replace the real bus engine with a successful test double and claim it works.
+1. Extend the now-exercised original bus engine to the remaining runtime callers and state-restoration paths. Its internal gate and bus-status conditions are known in code; their values during the real failure are not measured. Do not treat successful simulated transfers as physical bus validation.
 2. Find the firmware or diagnostic interface that records the PD controller's discovery, entry and exit decisions. The neighboring PS8830 retimer image is not identified IT8853 PD firmware. The recovered main EC image alone is not all firmware involved in USB4.
 3. Find which component programs the board's signal routing and retimer, and how its state could be read from Windows. A readable field, a writable field and a verified restoration procedure are three separate questions.
-4. Check the existing captures for events or state fields that distinguish the three possibilities above, retaining unknown formats and collection limitations. An empty search is not proof that the hardware never performed an operation.
+4. The342 formerly unread ASUS records now have decoded fields. Keep the remaining capture limitations explicit: those records do not contain the entry/exit exchange. Seek an understood way to obtain the controller's actual history or routing state; do not repeat unchanged decoding and call it a new measurement.
 
 A live experiment becomes useful when it answers a named question and captures the result. A repair test additionally needs a specific change and a way to undo it. Neither requires another blind boot. If the needed controller state is not exposed in existing files or through an understood software interface, identifying that missing measurement is the next result; repeating the same dump or counting more simulated packet combinations will not supply it.

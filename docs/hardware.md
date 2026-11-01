@@ -1,5 +1,7 @@
 # Hardware and comparison baseline
 
+**Board-number check, 1 November2026:** the owner's suggested `60NR0EB0-MB2010` is unverified on this machine. Read-only SMBIOS reports ASUS/FA507XI/version1.0 without that part number. The [official ASUS listing](https://partshop.asus.com/us/90nr0ff0-r00015.html) identifies an FA507XI/Ryzen9 replacement assembly as `90NR0FF0-R00015`; this does not identify the fitted PCB or its revision. Do not select a boardview, schematic or firmware from the proposed number alone. [Evidence and distinction](trace-gaps-and-ec-bus.md#motherboard-number-still-unverified).
+
 ## Affected host
 
 | Item | Observed configuration |

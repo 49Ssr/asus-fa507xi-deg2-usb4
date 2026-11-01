@@ -1,0 +1,228 @@
+{
+  "schema": 1,
+  "date": "2026-11-01",
+  "status": "Saved trace gaps decoded and original EC bus engine tested offline; physical USB4 failure unresolved",
+  "trace": {
+    "bytes": 239206400,
+    "sha256": "9e0501dae7910fc709aeca47ea64017a63539ae72cfaf240b602389ada0ef172",
+    "events_scanned": 1114490,
+    "unknown_records_decoded": 342,
+    "known_controls": 2,
+    "process_status": 0,
+    "close_status": 0,
+    "endpoint_contexts": 26,
+    "message_groups": [
+      {
+        "guid": "a3776331-57bf-31b1-028e-c9b09d96ef8f",
+        "driver": "USBXHCI.sys",
+        "meaning": "USB endpoint state transition",
+        "message": 12,
+        "field_bytes": [
+          8,
+          4,
+          4,
+          4
+        ],
+        "count": 331
+      },
+      {
+        "guid": "cb7a5c27-8baa-3da6-3050-9d7564b04261",
+        "driver": "USBXHCI.sys",
+        "meaning": "Device slot context installation",
+        "message": 11,
+        "field_bytes": [
+          8,
+          4,
+          8
+        ],
+        "count": 7
+      },
+      {
+        "guid": "10adc54e-b705-390a-5f23-145e373e5c16",
+        "driver": "Usb4HostRouter.sys",
+        "meaning": "Timing-policy routine no-change branch",
+        "message": 22,
+        "field_bytes": [
+          4,
+          8
+        ],
+        "count": 2
+      },
+      {
+        "guid": "2cbb8eab-a489-3cb9-c10a-668c9784ba4d",
+        "driver": "USBXHCI.sys",
+        "meaning": "Unused common-buffer cleanup",
+        "message": 25,
+        "field_bytes": [
+          8
+        ],
+        "count": 2
+      }
+    ],
+    "labels": "Analyst interpretations from pinned code; original missing strings not recovered",
+    "raw_pd_wire_messages_recovered": false,
+    "state_aliases_preserved": true
+  },
+  "drivers": [
+    {
+      "name": "Usb4HostRouter.sys",
+      "sha256": "912efbfca273c62484db952632eeb0d2b061bd7a1c830970fda23cdb50beeb1f",
+      "pdb_sha256": "31ddc5db3e99e4e016af4bc847184699b04203e4b5161b8feedde952b3072f8c"
+    },
+    {
+      "name": "USBXHCI.sys",
+      "sha256": "689af40dff3f9ae809e459100a697cdd6c45264baadc1ec255b0a53e27021cec",
+      "pdb_sha256": "d1d6eec43e6b383c86962bd28485a1c8abc63c7b66fcdeed5e704b9f76cb6309"
+    }
+  ],
+  "pdb_check": {
+    "fresh_publisher_copies_match_cache": true,
+    "pe_guid_and_dbi_age_match": true,
+    "dbi_age": 1,
+    "mismatched_pair_rejected": true,
+    "all_ages_equal": false,
+    "stripped": true,
+    "info_age": 4,
+    "pe_age": 1
+  },
+  "stall": {
+    "first_no_router_utc": "2026-11-01T00:52:17.0830516Z",
+    "physical_device_identity_not_assigned_from_this_record": true,
+    "request": "Device Qualifier descriptor",
+    "earlier_absence_explained_by_this_later_stall": false,
+    "enumeration_continued_through_success_path": true,
+    "time_utc": "2026-11-01T00:52:18.7426522Z",
+    "endpoint_reset_succeeded": true
+  },
+  "ec_engine": {
+    "firmware_sha256": "103721578b66daed81dcf7a0bed06709c072f9da1dc75a6d7887321e6e32b060",
+    "common_entry_hex": "1ff4",
+    "channel": 4,
+    "register_range_hex": "1ca0..1caa",
+    "address_register_hex": "1ca3",
+    "data_register_hex": "1ca7",
+    "bus_state_register_hex": "1ca9",
+    "required_bus_state_low_bits": 3,
+    "blocking_flag_hex": "030e.bit1",
+    "vendor_set_case_hex": "75",
+    "vendor_clear_case_hex": "76",
+    "other_clear_pc": "bank1 be2d",
+    "whole_byte_restore_pc": "bank2 c93f",
+    "live_flag_observed": false,
+    "cases": [
+      {
+        "case": "maintenance-gate-blocks-normal-controller-address",
+        "result": 0,
+        "addressWrites": 0,
+        "txRegisterWrites": 0,
+        "rxRegisterReads": 0,
+        "statusPolls": 0
+      },
+      {
+        "case": "invalid-channel-rejected",
+        "result": 0,
+        "addressWrites": 0,
+        "txRegisterWrites": 0,
+        "rxRegisterReads": 0,
+        "statusPolls": 0
+      },
+      {
+        "case": "pin-configuration-gate-rejects",
+        "result": 0,
+        "addressWrites": 0,
+        "txRegisterWrites": 0,
+        "rxRegisterReads": 0,
+        "statusPolls": 0
+      },
+      {
+        "case": "bus-state-low-bits-block-before-transfer",
+        "result": 0,
+        "addressWrites": 0,
+        "txRegisterWrites": 0,
+        "rxRegisterReads": 0,
+        "statusPolls": 0
+      },
+      {
+        "case": "original-engine-emits-all25-write-bytes",
+        "result": 1,
+        "addressWrites": 1,
+        "txRegisterWrites": 25,
+        "rxRegisterReads": 0,
+        "statusPolls": 26
+      },
+      {
+        "case": "original-engine-register-read20-bytes",
+        "result": 1,
+        "addressWrites": 1,
+        "txRegisterWrites": 1,
+        "rxRegisterReads": 20,
+        "statusPolls": 23
+      },
+      {
+        "case": "injected-status04-fails",
+        "result": 0,
+        "addressWrites": 1,
+        "txRegisterWrites": 1,
+        "rxRegisterReads": 0,
+        "statusPolls": 1
+      },
+      {
+        "case": "no-ready-event-reaches-original-timer-timeout",
+        "result": 0,
+        "addressWrites": 1,
+        "txRegisterWrites": 1,
+        "rxRegisterReads": 0,
+        "statusPolls": 1725
+      },
+      {
+        "case": "original-vendor-handler75-blocks-normal-address",
+        "result": 0,
+        "addressWrites": 0,
+        "txRegisterWrites": 0,
+        "rxRegisterReads": 0,
+        "statusPolls": 0
+      },
+      {
+        "case": "original-vendor-handler76-restores-modeled-transfer",
+        "result": 1,
+        "addressWrites": 1,
+        "txRegisterWrites": 25,
+        "rxRegisterReads": 0,
+        "statusPolls": 26
+      }
+    ],
+    "passed": 10,
+    "peripheral_registers_simulated": true,
+    "physical_timing_validated": false,
+    "live_commands_75_76_sent": false
+  },
+  "validation": {
+    "malformed_payloads_rejected": 10,
+    "service_regression_passed": 15,
+    "unreviewed_type_rejected": true,
+    "pmc_regression_passed": 69,
+    "failed_attempts_preserved": true,
+    "relay_regression_passed": 2306,
+    "original_serializer_cases_passed": 12
+  },
+  "board": {
+    "current_smbios": {
+      "manufacturer": "ASUSTeK COMPUTER INC.",
+      "product": "FA507XI",
+      "version": "1.0"
+    },
+    "listing_identifies_fitted_board": false,
+    "proposal_verified": false,
+    "source": "https://partshop.asus.com/us/90nr0ff0-r00015.html",
+    "owner_proposed": "60NR0EB0-MB2010",
+    "official_listing_assembly": "90NR0FF0-R00015"
+  },
+  "actions": {
+    "new_boots": 0,
+    "live_device_requests": 0,
+    "driver_installs": 0,
+    "firmware_writes": 0,
+    "persistent_changes": 0
+  },
+  "working_windows_fix_found": false
+}
