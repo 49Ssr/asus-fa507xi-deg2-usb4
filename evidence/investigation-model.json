@@ -96,6 +96,11 @@
       "id": "USB4-SPEC-2025",
       "label": "USB-IF USB4 v2 November 2025 register specification",
       "limit": "Normative semantics, not measured ASUS implementation or hardware history."
+    },
+    {
+      "id": "WINDOWS-USB4HRD",
+      "label": "Pinned Windows USB4HostRouter native receive and topology implementation",
+      "limit": "Static code and matched PDB/TMF, not a new physical negotiation trace."
     }
   ],
   "stages": [
@@ -169,7 +174,10 @@
         "C26",
         "C38",
         "C39",
-        "C40"
+        "C40",
+        "C41",
+        "C42",
+        "C43"
       ]
     },
     {
@@ -686,6 +694,38 @@
         "ASUS-DEEP"
       ],
       "value_sha256": "b15e48effa089048f6d2221a8b8eff7e6969126e5fcfbed66aae9322a36812ad"
+    },
+    {
+      "id": "HOST-PLUG-PAIRS",
+      "path": "evidence/usb4-host-notification-boundary.json",
+      "pointer": "/captured",
+      "kind": "capture",
+      "cases": [
+        "ASUS-DEEP",
+        "DELL-DEEP"
+      ],
+      "value_sha256": "3c4fd08ef9f1aad71f979cbdd3be3b4c07447ef3a6d97397703bad52d316a95e"
+    },
+    {
+      "id": "HOST-PLUG-COVERAGE",
+      "path": "evidence/usb4-host-notification-boundary.json",
+      "pointer": "/coverage",
+      "kind": "capture",
+      "cases": [
+        "ASUS-DEEP",
+        "DELL-DEEP"
+      ],
+      "value_sha256": "73bd1ddcf9fc7ca57a1cbadbcd0207839d2797920ea2e5b6b1910b2e250aa9fc"
+    },
+    {
+      "id": "HOST-PLUG-CODE",
+      "path": "evidence/usb4-host-notification-boundary.json",
+      "pointer": "/native_code",
+      "kind": "code",
+      "cases": [
+        "WINDOWS-USB4HRD"
+      ],
+      "value_sha256": "a24d5c792aafbd37f33b16a2c317eb35345197d19b3410385902bd85ac831565"
     }
   ],
   "claims": [
@@ -1262,6 +1302,53 @@
         "ASUS-DEEP"
       ],
       "limit": "This establishes software arming only. It neither proves no physical connect notification occurred nor identifies the PS8830 mode writer or a repair."
+    },
+    {
+      "id": "C41",
+      "basis": "measured",
+      "stage": "router",
+      "statement": "ASUS has four matched ring-to-topology PLUG records, all root adapters6/7, and none logged for failed logical adapter2. Dell has ten matched plug/unplug records, including root adapter1 after its recorded RD Yes. Both decoder summaries report zero lost events.",
+      "sources": [
+        "HOST-PLUG-PAIRS",
+        "HOST-PLUG-COVERAGE",
+        "PORT-CONFIG-ORDER"
+      ],
+      "cases": [
+        "ASUS-DEEP",
+        "DELL-DEEP"
+      ],
+      "limit": "Internal display events are not DEG2 port events. Zero reported loss and observed message emission do not establish uninterrupted enablement or complete physical event generation/history."
+    },
+    {
+      "id": "C42",
+      "basis": "code_fact",
+      "stage": "router",
+      "statement": "The retained host code separates ring size validation/logging, deferred OnPlugPacket callback dispatch and topology receipt before adapter lookup/client dispatch. The ring and topology logs use different gates.",
+      "sources": [
+        "HOST-PLUG-CODE"
+      ],
+      "cases": [
+        "WINDOWS-USB4HRD"
+      ],
+      "limit": "Reviewed code scope, not complete transport validation or proof that a particular final client callback completed. Symbols and packet fields do not identify a PS8830 writer."
+    },
+    {
+      "id": "C43",
+      "basis": "inference",
+      "stage": "router",
+      "statement": "A wholly dead ASUS host receive/topology notification path is inconsistent with the paired internal-adapter events. A valid DEG2 port2 notification dropped by Windows is not demonstrated, so notification interception/acknowledgement repair is deferred.",
+      "sources": [
+        "HOST-PLUG-PAIRS",
+        "HOST-PLUG-COVERAGE",
+        "HOST-PLUG-CODE"
+      ],
+      "cases": [
+        "ASUS-DEEP",
+        "DELL-DEEP",
+        "WINDOWS-USB4HRD"
+      ],
+      "reason": "The same saved ASUS host logs ring receipt and topology handling for four packets but no adapter2 packet at either stage. Static code places these observation points before final client delivery.",
+      "limit": "Per-port or transient faults remain possible. This does not identify why RD stays clear or prove that the PD/retimer hardware failed."
     }
   ],
   "timeline_limit": "T0 is the first recorded Windows attachment report in each run, not physical insertion. Different runs, platforms, power contracts and capture dates are explicit. These tables align software reports only; proximity does not establish wire order or causation. The earlier Dell control supplies the Dell timeline; the deep Dell dump supplies cached-state comparison.",
@@ -1712,6 +1799,22 @@
         "interface": "StartNotificationPump, ReadAndArm and cached-state return",
         "limit": "Software state is not an independent physical link or PD-wire observation.",
         "decision": false
+      },
+      {
+        "id": "RX_PLUG",
+        "label": "Host RX PLUG records: ASUS internal DP6/7, none logged for2",
+        "owner": "Windows USB4HostRouter ring receive",
+        "interface": "Length check and route/adapter/event log",
+        "limit": "Different adapters are an internal path control, not a DEG2 link measurement.",
+        "decision": false
+      },
+      {
+        "id": "TOPO_PLUG",
+        "label": "Matching packets reach host topology handler",
+        "owner": "Windows USB4HostRouter topology manager",
+        "interface": "Receipt logged before adapter lookup/client delivery",
+        "limit": "Receipt does not certify final client completion or explain missing port2 events.",
+        "decision": false
       }
     ],
     "edges": [
@@ -2027,6 +2130,16 @@
         "basis": "measured",
         "claims": [
           "C40"
+        ],
+        "standards": []
+      },
+      {
+        "from": "RX_PLUG",
+        "to": "TOPO_PLUG",
+        "label": "Four ASUS internal-adapter packets match across the two logged stages",
+        "basis": "measured",
+        "claims": [
+          "C41"
         ],
         "standards": []
       }

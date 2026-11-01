@@ -42,6 +42,8 @@ flowchart TD
     CL0_POLL["Windows lane0 CL0 polling"]
     WAIT_RD["Windows waits for router connect (RD No)"]
     NOTIFY_ARM["Software plug notifications armed; cached unplugged"]
+    RX_PLUG["Host RX PLUG records: ASUS internal DP6/7, none logged for2"]
+    TOPO_PLUG["Matching packets reach host topology handler"]
     ATTACH -->|"documented: controller discovery and mode negotiation"| PD
     PD -.->|"unknown: candidate mode-control path; ASUS ownership/wiring unproven"| RET_CFG
     LINK -.->|"unknown: what makes the native host-port status assert remains untraced"| PORT_REGS
@@ -72,6 +74,7 @@ flowchart TD
     PORT_REGS -->|"measured: ASUS RD No selects waiting for router connect"| WAIT_RD
     WAIT_RD -.->|"unknown: relation to final no-router snapshots; transient history unmeasured"| ABSENT
     WAIT_RD -->|"measured: ASUS RD No followed by successful pump start and ReadAndArm"| NOTIFY_ARM
+    RX_PLUG -->|"measured: Four ASUS internal-adapter packets match across the two logged stages"| TOPO_PLUG
 ```
 
 ### Who owns each part
@@ -102,6 +105,8 @@ flowchart TD
 | CL0_POLL | Windows USB4 port state machine | Dell RD Yes requests polling; successful completion is recorded before PortConfigured | ASUS does not reach this branch in the two sampled initialization passes. Not complete physical link history. |
 | WAIT_RD | Windows USB4 port state machine | ASUS sampled initialisation branches select WaitingForRouterConnect | Current No is not proof that entry or link never existed; no complete physical history. |
 | NOTIFY_ARM | Windows USB4 native plug-state manager and host callback | StartNotificationPump, ReadAndArm and cached-state return | Software state is not an independent physical link or PD-wire observation. |
+| RX_PLUG | Windows USB4HostRouter ring receive | Length check and route/adapter/event log | Different adapters are an internal path control, not a DEG2 link measurement. |
+| TOPO_PLUG | Windows USB4HostRouter topology manager | Receipt logged before adapter lookup/client delivery | Receipt does not certify final client completion or explain missing port2 events. |
 
 ### Branch evidence
 
@@ -137,6 +142,7 @@ flowchart TD
 | PORT_REGS → WAIT_RD | ASUS RD No selects waiting for router connect | measured | C34 |
 | WAIT_RD → ABSENT | relation to final no-router snapshots; transient history unmeasured | unknown | C34, C36 |
 | WAIT_RD → NOTIFY_ARM | ASUS RD No followed by successful pump start and ReadAndArm | measured | C40 |
+| RX_PLUG → TOPO_PLUG | Four ASUS internal-adapter packets match across the two logged stages | measured | C41 |
 
 ### Candidate intervention locations
 
@@ -424,6 +430,26 @@ Scope: ASUS-DEEP. This establishes software arming only. It neither proves no ph
 
 [ASUS-NOTIFICATION-ARM](../evidence/usb4-wake-status-and-notifications.json) `/captured_notifications`
 
+**C41 — measured:** ASUS has four matched ring-to-topology PLUG records, all root adapters6/7, and none logged for failed logical adapter2. Dell has ten matched plug/unplug records, including root adapter1 after its recorded RD Yes. Both decoder summaries report zero lost events.
+
+Scope: ASUS-DEEP, DELL-DEEP. Internal display events are not DEG2 port events. Zero reported loss and observed message emission do not establish uninterrupted enablement or complete physical event generation/history.
+
+[HOST-PLUG-PAIRS](../evidence/usb4-host-notification-boundary.json) `/captured`, [HOST-PLUG-COVERAGE](../evidence/usb4-host-notification-boundary.json) `/coverage`, [PORT-CONFIG-ORDER](../evidence/windows-port-configuration-order.json) `/captured_order`
+
+**C42 — code_fact:** The retained host code separates ring size validation/logging, deferred OnPlugPacket callback dispatch and topology receipt before adapter lookup/client dispatch. The ring and topology logs use different gates.
+
+Scope: WINDOWS-USB4HRD. Reviewed code scope, not complete transport validation or proof that a particular final client callback completed. Symbols and packet fields do not identify a PS8830 writer.
+
+[HOST-PLUG-CODE](../evidence/usb4-host-notification-boundary.json) `/native_code`
+
+**C43 — inference:** A wholly dead ASUS host receive/topology notification path is inconsistent with the paired internal-adapter events. A valid DEG2 port2 notification dropped by Windows is not demonstrated, so notification interception/acknowledgement repair is deferred.
+
+Scope: ASUS-DEEP, DELL-DEEP, WINDOWS-USB4HRD. Per-port or transient faults remain possible. This does not identify why RD stays clear or prove that the PD/retimer hardware failed.
+
+Reason: The same saved ASUS host logs ring receipt and topology handling for four packets but no adapter2 packet at either stage. Static code places these observation points before final client delivery.
+
+[HOST-PLUG-PAIRS](../evidence/usb4-host-notification-boundary.json) `/captured`, [HOST-PLUG-COVERAGE](../evidence/usb4-host-notification-boundary.json) `/coverage`, [HOST-PLUG-CODE](../evidence/usb4-host-notification-boundary.json) `/native_code`
+
 ## Separate runs and observation limits
 
 | Case | Meaning | Important limit |
@@ -446,6 +472,7 @@ Scope: ASUS-DEEP. This establishes software arming only. It neither proves no ph
 | TBTOOLS-REFERENCE | Pinned Intel tbtools register definitions | Public USB4 field layout, not a new ASUS measurement or a complete hardware implementation. |
 | AMD-PD-REFERENCE | TI and Infineon AMD/PD reference programming architecture | Different PD-controller implementations, not recovered ASUS ITE code or board wiring. |
 | USB4-SPEC-2025 | USB-IF USB4 v2 November 2025 register specification | Normative semantics, not measured ASUS implementation or hardware history. |
+| WINDOWS-USB4HRD | Pinned Windows USB4HostRouter native receive and topology implementation | Static code and matched PDB/TMF, not a new physical negotiation trace. |
 
 ## Software-report timelines
 

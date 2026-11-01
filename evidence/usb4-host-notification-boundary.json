@@ -1,0 +1,324 @@
+{
+  "schema": 1,
+  "date": "2026-11-01",
+  "interval": 5,
+  "status": "ASUS receives and forwards internal-adapter PLUG packets; no corresponding packet for failed logical adapter2 is logged",
+  "captured": {
+    "ASUS-DEEP": {
+      "pairs": [
+        {
+          "event": "plug",
+          "route": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "adapter": 6,
+          "ring_line": 64226,
+          "ring_time": "00:52:17.0324936",
+          "topology_line": 64236,
+          "topology_time": "00:52:17.0325047"
+        },
+        {
+          "event": "plug",
+          "route": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "adapter": 7,
+          "ring_line": 64246,
+          "ring_time": "00:52:17.0325254",
+          "topology_line": 64254,
+          "topology_time": "00:52:17.0325322"
+        },
+        {
+          "event": "plug",
+          "route": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "adapter": 6,
+          "ring_line": 301882,
+          "ring_time": "00:52:27.8445400",
+          "topology_line": 301891,
+          "topology_time": "00:52:27.8445524"
+        },
+        {
+          "event": "plug",
+          "route": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "adapter": 7,
+          "ring_line": 301903,
+          "ring_time": "00:52:27.8445707",
+          "topology_line": 301916,
+          "topology_time": "00:52:27.8445866"
+        }
+      ],
+      "matched_ring_and_topology_count": 4,
+      "unmatched_ring_count": 0,
+      "root_adapter_counts": {
+        "6": 2,
+        "7": 2
+      }
+    },
+    "DELL-DEEP": {
+      "pairs": [
+        {
+          "event": "plug",
+          "route": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "adapter": 5,
+          "ring_line": 6565,
+          "ring_time": "00:17:44.9837641",
+          "topology_line": 6567,
+          "topology_time": "00:17:44.9838318"
+        },
+        {
+          "event": "plug",
+          "route": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "adapter": 6,
+          "ring_line": 6573,
+          "ring_time": "00:17:44.9840446",
+          "topology_line": 6575,
+          "topology_time": "00:17:44.9840648"
+        },
+        {
+          "event": "plug",
+          "route": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "adapter": 1,
+          "ring_line": 9358,
+          "ring_time": "00:17:45.4338911",
+          "topology_line": 9360,
+          "topology_time": "00:17:45.4339614"
+        },
+        {
+          "event": "plug",
+          "route": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "adapter": 2,
+          "ring_line": 9364,
+          "ring_time": "00:17:45.4341946",
+          "topology_line": 9366,
+          "topology_time": "00:17:45.4342121"
+        },
+        {
+          "event": "plug",
+          "route": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            1
+          ],
+          "adapter": 13,
+          "ring_line": 12616,
+          "ring_time": "00:17:45.5509640",
+          "topology_line": 12626,
+          "topology_time": "00:17:45.5511267"
+        },
+        {
+          "event": "plug",
+          "route": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            1
+          ],
+          "adapter": 2,
+          "ring_line": 12647,
+          "ring_time": "00:17:45.5514489",
+          "topology_line": 12656,
+          "topology_time": "00:17:45.5514758"
+        },
+        {
+          "event": "plug",
+          "route": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            1
+          ],
+          "adapter": 14,
+          "ring_line": 12667,
+          "ring_time": "00:17:45.5518029",
+          "topology_line": 12678,
+          "topology_time": "00:17:45.5518214"
+        },
+        {
+          "event": "plug",
+          "route": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            1
+          ],
+          "adapter": 16,
+          "ring_line": 12695,
+          "ring_time": "00:17:45.5521140",
+          "topology_line": 12702,
+          "topology_time": "00:17:45.5521341"
+        },
+        {
+          "event": "unplug",
+          "route": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "adapter": 2,
+          "ring_line": 15663,
+          "ring_time": "00:17:45.6197814",
+          "topology_line": 15672,
+          "topology_time": "00:17:45.6198026"
+        },
+        {
+          "event": "unplug",
+          "route": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            1
+          ],
+          "adapter": 2,
+          "ring_line": 15664,
+          "ring_time": "00:17:45.6197874",
+          "topology_line": 15679,
+          "topology_time": "00:17:45.6198130"
+        }
+      ],
+      "matched_ring_and_topology_count": 10,
+      "unmatched_ring_count": 0,
+      "root_adapter_counts": {
+        "5": 1,
+        "6": 1,
+        "1": 1,
+        "2": 2
+      }
+    }
+  },
+  "coverage": {
+    "ASUS-DEEP": {
+      "decoded_input_sha256": "385b092fcb13b119e842973527bdad018a4b8f3d54a75a6175c507aca883d85f",
+      "decode_summary_sha256": "2ca9f7f8fc29e7628729a7fabe6a72486ebd925852db0c2cf59b48a889ed5580",
+      "total_events_processed": 1114490,
+      "reported_events_lost": 0,
+      "format_errors": 0,
+      "initial_unknown_formats": 342,
+      "scope": "Both ring and host-topology messages are emitted. Zero reported ETW loss does not establish firmware event generation or continuous logger enablement."
+    },
+    "DELL-DEEP": {
+      "decoded_input_sha256": "eed43b17cb1ea2223d0398c1eeec98f1126e77bee1ea31fc0d5f10b18bcf3d3c",
+      "decode_summary_sha256": "db0540657765bc5706d01f4834f06ae64d47d1c513c6ee60282c19e095938f74",
+      "total_events_processed": 654212,
+      "reported_events_lost": 0,
+      "format_errors": 0,
+      "initial_unknown_formats": 257,
+      "scope": "Both ring and host-topology messages are emitted. Zero reported ETW loss does not establish firmware event generation or continuous logger enablement."
+    }
+  },
+  "native_code": {
+    "image_sha256": "912efbfca273c62484db952632eeb0d2b061bd7a1c830970fda23cdb50beeb1f",
+    "pdb_sha256": "31ddc5db3e99e4e016af4bc847184699b04203e4b5161b8feedde952b3072f8c",
+    "matched_pe_and_dbi_age": 1,
+    "stripped_info_age": 4,
+    "validate_and_log_rva": "431b8",
+    "validation_scope": "Rejects a reported packet length below16 bytes. For the accepted size path, extracts route, six-bit adapter and bit31 unplug status, logs the ring record and returns true. This is not a claim of complete transport/header/CRC validation.",
+    "ring_log_gate": {
+      "flag_mask_hex": "20",
+      "minimum_level": 4,
+      "alternative": "An active recorder path can also permit serialization. Full live provider control state was not sampled."
+    },
+    "process_rx_callback_rva": "3f0c0",
+    "rx_work_item_rva": "3f210",
+    "work_item_call_to_on_plug_rva": "3f2ed",
+    "on_plug_rva": "3ec08",
+    "dispatch_scope": "The receive callback queues work; the worker calls OnPlugPacket. The latter selects registered plug/unplug callbacks using packet bit31. TopologyManager logs the received event before its adapter lookup and adapter callback dispatch.",
+    "on_plug_callback_call_rva": "3f074",
+    "topology_manager_rva": "49eb0",
+    "topology_adapter_lookup_call_rva": "49fe1",
+    "topology_adapter_callback_rva": "4a094",
+    "topology_log_gate": {
+      "flag_mask_hex": "80",
+      "minimum_level": 4
+    },
+    "ring_tmf_sha256": "f785056b21b17531165e99f26283431f095a5e4fad553b7cdb55b78a65d1831c",
+    "ring_message_id": 34,
+    "topology_tmf_sha256": "1f1b1a303f4735a104a0bdac309cec65ffdbc174e4d9de9d6a6e5d01bfab8df2",
+    "topology_message_id": 70,
+    "limit": "Original code and matched symbol/message identities. A topology log proves arrival at that handler, not successful final client completion. No driver execution or hardware request occurred."
+  },
+  "ordering": {
+    "dell_rd_yes": "00:17:45.0348339",
+    "dell_root_adapter1_topology_plug": "00:17:45.4339614",
+    "dell_lane0_cl0_success": "00:17:45.4420079",
+    "dell_dfp1_pump_success": "00:17:45.4420530",
+    "meaning": "The saved Dell router-detection Yes precedes this root-port PLUG notification, and its notification reaches host topology before DFP1 pump-start success. Do not treat software pump start as what initially creates router detection."
+  },
+  "conclusion": {
+    "supported": "The ASUS host receive/topology notification path is active for root DP_IN adapters6/7 in both passes. No port2 ring record is logged in this capture. The evidence does not support a wholly dead host notification path or a demonstrated Windows drop of a valid DEG2 port2 event.",
+    "not_established": "No complete physical PD/link history, firmware event-generation proof, uninterrupted logging proof, actual ASUS retimer-mode writer or Windows repair.",
+    "decision": "Defer notification interception/acknowledgement repair; return to specific original EC mode-control candidates. Do not equate zero logged port2 packets with proof of no electrical activity.",
+    "new_hardware_requests": 0,
+    "driver_installs": 0,
+    "test_boots": 0
+  },
+  "analysis_quality": {
+    "method": "Streamed both complete decoded logs; paired each ring record to exactly one subsequent matching route/adapter/event topology record within one second; ambiguous, missing or count-mismatched records fail. Exact code/trace/format hashes pinned.",
+    "preserved_corrections": "Initial provider filter used usb4hr instead of usb4hrd and matched nothing; not used as absence evidence. One bounded disassembly cut an instruction at its byte limit; a separate complete-instruction tail confirms the callback. Missing Dell tracestats file was not treated as zero loss; retained decoder summary supplies its reported count."
+  }
+}

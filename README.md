@@ -1,5 +1,7 @@
 # ASUS FA507XI / Minisforum DEG2 USB4 investigation
 
+**Host notification boundary:** ASUS does receive and forward four internal-display PLUG packets, but none is logged for the failed USB4 adapter2. Dell records its corresponding root-port event after RD Yes. This weakens a wholly dead host-notification explanation; it does not prove a missing physical handshake or justify an interception driver. [Paired records and limits](evidence/usb4-host-notification-boundary.json). This lead is deferred; next work returns to an existing EC mode-control candidate.
+
 **Wake-status lead narrowed:** USB-IF defines bit16 as read-only and cleared on sleep entry; a blind flag-clear test is unsupported. Both saved ASUS passes successfully arm software connect notifications but retain cached unplugged. Physical packet delivery and the actual retimer-mode writer remain unresolved. [Source pins and exact scope](evidence/usb4-wake-status-and-notifications.json). No hardware change.
 
 **Current result, 1 November 2026:** ASUS still does not discover DEG2 as a USB4 dock. No working Windows repair has been demonstrated.
