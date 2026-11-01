@@ -91,6 +91,11 @@
       "id": "AMD-PD-REFERENCE",
       "label": "TI and Infineon AMD/PD reference programming architecture",
       "limit": "Different PD-controller implementations, not recovered ASUS ITE code or board wiring."
+    },
+    {
+      "id": "USB4-SPEC-2025",
+      "label": "USB-IF USB4 v2 November 2025 register specification",
+      "limit": "Normative semantics, not measured ASUS implementation or hardware history."
     }
   ],
   "stages": [
@@ -161,7 +166,10 @@
         "C04",
         "C24",
         "C25",
-        "C26"
+        "C26",
+        "C38",
+        "C39",
+        "C40"
       ]
     },
     {
@@ -648,6 +656,36 @@
         "ASUS-PEER"
       ],
       "value_sha256": "5aafd09b931ccb3a8ab5ba7b57bd7aa611d9b20ff1b8a13d6d2df38ad12170e5"
+    },
+    {
+      "id": "USB4-WAKE-SPEC",
+      "path": "evidence/usb4-wake-status-and-notifications.json",
+      "pointer": "/specification",
+      "kind": "documentation",
+      "cases": [
+        "USB4-SPEC-2025"
+      ],
+      "value_sha256": "e4181391b25f39a748b75886a6efd65dab7a5d62ca21a89545bdb47a8c98cfe3"
+    },
+    {
+      "id": "NATIVE-NOTIFICATION-CODE",
+      "path": "evidence/usb4-wake-status-and-notifications.json",
+      "pointer": "/native_code",
+      "kind": "code",
+      "cases": [
+        "WINDOWS-USB4DRD"
+      ],
+      "value_sha256": "a3dceab055a59efc681a0e39631c9fc0021c78317ea36098a6e7e7fe0f43cca6"
+    },
+    {
+      "id": "ASUS-NOTIFICATION-ARM",
+      "path": "evidence/usb4-wake-status-and-notifications.json",
+      "pointer": "/captured_notifications",
+      "kind": "capture",
+      "cases": [
+        "ASUS-DEEP"
+      ],
+      "value_sha256": "b15e48effa089048f6d2221a8b8eff7e6969126e5fcfbed66aae9322a36812ad"
     }
   ],
   "claims": [
@@ -1184,6 +1222,46 @@
         "ASUS-PEER"
       ],
       "limit": "Historical peer result, not an equivalent DEG2 attachment or direct RD-bit measurement; UCSI connector mapping and complete entry history remain unqualified."
+    },
+    {
+      "id": "C38",
+      "basis": "inference",
+      "stage": "router",
+      "statement": "The USB-IF definition makes CS18 wake-on-connect status bit16 read-only and cleared on sleep entry, separate from current router detection bit13. A write-to-clear acknowledgement test is not justified.",
+      "sources": [
+        "USB4-WAKE-SPEC"
+      ],
+      "cases": [
+        "USB4-SPEC-2025"
+      ],
+      "reason": "The official register table explicitly assigns RO access and sleep-entry clearing; it does not assign software acknowledgement semantics.",
+      "limit": "Normative expectation only; ASUS conformance, actual sleep history and the cause of its clear RD bit remain unmeasured."
+    },
+    {
+      "id": "C39",
+      "basis": "code_fact",
+      "stage": "router",
+      "statement": "The retained native notification pump primes the software plug-state manager and registers a completion callback; GetLatestPlugStatus consults that manager.",
+      "sources": [
+        "NATIVE-NOTIFICATION-CODE"
+      ],
+      "cases": [
+        "WINDOWS-USB4DRD"
+      ],
+      "limit": "Reviewed functions do not certify host RX handling or physical packet delivery; cached state is not a new CS18 hardware read."
+    },
+    {
+      "id": "C40",
+      "basis": "measured",
+      "stage": "router",
+      "statement": "Both saved ASUS initialisation passes report successful notification-pump start, ReadAndArm and cached unplugged after RouterDetected No.",
+      "sources": [
+        "ASUS-NOTIFICATION-ARM"
+      ],
+      "cases": [
+        "ASUS-DEEP"
+      ],
+      "limit": "This establishes software arming only. It neither proves no physical connect notification occurred nor identifies the PS8830 mode writer or a repair."
     }
   ],
   "timeline_limit": "T0 is the first recorded Windows attachment report in each run, not physical insertion. Different runs, platforms, power contracts and capture dates are explicit. These tables align software reports only; proximity does not establish wire order or causation. The earlier Dell control supplies the Dell timeline; the deep Dell dump supplies cached-state comparison.",
@@ -1626,6 +1704,14 @@
         "interface": "ASUS sampled initialisation branches select WaitingForRouterConnect",
         "limit": "Current No is not proof that entry or link never existed; no complete physical history.",
         "decision": false
+      },
+      {
+        "id": "NOTIFY_ARM",
+        "label": "Software plug notifications armed; cached unplugged",
+        "owner": "Windows USB4 native plug-state manager and host callback",
+        "interface": "StartNotificationPump, ReadAndArm and cached-state return",
+        "limit": "Software state is not an independent physical link or PD-wire observation.",
+        "decision": false
       }
     ],
     "edges": [
@@ -1931,6 +2017,16 @@
         "claims": [
           "C34",
           "C36"
+        ],
+        "standards": []
+      },
+      {
+        "from": "WAIT_RD",
+        "to": "NOTIFY_ARM",
+        "label": "ASUS RD No followed by successful pump start and ReadAndArm",
+        "basis": "measured",
+        "claims": [
+          "C40"
         ],
         "standards": []
       }

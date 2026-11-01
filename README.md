@@ -1,5 +1,7 @@
 # ASUS FA507XI / Minisforum DEG2 USB4 investigation
 
+**Wake-status lead narrowed:** USB-IF defines bit16 as read-only and cleared on sleep entry; a blind flag-clear test is unsupported. Both saved ASUS passes successfully arm software connect notifications but retain cached unplugged. Physical packet delivery and the actual retimer-mode writer remain unresolved. [Source pins and exact scope](evidence/usb4-wake-status-and-notifications.json). No hardware change.
+
 **Current result, 1 November 2026:** ASUS still does not discover DEG2 as a USB4 dock. No working Windows repair has been demonstrated.
 
 **Windows ordering clarified:** Dell detects the router and completes CL0 polling before Windows sets the separate Port Configured bit. ASUS's two recorded root-port writes instead program wake settings after its initial No. That later configured-bit write is not the initial trigger in the recorded Dell sequence. [Matched packet values, native code and same-ASUS logical-port control](evidence/windows-port-configuration-order.json), [interval checkpoint](docs/ps8830-investigation-intervals.md).

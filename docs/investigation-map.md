@@ -41,6 +41,7 @@ flowchart TD
     APU_CFG["AMD APU crossbar configuration: ASUS caller UNMAPPED"]
     CL0_POLL["Windows lane0 CL0 polling"]
     WAIT_RD["Windows waits for router connect (RD No)"]
+    NOTIFY_ARM["Software plug notifications armed; cached unplugged"]
     ATTACH -->|"documented: controller discovery and mode negotiation"| PD
     PD -.->|"unknown: candidate mode-control path; ASUS ownership/wiring unproven"| RET_CFG
     LINK -.->|"unknown: what makes the native host-port status assert remains untraced"| PORT_REGS
@@ -70,6 +71,7 @@ flowchart TD
     CL0_POLL -.->|"unknown: link-state polling to operational-router discovery"| PORT
     PORT_REGS -->|"measured: ASUS RD No selects waiting for router connect"| WAIT_RD
     WAIT_RD -.->|"unknown: relation to final no-router snapshots; transient history unmeasured"| ABSENT
+    WAIT_RD -->|"measured: ASUS RD No followed by successful pump start and ReadAndArm"| NOTIFY_ARM
 ```
 
 ### Who owns each part
@@ -99,6 +101,7 @@ flowchart TD
 | APU_CFG | Actual ASUS PD/EC/platform firmware ownership unknown | Reference designs coordinate PD-to-APU mode requests/results and retimer safe/target-mode programming | Reference architecture only; no recovered ASUS command sequence or live bus history. |
 | CL0_POLL | Windows USB4 port state machine | Dell RD Yes requests polling; successful completion is recorded before PortConfigured | ASUS does not reach this branch in the two sampled initialization passes. Not complete physical link history. |
 | WAIT_RD | Windows USB4 port state machine | ASUS sampled initialisation branches select WaitingForRouterConnect | Current No is not proof that entry or link never existed; no complete physical history. |
+| NOTIFY_ARM | Windows USB4 native plug-state manager and host callback | StartNotificationPump, ReadAndArm and cached-state return | Software state is not an independent physical link or PD-wire observation. |
 
 ### Branch evidence
 
@@ -133,6 +136,7 @@ flowchart TD
 | CL0_POLL → PORT | link-state polling to operational-router discovery | unknown | C34, C36 |
 | PORT_REGS → WAIT_RD | ASUS RD No selects waiting for router connect | measured | C34 |
 | WAIT_RD → ABSENT | relation to final no-router snapshots; transient history unmeasured | unknown | C34, C36 |
+| WAIT_RD → NOTIFY_ARM | ASUS RD No followed by successful pump start and ReadAndArm | measured | C40 |
 
 ### Candidate intervention locations
 
@@ -400,6 +404,26 @@ Scope: ASUS-PEER. Historical peer result, not an equivalent DEG2 attachment or d
 
 [PEER-LOGICAL-PORT](../evidence/windows-port-configuration-order.json) `/peer_positive`
 
+**C38 — inference:** The USB-IF definition makes CS18 wake-on-connect status bit16 read-only and cleared on sleep entry, separate from current router detection bit13. A write-to-clear acknowledgement test is not justified.
+
+Scope: USB4-SPEC-2025. Normative expectation only; ASUS conformance, actual sleep history and the cause of its clear RD bit remain unmeasured.
+
+Reason: The official register table explicitly assigns RO access and sleep-entry clearing; it does not assign software acknowledgement semantics.
+
+[USB4-WAKE-SPEC](../evidence/usb4-wake-status-and-notifications.json) `/specification`
+
+**C39 — code_fact:** The retained native notification pump primes the software plug-state manager and registers a completion callback; GetLatestPlugStatus consults that manager.
+
+Scope: WINDOWS-USB4DRD. Reviewed functions do not certify host RX handling or physical packet delivery; cached state is not a new CS18 hardware read.
+
+[NATIVE-NOTIFICATION-CODE](../evidence/usb4-wake-status-and-notifications.json) `/native_code`
+
+**C40 — measured:** Both saved ASUS initialisation passes report successful notification-pump start, ReadAndArm and cached unplugged after RouterDetected No.
+
+Scope: ASUS-DEEP. This establishes software arming only. It neither proves no physical connect notification occurred nor identifies the PS8830 mode writer or a repair.
+
+[ASUS-NOTIFICATION-ARM](../evidence/usb4-wake-status-and-notifications.json) `/captured_notifications`
+
 ## Separate runs and observation limits
 
 | Case | Meaning | Important limit |
@@ -421,6 +445,7 @@ Scope: ASUS-PEER. Historical peer result, not an equivalent DEG2 attachment or d
 | PS8830-REFERENCE | Parade product diagram and upstream Linux PS883x implementation | Generic/reference architecture and programming example, not an ASUS wiring or runtime observation. |
 | TBTOOLS-REFERENCE | Pinned Intel tbtools register definitions | Public USB4 field layout, not a new ASUS measurement or a complete hardware implementation. |
 | AMD-PD-REFERENCE | TI and Infineon AMD/PD reference programming architecture | Different PD-controller implementations, not recovered ASUS ITE code or board wiring. |
+| USB4-SPEC-2025 | USB-IF USB4 v2 November 2025 register specification | Normative semantics, not measured ASUS implementation or hardware history. |
 
 ## Software-report timelines
 

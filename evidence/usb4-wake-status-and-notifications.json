@@ -1,0 +1,82 @@
+{
+  "schema": 1,
+  "date": "2026-11-01",
+  "interval": 4,
+  "status": "Wake status is read-only; software notifications are armed in the saved ASUS run; physical entry cause unresolved",
+  "specification": {
+    "publisher": "USB-IF",
+    "title": "USB4 Specification 2.0 November 2025 - CLEAN",
+    "index_url": "https://www.usb.org/documents?search=USB4+Specification",
+    "archive_url": "https://www.usb.org/sites/default/files/USB4%20Specification%20November%202025.zip",
+    "archive_bytes": 43408034,
+    "archive_sha256": "007fa225b7821938c7daf49bf51b913d10453cb7788d5ad776ba853970919cb3",
+    "pdf_bytes": 15023870,
+    "pdf_sha256": "d2c27a35f5436559ba7e52448b873553434218544b2b8f160667bfd036ec024b",
+    "pdf_page_one_based": 439,
+    "printed_page": 395,
+    "register": "PORT_CS_18",
+    "router_detected": {
+      "bit": 13,
+      "access": "RO",
+      "meaning": "Reports connected-router detection; clears upon disconnect."
+    },
+    "wake_on_connect_status": {
+      "bit": 16,
+      "access": "RO",
+      "meaning": "Records a connect wake generated with its wake enable set; clears on entry to sleep."
+    },
+    "interpretation": "This is not a write-one-to-clear or software acknowledgement field. A set wake status does not itself establish current router detection or an unacknowledged PLUG notification.",
+    "limit": "Normative register semantics, not proof that ASUS implements them correctly or that a specific sleep transition occurred. Original PDF page visually checked; no vendor document republished."
+  },
+  "native_code": {
+    "image_sha256": "5db15e8e1fd270c293be4385a92b85947c93f33396c55b9d1d5265ba1fe1f3a2",
+    "pdb_sha256": "61acae842dbbfbc06d9dd0f608371ac3dadca63364c0b36cd49d6cf475f65c5c",
+    "matched_pe_and_dbi_age": 1,
+    "stripped_info_age": 4,
+    "start_notification_pump_rva": "755c0",
+    "set_starting_state_rva": "58454",
+    "host_router_interface_start_notifications_rva": "313d4",
+    "completion_callback_rva": "63310",
+    "get_latest_plug_status_rva": "dddc8",
+    "plug_state_manager_helper_rva": "dd40c",
+    "scope": "The reviewed pump initialises PlugStateManager from the starting state then registers the completion callback. GetLatestPlugStatus calls the software state-manager helper; this is not a fresh physical CS18 read.",
+    "limit": "Code scope and matched symbols, not proof of hardware interrupt delivery. No claim that all controller or host RX code has been exhausted."
+  },
+  "captured_notifications": {
+    "case": "ASUS-DEEP",
+    "input_sha256": "75ea73f7f2eb11ce37ea11b6bc027b15b932b18e75ff0ca03cc8ce8a8bdd3158",
+    "logical_adapter": 2,
+    "passes": [
+      {
+        "rd_no_line": 629,
+        "prime_unplugged_line": 638,
+        "pump_success_line": 640,
+        "pump_success_time": "00:52:17.0830623",
+        "read_and_arm_line": 645,
+        "read_and_arm_time": "00:52:17.0830747",
+        "cached_unplugged_line": 650,
+        "cached_unplugged_time": "00:52:17.0830771"
+      },
+      {
+        "rd_no_line": 2018,
+        "prime_unplugged_line": 2027,
+        "pump_success_line": 2029,
+        "pump_success_time": "00:52:27.8953935",
+        "read_and_arm_line": 2036,
+        "read_and_arm_time": "00:52:27.8954117",
+        "cached_unplugged_line": 2041,
+        "cached_unplugged_time": "00:52:27.8954147"
+      }
+    ],
+    "meaning": "Both retained initialisation passes prime software state as unplugged, start the notification pump successfully, arm it and report cached unplugged after RD No.",
+    "limit": "Software arming is observed; correct physical packet reception, interrupt delivery and full connection history are not established. Cached unplugged is not an independent PHY sample."
+  },
+  "decision": {
+    "status_clear_test": "Not justified: the documented status is read-only.",
+    "next_offline_question": "Follow host RX PLUG-packet validation and notification completion in the retained exact host driver; compare existing Dell and ASUS records only where logging coverage can be qualified.",
+    "unresolved": "Actual ASUS PS8830/APU mode writer, physical negotiation history and a Windows repair remain unproven.",
+    "new_hardware_requests": 0,
+    "driver_installs": 0,
+    "test_boots": 0
+  }
+}
