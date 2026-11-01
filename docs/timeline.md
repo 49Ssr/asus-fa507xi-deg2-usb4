@@ -102,3 +102,9 @@ Continuation after step 62, 31 October: context was reconstructed from the acces
 ## 1 November: investigation continues after policy-only failure
 
 Offline inspection of the existing ASUS dump retains raw-client UCSI version ffff, with version opt-in false. Official BIOS 314 hash verified; gated pre-OS USB4-manager code identified. Parade report descriptor and cached get-feature handler mapped, without live vendor commands. Owner has not confirmed a preconnected cold start; a one-attempt stock-driver post-startup observation is prepared, hardware result pending. Earlier filter trial remains ineffective and rolled back. [Details](firmware-entry-followup.md).
+
+## 1 November: preconnected startup failed; installed retimer image recovered offline
+
+**Preconnected startup completed, 1 November:** powered DEG2 was connected to the same ASUS USB4 port before power-on and left connected, as confirmed by the owner. Both post-sign-in snapshots still show Billboard, no external USB4 router and no RTX 4080 SUPER; display N. The 20-second trace has 471,428 events, zero loss/format errors and 14 unknown formats. This sequence did not enable USB4. Initial BIOS/PD negotiation is outside the capture. [Measured observation](cold-start-observation.md), [structured evidence](../evidence/cold-start-result.json).
+
+Installed Parade CFU offer/payload parsed and reconstructed to a verified 64 KiB image for offline analysis. Both devices still report previously recorded firmware 1.3.0.2. No firmware update or vendor command was performed. [Firmware analysis and limits](firmware-entry-followup.md).

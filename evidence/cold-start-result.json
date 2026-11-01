@@ -1,0 +1,85 @@
+{
+  "schema": 1,
+  "status": "PreconnectedStartupDidNotEnableUsb4",
+  "capture_started_utc": "2026-11-01T13:31:50.0493320Z",
+  "capture_stopped_utc": "2026-11-01T13:32:10.7774189Z",
+  "owner_preconnected_confirmed": true,
+  "external_display": "N",
+  "snapshots": [
+    {
+      "ExternalRouter": false,
+      "GpuPresent": false,
+      "Billboard": true
+    },
+    {
+      "ExternalRouter": false,
+      "GpuPresent": false,
+      "Billboard": true
+    }
+  ],
+  "boot_condition": "New kernel session; same model/BIOS/base driver; owner confirms preconnection",
+  "ec_reset": "Not established by collector; owner was advised to omit it",
+  "off_wait_seconds": "Suggested 20; not timed or independently verified",
+  "etl_bytes": 89391104,
+  "etl_sha256": "7A447F0FFCB7CEEF80BACBB0DC050985C781A490881292BA457F1842657EB01B",
+  "decode": {
+    "events": 471428,
+    "events_lost": 0,
+    "format_errors": 0,
+    "unknown_formats": 14
+  },
+  "usb4_event_counts": {
+    "RundownStart": 2,
+    "HostRouterInformationPci": 1,
+    "DomainSleepInformation": 1,
+    "RundownComplete": 2,
+    "DeviceRouterInformation": 1,
+    "PortInformation": 1,
+    "USB3AdapterInformation": 1,
+    "PCIeAdapterInformation": 1,
+    "DPAdapterInformation": 2
+  },
+  "domain_sleep": [
+    {
+      "IsDomainPoweredDown": 1,
+      "NumberOfDomainPowerDownRequests": 1
+    }
+  ],
+  "port_rundown": [
+    {
+      "IsDFP": 1,
+      "CurrentLinkSpeed": "0x0",
+      "NegotiatedLinkWidth": "0x0",
+      "AdapterState": "0x0",
+      "LaneBonded": 0,
+      "Tbt3CompatibleMode": 0
+    }
+  ],
+  "router_rundown": {
+    "root_topology_present": true,
+    "external_topology_count": 0
+  },
+  "adapter_tunnel_rundown": [
+    {
+      "event": "USB3AdapterInformation",
+      "tunneled": 0
+    },
+    {
+      "event": "PCIeAdapterInformation",
+      "tunneled": 0
+    },
+    {
+      "event": "DPAdapterInformation",
+      "tunneled": 0
+    },
+    {
+      "event": "DPAdapterInformation",
+      "tunneled": 0
+    }
+  ],
+  "decoded_ucsi_sends_in_window": {},
+  "coverage": "Post-sign-in steady-state only; initial PD/BIOS/link training not captured",
+  "interpretation": "This startup sequence was insufficient; no proof of BIOS CM execution or failed physical exchange",
+  "trace_stopped": true,
+  "new_firmware_or_driver_operation": false
+}

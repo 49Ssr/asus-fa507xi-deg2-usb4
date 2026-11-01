@@ -1,6 +1,8 @@
 # Driver readiness review, 1 November 2026
 
-**Current, 1 November:** the [role-policy trial](role-policy-test-result.md) was installed, measured and rolled back; suppressing automatic role correction did not enable USB4. [Firmware/retimer investigation](firmware-entry-followup.md) and one [preconnected cold-start observation](cold-start-observation.md) are now prepared; its hardware result is pending. The owner chose to continue investigating. Earlier preparation and proposed-action text below is historical unless confirmed by these current records.
+**Preconnected startup completed, 1 November:** powered DEG2 was connected to the same ASUS USB4 port before power-on and left connected, as confirmed by the owner. Both post-sign-in snapshots still show Billboard, no external USB4 router and no RTX 4080 SUPER; display N. The 20-second trace has 471,428 events, zero loss/format errors and 14 unknown formats. This sequence did not enable USB4. Initial BIOS/PD negotiation is outside the capture. [Measured observation](cold-start-observation.md), [structured evidence](../evidence/cold-start-result.json).
+
+The [policy-only trial](role-policy-test-result.md) remains ineffective and rolled back. Earlier preparation/proposed-action notes below are historical.
 
 **One actual ASUS load, failed USB4 attachment and exact driver rollback have completed. Original-security Verify remains pending.** The parser tests were useful but did not establish that the complete filter was ready. This review found and corrected additional kernel-framework and workflow defects before a live load. [Signing route and controlled activation](local-test-signing.md).
 

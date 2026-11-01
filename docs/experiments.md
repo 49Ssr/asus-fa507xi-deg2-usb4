@@ -96,3 +96,9 @@ This failed to establish the intended source/DFP comparison; it does not settle 
 ## Preconnected cold-start observation: prepared, 1 November
 
 Owner has not confirmed this startup condition was tested. Exact-model BIOS static analysis found gated pre-OS CM code. Stock-driver preparation succeeded after correcting unset PnP property handling; 29 PS5.1 checks pass. No hardware startup result yet. [Procedure and limits](cold-start-observation.md), [offline findings](firmware-entry-followup.md).
+
+## 1 November: preconnected startup failed; installed retimer image recovered offline
+
+**Preconnected startup completed, 1 November:** powered DEG2 was connected to the same ASUS USB4 port before power-on and left connected, as confirmed by the owner. Both post-sign-in snapshots still show Billboard, no external USB4 router and no RTX 4080 SUPER; display N. The 20-second trace has 471,428 events, zero loss/format errors and 14 unknown formats. This sequence did not enable USB4. Initial BIOS/PD negotiation is outside the capture. [Measured observation](cold-start-observation.md), [structured evidence](../evidence/cold-start-result.json).
+
+Installed Parade CFU offer/payload parsed and reconstructed to a verified 64 KiB image for offline analysis. Both devices still report previously recorded firmware 1.3.0.2. No firmware update or vendor command was performed. [Firmware analysis and limits](firmware-entry-followup.md).

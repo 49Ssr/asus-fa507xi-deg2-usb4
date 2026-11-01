@@ -1,6 +1,8 @@
 # Research and sources
 
-**Current, 1 November:** the [role-policy trial](role-policy-test-result.md) was installed, measured and rolled back; suppressing automatic role correction did not enable USB4. [Firmware/retimer investigation](firmware-entry-followup.md) and one [preconnected cold-start observation](cold-start-observation.md) are now prepared; its hardware result is pending. The owner chose to continue investigating. Earlier preparation and proposed-action text below is historical unless confirmed by these current records.
+**Preconnected startup completed, 1 November:** powered DEG2 was connected to the same ASUS USB4 port before power-on and left connected, as confirmed by the owner. Both post-sign-in snapshots still show Billboard, no external USB4 router and no RTX 4080 SUPER; display N. The 20-second trace has 471,428 events, zero loss/format errors and 14 unknown formats. This sequence did not enable USB4. Initial BIOS/PD negotiation is outside the capture. [Measured observation](cold-start-observation.md), [structured evidence](../evidence/cold-start-result.json).
+
+The [policy-only trial](role-policy-test-result.md) remains ineffective and rolled back. Earlier preparation/proposed-action notes below are historical.
 
 **1 November evidence update:** the [fresh ASUS-Dell comparison](asus-dell-matched-comparison.md) now closes the current-state acquisition gap. Microsoft UCSI, USB4 design and function-4 policy documentation were rechecked for its interpretation; a successful UCSI role correction does not by itself prove native USB4 entry. Further work targets an applicable entry/re-entry mechanism using existing artifacts, without another generic capture or repeated mode/role command.
 

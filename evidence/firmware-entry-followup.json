@@ -1,6 +1,6 @@
 {
   "schema": 1,
-  "status": "Unresolved_NewBootFallbackInventory_FormalColdStartCapturePending",
+  "status": "Unresolved_PreconnectedStartupFailed_RetimerContentReconstructedOffline",
   "date": "2026-11-01",
   "bios_archive": {
     "url": "https://dlcdnets.asus.com/pub/ASUS/GamingNB/Image/BIOS/117046/FA507XIAS314.zip",
@@ -42,9 +42,9 @@
   "cold_start": {
     "ps51_checks": 29,
     "actual_preparation": "Passed_AfterEmptyPropertyCorrection",
-    "hardware_startup": "OwnerReported_Performed_SequenceClarificationPending",
+    "hardware_startup": "Completed_OwnerConfirmedPoweredPreconnection_FallbackPersisted",
     "coverage": "Post-sign-in inventory plus 20 seconds passive ETW; no pre-OS/physical PD capture",
-    "formal_collection": "NoResultOrEtl_RunStillPrepared",
+    "formal_collection": "Completed_Analysed_SeeColdStartResult",
     "preliminary_inspection": {
       "utc": "2026-11-01T13:05:05.3965129Z",
       "new_kernel_session_confirmed": true,
@@ -60,11 +60,57 @@
       "experimental_service_present": false,
       "owner_report": "Startup performed; full suggested 20-second pause not observed; interval not measured",
       "coverage": "Current PnP only; no ETW/pre-OS capture; continuity/sequence clarification pending"
-    }
+    },
+    "result_record": "cold-start-result.json"
   },
   "limits": [
     "No validated Windows fix",
     "No identified deployable firmware patch",
     "Source/static checks are not hardware success"
-  ]
+  ],
+  "installed_cfu_offline": {
+    "files": [
+      {
+        "name": "prcfudrv.inf",
+        "bytes": 1903,
+        "sha256": "9D3DF10A802F1E50026CFB7DB34D9DCBD4F688D2D1FAEE0819A92F460AC47819"
+      },
+      {
+        "name": "PRCfuDrv.cat",
+        "bytes": 12032,
+        "sha256": "CD8F883EDCAD30BFF5A4C6623E6AABD01E649DB6B279771E43F5FF5BF2577C2F"
+      },
+      {
+        "name": "PRCfuDrv.dll",
+        "bytes": 364576,
+        "sha256": "0EA7FCE77B05657114893FAE80D90D245193E2E723A3A2748CCE4C327213401D"
+      },
+      {
+        "name": "PS8830_OFFER.bin",
+        "bytes": 16,
+        "sha256": "1FAA3D89A7BDC052F5F8CA4DAA595DECA946BDCDC437D8C2E50B4E90028BE635"
+      },
+      {
+        "name": "PS8830_PAYLOAD.bin",
+        "bytes": 86016,
+        "sha256": "21BE9C236BFE2DB703BD6E93BB0BC5DE19160B12016777EB6A8F462DFE1B0CB3"
+      }
+    ],
+    "offer_component_id": "0x30",
+    "offer_version_word": "0x1030002",
+    "reported_firmware_version": "1.3.0.2",
+    "reported_on_present_devices": 2,
+    "payload_records": 4096,
+    "record_format": "little-endian address32, length8, data[length]",
+    "reconstructed_bytes": 65536,
+    "reconstructed_sha256": "A6CF7221832BC4D5F1A62A5A99013F1D448FF19F0646C5FEA2828E13AA38456E",
+    "content_reencoded_byte_identical": true,
+    "executed_or_flashed": false,
+    "limit": "Reported version and offered version agree; current physical flash bytes not read or compared"
+  },
+  "catalog_candidates": {
+    "record": "parade-cfu-candidates.json",
+    "status": "UnqualifiedFirmwareCandidates_OfflineComparisonOnly",
+    "installed_or_flashed": false
+  }
 }

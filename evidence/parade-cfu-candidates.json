@@ -1,0 +1,65 @@
+{
+  "schema": 1,
+  "status": "UnqualifiedFirmwareCandidates_OfflineComparisonOnly",
+  "installed_updater": "1.0.6.0",
+  "reported_installed_firmware": "1.3.0.2",
+  "candidates": [
+    {
+      "catalog_id": "08ab0ab7-99dc-4ed6-860e-2357cc70240f",
+      "catalog_url": "https://www.catalog.update.microsoft.com/ScopedViewInline.aspx?updateid=08ab0ab7-99dc-4ed6-860e-2357cc70240f",
+      "updater_version": "1.0.7.0",
+      "firmware_offer_word": "0x01030005",
+      "offer_dotted_bytes": "1.3.0.5",
+      "component_id": "0x30",
+      "hardware_id": "HID\\VID_045E&UP:FA00_U:00F5",
+      "cab_bytes": 201791,
+      "cab_sha256": "0FF2BD85C1450E7CC4947006891F5E65865CDAEAA3129E2DB310FBAE94A48C0D",
+      "payload_sha256": "4C09CB579F0E7FB6F3DE29523B65D31F255A835057AB461ABE35D2553F0084BD",
+      "image_bytes": 65536,
+      "image_sha256": "E4C25B9CD73D9D70AF1A782FB2FEE963AEAAFA00A23AFBEA1CDEFDF6EF02B7EC",
+      "content_reencoding_verified": true,
+      "catalog_signature": "Valid",
+      "all_four_content_files_catalog_members": true,
+      "hardware_id_matches_present_firmware_devices": true,
+      "asus_fa507xi_approval": "Not established",
+      "installed_or_flashed": false
+    },
+    {
+      "catalog_id": "3a8a1524-c431-4f2b-a46e-de5c5286614c",
+      "catalog_url": "https://www.catalog.update.microsoft.com/ScopedViewInline.aspx?updateid=3a8a1524-c431-4f2b-a46e-de5c5286614c",
+      "updater_version": "1.0.8.0",
+      "firmware_offer_word": "0x01030004",
+      "offer_dotted_bytes": "1.3.0.4",
+      "component_id": "0x30",
+      "hardware_id": "HID\\VID_045E&UP:FA00_U:00F5",
+      "cab_bytes": 200285,
+      "cab_sha256": "502DDDDB2B87B5974A39446562911C3029006E5926785DBD906DFBD4F200B98B",
+      "payload_sha256": "7FF1C6C3B1F3F0D43B654E0F59F1A2DA175CF4F5E4FD07684FB1FDA16DD5D37E",
+      "image_bytes": 65536,
+      "image_sha256": "05E185461F583F7DE3D8BCF8A86C12EFAAD8073BA048456E7EEC8906BDD1FF24",
+      "content_reencoding_verified": true,
+      "catalog_signature": "Valid",
+      "all_four_content_files_catalog_members": true,
+      "hardware_id_matches_present_firmware_devices": true,
+      "asus_fa507xi_approval": "Not established",
+      "installed_or_flashed": false
+    }
+  ],
+  "windows_update_search": {
+    "StartedUtc": "2026-11-01T13:42:09.2916200Z",
+    "FinishedUtc": "2026-11-01T13:42:22.7994725Z",
+    "Result": "SearchCompleted_CurrentConfiguredSourceOnly",
+    "Criteria": "IsInstalled=0 and IsHidden=0 and Type='Driver'",
+    "ResultCode": 2,
+    "TotalDrivers": 0,
+    "DownloadedOrInstalled": false
+  },
+  "qualification_limits": [
+    "Generic HID ID and signatures do not establish ASUS board qualification",
+    "Updater and offered firmware versions are not monotonic",
+    "No release note connecting either payload to DEG2 was found",
+    "Physical flash bytes were not read",
+    "Firmware rollback/recovery remains unqualified; removing an updater driver is not a demonstrated firmware rollback"
+  ],
+  "next_work": "Map variant/port configuration and version/downgrade handling before proposing any controlled deployment"
+}
