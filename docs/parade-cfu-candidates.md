@@ -6,6 +6,8 @@
 
 Read-only PnP checks reconfirm the existing Parade firmware updater **1.0.6.0** and firmware reporting **1.3.0.2** on both present PS8830 firmware children. The installed offer word is `0x01030002`. The original retimer peripheral-driver trial changed SPB/HID drivers while retaining that firmware version; these CFU packages contain actual firmware offer/payload files.
 
+**Subsequent coverage correction:** those PnP properties do not independently verify both physical chips. Registry inspection finds instance 08 saved at `0x01030002`/`Skip Offer`, but instance 18 at zero/`Create SPB device fail`. Existing-dump recorder analysis identifies an already-open SPB target. Native flashing also conditionally writes a sector outside the package image. [Detailed updater failure and recovery limits](parade-updater-failure.md).
+
 | Catalog updater | Offered version word / dotted bytes | Component | Result |
 | --- | --- | --- | --- |
 | [1.0.7.0](https://www.catalog.update.microsoft.com/ScopedViewInline.aspx?updateid=08ab0ab7-99dc-4ed6-860e-2357cc70240f) | `0x01030005` / 1.3.0.5 | `0x30` | Offline candidate only |

@@ -41,6 +41,8 @@ The observed failure shows that this startup sequence was insufficient as perfor
 
 ## Installed CFU firmware recovered for offline analysis
 
+**Later qualification:** PnP's reported 1.3.0.2 is not an independent hardware-version check on both retimers. Instance 18 retains `Create SPB device fail` and version zero; the existing dump exposes retained target-reopen state. A conditional flash write also extends beyond the recovered 64 KiB image. [Updater evidence and corrected limits](parade-updater-failure.md).
+
 Read-only PnP properties reconfirm two healthy PS8830 firmware-child devices using the installed Parade CFU driver 1.0.6.0 and reporting firmware **1.3.0.2**, dated 17 March 2023. This firmware version was already recorded during the earlier related-model peripheral-driver trial; it is not a newly discovered upgrade. The exact-model ASUS page describes the peripheral driver as enabling retimer firmware delivery through Windows Update. [ASUS FA507XI driver page](https://www.asus.com/uk/supportonly/fa507xi/helpdesk_download/).
 
 The already-installed CFU package contains a 16-byte offer and an 86,016-byte payload. The offer version word is `0x01030002`, consistent with the reported version; its component ID is `0x30`. The payload was copied privately and parsed offline into 4,096 contiguous, non-overlapping 16-byte records covering addresses 0–65,535. Re-encoding every address/length/data record reproduces the original payload byte for byte. The resulting 65,536-byte image has SHA-256 `A6CF7221832BC4D5F1A62A5A99013F1D448FF19F0646C5FEA2828E13AA38456E`.

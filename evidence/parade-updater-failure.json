@@ -1,0 +1,59 @@
+{
+  "schema": 1,
+  "status": "WindowsUpdaterFailureObserved_Usb4CausalityUnproven",
+  "analysis_date_utc": "2026-11-01",
+  "registry_source": "Read-only current PRHidDrv service parameters; retained values have no per-value event timestamp",
+  "instances": [
+    {"acpi_hardware_id": "ACPI\\VEN_PS88&DEV_3008", "pnp_reported_firmware": "1.3.0.2", "saved_version_word": "0x01030002", "saved_status": "Skip Offer"},
+    {"acpi_hardware_id": "ACPI\\VEN_PS88&DEV_3018", "pnp_reported_firmware": "1.3.0.2", "saved_version_word": "0x00000000", "saved_status": "Create SPB device fail"}
+  ],
+  "pnp_versions_are_independent_physical_flash_verification": false,
+  "saved_version_can_skip_offer_before_spb_open": true,
+  "existing_dump": {
+    "bytes": 3172020224,
+    "sha256": "FA979A86E3A586CF17A9C04C41564526A1CC748B8F8182DF431EAF6A5773928C",
+    "acquisition": "Existing matched ASUS full snapshot; reopened offline",
+    "both_context_component_ids": "0x30",
+    "both_cached_get_feature_version_words": "0x00000000",
+    "instance_18_retained_offer_word": "0x01030002",
+    "successful_outer_device_file_opens": 6,
+    "inner_target_already_open_message": true,
+    "retained_first_outer_triplet_instance": "18",
+    "retained_first_outer_aliases": ["PS88301A", "PS88301F", "PS883021"],
+    "first_outer_triplet_state": "Started, zero pending/sent requests",
+    "inspected_inner_target_state": "Closed",
+    "private_vendor_wpp_available": false,
+    "image_load_warnings_retained": true,
+    "recorder_error_level_counts": {"PRHidDrv": 13, "PRSpbDrv": 4},
+    "cross_instance_confusion_proven": false,
+    "first_initialization_failure_cause_proven": false
+  },
+  "metadata_alias_check": {"query": "QueryDosDevice", "expected_aliases": 6, "present_aliases": 6, "device_handles_opened": 0},
+  "static_transport": {
+    "hid_spb_open_rva": "0x19000",
+    "initialization_ioctl": "0x04001c00",
+    "spb_initialization_rva": "0x3f68",
+    "spb_cleanup_rva": "0x2ef0",
+    "initialization_and_cleanup_evaluate_acpi_dsm": true,
+    "probe_passivity_established": false,
+    "live_probe_executed": false
+  },
+  "native_flash_write_footprint": {
+    "main_start": "0x20000", "main_bytes": 65536,
+    "conditional_extra_sector_start": "0x0f000", "conditional_extra_sector_bytes": 4096,
+    "marker": "0xff02aa55", "marker_role_proven": false,
+    "package_payload_covers_every_possible_write": false,
+    "firmware_dump_helper_writes_bridge_registers": true,
+    "physical_flash_readback_performed": false,
+    "recovery_qualified": false
+  },
+  "reviewed_binaries": [
+    {"name": "PRHidDrv.sys", "version": "1.0.11.0", "sha256": "9B701E2BEF6411AC2ECB01CF9819DDEEDEFD0975A77863726E77009D89D4296C"},
+    {"name": "PRSpbDrv.sys", "version": "1.0.8.0", "sha256": "A366FAFB3FE15F466D6CE0F302DCC5430B9964A6339CEAF10182AD0B94F8925C"}
+  ],
+  "new_hardware_or_security_changes": false,
+  "firmware_commands_issued": 0,
+  "usb4_root_cause_established": false,
+  "windows_fix_validated": false,
+  "next_question": "Trace first instance-18 initialization and target ownership/cleanup; map ACPI DSM and physical port before proposing intervention"
+}

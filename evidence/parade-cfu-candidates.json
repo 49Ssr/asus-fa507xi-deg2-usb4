@@ -59,7 +59,10 @@
     "Updater and offered firmware versions are not monotonic",
     "No release note connecting either payload to DEG2 was found",
     "Physical flash bytes were not read",
-    "Firmware rollback/recovery remains unqualified; removing an updater driver is not a demonstrated firmware rollback"
+    "Firmware rollback/recovery remains unqualified; removing an updater driver is not a demonstrated firmware rollback",
+    "Instance 18 retains Create SPB device fail; native updater can also write a sector outside the 64 KiB package image"
   ],
-  "next_work": "Map variant/port configuration and version/downgrade handling before proposing any controlled deployment"
+  "next_work": "Trace first instance-18 initialization and target ownership/cleanup, then map ACPI DSM/port and recovery before deployment",
+  "reported_firmware_coverage": "PnP metadata only; independent physical version verification on both chips is not established",
+  "updater_failure_review": "parade-updater-failure.json"
 }
