@@ -17,6 +17,12 @@ Heartbeat: `trace-asus-ps8830-configuration`, every 30 minutes in this chat. Kee
 
 ## Current interval
 
+**Interval 10, completed:** the retained PS8830 code uses the training-related words. Two routines calculate the record address, divide its word by5 and load a counter. The timer interrupt decrements active counters, queues expiry events and the main loop calls the indexed handler. For the receiver-PLL-delay record, a conditional arm sets a control bit and starts40 counts; the callback clears the same bit. [Original-code relationships](../evidence/ps8830-timer-consumers.json).
+
+This establishes a timed control path in the retimer firmware. It does not show that ASUS takes this path with DEG2, identify the electrical bit, establish the tick duration or provide a Windows write interface. The installed-package image is still not a physical flash readback. No hardware request or change occurred; no working fix is known.
+
+### Interval 9
+
 **Interval 9, completed:** classified the remaining EC address70/channel1 helper: three fixed two-byte pairs plus high/low-nibble forwarding of a tracked byte, with a local history/mirror and no qualified USB4/retimer identity. The saved EC candidate queue is now classified or deferred. [Code facts and useful-path audit](../evidence/ec70-and-retimer-consumer-audit.json), claims C52–C53.
 
 The audit found a specific remaining path in the already retained **PS8830 package image**:12 adjacent five-byte records pair words with training-related labels. The labels were already known; the new work pins the record layout and corrects two raw hits that are actually8051 branches to a shared RET before the following text. These are not measured timer values, a training error, or a qualified patch point. Recurring research remains useful for one bounded consumer-qualification pass, rather than repeating EC scans. No hardware request, boot, driver or firmware write occurred; root cause and Windows repair remain unresolved.
@@ -79,7 +85,7 @@ Two primary references add a concrete architecture to follow. TI [ZHCAG60](https
 
 Next concrete tasks:
 
-1. **Next interval first:** perform one bounded original-code consumer qualification for the retained PS8830 image table at image offsetsb2de..b319, SHAa6cf7221832bc4d5f1a62a5a99013f1d448ff19f0646c5fea2828e13aa38456e. Establish code/image mapping and record accessor before interpreting timer use. Determine whether records feed real training, diagnostic metadata or overrides; follow only proven references. Branches atae64/aed8 target RETb079, not following textb07a. No guessed MMIO alias, timer patch or flash. If no discriminating original-code relationship follows, defer and reassess recurring-work usefulness.
+1. **Next work:** trace the source and meaning of the internal reply used by the timed receiver-PLL branch at image317a..31b0. It selects an internal read and tests the result for1 or10 before starting index6; locate the register-access implementation or original writers that qualify this value. Compare only with existing captured fields whose alias/ownership is established. Do not call it cable, orientation or mode from the number alone. If the relation to host mode requests cannot be recovered, record that boundary rather than expanding to unnamed-register scans. No new live access, timing patch or flash.
 2. The named EC candidate queue is classified/deferred. Do not repeat those scans without a new mode-control relationship. Bank2 CPUb5d4 address42/channel1 is mapped and deferred pending target/signal identity. Bank1 CPUc0d6 prepares70/channel1, and bank3 CPUc720 prepares98/channel4 and is now classified as shared read setup; none of these numbers is automatically a PS8830 address. Linear disassembly offsets must be translated through the8051 bank window. This initial static triage is not exhaustive/reachability proof; no new emulator was built.
 3. Follow captured native port-control writes and status ordering if the candidate suggests a distinguishing field. Do not force router detection, interpret a wake latch as a diagnosed fault, or apply TI/Linux values to unqualified ASUS hardware. Qualify any future read for read-clear/side effects and history coverage first.
 

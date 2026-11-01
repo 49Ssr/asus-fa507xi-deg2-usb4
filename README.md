@@ -1,6 +1,6 @@
 # ASUS FA507XI / Minisforum DEG2 USB4 investigation
 
-**Offline path audit:** the remaining EC candidate forwards fixed pairs and a tracked byte split into nibbles; no USB4 target is qualified. A specific next task remains in the retained PS8830 image: identify the consumers of12 structured training-label records, with code/data boundaries checked first. [Pinned record layout and audit](evidence/ec70-and-retimer-consumer-audit.json). Static words are not measured timer values or a patch plan.
+**Retimer code finding:** training-related words feed counters and expiry callbacks. One receiver-PLL-delay path sets a control bit, starts40 counts and clears the same bit on expiry. [Code and limits](evidence/ps8830-timer-consumers.json). We have not measured this branch during the failed connection or identified a Windows way to change it.
 
 **D8/D9 branch bounded:** its caller and selector flags are mapped, but no USB4-entry meaning is established. A partial pair failure can leave the old software latch without a compensating request, so that latch is not a validated rollback mechanism. [Decision table and original-code scope](evidence/ec-vendor-request-selection.json). This repair lead is deferred; no hardware test is queued.
 

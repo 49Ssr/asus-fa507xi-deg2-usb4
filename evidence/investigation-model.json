@@ -177,7 +177,9 @@
         "C44",
         "C45",
         "C52",
-        "C53"
+        "C53",
+        "C54",
+        "C55"
       ]
     },
     {
@@ -826,6 +828,26 @@
         "PS8830-CFU-REFERENCE"
       ],
       "value_sha256": "5bb61ad175cee3492dc18cac661e2ad4386e3ba1ec716a5ff9369cbebd8d12b6"
+    },
+    {
+      "id": "RETIMER-TIMER-CODE",
+      "path": "evidence/ps8830-timer-consumers.json",
+      "pointer": "/timer_code",
+      "kind": "code",
+      "cases": [
+        "PS8830-CFU-REFERENCE"
+      ],
+      "value_sha256": "6ac54fe8510c205650555a12dede8e424a76b2ccefe713f5394cb43f6a956c3e"
+    },
+    {
+      "id": "RETIMER-PLL-PATH",
+      "path": "evidence/ps8830-timer-consumers.json",
+      "pointer": "/pll_path",
+      "kind": "code",
+      "cases": [
+        "PS8830-CFU-REFERENCE"
+      ],
+      "value_sha256": "124c487b9315e0c5a586884e78ba43f8600fb188eb1fea596b56ce5b112b499e"
     }
   ],
   "claims": [
@@ -1584,6 +1606,32 @@
         "PS8830-CFU-REFERENCE"
       ],
       "limit": "Static record/byte facts only. Active timer values, accessor semantics, physical-flash match and connection to the failed ASUS training state remain unverified."
+    },
+    {
+      "id": "C54",
+      "basis": "code_fact",
+      "stage": "link",
+      "statement": "Original PS8830 package code reads the indexed training-record word, divides it by5 and loads a counter. A timer interrupt decrements active counters and queues expiry events; the main loop dispatches nonzero indexed callbacks.",
+      "sources": [
+        "RETIMER-TIMER-CODE"
+      ],
+      "cases": [
+        "PS8830-CFU-REFERENCE"
+      ],
+      "limit": "Code relationships in an offered image, not observed failing-hardware execution. Tick duration, live values and host register access remain unknown."
+    },
+    {
+      "id": "C55",
+      "basis": "code_fact",
+      "stage": "link",
+      "statement": "The reviewed receiver-PLL-delay record feeds index6: one conditional arm sets a control bit and starts a40-count timer; its expiry callback clears that same bit.",
+      "sources": [
+        "RETIMER-PLL-PATH"
+      ],
+      "cases": [
+        "PS8830-CFU-REFERENCE"
+      ],
+      "limit": "The arm also depends on unidentified internal gate/read values. No captured ASUS state, electrical bit meaning, Windows access path or cause of missing router detection follows from this code fact."
     }
   ],
   "timeline_limit": "T0 is the first recorded Windows attachment report in each run, not physical insertion. Different runs, platforms, power contracts and capture dates are explicit. These tables align software reports only; proximity does not establish wire order or causation. The earlier Dell control supplies the Dell timeline; the deep Dell dump supplies cached-state comparison.",
@@ -2085,10 +2133,18 @@
       },
       {
         "id": "RET_PARAM_TABLE",
-        "label": "Retained retimer training records: consumer UNQUALIFIED",
-        "owner": "Offered PS8830 package image; runtime consumer untraced",
-        "interface": "12 paired word/label records; raw branches distinguished from label pointers",
-        "limit": "Static package data, not current training state or a validated patch point.",
+        "label": "Retained retimer training words feed counters",
+        "owner": "Offered PS8830 image; timer consumers traced",
+        "interface": "Indexed code-word loads, counter expiry queue and callback dispatch",
+        "limit": "Static code path, not measured active state or a Windows control interface.",
+        "decision": false
+      },
+      {
+        "id": "RET_TIMER_FLOW",
+        "label": "Retimer counters and timed control-bit callback",
+        "owner": "Retained PS8830 firmware code",
+        "interface": "Word divided by5 -> counter -> interrupt -> queue -> callback",
+        "limit": "One conditional set/clear path traced; electrical meaning, live branch and host access unknown.",
         "decision": false
       }
     ],
@@ -2466,6 +2522,28 @@
         "basis": "unknown",
         "claims": [
           "C53"
+        ],
+        "standards": []
+      },
+      {
+        "from": "RET_PARAM_TABLE",
+        "to": "RET_TIMER_FLOW",
+        "label": "Original indexed word reads load counters; expiry dispatch reaches the paired control-bit clear",
+        "basis": "traced_code",
+        "claims": [
+          "C54",
+          "C55"
+        ],
+        "standards": []
+      },
+      {
+        "from": "RET_TIMER_FLOW",
+        "to": "LINK",
+        "label": "Execution and effect during the failed ASUS connection remain unobserved",
+        "basis": "unknown",
+        "claims": [
+          "C54",
+          "C55"
         ],
         "standards": []
       }

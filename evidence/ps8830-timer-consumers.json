@@ -1,0 +1,150 @@
+{
+  "schema": 1,
+  "date": "2026-11-01",
+  "interval": 10,
+  "status": "Training-related words feed counters; one timed control-bit path traced. Failure state remains unobserved.",
+  "timer_code": {
+    "image_sha256": "a6cf7221832bc4d5f1a62a5a99013f1d448ff19f0646c5fea2828e13aa38456e",
+    "artifact_scope": "Original instructions in the retained installed-package image. Physical flash content and execution during failed attachment are unverified.",
+    "mapping": "Code-space table accesses calculate the same image offsets as the retained records. The image vector at000b branches to300b, which branches to the reviewed interrupt handlerdbae; handler pointers also resolve to coherent code. This supports the reviewed image/code relationships, not the complete reset/boot mapping or any host-I2C alias.",
+    "loader": {
+      "start_image_offset_hex": "e76b",
+      "reload_image_offset_hex": "ea28",
+      "access": "Both calculate b2de + index*5, read the first two bytes with MOVC, divide the unsigned word by5 using869b, and store the quotient in a three-byte per-index state/counter record.",
+      "start": "Skips index11 and an already-active record. Sets active, clears expired, loads the quotient, then enables the timer and interrupt bits.",
+      "reload": "Clears active and expired, then reloads the quotient. This body does not arm that record.",
+      "record_words": [
+        5,
+        5,
+        5,
+        80,
+        1000,
+        1000,
+        200,
+        50,
+        1000,
+        25,
+        5,
+        0
+      ],
+      "quotients": [
+        1,
+        1,
+        1,
+        16,
+        200,
+        200,
+        40,
+        10,
+        200,
+        5,
+        1,
+        0
+      ],
+      "limit": "These reviewed loads use the word fields, not the label-pointer fields. No exhaustive other-writer coverage, actual tick period, physical flash identity or measured elapsed time is established."
+    },
+    "interrupt": {
+      "entry_image_offset_hex": "dbae",
+      "end_exclusive_image_offset_hex": "dca3",
+      "operation": "Reloads timer registers; loops over12 records. Active and unexpired records have their16-bit counter decremented. At zero, sets expired and clears active, then places a type1 event carrying the index into an eight-slot queue if the selected slot is empty.",
+      "limit": "Queue occupancy, interrupt delivery and expiry during the failing connection are unknown. The reviewed queue condition is not evidence of a real dropped event."
+    },
+    "dispatch": {
+      "entry_image_offset_hex": "e239",
+      "call_in_loop_image_offset_hex": "eba6",
+      "handler_table_image_offset_hex": "ecf3",
+      "operation": "Consumes one queued entry, advances/wraps the read index, and for type1 resolves the indexed three-byte code record. A nonzero record is called through879a (CLR A; JMP @A+DPTR).",
+      "handler_image_offsets_hex": [
+        "e9c8",
+        "de73",
+        "e86a",
+        "ec56",
+        "c46d",
+        "c06b",
+        "ec8e",
+        "0000",
+        "0000",
+        "de73",
+        "eca0",
+        "0000"
+      ],
+      "limit": "Some records have no callback. The table does not establish that every label denotes an independently running timer."
+    },
+    "spans": [
+      {
+        "image_start_hex": "e76b",
+        "image_end_exclusive_hex": "e7eb",
+        "sha256": "5494b7a287254ba7cf702c30aa9581a9ed0c42225fba8133bbed78bb3e1cb28e"
+      },
+      {
+        "image_start_hex": "ea28",
+        "image_end_exclusive_hex": "ea82",
+        "sha256": "2e20761315607b65e82ba45c79bf9d840c9afbccd2b58b4e691675c4203576a9"
+      },
+      {
+        "image_start_hex": "869b",
+        "image_end_exclusive_hex": "86f0",
+        "sha256": "b698c411438e28d6bcbdb6ac39ce06f802c1877965a11a0a5e7a5e4383398c0c"
+      },
+      {
+        "image_start_hex": "86f0",
+        "image_end_exclusive_hex": "8706",
+        "sha256": "9c32bdd2433539844b2922c2d20a20ce652c0dce34950bc3727e0fa8d0784ba6"
+      },
+      {
+        "image_start_hex": "dbae",
+        "image_end_exclusive_hex": "dca3",
+        "sha256": "593ba0b4782d2bf49402237f274d97fa93358bdbdbba671ec1a3384c74346424"
+      },
+      {
+        "image_start_hex": "e239",
+        "image_end_exclusive_hex": "e2db",
+        "sha256": "07dec2353895e1d3bcc06d2444d8bda3a03a6f6540ee535ad6547d05c1674d36"
+      },
+      {
+        "image_start_hex": "ecf3",
+        "image_end_exclusive_hex": "ed17",
+        "sha256": "f92270a74e8f6a888c28b4f1e97b278304b7fe1fc70888fdfc852b9ec3a41283"
+      },
+      {
+        "image_start_hex": "317a",
+        "image_end_exclusive_hex": "31b1",
+        "sha256": "50580fd63ee27c727ff5ac88bf614749c62c792551c28fa7074b90483f57c4f3"
+      },
+      {
+        "image_start_hex": "ec8e",
+        "image_end_exclusive_hex": "ec98",
+        "sha256": "2d65d00794d62b4ef5d811ad7491d5fddcaf05cd3da663f0644f4385d881c611"
+      }
+    ]
+  },
+  "pll_path": {
+    "image_sha256": "a6cf7221832bc4d5f1a62a5a99013f1d448ff19f0646c5fea2828e13aa38456e",
+    "record_index": 6,
+    "label_role_paraphrase": "Upstream receiver PLL delay",
+    "record_word": 200,
+    "loaded_counter": 40,
+    "start_path_image_offsets_hex": [
+      "317a",
+      "3190",
+      "319f"
+    ],
+    "start_condition": "In the reviewed interrupt branch, a nonzero internal byte enables the path. The code selects an internal read and tests the following byte for1 or10; that arm sets a control bit and calls the timer-start helper with index6. The other arm also sets the bit but does not start index6 in this body.",
+    "expiry_handler_image_offset_hex": "ec8e",
+    "expiry_effect": "The indexed callback clears the same control bit set by the reviewed start arm.",
+    "meaning": "A concrete timed set/clear relationship exists in original retimer code. The label supports the PLL-delay association; it does not identify the electrical signal or prove the failing connection reaches this arm.",
+    "limits": [
+      "No host-accessible register alias has been established.",
+      "Internal gate/read values and the counter were not measured on ASUS or Dell.",
+      "40 is a counter load, not a measured40ms or200ms interval.",
+      "No Windows command, rollback, timing patch or flash is selected."
+    ]
+  },
+  "actions": {
+    "new_hardware_requests": 0,
+    "driver_installs": 0,
+    "test_boots": 0,
+    "firmware_writes": 0
+  },
+  "attempts": "Initial literal-DPTR search found no direct table address. Computed ADD/ADDC addressing identified both consumers. Mid-instruction range starts remain private and were excluded from the claims."
+}

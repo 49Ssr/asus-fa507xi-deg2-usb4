@@ -48,7 +48,8 @@ flowchart TD
     PD_POWER["Separate PD status and power-descriptor parsing"]
     PD_VENDOR_CTL["D8/D9 control gate and latch; meaning UNKNOWN"]
     PD_VENDOR_SELECT{"Caller/global-flag selection for D8/D9"}
-    RET_PARAM_TABLE["Retained retimer training records: consumer UNQUALIFIED"]
+    RET_PARAM_TABLE["Retained retimer training words feed counters"]
+    RET_TIMER_FLOW["Retimer counters and timed control-bit callback"]
     ATTACH -->|"documented: controller discovery and mode negotiation"| PD
     PD -.->|"unknown: candidate mode-control path; ASUS ownership/wiring unproven"| RET_CFG
     LINK -.->|"unknown: what makes the native host-port status assert remains untraced"| PORT_REGS
@@ -85,6 +86,8 @@ flowchart TD
     PD_VENDOR_CTL -->|"traced_code: Firmware prepares vendor pair through the reviewed transport wrapper"| PD
     PD_VENDOR_SELECT -->|"traced_code: Reviewed caller and selector choose the prepared vendor pair"| PD_VENDOR_CTL
     RET_PARAM_TABLE -.->|"unknown: Relationship of record consumers to active link training remains unqualified"| LINK
+    RET_PARAM_TABLE -->|"traced_code: Original indexed word reads load counters; expiry dispatch reaches the paired control-bit clear"| RET_TIMER_FLOW
+    RET_TIMER_FLOW -.->|"unknown: Execution and effect during the failed ASUS connection remain unobserved"| LINK
 ```
 
 ### Who owns each part
@@ -121,7 +124,8 @@ flowchart TD
 | PD_POWER | Retained EC bank3 readers | Private b0/b1 status and cc four-byte parser via shared read setup | Reference PDO correspondence; actual replies and physical contract unknown. |
 | PD_VENDOR_CTL | EC bank3 flags and bank1/common transport wrapper | Prepared80/81 pair, success bookkeeping, separate outer service gate | No qualified USB4/mux meaning, live values or safe intervention. |
 | PD_VENDOR_SELECT | EC bank1 caller, bank3 selector and setup/host-write paths | Caller gate, global selector, pair-enable gate and private latch | No measured flag state or USB4 meaning. Partial pair failure does not certify unchanged hardware. |
-| RET_PARAM_TABLE | Offered PS8830 package image; runtime consumer untraced | 12 paired word/label records; raw branches distinguished from label pointers | Static package data, not current training state or a validated patch point. |
+| RET_PARAM_TABLE | Offered PS8830 image; timer consumers traced | Indexed code-word loads, counter expiry queue and callback dispatch | Static code path, not measured active state or a Windows control interface. |
+| RET_TIMER_FLOW | Retained PS8830 firmware code | Word divided by5 -> counter -> interrupt -> queue -> callback | One conditional set/clear path traced; electrical meaning, live branch and host access unknown. |
 
 ### Branch evidence
 
@@ -163,6 +167,8 @@ flowchart TD
 | PD_VENDOR_CTL → PD | Firmware prepares vendor pair through the reviewed transport wrapper | traced_code | C48 |
 | PD_VENDOR_SELECT → PD_VENDOR_CTL | Reviewed caller and selector choose the prepared vendor pair | traced_code | C49, C51 |
 | RET_PARAM_TABLE → LINK | Relationship of record consumers to active link training remains unqualified | unknown | C53 |
+| RET_PARAM_TABLE → RET_TIMER_FLOW | Original indexed word reads load counters; expiry dispatch reaches the paired control-bit clear | traced_code | C54, C55 |
+| RET_TIMER_FLOW → LINK | Execution and effect during the failed ASUS connection remain unobserved | unknown | C54, C55 |
 
 ### Candidate intervention locations
 
@@ -533,6 +539,18 @@ Scope: ASUS-BIOS314. Target identity and USB4 relationship remain unqualified; n
 Scope: PS8830-CFU-REFERENCE. Static record/byte facts only. Active timer values, accessor semantics, physical-flash match and connection to the failed ASUS training state remain unverified.
 
 [RETIMER-PARAM-RECORDS](../evidence/ec70-and-retimer-consumer-audit.json) `/retimer_records`
+
+**C54 — code_fact:** Original PS8830 package code reads the indexed training-record word, divides it by5 and loads a counter. A timer interrupt decrements active counters and queues expiry events; the main loop dispatches nonzero indexed callbacks.
+
+Scope: PS8830-CFU-REFERENCE. Code relationships in an offered image, not observed failing-hardware execution. Tick duration, live values and host register access remain unknown.
+
+[RETIMER-TIMER-CODE](../evidence/ps8830-timer-consumers.json) `/timer_code`
+
+**C55 — code_fact:** The reviewed receiver-PLL-delay record feeds index6: one conditional arm sets a control bit and starts a40-count timer; its expiry callback clears that same bit.
+
+Scope: PS8830-CFU-REFERENCE. The arm also depends on unidentified internal gate/read values. No captured ASUS state, electrical bit meaning, Windows access path or cause of missing router detection follows from this code fact.
+
+[RETIMER-PLL-PATH](../evidence/ps8830-timer-consumers.json) `/pll_path`
 
 ## Separate runs and observation limits
 
