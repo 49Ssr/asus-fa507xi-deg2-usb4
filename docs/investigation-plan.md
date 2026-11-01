@@ -42,7 +42,7 @@ Some private firmware meanings may require ASUS or controller-vendor engineering
 
 ## The evidence system now in the repository
 
-The current curated view covers **48 claims, 56 exact JSON source values, 20 explicitly separated cases and two software-report timelines**. The control-flow graph tags relationships as measured, traced from code, documented architecture or unmapped. Distinct branches remain distinct: choosing no Windows role command and skipping an EC service invocation are different outcomes. The index covers decision-relevant evidence; it does not claim every file or raw event has been ingested.
+The current curated view covers **51 claims, 58 exact JSON source values, 20 explicitly separated cases and two software-report timelines**. The control-flow graph tags relationships as measured, traced from code, documented architecture or unmapped. Distinct branches remain distinct: choosing no Windows role command and skipping an EC service invocation are different outcomes. The index covers decision-relevant evidence; it does not claim every file or raw event has been ingested.
 
 Each claim records its evidence class, case, source location and limit. Inferences require a stated reason. Relevant counterevidence is linked to the competing explanations. Source values are pinned by a canonical SHA-256; a missing or changed field fails validation rather than becoming zero or silently retaining an old interpretation. Changes elsewhere in a source file do not invalidate an unrelated pinned field.
 

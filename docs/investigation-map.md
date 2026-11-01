@@ -47,6 +47,7 @@ flowchart TD
     EC42_CFG["EC channel1/address42 staged configuration; target UNKNOWN"]
     PD_POWER["Separate PD status and power-descriptor parsing"]
     PD_VENDOR_CTL["D8/D9 control gate and latch; meaning UNKNOWN"]
+    PD_VENDOR_SELECT{"Caller/global-flag selection for D8/D9"}
     ATTACH -->|"documented: controller discovery and mode negotiation"| PD
     PD -.->|"unknown: candidate mode-control path; ASUS ownership/wiring unproven"| RET_CFG
     LINK -.->|"unknown: what makes the native host-port status assert remains untraced"| PORT_REGS
@@ -81,6 +82,7 @@ flowchart TD
     EC42_CFG -.->|"unknown: Candidate relation to PS8830 configuration unqualified"| RET_CFG
     RELAY -->|"traced_code: Shared PD transport also feeds separate status/power parsing"| PD_POWER
     PD_VENDOR_CTL -->|"traced_code: Firmware prepares vendor pair through the reviewed transport wrapper"| PD
+    PD_VENDOR_SELECT -->|"traced_code: Reviewed caller and selector choose the prepared vendor pair"| PD_VENDOR_CTL
 ```
 
 ### Who owns each part
@@ -116,6 +118,7 @@ flowchart TD
 | EC42_CFG | Retained EC bank2 code | Two-byte register/data writes; desired/last-written cache and initialisation stages | No chip identity, USB4 signal ownership or live execution established. |
 | PD_POWER | Retained EC bank3 readers | Private b0/b1 status and cc four-byte parser via shared read setup | Reference PDO correspondence; actual replies and physical contract unknown. |
 | PD_VENDOR_CTL | EC bank3 flags and bank1/common transport wrapper | Prepared80/81 pair, success bookkeeping, separate outer service gate | No qualified USB4/mux meaning, live values or safe intervention. |
+| PD_VENDOR_SELECT | EC bank1 caller, bank3 selector and setup/host-write paths | Caller gate, global selector, pair-enable gate and private latch | No measured flag state or USB4 meaning. Partial pair failure does not certify unchanged hardware. |
 
 ### Branch evidence
 
@@ -155,6 +158,7 @@ flowchart TD
 | EC42_CFG → RET_CFG | Candidate relation to PS8830 configuration unqualified | unknown | C45 |
 | RELAY → PD_POWER | Shared PD transport also feeds separate status/power parsing | traced_code | C46 |
 | PD_VENDOR_CTL → PD | Firmware prepares vendor pair through the reviewed transport wrapper | traced_code | C48 |
+| PD_VENDOR_SELECT → PD_VENDOR_CTL | Reviewed caller and selector choose the prepared vendor pair | traced_code | C49, C51 |
 
 ### Candidate intervention locations
 
@@ -495,6 +499,24 @@ Reason: The top-bit type dispatch and low-field masks, shifts and50/10 multiplie
 Scope: ASUS-BIOS314. Controller/retimer meaning, actual flag values, physical acceptance and recovery remain unqualified. No request, latch clear or Windows test is selected.
 
 [EC-PD-VENDOR-GATE](../evidence/ec-pd-readers-and-vendor-gates.json) `/vendor_controls`
+
+**C49 — code_fact:** The reviewed bank1 caller gates D8/D9 selection on045e.bit1. Its selector uses global03c7.bit1/0308.bit6; an explicit setup-block OR40 and two inhibit clear sites are identified, with generic host byte replacement also possible.
+
+Scope: ASUS-BIOS314. Live flag values, selector-setter ownership and a USB4-entry relationship remain unknown. Literal-reference coverage is not exhaustive writer/reachability proof.
+
+[EC-VENDOR-SELECT](../evidence/ec-vendor-request-selection.json) `/firmware_code`
+
+**C50 — code_fact:** The original retained DSDT names ERAM byte08 bit6 TCCN and leaves bytec7 bit1 unnamed. Across23 retained AML tables, TCCN appears only in its field declaration.
+
+Scope: ASUS-DEEP. The name is not a register specification or a verified live EC alias/value. Other drivers/firmware and indirect accesses remain outside this namespace scan.
+
+[EC-VENDOR-AML](../evidence/ec-vendor-request-selection.json) `/aml_layout`
+
+**C51 — code_fact:** If the first D8/D9 wrapper succeeds and the second fails, the reviewed pair body keeps the old software latch and contains no compensating request. Changing that latch alone is not an established hardware rollback.
+
+Scope: ASUS-BIOS314. Static pair-body behavior; controller effects and callee-internal behavior are not independently measured. No failed live pair or safe inverse is claimed.
+
+[EC-VENDOR-SELECT](../evidence/ec-vendor-request-selection.json) `/firmware_code`, [EC-PD-VENDOR-GATE](../evidence/ec-pd-readers-and-vendor-gates.json) `/vendor_controls`
 
 ## Separate runs and observation limits
 

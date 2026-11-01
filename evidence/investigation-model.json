@@ -153,7 +153,10 @@
         "C19",
         "C46",
         "C47",
-        "C48"
+        "C48",
+        "C49",
+        "C50",
+        "C51"
       ]
     },
     {
@@ -776,6 +779,26 @@
         "ASUS-BIOS314"
       ],
       "value_sha256": "2e080a7ab252c7ea822c11b788bc195f98859fd27e305eed24e34af72137e0f4"
+    },
+    {
+      "id": "EC-VENDOR-SELECT",
+      "path": "evidence/ec-vendor-request-selection.json",
+      "pointer": "/firmware_code",
+      "kind": "code",
+      "cases": [
+        "ASUS-BIOS314"
+      ],
+      "value_sha256": "3c8706eb2fb2f3c66cfe18f8375a897914aba0dd1fb1ff41e9af1d4c4e885cf6"
+    },
+    {
+      "id": "EC-VENDOR-AML",
+      "path": "evidence/ec-vendor-request-selection.json",
+      "pointer": "/aml_layout",
+      "kind": "code",
+      "cases": [
+        "ASUS-DEEP"
+      ],
+      "value_sha256": "30e0aad65ac776c04f8415a0139ad8bf55a8ab9406b7ba87a3de9e8705b78271"
     }
   ],
   "claims": [
@@ -1468,6 +1491,46 @@
         "ASUS-BIOS314"
       ],
       "limit": "Controller/retimer meaning, actual flag values, physical acceptance and recovery remain unqualified. No request, latch clear or Windows test is selected."
+    },
+    {
+      "id": "C49",
+      "basis": "code_fact",
+      "stage": "entry",
+      "statement": "The reviewed bank1 caller gates D8/D9 selection on045e.bit1. Its selector uses global03c7.bit1/0308.bit6; an explicit setup-block OR40 and two inhibit clear sites are identified, with generic host byte replacement also possible.",
+      "sources": [
+        "EC-VENDOR-SELECT"
+      ],
+      "cases": [
+        "ASUS-BIOS314"
+      ],
+      "limit": "Live flag values, selector-setter ownership and a USB4-entry relationship remain unknown. Literal-reference coverage is not exhaustive writer/reachability proof."
+    },
+    {
+      "id": "C50",
+      "basis": "code_fact",
+      "stage": "entry",
+      "statement": "The original retained DSDT names ERAM byte08 bit6 TCCN and leaves bytec7 bit1 unnamed. Across23 retained AML tables, TCCN appears only in its field declaration.",
+      "sources": [
+        "EC-VENDOR-AML"
+      ],
+      "cases": [
+        "ASUS-DEEP"
+      ],
+      "limit": "The name is not a register specification or a verified live EC alias/value. Other drivers/firmware and indirect accesses remain outside this namespace scan."
+    },
+    {
+      "id": "C51",
+      "basis": "code_fact",
+      "stage": "entry",
+      "statement": "If the first D8/D9 wrapper succeeds and the second fails, the reviewed pair body keeps the old software latch and contains no compensating request. Changing that latch alone is not an established hardware rollback.",
+      "sources": [
+        "EC-VENDOR-SELECT",
+        "EC-PD-VENDOR-GATE"
+      ],
+      "cases": [
+        "ASUS-BIOS314"
+      ],
+      "limit": "Static pair-body behavior; controller effects and callee-internal behavior are not independently measured. No failed live pair or safe inverse is claimed."
     }
   ],
   "timeline_limit": "T0 is the first recorded Windows attachment report in each run, not physical insertion. Different runs, platforms, power contracts and capture dates are explicit. These tables align software reports only; proximity does not establish wire order or causation. The earlier Dell control supplies the Dell timeline; the deep Dell dump supplies cached-state comparison.",
@@ -1958,6 +2021,14 @@
         "interface": "Prepared80/81 pair, success bookkeeping, separate outer service gate",
         "limit": "No qualified USB4/mux meaning, live values or safe intervention.",
         "decision": false
+      },
+      {
+        "id": "PD_VENDOR_SELECT",
+        "label": "Caller/global-flag selection for D8/D9",
+        "owner": "EC bank1 caller, bank3 selector and setup/host-write paths",
+        "interface": "Caller gate, global selector, pair-enable gate and private latch",
+        "limit": "No measured flag state or USB4 meaning. Partial pair failure does not certify unchanged hardware.",
+        "decision": true
       }
     ],
     "edges": [
@@ -2313,6 +2384,17 @@
         "basis": "traced_code",
         "claims": [
           "C48"
+        ],
+        "standards": []
+      },
+      {
+        "from": "PD_VENDOR_SELECT",
+        "to": "PD_VENDOR_CTL",
+        "label": "Reviewed caller and selector choose the prepared vendor pair",
+        "basis": "traced_code",
+        "claims": [
+          "C49",
+          "C51"
         ],
         "standards": []
       }

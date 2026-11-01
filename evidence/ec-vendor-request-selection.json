@@ -1,0 +1,185 @@
+{
+  "schema": 1,
+  "date": "2026-11-01",
+  "interval": 8,
+  "status": "D8/D9 selection bounded; no proven USB4-entry role or safe rollback",
+  "firmware_code": {
+    "full_ec_sha256": "103721578b66daed81dcf7a0bed06709c072f9da1dc75a6d7887321e6e32b060",
+    "bank_view_sha256": {
+      "1": "81076d584ce5d35b6f8435ab162e90971eebcdbf350183cbe5fdf02f76bf8ab4",
+      "2": "20940ba27ff630e81df2e13d9659278ecdc7b5af9e5ecd28f38e308f4d0ce1b3",
+      "3": "8fa70998317f47856dca8b572cded7d028a41a2bdb597234b9ca0a428ab73207"
+    },
+    "mapping": "Common lower32KiB plus selector-specific upper32KiB. All three views compared byte-for-byte against the full image; live flash identity remains unverified.",
+    "caller": {
+      "bank": 1,
+      "cpu_range_hex": "b9f8..ba01",
+      "condition": "045e.bit1 set",
+      "call": "b9ff -> common33d9 -> bank3b8cd",
+      "argument_scope": "The selected handler reads its selector flags from global firmware bytes; this reviewed gate does not decode a new cable/partner message."
+    },
+    "selector": {
+      "request81": "NOT03c7.bit1 AND0308.bit6",
+      "request80": "03c7.bit1 OR NOT0308.bit6",
+      "gate_enable": "0308.bit3 is required inside either selected pair",
+      "prior_latch": "030e.bit0 suppresses a repeated request for the same state; this is distinct from outer transport block bit1."
+    },
+    "setter_provenance": {
+      "0308.bit6": {
+        "bank": 2,
+        "cpu_hex": "cabc",
+        "operation": "OR40",
+        "scope": "Explicit setter inside the reviewed broad configuration-copy/default-setting block. This does not establish reset reachability or its live value."
+      },
+      "03c7.bit1": {
+        "reviewed_clears": [
+          {
+            "bank": 1,
+            "cpu_hex": "abc7",
+            "operation": "ANDfd"
+          },
+          {
+            "bank": 1,
+            "cpu_hex": "bea9",
+            "operation": "ANDfd"
+          }
+        ],
+        "named_setter": "Not identified in this bounded direct-reference review.",
+        "limit": "Three literal DPTR03c7 references comprise these two clear sites and the known selector. This is not an exhaustive writer analysis: indirect/address-increment/block operations and host writes remain possible."
+      }
+    },
+    "generic_host_write": {
+      "bank": 1,
+      "writer_cpu_hex": "e427",
+      "address_helper_cpu_hex": "f081",
+      "rule": "The helper maps the supplied8-bit offset to XDATA03xx; the writer stores supplied R5. An offsetc7 write can therefore replace the whole03c7 byte in code.",
+      "scope": "Static generic route, not a qualified user-mode bridge, observed setter, selected command or live request."
+    },
+    "direct_reference_inventory": {
+      "03c7_literal_candidates": 3,
+      "0308_literal_candidates": 28,
+      "method": "Byte-pattern inventory across the pinned full image, then exact selected instruction-boundary decoding. Raw hits alone do not prove executing code or exclude indirect writers."
+    },
+    "spans": [
+      {
+        "label": "caller_gate",
+        "cpu_start_hex": "b9f8",
+        "cpu_end_exclusive_hex": "ba02",
+        "sha256": "442fe7b99dbde9b9b92a0076d32a91ed91565877d1df561b4f4ec335cee1b767"
+      },
+      {
+        "label": "selector_clear1",
+        "cpu_start_hex": "abc7",
+        "cpu_end_exclusive_hex": "abcf",
+        "sha256": "7d3334b0cce5d4380fb86b9b05251d1d95b615cd1bd08119dd1399c62f41eb73"
+      },
+      {
+        "label": "selector_clear2",
+        "cpu_start_hex": "bea9",
+        "cpu_end_exclusive_hex": "beb0",
+        "sha256": "7e1e3e0edcc1d9cf67d23a9d1316c7c4fcbea4136291abf19e97a380a4515352"
+      },
+      {
+        "label": "selector_set",
+        "cpu_start_hex": "cabc",
+        "cpu_end_exclusive_hex": "cac3",
+        "sha256": "fbfa021ad9bd7b53233b8abcdeffa452b5dd077485cad2e2ff5a55fc56c46ec3"
+      },
+      {
+        "label": "generic_write",
+        "cpu_start_hex": "e427",
+        "cpu_end_exclusive_hex": "e42d",
+        "sha256": "26e11c2132e006e464f0d6292a852d988196f758931289216f2d5a3126e0e76d"
+      },
+      {
+        "label": "address_helper",
+        "cpu_start_hex": "f081",
+        "cpu_end_exclusive_hex": "f08f",
+        "sha256": "ca3b6ccf121132c1bc5ca3aa61c80d946b110b2a4f5526e2b1ad1ce005a00608"
+      },
+      {
+        "label": "request_selector",
+        "cpu_start_hex": "b8cd",
+        "cpu_end_exclusive_hex": "b8e2",
+        "sha256": "3ad622f299e63dfd9c6315b4a04e87deaee77bf603fab2ae0dc1654d52822475"
+      }
+    ],
+    "derived_decision_table": {
+      "basis": "Static code-derived predictions; not executed firmware cases or hardware measurements. C=caller gate; E=pair enable; Q=selected request state; L=private latch; B=outer channel4 transport block.",
+      "rows": [
+        {
+          "condition": "C=0",
+          "effect": "No call from the reviewed bank1 site."
+        },
+        {
+          "condition": "C=1,E=0",
+          "effect": "Selected pair body makes no wrapper request."
+        },
+        {
+          "condition": "C=1,E=1,Q=L",
+          "effect": "No repeated wrapper pair for that latched state."
+        },
+        {
+          "condition": "C=1,E=1,Q!=L,B=1",
+          "effect": "Reviewed common transport rejects the first non-exempt channel4 request; latch remains unchanged."
+        },
+        {
+          "condition": "C=1,E=1,Q!=L; first wrapper returns0",
+          "effect": "Second wrapper is not called; latch remains unchanged."
+        },
+        {
+          "condition": "C=1,E=1,Q!=L; first nonzero, second0",
+          "effect": "Both calls were attempted; latch remains unchanged. No compensating call appears in the reviewed pair body; physical state is unknown."
+        },
+        {
+          "condition": "C=1,E=1,Q!=L; both nonzero",
+          "effect": "Latch changes to Q. There is no independent controller/retimer readback in the reviewed pair body."
+        }
+      ]
+    },
+    "scope": "Original firmware code and derived flow only. No fresh flag values, attachment execution, physical acceptance, per-chip meaning or Windows fix established."
+  },
+  "aml_layout": {
+    "dsdt_sha256": "f57e3bb75b6a15725ff295ed451161d33f3b238bb6cfda683a45286851f1938a",
+    "dsdt_bytes": 52337,
+    "checksum_valid": true,
+    "original_aml_field_sequences_verified": 2,
+    "fields": [
+      {
+        "region": "ERAM",
+        "byte_offset_hex": "08",
+        "bit": 6,
+        "name": "TCCN",
+        "meaning": "Opaque field name; no expansion or USB4 semantics assumed."
+      },
+      {
+        "region": "ERAM",
+        "byte_offset_hex": "c7",
+        "bit": 1,
+        "name": null,
+        "meaning": "Reserved/unnamed in the reviewed field declaration; DPFL begins at bit2."
+      }
+    ],
+    "retained_namespace_scan": {
+      "table_count": 23,
+      "TCCN_raw_name_occurrences": 1,
+      "scope": "Only the field declaration occurs in these retained AML tables. This does not exclude other firmware, drivers or dynamically generated accesses."
+    },
+    "alias_limit": "Matching offsets support a candidate correspondence with firmware03xx bytes; no live SystemMemory-to-EC alias or current value was validated. No field/method was read or written live."
+  },
+  "decision": {
+    "disposition": "Defer D8/D9 as a repair branch: caller, selectors and bookkeeping are identified, but no demonstrated control-to-USB4-entry relationship or controller meaning follows from the retained evidence.",
+    "rollback_limit": "An unchanged software latch after the second wrapper fails is not proof of unchanged device state. Reverting the latch is not a validated inverse for two unknown controller operations.",
+    "next_task": "Classify the remaining saved bank1c0d6 address70/channel1 transport candidate through exact callers/payload/status. Then reassess whether further existing-evidence work can discriminate entry/link alternatives; stop recurring work if only unnamed-flag or unrelated-peripheral scans remain.",
+    "new_hardware_requests": 0,
+    "driver_installs": 0,
+    "test_boots": 0,
+    "firmware_writes": 0,
+    "working_windows_fix": false
+  },
+  "quality": {
+    "byte_anchors_checked": 8,
+    "original_bank_views_verified": 3,
+    "preserved_attempts": "Broad disassembly ranges began between instructions in places and are not authoritative at their leading fragments. Exact decoded entries and original byte assertions support the result. Adjacent-address candidates were reviewed only as a bounded check, not an exhaustive setter search."
+  }
+}
