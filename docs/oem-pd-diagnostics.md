@@ -1,8 +1,31 @@
-# ASUS's installed PD diagnostics: a concrete access route
+# Live ASUS PD access: IT8853 identified, power-profile boundary measured
 
-**1 November 2026:** the installed, signed ASUS analysis client contains PD-controller identity, source-capability, cable-marker and status getters. The matching, already-running ASUS driver has the EC transport they use. This is a specific OEM diagnostic path to qualify; it is not yet a USB4 repair or a raw PD-packet recorder.
+**1 November 2026:** the installed ASUS driver successfully returned capability-table version **17** and the OEM PD-controller identity **`IT8853`**. Subsequent power-profile queries timed out in the driver's EC transport both while disconnected and with DEG2 detected. Neither produced a valid PDO. The connected run also has an owner-reported UGREEN insertion confound. The identity result remains valid; a USB4 repair and USB4-port association remain unproven.
 
-## What was established from the installed binaries
+## Completed live reads
+
+| Read | Measured result | Cleanup |
+| --- | --- | --- |
+| 16:28 UTC capability check | Non-hardware API version `00010001`; capability byte `17`, transport status 0, 64 ms | Handle closed; temporary task removed |
+| 16:31 UTC OEM identity getter | Fresh capability17; twelve successful bytes: `495438383533000000000000`, decoding to `IT8853` | Handle closed; temporary task removed |
+| 16:38 UTC disconnected PDO baseline | API and capability17 passed. First source-PDO1 byte, table6/offset05/selector00: Win32 success, 16 output bytes, driver transport status `0102`, 1,568 ms | Handle closed; temporary task removed; no connection stage |
+| 16:45 UTC connected-only PDO1 check | DEG2 detected before the read; API and capability17 passed. Same first PDO byte returned driver transport `0102`, 661 ms. Owner reports UGREEN was briefly inserted/removed before DEG2 and `CONNECTED` | Handle closed; temporary task removed; stopped after one field byte |
+
+The initial administrator launch was cancelled before execution. The owner subsequently requested the prompt again and completed the live reads above. The cancelled launch and each actual result are preserved separately. [Structured evidence](../evidence/oem-pd-diagnostics.json).
+
+The identity is **firmware-reported through ASUS's getter**. It does not supply the PD firmware version, independently verify a chip marking or identify which Type-C port the dynamic telemetry follows.
+
+## What the timeout means
+
+The pinned driver's polling helpers synthesize `0x102` when a transport wait expires. Multiple stages can return it: pre-command drain, command/parameter acceptance, post-command readiness and response readiness. The saved completion does not identify which stage timed out. **It is not a USB-PD rejection code, proof of a faulty chip or proof that the dock has no advertised power profiles.**
+
+The raw private reader historically names the completion field `EcStatus`. Its precise meaning is the **driver's EC transport status**; that field must not be interpreted as a PD protocol error. Executed scripts/results retain their original hashes. The newly prepared connected-only reader uses the clearer `DriverTransportStatus` name.
+
+The OEM PDO getter returns sentinel `7fffffff` on transport failure and `ffffffff` when its table-version prerequisite is not met. Neither is a valid empty-PDO measurement. Offline original-code cases verify the failure sentinel as well as successful byte assembly. No failed payload byte was treated as real data.
+
+The disconnected baseline's framing was qualified, but availability of the dynamic field in that physical condition was not established. The later attached-condition check also failed to obtain this field; its intervening UGREEN insertion prevents treating the two runs as a clean paired experiment. The collector stopped at the first error. No remaining PDO/contract fields or connected snapshot were read. No automatic repeat, timeout increase, reset or alternative opcode followed.
+
+## The installed route and its prerequisites
 
 | Component | Version | SHA-256 |
 | --- | --- | --- |
@@ -10,38 +33,34 @@
 | AsusWinIO64.dll | 1.1.4.0 | `a07802f565b9b1ec527b2d1eec69debfb92f90022953b63f1122edb50d2d5b54` |
 | AsusEC_X64.dll | 2.0.0.4 | `c7f337191d2366dfedbe90a6423ec743094a588a032c0a0cb2434dad688c29fe` |
 
-All three installed copies have valid Microsoft Windows Hardware Compatibility Publisher signatures. No library was loaded into the probe process. Private copies, disassembly and identity receipts are retained; vendor binaries are not redistributed.
+All three installed copies have valid Microsoft Windows Hardware Compatibility Publisher signatures. Only the already-running driver was opened; no DLL was loaded by the probes and no driver was installed or started. Vendor binaries and disassembly remain private.
 
-The analysis DLL exports `Adapter_Read_PD_IC_PN`, cable-marker VID/PID/XID readers, source-capability readers and PD status/event readers. Its legacy x64 capability getter at RVA `55470` sends EC command `BB` with one input byte `50` and requests one output byte. Nonzero EC completion status becomes the sentinel `7fffffff` in the client.
+The analysis DLL's legacy capability getter at RVA `55470` sends command `BB` with input byte `50` and requests one output byte. Its PD identity and PDO getters require table version **14 or later**. The actual identity branch subtracts 14 before an unsigned comparison; export existence alone is insufficient qualification. Live version17 matches the older vendor registry cache, and is stronger evidence of current command completion than that cache.
 
-**The PD-identity getter requires capability-table version 14 or later.** Its actual branch subtracts 14 before an unsigned comparison. An export name alone does not prove that this older laptop's EC implements it. Six original-code cases verify rejection of versions 0/13 and the error sentinel, and acceptance of 14/15/255. A zero transport error and a low capability version would be different findings.
+The identity loop uses command `DD`, table5 offsets2..13, selector1. The source-PDO reader uses table6, selector0; PDO1 bytes are read at offsets05,04,03,02. The contract getter uses offsets21,20,1f,1e. Status-event and temperature getters have also been mapped, but **have not been issued**. Static identity support does not establish dynamic-field availability or USB4-port mapping.
 
-The vendor's existing registry cache currently says `HealthyTableVersion = 17`. This supports pursuing the getter, but is not a fresh EC response. A separate archived `TableM5_v5` record dated 16 October contains 256 bytes, all `ff` except byte 1 (`01`). It supplies no readable PD identity. Its table-selection parameters and port association have not been matched to the identity getter, so it is not proof of an absent controller or unimplemented diagnostic. The archive remains private.
+An archived vendor `TableM5_v5` record dated16October contains 256 bytes, all `ff` except byte1=`01`. Its selection parameters have not been matched to the identity getter. The new successful identity read demonstrates why that older snapshot could not establish an absent controller.
 
-For a sufficiently new table, the identity getter requests twelve bytes from table 5, offsets 2 through 13, using the client's `DD` read sequence. The event getter reads table 6, offset `34`, and the temperature getter offset `33`. **None of those table reads has been sent.** Port association and snapshot freshness remain unqualified: charging-port diagnostics must not be assumed to describe the separate USB4 port.
+The exact driver checks TokenUser against `SeLocalSystemSid`, identified through the matching WDK layout. Temporary SYSTEM tasks provided the required caller identity. Each normal collection unregisters its exact task and retains protected private evidence. SYSTEM is a Windows service identity; this route required no boot-security change. [Microsoft account documentation](https://learn.microsoft.com/en-us/windows/win32/services/localsystem-account), [task principal](https://learn.microsoft.com/en-us/windows/win32/taskschd/principal-userid).
 
-## Access, without another driver or test boot
+## Controller-specific source lead
 
-The exact driver checks the calling process's TokenUser SID against `SeExports + 108`, which the matching WDK layout identifies as `SeLocalSystemSid`. Ordinary administrator membership is insufficient. This is why a temporary SYSTEM task is prepared for the single capability request. SYSTEM is Windows' privileged service identity; it is not a reason to disable boot protections. [Microsoft account documentation](https://learn.microsoft.com/en-us/windows/win32/services/localsystem-account), [task principal documentation](https://learn.microsoft.com/en-us/windows/win32/taskschd/principal-userid).
+ITE's vendor-submitted Linux driver describes IT8851/IT8853 UCSI access over **direct I2C**. The accompanying vendor binding identifies IT8853 as a two-connector part. Its interrupt/status and acknowledgement registers provide a concrete reference for further analysis. They do **not** establish that ASUS's EC table interface exposes those registers, or that its Linux transport can be transplanted into Windows. No direct ITE register read or acknowledgement write was sent. [Vendor driver submission](https://lists.openwall.net/linux-kernel/2026/08/07/804), [vendor binding update](https://lkml.iu.edu/hypermail/linux/kernel/2609.2/07383.html).
 
-The prepared private probe:
+The recovered ASUS tables expose UCSI through the EC/ACPI mailbox rather than an explicitly named IT8853 Windows device. OEM table offsets are not established as direct chip-register addresses. Port ownership, data freshness and the actual entry/exit failure remain to be traced.
 
-1. Pins FA507XI, BIOS 314, the running driver's exact hash and valid signature. It never starts or installs a driver.
-2. Opens only `AsusSAIO` and first requests its non-hardware API version. It must return `00010001`, with the correct output length.
-3. Sends exactly one application-level capability request using the OEM packet layout. No `DD` table command, write/clear/reset command, arbitrary address or caller-supplied opcode is accepted.
-4. Saves transport status, output length, EC completion, returned capability byte, elapsed time and handle closure. A durable attempt marker prevents an automatic repeat.
-5. Runs from a unique staging folder writable only by Administrators and SYSTEM. On normal collection, it unregisters its exact temporary task and retains private evidence.
+## Narrow connected-condition check
 
-The driver's EC implementation can retry internally. Its kernel mutex wait has no timeout; a user-mode timer cannot guarantee cancellation of a stuck synchronous dispatch. The runner therefore does not claim a hard timeout, retry a pending request, stop the ASUS driver or reboot Windows.
+The owner confirmed DEG2 powered on and disconnected. After the disconnected baseline stopped, a separate, narrower check was prepared: verify powered DEG2 presence on the same tested ASUS USB4 port, wait20seconds, pass the API/capability controls, then read **one source-PDO1 getter**. This changes the physical condition; it does not repeat the failed disconnected baseline or bypass its stop rule. Existing matched captures already retain DEG2's first advertised PDO `2f81912c` (5V/3A), supplying a comparison value. [Existing capture evidence](billboard-comparison.md).
 
-**Current execution state:** Windows cancelled the administrator launch before the elevated runner started. No SYSTEM task, device-open marker or capability result was created. No automatic relaunch followed. The private, reviewed administrator launcher remains prepared; this is not a successful EC read or a failed hardware test.
+**Completed result:** the owner confirmed `CONNECTED`; the post-wait snapshot detected DEG2 and no matching RTX4080SUPER before the read. API/capability17 controls passed, but the same first PDO byte returned transport `0102` after661ms. No remaining PDO bytes were read. The owner subsequently reported connecting UGREEN first, removing it, then connecting DEG2 before submitting `CONNECTED`. That report is retained alongside the untouched raw result/journal. Final DEG2 presence is verified; the attachment history is not a clean before-and-after sequence.
 
-## Validation and next decision
+This leaves the selected OEM dynamic field **unusable in the runs performed**. It does not erase the controller-identity result, prove all IT8853 diagnostics unusable or identify the USB4 failure. No unchanged repeat or further live probe is queued. The next qualification work is the field's caller/firmware prerequisites and port ownership. It must precede any new control experiment.
 
-[The offline test](../tools/analysis/Test-OemPdCapability.py) executes the pinned client getter, driver wrapper and identity gate in Unicorn with explicit EC/kernel test doubles. **Sixteen cases pass.** These verify packet framing, status propagation, mutex acquire/release order and the version threshold; they do not qualify real EC timing or hardware support. The private worker and runner parse under PowerShell 5.1, and their C# compiles without invoking its device-access entry point.
+## Validation and system state
 
-Seventeen existing ASUS trace/archive files were also copied and inspected privately. Their extracted strings show the vendor's capability-check job being scheduled, but supply no capability value or PD identity. Scheduling is not successful completion. Those logs do not replace the proposed read.
+[The offline test](../tools/analysis/Test-OemPdCapability.py) now executes **41 cases** using pinned original client/driver bytes and explicit EC/kernel test doubles. It covers capability framing/status propagation, the version14 gate, twelve-byte identity sequence, source/contract byte order, first-error stops and the real timeout-status/sentinel mapping. It qualifies software control flow, not hardware support or timing. Private workers/runners parse under PowerShell5.1 and their C# compiles without device access.
 
-If the capability read succeeds, its version determines whether the OEM PD getters are applicable. Any identity/status read must preserve the exact getter's prerequisites and establish which port it describes before comparing DEG2 with the working ASUS–Dell peer. If the driver control or EC read fails, preserve that boundary rather than guessing another command. A Windows intervention still needs a demonstrated consumer of the failing entry/exit condition and a reversible change.
+Seventeen existing ASUS trace/archive files show the capability-check job being scheduled, but did not supply its value. The live reads supplied that missing evidence. The existing Dell/ASUS captures and recovered firmware tables remain preserved.
 
-This investigation complements the [recovered firmware code and tested metadata paths](control-reachability.md) and the [existing ASUS/Dell Billboard comparison](billboard-comparison.md). It does not supersede their measured results or make another boot necessary.
+No firmware update, policy/reset command, new driver, boot, security setting or network configuration change occurred. All four completed device handles closed and their four temporary tasks were removed. No Windows USB4 fix has yet been demonstrated. [Earlier access boundaries](control-reachability.md), [ASUS/Dell comparison](billboard-comparison.md).

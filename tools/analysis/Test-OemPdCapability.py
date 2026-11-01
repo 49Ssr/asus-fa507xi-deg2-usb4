@@ -12,7 +12,8 @@ from pathlib import Path
 from unicorn import Uc, UC_ARCH_X86, UC_MODE_64, UC_HOOK_CODE
 from unicorn.x86_const import (
     UC_X86_REG_RAX, UC_X86_REG_RCX, UC_X86_REG_RDX, UC_X86_REG_R8,
-    UC_X86_REG_R9, UC_X86_REG_R13, UC_X86_REG_RSP, UC_X86_REG_RIP,
+    UC_X86_REG_R9, UC_X86_REG_R12, UC_X86_REG_R13, UC_X86_REG_RBX,
+    UC_X86_REG_RSP, UC_X86_REG_RBP, UC_X86_REG_RIP,
 )
 
 PINS = {
@@ -93,11 +94,13 @@ def getter(binary, reply, status):
     return {'response': reply, 'ecStatus': status, 'return': result, 'calls': m.calls}
 
 
-def driver_wrapper(binary, reply, status):
+def driver_wrapper(binary, reply, status, supplied_packet=None):
     m = Machine(*binary)
     packet = bytearray(16)
     packet[0:3] = bytes.fromhex('bb0150')
     packet[10] = 1
+    if supplied_packet is not None:
+        packet = bytearray(supplied_packet)
     m.uc.mem_write(DATA, bytes(packet))
     m.uc.reg_write(UC_X86_REG_RCX, DATA+0x100)
     m.uc.reg_write(UC_X86_REG_RDX, DATA)
@@ -108,8 +111,8 @@ def driver_wrapper(binary, reply, status):
             m.calls.append('wait' if address == STUB+0x10 else 'release')
             m.ret()
         elif address == m.base+0x1828:
-            assert uc.reg_read(UC_X86_REG_RCX)&255 == 1
-            assert uc.reg_read(UC_X86_REG_RDX)&255 == 0xbb
+            assert uc.reg_read(UC_X86_REG_RCX)&255 == packet[1]
+            assert uc.reg_read(UC_X86_REG_RDX)&255 == packet[0]
             assert uc.reg_read(UC_X86_REG_R8) == DATA+2
             assert uc.reg_read(UC_X86_REG_R9)&255 == 1
             at = m.r64(uc.reg_read(UC_X86_REG_RSP)+0x28)
@@ -125,6 +128,35 @@ def driver_wrapper(binary, reply, status):
     return {'response': reply, 'ecStatus': status, 'output': output.hex(), 'calls': m.calls}
 
 
+def pd_identity_loop(binary, payload, fail_at=None):
+    assert len(payload) == 12
+    m = Machine(*binary)
+    frame = STACK+0x11000
+    m.uc.reg_write(UC_X86_REG_RBP, frame)
+    outcome = []
+    def hook(uc, address, size, context):
+        if address in (m.base+0x21d5e, m.base+0x21da0):
+            outcome.append(address == m.base+0x21d5e)
+            uc.reg_write(UC_X86_REG_RIP, STOP)
+        elif address == m.base+0x47870:
+            count = uc.reg_read(UC_X86_REG_RCX)&255
+            command = uc.reg_read(UC_X86_REG_RDX)&255
+            params = bytes(uc.mem_read(uc.reg_read(UC_X86_REG_R8), count))
+            mode = uc.reg_read(UC_X86_REG_R9)&255
+            index = len(m.calls)
+            assert (command, count, params, mode) == (0xdd, 3, bytes([5, index+2, 1]), 1)
+            status = 5 if index == fail_at else 0
+            uc.mem_write(m.r64(uc.reg_read(UC_X86_REG_RSP)+0x28), struct.pack('<I', status))
+            m.calls.append({'command': command, 'params': params.hex(), 'status': status})
+            m.ret(payload[index])
+    m.run(0x21d14, hook)
+    assert len(m.calls) == (12 if fail_at is None else fail_at+1)
+    assert outcome == [fail_at is None]
+    if fail_at is None:
+        assert bytes(m.uc.mem_read(frame-0x19, 12)) == payload
+    return {'kind': 'original-pd-identity-loop', 'payload': payload.hex(), 'failureAt': fail_at, 'completed': outcome[0], 'calls': m.calls}
+
+
 def pd_identity_gate(binary, version):
     m = Machine(*binary)
     m.uc.reg_write(UC_X86_REG_R13, version)
@@ -138,6 +170,41 @@ def pd_identity_gate(binary, version):
     return {'kind': 'original-pd-identity-gate', 'tableVersion': version, 'allowsPdIdentity': outcome[0]}
 
 
+def pdo_loop(binary, kind, index, value, fail_at=None, failure_status=5):
+    m = Machine(*binary)
+    m.uc.reg_write(UC_X86_REG_RBP, STACK+0x11000)
+    m.uc.reg_write(UC_X86_REG_R12, index)
+    payload = struct.pack('<I', value)
+    if kind == 'contract':
+        entry, good, bad, end, low = 0x1fe14, 0x1fe8d, 0x1fe98, 0x1fea4, 0x1e
+    else:
+        entry, good, bad, end, low = 0x200ba, 0x20130, 0x2013b, 0x20147, 2+4*index
+    outcome = []
+    def hook(uc, address, size, context):
+        if address in (m.base+good, m.base+bad):
+            outcome.append(address == m.base+good)
+        elif address == m.base+end:
+            uc.reg_write(UC_X86_REG_RIP, STOP)
+        elif address == m.base+0x47870:
+            count = uc.reg_read(UC_X86_REG_RCX)&255
+            command = uc.reg_read(UC_X86_REG_RDX)&255
+            params = bytes(uc.mem_read(uc.reg_read(UC_X86_REG_R8), count))
+            step = len(m.calls)
+            offset = low+3-step
+            assert (command, count, params, uc.reg_read(UC_X86_REG_R9)&255) == (0xdd, 3, bytes([6, offset, 0]), 1)
+            status = failure_status if step == fail_at else 0
+            uc.mem_write(m.r64(uc.reg_read(UC_X86_REG_RSP)+0x28), struct.pack('<I', status))
+            m.calls.append({'params': params.hex(), 'status': status})
+            m.ret(payload[offset-low])
+    returned = m.run(entry, hook)
+    assert len(m.calls) == (4 if fail_at is None else fail_at+1)
+    assert outcome == [fail_at is None]
+    if fail_at is None:
+        assert m.uc.reg_read(UC_X86_REG_RBX)&0xffffffff == value
+    assert returned == (value if fail_at is None else 0x7fffffff)
+    return {'kind': 'original-'+kind+'-loop', 'index': index, 'word': f'{value:08x}', 'failureAt': fail_at, 'failureStatus': failure_status if fail_at is not None else None, 'completed': outcome[0], 'returned': returned, 'calls': m.calls}
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('directory', type=Path, help='Private copies of the two pinned binaries')
@@ -145,11 +212,28 @@ def main():
     args = parser.parse_args()
     binaries = {name: image(args.directory/name) for name in PINS}
     results = []
-    for response, status in [(0, 0), (1, 0), (255, 0), (0, 1), (2, 5)]:
+    for response, status in [(0, 0), (1, 0), (255, 0), (0, 1), (2, 5), (0, 0x102)]:
         results.append({'kind': 'original-client', **getter(binaries['AsusWinIO64.dll'], response, status)})
         results.append({'kind': 'original-driver-wrapper', **driver_wrapper(binaries['AsusSAIO.sys'], response, status)})
     for version in [0, 13, 14, 15, 255, 0x7fffffff]:
         results.append(pd_identity_gate(binaries['AsusWinIO64.dll'], version))
+    for fail_at in [None, 0, 5, 11]:
+        results.append(pd_identity_loop(binaries['AsusWinIO64.dll'], b'TEST-CTRL123', fail_at))
+    results.append(pd_identity_loop(binaries['AsusWinIO64.dll'], b'\xff'*12))
+    for offset in [2, 7, 13]:
+        packet = bytearray(16)
+        packet[:5] = bytes([0xdd, 3, 5, offset, 1])
+        packet[10] = 1
+        for status in [0, 5]:
+            results.append({'kind': 'original-driver-identity-wrapper', **driver_wrapper(binaries['AsusSAIO.sys'], 0x41, status, packet)})
+    for index, value in enumerate([0x2f81912c, 0x0002d12c, 0x0004b12c, 0x000641e0]):
+        results.append(pdo_loop(binaries['AsusWinIO64.dll'], 'source-pdo', index, value))
+    results.append(pdo_loop(binaries['AsusWinIO64.dll'], 'contract', 0, 0x2f81912c))
+    results.append(pdo_loop(binaries['AsusWinIO64.dll'], 'source-pdo', 0, 0))
+    for kind in ['source-pdo', 'contract']:
+        for failure in [0, 3]:
+            results.append(pdo_loop(binaries['AsusWinIO64.dll'], kind, 0, 0x2f81912c, failure))
+        results.append(pdo_loop(binaries['AsusWinIO64.dll'], kind, 0, 0x2f81912c, 0, 0x102))
     report = {'qualification': 'Offline framing and wrapper only; EC/kernel calls are test doubles; no hardware', 'cases': results}
     with args.output.open('x', encoding='utf-8') as stream:
         json.dump(report, stream, indent=2)

@@ -1,11 +1,29 @@
 {
-  "schema": 1,
+  "schema": 2,
   "date": "2026-11-01",
-  "status": "OEM read path identified; Windows administrator launch cancelled before execution; no device attempt",
+  "status": "Live OEM capability17 and IT8853 identity verified; source-PDO field times out disconnected and with DEG2 present; connected run has owner-reported UGREEN insertion confound; no valid PDO or qualified Windows fix",
   "binaries": [
-    {"name": "AsusSAIO.sys", "version": "1.0.9.0", "sha256": "eef750c7fb515d162a76423531f4f6773bcf837d9607069e797a26d198edd892", "signature": "Valid", "already_running": true},
-    {"name": "AsusWinIO64.dll", "version": "1.1.4.0", "sha256": "a07802f565b9b1ec527b2d1eec69debfb92f90022953b63f1122edb50d2d5b54", "signature": "Valid", "loaded_by_probe": false},
-    {"name": "AsusEC_X64.dll", "version": "2.0.0.4", "sha256": "c7f337191d2366dfedbe90a6423ec743094a588a032c0a0cb2434dad688c29fe", "signature": "Valid", "loaded_by_probe": false}
+    {
+      "name": "AsusSAIO.sys",
+      "version": "1.0.9.0",
+      "sha256": "eef750c7fb515d162a76423531f4f6773bcf837d9607069e797a26d198edd892",
+      "signature": "Valid",
+      "already_running": true
+    },
+    {
+      "name": "AsusWinIO64.dll",
+      "version": "1.1.4.0",
+      "sha256": "a07802f565b9b1ec527b2d1eec69debfb92f90022953b63f1122edb50d2d5b54",
+      "signature": "Valid",
+      "loaded_by_probe": false
+    },
+    {
+      "name": "AsusEC_X64.dll",
+      "version": "2.0.0.4",
+      "sha256": "c7f337191d2366dfedbe90a6423ec743094a588a032c0a0cb2434dad688c29fe",
+      "signature": "Valid",
+      "loaded_by_probe": false
+    }
   ],
   "capability": {
     "client_getter_rva": "55470",
@@ -21,14 +39,9 @@
     "pd_identity_minimum_table_version": 14,
     "required_process_identity": "SYSTEM",
     "driver_can_retry_internally": true,
-    "hard_user_mode_timeout_guaranteed": false
-  },
-  "pd_getter_leads_not_issued": {
-    "identity": {"table": 5, "offsets_inclusive": [2, 13], "bytes": 12},
-    "event": {"table": 6, "offset_hex": "34"},
-    "temperature": {"table": 6, "offset_hex": "33"},
-    "port_mapping_qualified": false,
-    "wire_packet_freshness_qualified": false
+    "hard_user_mode_timeout_guaranteed": false,
+    "fresh_live_value": 17,
+    "status_field_semantics": "Driver EC transport completion, not a USB-PD rejection code; historical private field named EcStatus is retained unchanged"
   },
   "existing_vendor_cache": {
     "HealthyTableVersion": 17,
@@ -36,7 +49,12 @@
     "archived_table_m5_record_date": "2026-10-16",
     "archived_table_m5_bytes": 256,
     "archived_table_m5_sha256": "3b43be6583127864ed8b4719bbc76620f9e6faa200b60bbe2c06113c38518d68",
-    "archived_table_m5_non_ff_bytes": [{"offset": 1, "value": 1}],
+    "archived_table_m5_non_ff_bytes": [
+      {
+        "offset": 1,
+        "value": 1
+      }
+    ],
     "archive_selection_matches_pd_identity_getter": false,
     "absence_of_controller_proven": false
   },
@@ -44,20 +62,28 @@
     "uac_requested": true,
     "windows_reported_launch_cancelled": true,
     "automatically_relaunched": false,
-    "task_receipt_collected": false,
-    "device_attempt_marker_collected": false,
-    "api_reply": null,
-    "capability_reply": null,
+    "task_receipt_collected": true,
+    "device_attempt_marker_collected": true,
+    "api_reply": "00010001",
+    "capability_reply": 17,
     "new_boots": 0,
     "new_driver_installs": 0,
     "security_setting_changes": 0,
     "network_changes": 0,
     "firmware_updates": 0,
     "automatic_relaunch_allowed": false,
-    "manual_administrator_launcher_prepared": true
+    "owner_requested_relaunch": true,
+    "original_cancelled_launch_retained": true,
+    "completed_device_open_close_pairs": 4,
+    "completed_api_requests": 4,
+    "completed_application_ec_requests": 18,
+    "all_completed_tasks_removed": true,
+    "connected_only_probe_state": "Completed, first PDO byte timed out; stop rule honored",
+    "connected_only_probe_max_ec_requests": 5,
+    "further_live_probe_queued": false
   },
   "validation": {
-    "offline_original_code_cases_passed": 16,
+    "offline_original_code_cases_passed": 41,
     "hardware_and_kernel_calls_are_test_doubles": true,
     "ps51_worker_and_runner_parse": true,
     "csharp_compiles_without_device_entrypoint_invocation": true,
@@ -65,5 +91,133 @@
     "vendor_job_log_proves_completed_ec_read": false
   },
   "windows_fix_qualified": false,
-  "private_material": "Installed binary copies, disassembly, logs, scripts, intent and eventual task/results remain private. No serials or paths published."
+  "private_material": "Installed binary copies, disassembly, logs, scripts, intent and eventual task/results remain private. No serials or paths published.",
+  "pd_getters": {
+    "identity": {
+      "table": 5,
+      "offsets_inclusive": [
+        2,
+        13
+      ],
+      "bytes": 12,
+      "issued": true,
+      "result_hex": "495438383533000000000000",
+      "part_number": "IT8853",
+      "all_transport_statuses_zero": true
+    },
+    "event": {
+      "table": 6,
+      "offset_hex": "34",
+      "issued": false
+    },
+    "temperature": {
+      "table": 6,
+      "offset_hex": "33",
+      "issued": false
+    },
+    "port_mapping_qualified": false,
+    "wire_packet_freshness_qualified": false
+  },
+  "live_runs": [
+    {
+      "name": "capability",
+      "started_utc": "2026-11-01T16:28:26.6310308Z",
+      "finished_utc": "2026-11-01T16:28:29.2333498Z",
+      "result": "Captured_RequiresInterpretation",
+      "result_sha256": "65cd74f9f7d73cb4b3c0fdb8a5d8c9ef50e07f8709d7e001e9b31dd06dd3071a",
+      "api_success": true,
+      "api_reply_hex": "01000100",
+      "fresh_table_version": 17,
+      "capability_transport_status": 0,
+      "handle_closed": true,
+      "temporary_task_removed": true,
+      "capability_milliseconds": 64
+    },
+    {
+      "name": "identity",
+      "started_utc": "2026-11-01T16:31:12.6530706Z",
+      "finished_utc": "2026-11-01T16:31:14.5447599Z",
+      "result": "Captured_Identity_RequiresPortMapping",
+      "result_sha256": "282e199b893e0258e163fdfbda92300467b29b3779907903f65412e0f5acdb0d",
+      "api_success": true,
+      "api_reply_hex": "01000100",
+      "fresh_table_version": 17,
+      "capability_transport_status": 0,
+      "handle_closed": true,
+      "temporary_task_removed": true,
+      "identity_hex": "495438383533000000000000",
+      "part_number": "IT8853",
+      "identity_byte_reads": 12,
+      "all_identity_reads_succeeded": true
+    },
+    {
+      "name": "disconnected_pdo",
+      "started_utc": "2026-11-01T16:38:16.8245160Z",
+      "finished_utc": "2026-11-01T16:38:19.7959067Z",
+      "result": "Stopped_PdoEcStatus",
+      "result_sha256": "eba277a904fe10de1ef5b270ba0a49bd5509b0c8aad849b72a03dba1051c007f",
+      "api_success": true,
+      "api_reply_hex": "01000100",
+      "fresh_table_version": 17,
+      "capability_transport_status": 0,
+      "handle_closed": true,
+      "temporary_task_removed": true,
+      "field_attempted": "source PDO1 high byte, table6 offset05 selector00",
+      "application_field_reads": 1,
+      "transport_success": true,
+      "win32_error": 0,
+      "driver_transport_status": 258,
+      "milliseconds": 1568,
+      "valid_pdo_obtained": false,
+      "owner_connection_stage_reached": false,
+      "connected_phase_attempted": false
+    },
+    {
+      "name": "connected_first_pdo",
+      "started_utc": "2026-11-01T16:45:19.1505509Z",
+      "finished_utc": "2026-11-01T16:45:21.2827836Z",
+      "result": "Stopped_PdoDriverTransportStatus",
+      "result_sha256": "bea4a0319d9795b47f2383983f4f5e07b25427bd88e37c2e8461913072e61059",
+      "api_success": true,
+      "api_reply_hex": "01000100",
+      "fresh_table_version": 17,
+      "capability_transport_status": 0,
+      "field_attempted": "source PDO1 high byte, table6 offset05 selector00",
+      "application_field_reads": 1,
+      "driver_transport_status": 258,
+      "milliseconds": 661,
+      "win32_error": 0,
+      "valid_pdo_obtained": false,
+      "deg2_present_before_read": true,
+      "gpu_present": false,
+      "external_router_presence_not_collected": true,
+      "owner_connection_acknowledged_utc": "2026-11-01T16:44:58.0626422Z",
+      "observation_seconds": 20,
+      "owner_reported_ugreen_insert_remove_before_deg2": true,
+      "clean_before_after_comparison": false,
+      "handle_closed": true,
+      "temporary_task_removed": true
+    }
+  ],
+  "timeout_analysis": {
+    "pinned_driver_synthesizes_0102_in_polling_helpers": true,
+    "candidate_origins": [
+      "pre-command output drain",
+      "command/parameter input-ready wait",
+      "post-command busy/input-ready wait",
+      "response-ready wait"
+    ],
+    "exact_live_origin_identified": false,
+    "firmware_rejection_proven": false,
+    "controller_failure_proven": false,
+    "empty_source_capabilities_proven": false,
+    "native_client_pdo_failure_sentinel": "7fffffff"
+  },
+  "primary_source_followup": {
+    "ite_vendor_submitted_driver": "https://lists.openwall.net/linux-kernel/2026/08/07/804",
+    "source_download_sha256": "3bfba82c122ed67c493b37a6e489f7e128870f0e393113ed30c0ed4587762b4c",
+    "two_connector_binding": "https://lkml.iu.edu/hypermail/linux/kernel/2609.2/07383.html",
+    "direct_i2c_transport_is_asus_ec_table_interface": false,
+    "direct_ite_register_commands_sent": false
+  }
 }
