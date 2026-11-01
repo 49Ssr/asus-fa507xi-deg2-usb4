@@ -4,6 +4,8 @@
 
 At 11:57 UTC, the approved copied test loader and exact certificate trust were prepared and read back after the owner's Secure Boot change. At 12:06 UTC, the actual owned test-loader boot and full LocalTest preflight also passed with TESTSIGNING on and HVCI running. No driver is installed. The interactive baseline has been opened; kernel/HVCI driver load and hardware rollback remain unperformed. See the signing record above for current activation state.
 
+The first live baseline then exposed a trace-parser mismatch: real TMF output uses `0x00000000(false)`, while the initial gate expected literal `false`. The retained zero-loss startup now validates with the corrected parser; 79 workflow checks pass, including that real ETL and same-boot resume guards. The signed driver is unchanged and uninstalled. Resume reuses the startup without another device restart; attachment is pending. [Correction record](validation-audit.md#actual-baseline-decoder-mismatch-and-correction-1-november).
+
 ## What the retained dumps and traces establish
 
 The existing exact-symbol transcripts were rechecked, without opening another live kernel or collecting another dump. ASUS has both cached and PPM-config `UsbDeviceControllerEnabled=0`; Dell has 1 in both places. The loaded ASUS support mask is `0x0f`, compared with Dell `0x1f`. The installed ACPI client's file disassembly supplies the actual internal-IOCTL layout and its policy consumer. [Matched evidence](asus-dell-matched-comparison.md).

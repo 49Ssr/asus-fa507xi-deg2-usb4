@@ -1,6 +1,6 @@
 #requires -Version 5.1
 [CmdletBinding()]
-param([ValidateSet('Preview','Preflight','Baseline','Install','Observe','Rollback')][string]$Mode='Preview',
+param([ValidateSet('Preview','Preflight','Baseline','ResumeBaseline','Install','Observe','Rollback')][string]$Mode='Preview',
       [string]$PackageDirectory='', [string]$ReviewedDriverSHA256='',
       [string]$SignTool='', [string]$TraceFmt='', [string]$TmfDirectory='', [string]$RunDirectory='',
       [ValidateSet('Microsoft','LocalTest')][string]$SigningMode='Microsoft',
@@ -165,8 +165,21 @@ function Invoke-RpDeviceChange([string]$TraceDirectory,[scriptblock]$Action,[boo
 function Test-RpPolicyText([string]$Text,[string]$Summary,[bool]$Enabled) {
     if($Summary -notmatch '(?m)^Total Events\s+Lost\s+0\s*$' -or $Summary -notmatch '(?m)^Total Format\s+Errors\s+0\s*$'){return $false}
     $forced='Data role correction policy disabled. Forced UsbDeviceControllerEnabled:true.'
-    if($Enabled){return $Text.Contains($forced) -and ($Text -notmatch 'UsbDeviceControllerEnabled:false')}
-    return (-not $Text.Contains($forced)) -and ($Text -match 'UsbDeviceControllerEnabled:false')
+    # Matching Microsoft TMF renders ItemListLong(false,true) as 0x00000000(false).
+    # Reject either spelling of false during override, and mixed/unknown values.
+    $values=[regex]::Matches($Text,'UsbDeviceControllerEnabled:([^\s]+)')
+    $falseCount=0;$trueCount=0
+    foreach($value in $values){
+        switch -CaseSensitive -Regex ($value.Groups[1].Value){
+            '^(?:false|0x00000000\(false\))$' {$falseCount++;break}
+            '^(?:true\.?|0x00000001\(true\))$' {$trueCount++;break}
+            '^0$' {if($Enabled){return $false};break} # Class numeric copy is corroboration only.
+            '^1$' {if(-not $Enabled){return $false};break}
+            default {return $false}
+        }
+    }
+    if($Enabled){return $Text.Contains($forced) -and $falseCount -eq 0}
+    return (-not $Text.Contains($forced)) -and $falseCount -gt 0 -and $trueCount -eq 0
 }
 function Assert-RpPolicyTrace([string]$Directory,[bool]$Enabled,[string]$Decoder,[string]$Tmfs) {
     Assert-RpDecoder $Decoder $Tmfs
@@ -287,19 +300,43 @@ function Invoke-RpRollback([string]$Directory,[string]$Decoder,[string]$Tmfs) {
         $state.PendingRollback=$false;$state.Phase='RollbackVerified'
     }catch{$state.Phase='RollbackUnverified';throw}finally{Write-DeepJson (Join-Path $Directory 'state.private.json') $state}
 }
-function Invoke-RpBaseline([object]$Preflight,[string]$Decoder,[string]$Tmfs) {
-    Assert-RpDisconnected
-    $directory=Join-Path $repo ('local\RolePolicyBaselines\'+[guid]::NewGuid().ToString('N'))
-    $null=[IO.Directory]::CreateDirectory($directory)
-    $state=[ordered]@{Schema=1;Kind='Usb4RolePolicyBaseline';SigningMode=$script:RpSigningMode;MachineHash=$Preflight.HostState.Context.MachineHash;Target=$Preflight.HostState.Context.UcsiInstance;BootStamp=$Preflight.BootStamp;SysHash=$Preflight.SysHash;StartedUtc=[DateTime]::UtcNow.ToString('o');Phase='NotCompleted';PolicyProof=$null;Milestone=$null;InventorySHA256=$null}
-    Write-DeepJson (Join-Path $directory 'baseline.private.json') $state
-    $before=Get-DeepNetworkSnapshot;Write-DeepJson (Join-Path $directory 'network-before.private.json') $before
+function Invoke-RpBaseline([object]$Preflight,[string]$Decoder,[string]$Tmfs,[string]$ResumeDirectory='') {
+    if($ResumeDirectory){
+        $directory=Assert-LocalPath $ResumeDirectory;Assert-DeepNoReparse $directory
+        $root=[IO.Path]::GetFullPath((Join-Path $repo 'local\RolePolicyBaselines'))+'\'
+        if(-not $directory.StartsWith($root,[StringComparison]::OrdinalIgnoreCase)){throw 'Resume requires an owned baseline directory.'}
+        $state=Get-Content -LiteralPath (Join-Path $directory 'baseline.private.json') -Raw|ConvertFrom-Json
+        if($state.Kind -ne 'Usb4RolePolicyBaseline' -or $state.Schema -ne 1 -or $state.Phase -ne 'NotCompleted' -or
+           $null -ne $state.PolicyProof -or $null -ne $state.Milestone -or $null -ne $state.InventorySHA256 -or
+           $state.SigningMode -ne $script:RpSigningMode -or $state.MachineHash -cne $Preflight.HostState.Context.MachineHash -or
+           $state.Target -cne $Preflight.HostState.Context.UcsiInstance -or $state.SysHash -cne $Preflight.SysHash -or
+           $state.BootStamp -cne $Preflight.BootStamp -or $state.BootStamp -cne (Get-RpBootStamp) -or
+           ([DateTime]::UtcNow-[DateTime]::Parse($state.StartedUtc).ToUniversalTime()).TotalMinutes -gt 30 -or
+           (Test-Path -LiteralPath (Join-Path $directory 'attachment'))){throw 'Only a fresh matching pre-attachment baseline may resume; no restart or attachment will run.'}
+        # Revalidate the retained trace; no new UCSI restart or startup request.
+        $proof=Assert-RpPolicyTrace (Join-Path $directory 'startup') $false $Decoder $Tmfs
+        $before=Get-Content -LiteralPath (Join-Path $directory 'network-before.private.json') -Raw|ConvertFrom-Json
+        Assert-RpSharing $before (Get-DeepNetworkSnapshot)
+        Assert-RpDisconnected
+        $state.PolicyProof=$proof
+        $state.Phase='AttachmentPending'
+        Write-DeepJson (Join-Path $directory 'baseline.private.json') $state
+    }else{
+        Assert-RpDisconnected
+        $directory=Join-Path $repo ('local\RolePolicyBaselines\'+[guid]::NewGuid().ToString('N'))
+        $null=[IO.Directory]::CreateDirectory($directory)
+        $state=[ordered]@{Schema=1;Kind='Usb4RolePolicyBaseline';SigningMode=$script:RpSigningMode;MachineHash=$Preflight.HostState.Context.MachineHash;Target=$Preflight.HostState.Context.UcsiInstance;BootStamp=$Preflight.BootStamp;SysHash=$Preflight.SysHash;StartedUtc=[DateTime]::UtcNow.ToString('o');Phase='NotCompleted';PolicyProof=$null;Milestone=$null;InventorySHA256=$null}
+        Write-DeepJson (Join-Path $directory 'baseline.private.json') $state
+        $before=Get-DeepNetworkSnapshot;Write-DeepJson (Join-Path $directory 'network-before.private.json') $before
+    }
     try{
-        Invoke-RpDeviceChange (Join-Path $directory 'startup') {
-            if((Invoke-RpPnp @('/restart-device',$state.Target) (Join-Path $directory 'baseline-restart.private.txt')) -eq 3010){throw 'Baseline restart requires reboot; baseline not established.'}
-            Start-Sleep -Seconds 4
+        if(-not $ResumeDirectory){
+            Invoke-RpDeviceChange (Join-Path $directory 'startup') {
+                if((Invoke-RpPnp @('/restart-device',$state.Target) (Join-Path $directory 'baseline-restart.private.txt')) -eq 3010){throw 'Baseline restart requires reboot; baseline not established.'}
+                Start-Sleep -Seconds 4
+            }
+            $state.PolicyProof=Assert-RpPolicyTrace (Join-Path $directory 'startup') $false $Decoder $Tmfs
         }
-        $state.PolicyProof=Assert-RpPolicyTrace (Join-Path $directory 'startup') $false $Decoder $Tmfs
         Invoke-RpDeviceChange (Join-Path $directory 'attachment') {
             $null=Save-DeepInventory $directory 'before'
             Write-Host 'BASELINE: connect powered DEG2 to the same ASUS USB4 port now. Observe for 45 seconds; no experimental driver is installed.' -ForegroundColor Cyan
@@ -331,6 +368,7 @@ switch($rpMode){
     'Preflight' {$null=Get-RpPreflight $PackageDirectory $ReviewedDriverSHA256 $SignTool $TraceFmt $TmfDirectory;Write-Output 'Preflight passed without writes or device operations.'}
     'Install' {$preflight=Get-RpPreflight $PackageDirectory $ReviewedDriverSHA256 $SignTool $TraceFmt $TmfDirectory;Invoke-RpInstall $preflight $TraceFmt $TmfDirectory}
     'Baseline' {$preflight=Get-RpPreflight $PackageDirectory $ReviewedDriverSHA256 $SignTool $TraceFmt $TmfDirectory;Invoke-RpBaseline $preflight $TraceFmt $TmfDirectory}
+    'ResumeBaseline' {if([string]::IsNullOrWhiteSpace($BaselineDirectory)){throw 'ResumeBaseline requires the exact retained directory; no new baseline is started.'};$preflight=Get-RpPreflight $PackageDirectory $ReviewedDriverSHA256 $SignTool $TraceFmt $TmfDirectory;Invoke-RpBaseline $preflight $TraceFmt $TmfDirectory $BaselineDirectory}
     'Observe' {Invoke-RpObserve $rpRunDirectory}
     'Rollback' {Invoke-RpRollback $rpRunDirectory $TraceFmt $TmfDirectory}
 }

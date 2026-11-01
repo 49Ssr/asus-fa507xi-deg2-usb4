@@ -1,8 +1,9 @@
 #requires -Version 5.1
 [CmdletBinding()]
-param([string]$UnsignedPackage='')
+param([string]$UnsignedPackage='', [string]$RetainedPolicyTraceDirectory='', [string]$TraceFmt='', [string]$TmfDirectory='')
 Set-StrictMode -Version Latest
 $ErrorActionPreference='Stop'
+$retainedDecoder=$TraceFmt;$retainedTmfs=$TmfDirectory
 $testRepo=Split-Path $PSScriptRoot -Parent
 . (Join-Path $testRepo 'experimental\role-policy\Test-RolePolicy.ps1')
 $script:Checks=0
@@ -31,6 +32,20 @@ Check (-not(Test-RpPolicyText $enabled ($summary.Replace('Errors    0','Errors  
 Check (Test-RpPolicyText 'UsbDeviceControllerEnabled:false' $summary $false) 'default policy proof'
 Check (-not(Test-RpPolicyText $enabled $summary $false)) 'override is not rollback'
 Check (-not(Test-RpPolicyText ($enabled+' UsbDeviceControllerEnabled:false') $summary $false)) 'mixed policy refuses rollback'
+$stock='[UcmUcsiAcpiClient][Device: 0x1234] UsbDeviceControllerEnabled:0x00000000(false)'
+$trueValue='[UcmUcsiAcpiClient][Device: 0x1234] UsbDeviceControllerEnabled:0x00000001(true)'
+Check (Test-RpPolicyText $stock $summary $false) 'actual Microsoft TMF false spelling'
+Check (-not(Test-RpPolicyText ($enabled+"`n"+$stock) $summary $true)) 'hex false contradicts forced policy'
+Check (-not(Test-RpPolicyText ($stock+"`n"+$trueValue) $summary $false)) 'mixed hex booleans refuse stock proof'
+Check (-not(Test-RpPolicyText $trueValue $summary $false)) 'hex true is not stock proof'
+Check (-not(Test-RpPolicyText 'UsbDeviceControllerEnabled:0' $summary $false)) 'numeric class copy alone is not ACPI policy proof'
+Check (-not(Test-RpPolicyText ($enabled+"`nUsbDeviceControllerEnabled:0") $summary $true)) 'numeric false contradicts forced proof'
+Check (-not(Test-RpPolicyText ($stock+"`nUsbDeviceControllerEnabled:1") $summary $false)) 'numeric true contradicts stock proof'
+Check (-not(Test-RpPolicyText 'UsbDeviceControllerEnabled:0x00000001(false)' $summary $false)) 'inconsistent boolean rejected'
+if($RetainedPolicyTraceDirectory){
+    $realProof=Assert-RpPolicyTrace $RetainedPolicyTraceDirectory $false $retainedDecoder $retainedTmfs
+    Check ($realProof.ExpectedDisabled -eq $false -and $realProof.TraceSHA256 -ceq (Get-FileHash -LiteralPath (Join-Path $RetainedPolicyTraceDirectory 'connection.etl')).Hash) 'real retained ETL decoded and stock policy proven without device operation'
+}
 $net=[pscustomobject]@{Sharing=@([pscustomobject]@{Guid='up';Shared=$true;Type=0},[pscustomobject]@{Guid='down';Shared=$true;Type=1},[pscustomobject]@{Guid='other';Shared=$false;Type=-1})}
 Assert-RpSharing $net $net;Check $true 'same ICS accepted'
 $changed=$net|ConvertTo-Json -Depth 4|ConvertFrom-Json;$changed.Sharing[1].Type=0
@@ -176,5 +191,24 @@ $savedBaseline.Milestone.RouterPresent=$false;$savedBaseline.StartedUtc=[DateTim
 Reject {Assert-RpBaseline $baseline $pre} 'expired baseline refused'
 $script:Fallback=$false;$different=Invoke-RpBaseline $pre 'decoder' 'tmfs'
 Reject {Assert-RpBaseline $different $pre} 'changed baseline outcome stops intervention'
+# A decoding failure before attachment can reuse only its same-boot retained startup.
+$resume=Join-Path $repo ('local\RolePolicyBaselines\'+[guid]::NewGuid().ToString('N'))
+$null=[IO.Directory]::CreateDirectory($resume)
+$null=[IO.Directory]::CreateDirectory((Join-Path $resume 'startup'))
+[IO.File]::WriteAllText((Join-Path $resume 'startup\connection.etl'),'mock trace only')
+$resumeState=[ordered]@{Schema=1;Kind='Usb4RolePolicyBaseline';SigningMode='LocalTest';MachineHash='TEST';Target='ACPI\USBC000\TEST';BootStamp='test-boot';SysHash='';StartedUtc=[DateTime]::UtcNow.ToString('o');Phase='NotCompleted';PolicyProof=$null;Milestone=$null;InventorySHA256=$null}
+Write-DeepJson (Join-Path $resume 'baseline.private.json') $resumeState
+Write-DeepJson (Join-Path $resume 'network-before.private.json') $net
+$script:Fallback=$true;$script:Events.Clear()
+$resumed=Invoke-RpBaseline $pre 'decoder' 'tmfs' $resume
+Check ($resumed -ceq $resume) 'resume retains exact baseline directory'
+Check (-not @($script:Events|Where-Object {$_ -like '/restart-device*'}).Count) 'resume never repeats UCSI restart'
+Assert-RpBaseline $resume $pre;Check $true 'resumed fallback validates final machine boot package evidence'
+Reject {Invoke-RpBaseline $pre 'decoder' 'tmfs' $resume} 'completed or attached baseline cannot resume again'
+$wrongBoot=Join-Path $repo ('local\RolePolicyBaselines\'+[guid]::NewGuid().ToString('N'))
+$null=[IO.Directory]::CreateDirectory($wrongBoot)
+$resumeState.BootStamp='wrong';Write-DeepJson (Join-Path $wrongBoot 'baseline.private.json') $resumeState
+Reject {Invoke-RpBaseline $pre 'decoder' 'tmfs' $wrongBoot} 'resume from different boot refused before any attachment exists'
+Reject {Invoke-RpBaseline $pre 'decoder' 'tmfs' $testRoot} 'resume outside baseline root refused'
 $script:RpSigningMode='Microsoft'
 [pscustomobject]@{Checks=$script:Checks;Actual='Preview, parser, unsigned package, atomic private state files';Mocked='device/ETW/signing-success/install/restart/rollback/network';HardwareTested=$false}|ConvertTo-Json

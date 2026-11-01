@@ -1,7 +1,7 @@
 {
   "schema": 1,
   "date": "2026-11-01",
-  "status": "ActualLocalTestBootAndPreflightVerified_BaselinePending_DriverNeverLoaded",
+  "status": "RetainedStockStartupValidated_AttachmentPending_DriverNeverLoaded",
   "latest_hardware_result": "asus-dell-matched-comparison.json",
   "intervention": {
     "device": "ASUS FA507XI UCSI",
@@ -31,7 +31,7 @@
   "qualification": {
     "native_assertions": 4631,
     "malformed_frames": 4000,
-    "powershell_51_checks": 64,
+    "powershell_51_checks": 79,
     "actual_unsigned_refusal": true,
     "compiler": "MSVC 14.44.35207",
     "sdk": "10.0.26100.0",
@@ -110,7 +110,7 @@
     "cause": "Unresolved"
   },
   "security_or_network_setting_changes": true,
-  "live_test_blocker": "Actual owned test boot and full LocalTest preflight passed. Interactive baseline opened; require a completed fresh same-boot stock-policy fallback baseline before installation.",
+  "live_test_blocker": "First baseline stopped before attachment on corrected literal-versus-TMF boolean mismatch; exact retained stock startup validates. Guarded same-boot ResumeBaseline opened; require completed fallback attachment before installation.",
   "source_files": [
     {
       "path": "experimental/role-policy/README.md",
@@ -146,7 +146,7 @@
     },
     {
       "path": "experimental/role-policy/Test-RolePolicy.ps1",
-      "sha256_utf8_lf": "1b4d486f9d3e2bc688578d48b430a9624fac0732605ba95b57943ed0590df869"
+      "sha256_utf8_lf": "e80656e12c2fe160b14680a3534ee8dbd3d3ec32abe631918924c8751ba45c75"
     },
     {
       "path": "experimental/role-policy/TestPolicy.c",
@@ -158,7 +158,7 @@
     },
     {
       "path": "tests/Test-RolePolicyWorkflow.ps1",
-      "sha256_utf8_lf": "e23acc409492cad7d5bba439752152b3ac4355d8db18ab7dee2e70b1f77efa6d"
+      "sha256_utf8_lf": "835cfbfda0d0d19beeef31e6e66ac4dc7b51a925c3ded907deb277db54794799"
     },
     {
       "path": "tests/Test-RolePolicySigning.ps1",
@@ -295,5 +295,20 @@
     "baseline_completed": false,
     "hardware_policy_acceptance_verified": false,
     "usb4_fix_verified": false
+  },
+  "baseline_gate_correction": {
+    "initial_failure": "Tool parser required literal false; actual TMF renders 0x00000000(false)",
+    "initial_attachment_performed": false,
+    "initial_driver_installed": false,
+    "retained_startup_events": 27800,
+    "events_lost": 0,
+    "format_errors": 0,
+    "unknown_formats": 0,
+    "retained_startup_sha256": "9A38EF878F7A5E2DB816F783169AF1CD43E2A1BDD42E930C1B805C32C8CE09C0",
+    "actual_retained_trace_passed_corrected_gate": true,
+    "signed_package_changed": false,
+    "resume_requires": "Exact fresh same-boot machine/target/package record, pre-attachment state, valid stock startup and unchanged sharing",
+    "resume_repeats_ucsi_restart": false,
+    "actual_resumed_attachment_completed": false
   }
 }
