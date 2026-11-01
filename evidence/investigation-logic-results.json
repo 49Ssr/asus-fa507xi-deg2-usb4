@@ -1,7 +1,7 @@
 {
   "schema": 1,
   "logic_model_sha256": "b2b2c0d880b9e51d5e285793e90c1c189a7cd859df4728680adb1c62662a7880",
-  "evidence_model_sha256": "54c48eb5d3e4b8870bde352d8320838aae4de03d95a85ffc227efb2f305ea4ff",
+  "evidence_model_sha256": "d03c709610753fe9332a4326f8f93c23d2749e5afc9dcaabce7002bc9f31549e",
   "scope": "A coarse milestone abstraction for one recorded attachment episode and its follow-up snapshot. Ever reached and final present are different facts. Sources span trace/snapshot reporting, not a common physical wire clock. Entry means admission to USB4-domain operation, including compatible mode where applicable; it does not mean a native Enter_USB packet was captured. Failure-stage rows partition the modeled unfinished milestone, not the root cause. Exit is a cross-cutting event. Logical combinations have no assigned probability.",
   "probabilities_assigned": false,
   "physical_simulation": false,

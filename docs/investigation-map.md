@@ -45,6 +45,8 @@ flowchart TD
     RX_PLUG["Host RX PLUG records: ASUS internal DP6/7, none logged for2"]
     TOPO_PLUG["Matching packets reach host topology handler"]
     EC42_CFG["EC channel1/address42 staged configuration; target UNKNOWN"]
+    PD_POWER["Separate PD status and power-descriptor parsing"]
+    PD_VENDOR_CTL["D8/D9 control gate and latch; meaning UNKNOWN"]
     ATTACH -->|"documented: controller discovery and mode negotiation"| PD
     PD -.->|"unknown: candidate mode-control path; ASUS ownership/wiring unproven"| RET_CFG
     LINK -.->|"unknown: what makes the native host-port status assert remains untraced"| PORT_REGS
@@ -77,6 +79,8 @@ flowchart TD
     WAIT_RD -->|"measured: ASUS RD No followed by successful pump start and ReadAndArm"| NOTIFY_ARM
     RX_PLUG -->|"measured: Four ASUS internal-adapter packets match across the two logged stages"| TOPO_PLUG
     EC42_CFG -.->|"unknown: Candidate relation to PS8830 configuration unqualified"| RET_CFG
+    RELAY -->|"traced_code: Shared PD transport also feeds separate status/power parsing"| PD_POWER
+    PD_VENDOR_CTL -->|"traced_code: Firmware prepares vendor pair through the reviewed transport wrapper"| PD
 ```
 
 ### Who owns each part
@@ -110,6 +114,8 @@ flowchart TD
 | RX_PLUG | Windows USB4HostRouter ring receive | Length check and route/adapter/event log | Different adapters are an internal path control, not a DEG2 link measurement. |
 | TOPO_PLUG | Windows USB4HostRouter topology manager | Receipt logged before adapter lookup/client delivery | Receipt does not certify final client completion or explain missing port2 events. |
 | EC42_CFG | Retained EC bank2 code | Two-byte register/data writes; desired/last-written cache and initialisation stages | No chip identity, USB4 signal ownership or live execution established. |
+| PD_POWER | Retained EC bank3 readers | Private b0/b1 status and cc four-byte parser via shared read setup | Reference PDO correspondence; actual replies and physical contract unknown. |
+| PD_VENDOR_CTL | EC bank3 flags and bank1/common transport wrapper | Prepared80/81 pair, success bookkeeping, separate outer service gate | No qualified USB4/mux meaning, live values or safe intervention. |
 
 ### Branch evidence
 
@@ -147,6 +153,8 @@ flowchart TD
 | WAIT_RD → NOTIFY_ARM | ASUS RD No followed by successful pump start and ReadAndArm | measured | C40 |
 | RX_PLUG → TOPO_PLUG | Four ASUS internal-adapter packets match across the two logged stages | measured | C41 |
 | EC42_CFG → RET_CFG | Candidate relation to PS8830 configuration unqualified | unknown | C45 |
+| RELAY → PD_POWER | Shared PD transport also feeds separate status/power parsing | traced_code | C46 |
+| PD_VENDOR_CTL → PD | Firmware prepares vendor pair through the reviewed transport wrapper | traced_code | C48 |
 
 ### Candidate intervention locations
 
@@ -468,6 +476,26 @@ Reason: The reviewed functions expose a staged register-write protocol and gener
 
 [EC42-CODE](../evidence/ec-address42-control-path.json) `/code`
 
+**C46 — code_fact:** Bank3 c720 is shared one-selector PD read setup. Reviewed callers request84/20bytes for the existing UCSI reply, b1/1byte private status and cc/4bytes parsed by type and numeric fields.
+
+Scope: ASUS-BIOS314. Static caller/transaction classification, not live execution or complete indirect-call coverage. A PD-bus helper is not itself a USB4-entry decision.
+
+[EC-PD-READERS](../evidence/ec-pd-readers-and-vendor-gates.json) `/reader_code`
+
+**C47 — inference:** The CC type0 parser matches fixed USB-PD power-descriptor voltage/current fields and scaling, supporting power-reporting classification rather than direct USB4 link/retimer status.
+
+Scope: ASUS-BIOS314, LINUX-PD-REFERENCE. No observed CC reply or ASUS contract. This does not diagnose the pairing, define all vendor registers or show that clearing/replacing power data would help.
+
+Reason: The top-bit type dispatch and low-field masks, shifts and50/10 multipliers match the pinned upstream PDO definitions.
+
+[EC-PD-READERS](../evidence/ec-pd-readers-and-vendor-gates.json) `/reader_code`, [LINUX-PDO-FIELDS](../evidence/ec-pd-readers-and-vendor-gates.json) `/pdo_reference`
+
+**C48 — code_fact:** The reviewed D8/D9 paths choose prepared data81 or80 from two firmware flags, dispatch through bank1/common1809, and update a private bit0 latch only after both wrapper returns succeed. That latch differs from the outer service-block bit1.
+
+Scope: ASUS-BIOS314. Controller/retimer meaning, actual flag values, physical acceptance and recovery remain unqualified. No request, latch clear or Windows test is selected.
+
+[EC-PD-VENDOR-GATE](../evidence/ec-pd-readers-and-vendor-gates.json) `/vendor_controls`
+
 ## Separate runs and observation limits
 
 | Case | Meaning | Important limit |
@@ -491,6 +519,7 @@ Reason: The reviewed functions expose a staged register-write protocol and gener
 | AMD-PD-REFERENCE | TI and Infineon AMD/PD reference programming architecture | Different PD-controller implementations, not recovered ASUS ITE code or board wiring. |
 | USB4-SPEC-2025 | USB-IF USB4 v2 November 2025 register specification | Normative semantics, not measured ASUS implementation or hardware history. |
 | WINDOWS-USB4HRD | Pinned Windows USB4HostRouter native receive and topology implementation | Static code and matched PDB/TMF, not a new physical negotiation trace. |
+| LINUX-PD-REFERENCE | Pinned upstream Linux USB-PD field definitions | Reference field layout, not a measured ASUS PD reply or vendor register/control specification. |
 
 ## Software-report timelines
 

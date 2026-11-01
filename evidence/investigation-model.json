@@ -101,6 +101,11 @@
       "id": "WINDOWS-USB4HRD",
       "label": "Pinned Windows USB4HostRouter native receive and topology implementation",
       "limit": "Static code and matched PDB/TMF, not a new physical negotiation trace."
+    },
+    {
+      "id": "LINUX-PD-REFERENCE",
+      "label": "Pinned upstream Linux USB-PD field definitions",
+      "limit": "Reference field layout, not a measured ASUS PD reply or vendor register/control specification."
     }
   ],
   "stages": [
@@ -145,7 +150,10 @@
       "claims": [
         "C11",
         "C12",
-        "C19"
+        "C19",
+        "C46",
+        "C47",
+        "C48"
       ]
     },
     {
@@ -738,6 +746,36 @@
         "ASUS-BIOS314"
       ],
       "value_sha256": "65d830a4efc14c47da9c4606affea796b037f35b58fcc1303284953aaeb45a5b"
+    },
+    {
+      "id": "EC-PD-READERS",
+      "path": "evidence/ec-pd-readers-and-vendor-gates.json",
+      "pointer": "/reader_code",
+      "kind": "code",
+      "cases": [
+        "ASUS-BIOS314"
+      ],
+      "value_sha256": "7057c6edb1ee86e480dca8e4dbf2918f799833646a0c854f0174ad93a042136c"
+    },
+    {
+      "id": "LINUX-PDO-FIELDS",
+      "path": "evidence/ec-pd-readers-and-vendor-gates.json",
+      "pointer": "/pdo_reference",
+      "kind": "documentation",
+      "cases": [
+        "LINUX-PD-REFERENCE"
+      ],
+      "value_sha256": "b2439713649b4432aff014f413da92efc978f84d9b14114c2a348d40c65a6353"
+    },
+    {
+      "id": "EC-PD-VENDOR-GATE",
+      "path": "evidence/ec-pd-readers-and-vendor-gates.json",
+      "pointer": "/vendor_controls",
+      "kind": "code",
+      "cases": [
+        "ASUS-BIOS314"
+      ],
+      "value_sha256": "2e080a7ab252c7ea822c11b788bc195f98859fd27e305eed24e34af72137e0f4"
     }
   ],
   "claims": [
@@ -1388,6 +1426,48 @@
       ],
       "reason": "The reviewed functions expose a staged register-write protocol and generic bit setters, but no validated chip/register identity, board connection or attachment-time execution.",
       "limit": "Indirect routing/power/reset effects remain possible. This deferral does not prove the path is unrelated or that a Windows repair is impossible."
+    },
+    {
+      "id": "C46",
+      "basis": "code_fact",
+      "stage": "entry",
+      "statement": "Bank3 c720 is shared one-selector PD read setup. Reviewed callers request84/20bytes for the existing UCSI reply, b1/1byte private status and cc/4bytes parsed by type and numeric fields.",
+      "sources": [
+        "EC-PD-READERS"
+      ],
+      "cases": [
+        "ASUS-BIOS314"
+      ],
+      "limit": "Static caller/transaction classification, not live execution or complete indirect-call coverage. A PD-bus helper is not itself a USB4-entry decision."
+    },
+    {
+      "id": "C47",
+      "basis": "inference",
+      "stage": "entry",
+      "statement": "The CC type0 parser matches fixed USB-PD power-descriptor voltage/current fields and scaling, supporting power-reporting classification rather than direct USB4 link/retimer status.",
+      "sources": [
+        "EC-PD-READERS",
+        "LINUX-PDO-FIELDS"
+      ],
+      "cases": [
+        "ASUS-BIOS314",
+        "LINUX-PD-REFERENCE"
+      ],
+      "reason": "The top-bit type dispatch and low-field masks, shifts and50/10 multipliers match the pinned upstream PDO definitions.",
+      "limit": "No observed CC reply or ASUS contract. This does not diagnose the pairing, define all vendor registers or show that clearing/replacing power data would help."
+    },
+    {
+      "id": "C48",
+      "basis": "code_fact",
+      "stage": "entry",
+      "statement": "The reviewed D8/D9 paths choose prepared data81 or80 from two firmware flags, dispatch through bank1/common1809, and update a private bit0 latch only after both wrapper returns succeed. That latch differs from the outer service-block bit1.",
+      "sources": [
+        "EC-PD-VENDOR-GATE"
+      ],
+      "cases": [
+        "ASUS-BIOS314"
+      ],
+      "limit": "Controller/retimer meaning, actual flag values, physical acceptance and recovery remain unqualified. No request, latch clear or Windows test is selected."
     }
   ],
   "timeline_limit": "T0 is the first recorded Windows attachment report in each run, not physical insertion. Different runs, platforms, power contracts and capture dates are explicit. These tables align software reports only; proximity does not establish wire order or causation. The earlier Dell control supplies the Dell timeline; the deep Dell dump supplies cached-state comparison.",
@@ -1862,6 +1942,22 @@
         "interface": "Two-byte register/data writes; desired/last-written cache and initialisation stages",
         "limit": "No chip identity, USB4 signal ownership or live execution established.",
         "decision": false
+      },
+      {
+        "id": "PD_POWER",
+        "label": "Separate PD status and power-descriptor parsing",
+        "owner": "Retained EC bank3 readers",
+        "interface": "Private b0/b1 status and cc four-byte parser via shared read setup",
+        "limit": "Reference PDO correspondence; actual replies and physical contract unknown.",
+        "decision": false
+      },
+      {
+        "id": "PD_VENDOR_CTL",
+        "label": "D8/D9 control gate and latch; meaning UNKNOWN",
+        "owner": "EC bank3 flags and bank1/common transport wrapper",
+        "interface": "Prepared80/81 pair, success bookkeeping, separate outer service gate",
+        "limit": "No qualified USB4/mux meaning, live values or safe intervention.",
+        "decision": false
       }
     ],
     "edges": [
@@ -2197,6 +2293,26 @@
         "basis": "unknown",
         "claims": [
           "C45"
+        ],
+        "standards": []
+      },
+      {
+        "from": "RELAY",
+        "to": "PD_POWER",
+        "label": "Shared PD transport also feeds separate status/power parsing",
+        "basis": "traced_code",
+        "claims": [
+          "C46"
+        ],
+        "standards": []
+      },
+      {
+        "from": "PD_VENDOR_CTL",
+        "to": "PD",
+        "label": "Firmware prepares vendor pair through the reviewed transport wrapper",
+        "basis": "traced_code",
+        "claims": [
+          "C48"
         ],
         "standards": []
       }

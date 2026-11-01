@@ -1,0 +1,222 @@
+{
+  "schema": 1,
+  "date": "2026-11-01",
+  "interval": 7,
+  "status": "Shared PD read helper classified; power-descriptor arithmetic separated from private vendor-control gate",
+  "reader_code": {
+    "full_ec_sha256": "103721578b66daed81dcf7a0bed06709c072f9da1dc75a6d7887321e6e32b060",
+    "bank3_view_sha256": "8fa70998317f47856dca8b572cded7d028a41a2bdb597234b9ca0a428ab73207",
+    "mapping": "Common lower32KiB plus full-image upper window at18000hex, selector3; CPU upper address maps to full offset CPU+10000hex. Live flash match unverified.",
+    "spans": [
+      {
+        "label": "shared_read_setup",
+        "cpu_start_hex": "c720",
+        "cpu_end_exclusive_hex": "c728",
+        "sha256": "7a03272c0f47d8ccabbb384f63612501e1fac9fd94f8d205642ac53e7a7e1b87"
+      },
+      {
+        "label": "ucsi_reader",
+        "cpu_start_hex": "bba3",
+        "cpu_end_exclusive_hex": "bc20",
+        "sha256": "43a15b65430dd24465ec57fb471e4bb0c9cae4e124f3d0569eff88d7e73cc944"
+      },
+      {
+        "label": "status_and_power_reader",
+        "cpu_start_hex": "bc3c",
+        "cpu_end_exclusive_hex": "be4e",
+        "sha256": "dc8f36f4d88a3d6d0584b06422ee7d0e43a3c88e91d86b11c1c0254e8d1e0d03"
+      },
+      {
+        "label": "descriptor_setup",
+        "cpu_start_hex": "c5c3",
+        "cpu_end_exclusive_hex": "c5e5",
+        "sha256": "3677126a1bc2a0a9258473d6943d74a850f99b4e14df467f0ce4906312d16805"
+      },
+      {
+        "label": "pdo_field_helpers",
+        "cpu_start_hex": "c600",
+        "cpu_end_exclusive_hex": "c60a",
+        "sha256": "0cbfe3b7b7b19b78eb926060c505aaa35fb31ffaaf88c9d36a58d481125c44dd"
+      },
+      {
+        "label": "multiply_helper",
+        "cpu_start_hex": "5ebc",
+        "cpu_end_exclusive_hex": "5ece",
+        "sha256": "b6cd00487b1a8627ac2da657a6a217e845ee74989b145c4f0ba7a6a16d8ba3c7"
+      }
+    ],
+    "shared_helper": {
+      "cpu_hex": "c720",
+      "sets": "R3=1, R2=A, R5=98hex, R7=4. Caller has already prepared the selector, receive length and buffers.",
+      "meaning": "Common one-selector read preparation, not itself a private USB4-entry command."
+    },
+    "reviewed_direct_callers": [
+      {
+        "helper_call_cpu_hex": "bbdb",
+        "bus_call_cpu_hex": "bbde",
+        "selector_hex": "84",
+        "write_length": 1,
+        "read_length": 20,
+        "purpose": "Already recovered UCSI CCI4 plus MESSAGE_IN16; duplicate relay path, not new mode policy."
+      },
+      {
+        "helper_call_cpu_hex": "bcfe",
+        "bus_call_cpu_hex": "bd01",
+        "selector_hex": "b1",
+        "write_length": 1,
+        "read_length": 1,
+        "purpose": "Private status byte mapped into a local cached status slot; physical port numbering and bit meanings unqualified."
+      },
+      {
+        "helper_call_cpu_hex": "bd69",
+        "bus_call_cpu_hex": "bd6c",
+        "selector_hex": "cc",
+        "write_length": 1,
+        "read_length": 4,
+        "purpose": "Four-byte power-descriptor-shaped value parsed by type/voltage/current fields below."
+      }
+    ],
+    "other_shared_wrapper": "A separate equivalent wrapper at be4e calls the same1ff4 transport; reviewed status processing also reads selectorb0. No live request was issued.",
+    "cc_parser": {
+      "cpu_range_hex": "bd75..be4c",
+      "entry_gate": "Cached status slotB bits7 and6 set, bit3 clear; semantic names unqualified.",
+      "type_field": "Top two bits of first returned byte; type3 takes the clear-output branch, while0/1/2 use separate arithmetic paths.",
+      "fixed_type0_voltage": "Combine low nibble of byte1 and upper6 bits of byte2, shift right2, multiply by50.",
+      "fixed_type0_current": "Combine low2 bits of byte2 and byte3, multiply by10.",
+      "byte_order_convention": "byte0 is the first returned byte; the field layout corresponds to a big-endian32-bit PDO interpretation.",
+      "scope": "Static arithmetic and branch facts. No measured CC reply, negotiated contract, live flag/cache value or timing is available."
+    },
+    "return_handling": "For each reviewed transfer, R7=0 skips processing of that reply. A failed b1 read leaves the previous cached status in place, and the later CC-read gate can still consult that cache. No capture establishes that such a failure or stale value occurred. Nonzero remains firmware transport status, not independent physical validation.",
+    "direct_caller_scan_limit": "Three literal LCALL c720 sites in this bank view were decoded at their instruction boundaries. This does not exclude indirect calls or other bank entry paths."
+  },
+  "pdo_reference": {
+    "title": "Upstream Linux USB Power Delivery definitions",
+    "commit": "46fec1c3029b552ec63b2d01af9d43a386f043ea",
+    "url": "https://github.com/torvalds/linux/blob/46fec1c3029b552ec63b2d01af9d43a386f043ea/include/linux/usb/pd.h",
+    "saved_header_sha256": "c844b3db3f0e4f3cf760d68ba3ff96145d73988c8d030aad8c29b2c1e9a88b50",
+    "lines": {
+      "type": [
+        301,
+        302,
+        303,
+        304,
+        305,
+        306,
+        307,
+        308,
+        309
+      ],
+      "fixed_units": [
+        327,
+        328,
+        329,
+        330,
+        331
+      ],
+      "fixed_decode": [
+        448,
+        449,
+        450,
+        451,
+        452,
+        453,
+        454,
+        455,
+        456,
+        457,
+        458,
+        459,
+        460
+      ]
+    },
+    "definitions": "PDO type occupies bits31:30. Fixed voltage uses bits19:10 in50mV units; fixed current uses bits9:0 in10mA units.",
+    "interpretation": "The retained EC type0 masks, shifts and multipliers match this power-descriptor layout. This supports classification as power reporting rather than a direct USB4 link-status observation.",
+    "limit": "Reference correspondence, not a vendor register specification or proof that any particular reply/contract existed on ASUS. No Linux control was ported to Windows."
+  },
+  "vendor_controls": {
+    "bank3_view_sha256": "8fa70998317f47856dca8b572cded7d028a41a2bdb597234b9ca0a428ab73207",
+    "bank1_view_sha256": "81076d584ce5d35b6f8435ab162e90971eebcdbf350183cbe5fdf02f76bf8ab4",
+    "spans_bank3": [
+      {
+        "label": "vendor_control_gate_and_pair",
+        "cpu_start_hex": "b85d",
+        "cpu_end_exclusive_hex": "b8f2",
+        "sha256": "1b0f50e641f17295d9eed9b0c8453247157a860e847c84052d6f93fc1c34d3c6"
+      },
+      {
+        "label": "common_call_stub",
+        "cpu_start_hex": "33d9",
+        "cpu_end_exclusive_hex": "33de",
+        "sha256": "67202a0448de007c042be4868f32508c4258fed807fb206b00814fbdec308156"
+      },
+      {
+        "label": "bank3_trampoline",
+        "cpu_start_hex": "3028",
+        "cpu_end_exclusive_hex": "303c",
+        "sha256": "0f48e6ffbdbaec5c2aab2cef8df794ccb4938049ca7c13e10ab1222af5dfe0ec"
+      }
+    ],
+    "spans_bank1": [
+      {
+        "label": "control_transport_wrapper",
+        "cpu_start_hex": "e541",
+        "cpu_end_exclusive_hex": "e54c",
+        "sha256": "f3d2f765c525cdc8e1a4207f710137b1e2f275e2b60dad355ac28923c1b91a63"
+      },
+      {
+        "label": "argument_marshalling",
+        "cpu_start_hex": "ef91",
+        "cpu_end_exclusive_hex": "efac",
+        "sha256": "e0ac61ed5bead7faa4acbbcebf7a040907252ee2ded01344a3dbcbfb2f097ef2"
+      },
+      {
+        "label": "common_outer_gate",
+        "cpu_start_hex": "1809",
+        "cpu_end_exclusive_hex": "1828",
+        "sha256": "49809e26a46a3cd939d8865f4bab1e55b2e9bf6db1f8322bd93bb12184149270"
+      }
+    ],
+    "request_gate": {
+      "cpu_hex": "b8cd",
+      "request_81_condition": "Firmware flag03c7.bit1 clear AND0308.bit6 set; otherwise request80. These flags have no established board/USB4 meaning here."
+    },
+    "pair_81": {
+      "cpu_hex": "b85d",
+      "preconditions": "0308.bit3 set and030e.bit0 clear",
+      "prepared_fields": "Address-byte98, commandd8/data81, then commandd9/data81 via common355f.",
+      "latch_update": "Set030e.bit0 only after both wrapper calls return nonzero."
+    },
+    "pair_80": {
+      "cpu_hex": "b893",
+      "preconditions": "0308.bit3 set and030e.bit0 set",
+      "prepared_fields": "Address-byte98, commandd8/data80, then commandd9/data80 via common355f.",
+      "latch_update": "Clear030e.bit0 only after both wrapper calls return nonzero."
+    },
+    "transport_path": "Common355f loads targete541 and enters3000, which selects bank1. Bank1e541 calls ef91 to marshal the prepared fields, sets R5=88hex/R7=4, then calls common1809. This is a distinct wrapper from raw1ff4 reads; its physical command semantics are not inferred from the literal values.",
+    "outer_gate": "Common1809 also tests030e.bit1 for the reviewed channel4/non-exempt-address path. This outer service block bit1 is distinct from the private pair latch bit0 in the same byte.",
+    "upstream_anchor": "Common33d9 selects bank3 targetb8cd through3028. A literal call at bank1b9ff is a next caller anchor; no power-state meaning assigned yet.",
+    "scope": "Preparation, dispatch and success bookkeeping are code facts. No live latch value, controller acceptance, retimer effect, safe inverse or Windows intervention has been established."
+  },
+  "lookup_scope": {
+    "url": "https://lists.openwall.net/linux-kernel/2026/09/18/1326",
+    "scope": "The inspected ITE-authored DisplayPort-support patch coordinates OS mux/retimer state from UCSI connector/CAM data. It does not define the meaning of these ASUS D8/D9 operations or implement a demonstrated ASUS USB4 repair. Different platform/code path.",
+    "search_limit": "Exact IT8853 D8/81 queries produced no usable register definition in this bounded lookup; absence from search is not absence of documentation."
+  },
+  "decision": {
+    "shared_c720": "Close as a standalone USB4-entry lead: it is common read setup, including the already traced UCSI reply path.",
+    "cc_power_parser": "Retain as a separate power-reporting path; do not label its cached outputs or type3 branch as an observed USB4 failure.",
+    "d8_d9": "Keep exact gate/transport/latch code, but do not execute or assign mux/reset/USB4 semantics without ownership and side-effect evidence.",
+    "next_task": "Trace bank1b9ff/common33d9 caller context and setters of03c7.bit1/0308.bit6 to determine what chooses the D8/D9 request. Follow only proven bank-correct edges; do not build another flag reader or speculate from values80/81.",
+    "new_hardware_requests": 0,
+    "driver_installs": 0,
+    "test_boots": 0,
+    "firmware_writes": 0,
+    "working_windows_fix": false
+  },
+  "analysis_quality": {
+    "byte_anchors_checked": 14,
+    "bank1_and_bank3_views_verified": true,
+    "source_classes": "Original code facts, reference correspondence and live unknowns separated.",
+    "preserved_attempts": "Broad ranges may begin/end mid-instruction; only exact entry/call boundaries and span assertions are used. One initial helper view used the current bank3 window; common3000 proves the target is bank1 and the corrected bank1 view is authoritative. A metadata-only Python print had an unmatched parenthesis and was corrected; originals remain unchanged."
+  }
+}
