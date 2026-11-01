@@ -1,5 +1,7 @@
 # IT8853 follow-up: OEM response wait isolated
 
+**Subsequent firmware result:** the executable EC image was recovered from a different BIOS314 region. Table6 dispatches to a bare return without an output byte; capability17 and the literal `IT8853` reply reproduce offline. This explains the host response wait in this EC build and tightens the identity claim. The earlier ambiguity and placeholder search below record the preceding stage. [Firmware analysis and UCSI relay qualification](ec-firmware-decision.md).
+
 **1 November 2026:** a short, trace-only replay recovered four retained ASUS driver messages, all message **19 (`0x13`)**. In the pinned driver this identifies the **EC response-ready wait after command/parameter transmission**. This narrows the earlier generic `0x102` completions. It does not establish a USB-PD rejection or prove IT8853 itself received and rejected a request. No new PDO request, reconnection, boot or repair attempt was made. Both owned trace sessions stopped and provider logging returned to disabled. [Structured evidence](../evidence/it8853-transport.json).
 
 ## What actually timed out

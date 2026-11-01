@@ -1,5 +1,7 @@
 # Live ASUS PD access: IT8853 identified, power-profile boundary measured
 
+**Firmware clarification:** subsequent recovery of BIOS314's executable EC image shows that its identity getter constructs `IT8853` from immediate constants and table6 has no reply-producing implementation. The live request completions below remain valid, but identity is EC-build metadata and the table6 timeout is not an independent PD-controller bus failure. [Firmware proof and original-instruction tests](ec-firmware-decision.md).
+
 **Follow-up:** a trace-only replay recovered four retained message19 records, identifying the EC response-ready stage after command/parameter transmission. No failed field read was repeated. Standard UCSI power-profile reads already succeed in the saved ASUS trace. Original timestamps/command arguments are absent; exact attribution remains an inference. Both trace sessions cleaned up, twenty new original-code cases pass, and no USB4 repair is qualified. [Detailed recovery and prerequisites](it8853-transport.md).
 
 **1 November 2026:** the installed ASUS driver successfully returned capability-table version **17** and the OEM PD-controller identity **`IT8853`**. Subsequent power-profile queries timed out in the driver's EC transport both while disconnected and with DEG2 detected. Neither produced a valid PDO. The connected run also has an owner-reported UGREEN insertion confound. The identity result remains valid; a USB4 repair and USB4-port association remain unproven.
