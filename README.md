@@ -1,5 +1,7 @@
 # ASUS FA507XI / Minisforum DEG2 USB4 investigation
 
+**Post-startup inventory, 1 November:** a new Windows session is confirmed, but DEG2 still shows USB/Billboard fallback with no external router/GPU. Test signing is now off and HVCI running; Secure Boot restoration remains pending. The owner reports a shorter pause than suggested. The prepared collector has no result yet, so startup-sequence/continuous-connection confirmation and the formal capture remain pending. [Observation and limits](docs/cold-start-observation.md).
+
 **Firmware investigation continues:** exact-model BIOS 314 contains AMD pre-OS USB4-manager code. Existing ASUS memory also retains raw-client UCSI version `0xffff`; forcing a protocol version is not justified. The Parade driver exposes firmware operations, but its get-feature path returns cached fields. No vendor command was sent. [Evidence and limits](docs/firmware-entry-followup.md). One [preconnected cold start](docs/cold-start-observation.md) is prepared, with its hardware result pending.
 
 **Policy-only trial completed, 1 November:** Windows accepted policy **1** and automatic role-correction sends fell from **1 to 0**, but DEG2 still produced Billboard fallback, no USB4 router/GPU and no display. The exact driver rollback and owned test-entry/certificate cleanup are verified; manual Secure Boot/original-boot verification is pending. This policy alone is insufficient for this pairing. [Measured result, limits and recovery](docs/role-policy-test-result.md).

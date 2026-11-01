@@ -1,6 +1,6 @@
 {
   "schema": 1,
-  "status": "Unresolved_ColdStartPrepared_NotPerformed",
+  "status": "Unresolved_NewBootFallbackInventory_FormalColdStartCapturePending",
   "date": "2026-11-01",
   "bios_archive": {
     "url": "https://dlcdnets.asus.com/pub/ASUS/GamingNB/Image/BIOS/117046/FA507XIAS314.zip",
@@ -42,8 +42,25 @@
   "cold_start": {
     "ps51_checks": 29,
     "actual_preparation": "Passed_AfterEmptyPropertyCorrection",
-    "hardware_startup": "Pending",
-    "coverage": "Post-sign-in inventory plus 20 seconds passive ETW; no pre-OS/physical PD capture"
+    "hardware_startup": "OwnerReported_Performed_SequenceClarificationPending",
+    "coverage": "Post-sign-in inventory plus 20 seconds passive ETW; no pre-OS/physical PD capture",
+    "formal_collection": "NoResultOrEtl_RunStillPrepared",
+    "preliminary_inspection": {
+      "utc": "2026-11-01T13:05:05.3965129Z",
+      "new_kernel_session_confirmed": true,
+      "milestones": {
+        "ExternalRouter": false,
+        "GpuPresent": false,
+        "Billboard": true
+      },
+      "inspection_sha256": "4E41769F9E212FD7749FF687EF0C84B59A43325F9A39A94CAA80BE54773368F0",
+      "test_signing": false,
+      "hvci": true,
+      "secure_boot_registry": false,
+      "experimental_service_present": false,
+      "owner_report": "Startup performed; full suggested 20-second pause not observed; interval not measured",
+      "coverage": "Current PnP only; no ETW/pre-OS capture; continuity/sequence clarification pending"
+    }
   },
   "limits": [
     "No validated Windows fix",

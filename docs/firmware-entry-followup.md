@@ -1,5 +1,7 @@
 # Firmware entry investigation, 1 November 2026
 
+**Post-startup inspection, 1 November at 13:05 UTC:** Windows started a new kernel session at 13:02 UTC. Current inventory still shows DEG2 USB/Billboard fallback, with no healthy matching external router or RTX 4080 SUPER. Native Code Integrity flags show test signing off and HVCI running; no experimental driver service is present. Secure Boot registry state remains off. The owner reports performing the startup sequence and not waiting the full suggested 20 seconds; the actual interval was not measured. The prepared run still says Prepared and has no collection result/ETL. Continuous attachment and the collection-window outcome require clarification, so this is a preliminary inventory observation, not a completed matched startup capture. No further reboot or repeat attachment is queued merely to finish collecting this session.
+
 **Investigation continues after the ineffective role-policy trial.** The experimental filter is removed and stock policy verified. The owner chose to continue offline research in the current session; final Secure Boot/original-loader verification remains pending. No further security changes, firmware requests, driver loads or automatic reboots were performed in this follow-up.
 
 ## What the existing dumps now establish
@@ -33,6 +35,6 @@ Linux's upstream PS883x driver identifies USB/DP/TBT/USB4 connection-state bits,
 
 ## Next controlled observation
 
-The owner reports that a fully powered-off ASUS startup with DEG2 already powered and connected has not been confirmed as tested. The prepared [cold-start observation](cold-start-observation.md) tests that existing-hardware path once. It uses stock drivers and records router/GPU/Billboard state after sign-in without reconnecting DEG2. Preparation has run successfully on the actual ASUS; **the cold-start hardware result is pending**.
+At preparation, this startup condition had not been confirmed as tested. The owner subsequently reported performing it; see the preliminary inspection above. The prepared [cold-start observation](cold-start-observation.md) tests that existing-hardware path once. It uses stock drivers and records router/GPU/Billboard state after sign-in without reconnecting DEG2. Preparation has run successfully on the actual ASUS; **the formal cold-start capture is pending**.
 
 If it works, follow-up must qualify reconnect behaviour and Windows handoff before claiming a fix. If it fails, it eliminates this startup sequence as a sufficient workaround; it does not prove that the BIOS manager ran or reveal the failed physical PD/link-training exchange. The retimer/EC/PD path remains a distinct analysis target. There is still no validated Windows fix or identified safe firmware patch.
