@@ -92,3 +92,7 @@ This failed to establish the intended source/DFP comparison; it does not settle 
 ## Decision discipline
 
 "No change" is useful only for the actual configuration that ran. Do not upgrade a limited negative result into a complete exclusion of Windows, firmware, cables, security, or hardware. A status check that proves a driver is installed is not a measurement of link establishment.
+
+## Preconnected cold-start observation: prepared, 1 November
+
+Owner has not confirmed this startup condition was tested. Exact-model BIOS static analysis found gated pre-OS CM code. Stock-driver preparation succeeded after correcting unset PnP property handling; 29 PS5.1 checks pass. No hardware startup result yet. [Procedure and limits](cold-start-observation.md), [offline findings](firmware-entry-followup.md).

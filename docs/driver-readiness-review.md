@@ -1,5 +1,7 @@
 # Driver readiness review, 1 November 2026
 
+**Current, 1 November:** the [role-policy trial](role-policy-test-result.md) was installed, measured and rolled back; suppressing automatic role correction did not enable USB4. [Firmware/retimer investigation](firmware-entry-followup.md) and one [preconnected cold-start observation](cold-start-observation.md) are now prepared; its hardware result is pending. The owner chose to continue investigating. Earlier preparation and proposed-action text below is historical unless confirmed by these current records.
+
 **One actual ASUS load, failed USB4 attachment and exact driver rollback have completed. Original-security Verify remains pending.** The parser tests were useful but did not establish that the complete filter was ready. This review found and corrected additional kernel-framework and workflow defects before a live load. [Signing route and controlled activation](local-test-signing.md).
 
 At 11:57 UTC, the approved copied test loader and exact certificate trust were prepared and read back after the owner's Secure Boot change. At 12:06 UTC, the actual owned test-loader boot and full LocalTest preflight also passed with TESTSIGNING on and HVCI running. At that stage no driver was installed. A powered fallback baseline and actual filter load have now completed as recorded below; hardware rollback remains unperformed. See the signing record above for current activation state.

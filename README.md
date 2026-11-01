@@ -1,6 +1,11 @@
 # ASUS FA507XI / Minisforum DEG2 USB4 investigation
 
+**Firmware investigation continues:** exact-model BIOS 314 contains AMD pre-OS USB4-manager code. Existing ASUS memory also retains raw-client UCSI version `0xffff`; forcing a protocol version is not justified. The Parade driver exposes firmware operations, but its get-feature path returns cached fields. No vendor command was sent. [Evidence and limits](docs/firmware-entry-followup.md). One [preconnected cold start](docs/cold-start-observation.md) is prepared, with its hardware result pending.
+
 **Policy-only trial completed, 1 November:** Windows accepted policy **1** and automatic role-correction sends fell from **1 to 0**, but DEG2 still produced Billboard fallback, no USB4 router/GPU and no display. The exact driver rollback and owned test-entry/certificate cleanup are verified; manual Secure Boot/original-boot verification is pending. This policy alone is insufficient for this pairing. [Measured result, limits and recovery](docs/role-policy-test-result.md).
+
+<details>
+<summary>Earlier policy-test preparation and load stages (superseded)</summary>
 
 **Filter loaded and policy override accepted, 1 November at 12:18 UTC:** Microsoft now reports mask `0x1f`, forced disable-correction and cached/configured policy **1**, compared with the same-boot powered baseline **0**. The filter is Running; startup tracing has zero loss/format errors. This verifies the intervention reached its intended Windows consumer. **USB4/GPU success is not established; one attachment and exact rollback are pending.** [Actual load and current stages](docs/local-test-signing.md).
 
@@ -13,6 +18,8 @@
 **Test boot prepared, 1 November at 11:57 UTC:** the owner approved the [local test-signing route](docs/local-test-signing.md), disabled Secure Boot and returned to the original Windows loader. One owned copied loader now has TESTSIGNING enabled, and only the exact test certificate was trusted. Actual readback verifies the original default, other boot-manager fields and running HVCI are preserved. **No driver is installed or loaded.** The owner must manually select the new test entry; actual test-boot checks and a same-boot fallback baseline precede installation. The [driver review](docs/driver-readiness-review.md) retains 4,631 parser, 36 callback/DDI, 64 workflow and 41 signing/boot checks, with zero project static-analysis results. Native USB4 entry and the original failure remain unresolved.
 
 **Pre-attachment experiment prepared, 1 November:** [role-policy source, controlled test and rollback](docs/role-policy-experiment.md). The unsigned KMDF filter supplies the documented disable-correction policy at UCSI startup; it has **not been installed or loaded**. Native core: 4,631 assertions; PS5.1 workflow: 57 checks with device operations mocked. The real Microsoft client must confirm policy acceptance before a single attachment is allowed. Windows-accepted signing is unresolved; Secure Boot, firmware, drivers and ICS were not changed. This is a causal test, not a verified USB4 fix.
+
+</details>
 
 **[Fresh ASUS-Dell comparison completed](docs/asus-dell-matched-comparison.md).** New 3.17 GB ASUS dump and 35 capture files verify. Current policy remains ASUS **0** versus Dell **1**; all 14 installed Windows images match. ASUS completes its normal data-role correction but still has no external USB4 router. This failure reports USB flag 1 rather than the earlier alternate-mode-only flag 2. No repeat generic capture is queued; native USB4 entry remains unresolved and no Windows fix is established.
 

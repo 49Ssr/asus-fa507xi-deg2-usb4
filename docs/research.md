@@ -1,5 +1,7 @@
 # Research and sources
 
+**Current, 1 November:** the [role-policy trial](role-policy-test-result.md) was installed, measured and rolled back; suppressing automatic role correction did not enable USB4. [Firmware/retimer investigation](firmware-entry-followup.md) and one [preconnected cold-start observation](cold-start-observation.md) are now prepared; its hardware result is pending. The owner chose to continue investigating. Earlier preparation and proposed-action text below is historical unless confirmed by these current records.
+
 **1 November evidence update:** the [fresh ASUS-Dell comparison](asus-dell-matched-comparison.md) now closes the current-state acquisition gap. Microsoft UCSI, USB4 design and function-4 policy documentation were rechecked for its interpretation; a successful UCSI role correction does not by itself prove native USB4 entry. Further work targets an applicable entry/re-entry mechanism using existing artifacts, without another generic capture or repeated mode/role command.
 
 Checked during the 30-31 October 2026 investigation. Manufacturer documentation is separated from firsthand community reports. Similar symptoms on another product are a lead, not proof of this machine's cause or permission to use its firmware. The proposed comparisons and their interpretation are in the [next-test matrix](handoff.md).

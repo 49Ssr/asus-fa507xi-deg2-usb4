@@ -1,5 +1,7 @@
 # What the traces say
 
+**Current, 1 November:** the [role-policy trial](role-policy-test-result.md) was installed, measured and rolled back; suppressing automatic role correction did not enable USB4. [Firmware/retimer investigation](firmware-entry-followup.md) and one [preconnected cold-start observation](cold-start-observation.md) are now prepared; its hardware result is pending. The owner chose to continue investigating. Earlier preparation and proposed-action text below is historical unless confirmed by these current records.
+
 **1 November matched follow-up:** [fresh ASUS versus working Dell](asus-dell-matched-comparison.md) confirms current policy 0 versus 1, identical 14 installed Windows images and no external router after a completed Windows role correction. The new failure reports USB flag 1, so the older alternate-mode-only flag 2 is not a universal failure marker. PCIe-disable remains 0. No applicable Windows fix or firmware patch is established.
 
 ## Failure stage

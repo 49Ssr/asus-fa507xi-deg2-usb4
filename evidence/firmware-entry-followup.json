@@ -1,0 +1,53 @@
+{
+  "schema": 1,
+  "status": "Unresolved_ColdStartPrepared_NotPerformed",
+  "date": "2026-11-01",
+  "bios_archive": {
+    "url": "https://dlcdnets.asus.com/pub/ASUS/GamingNB/Image/BIOS/117046/FA507XIAS314.zip",
+    "sha256": "44F8FBE4685C8D7F61C85922EE56D53AC1B5AFCE8650063E78220CD35485B26B",
+    "vendor_hash_matched": true,
+    "flashed": false
+  },
+  "bios_modules": {
+    "AmdUsb4Dxe": {
+      "guid": "051274F4-A724-4732-BE00-82793A3D499A",
+      "body_sha256": "E89BF3A8D965E122D5541715FF29DD42F53A687DB292CF36513C22FFB6176BFA",
+      "core_entry_rva": "0x650",
+      "platform_boolean_token": "0x1dd",
+      "pre_os_cm_rva": "0x1828",
+      "execution_observed": false
+    }
+  },
+  "ucsi_version": {
+    "asus_class_cache": "0xffff",
+    "asus_retained_client_field": "0xffff",
+    "dell_class_cache": "0x0100",
+    "asus_reported_version_opt_in": false,
+    "mapped_resource_bytes": 4096,
+    "physical_version_bytes_directly_read": false,
+    "new_version_override_tested": false
+  },
+  "parade": {
+    "driver_version": "1.0.11.0",
+    "driver_sha256": "9B701E2BEF6411AC2ECB01CF9819DDEEDEFD0975A77863726E77009D89D4296C",
+    "signature": "Valid",
+    "descriptor_bytes": 83,
+    "feature_report_id": "0x20",
+    "feature_payload_bytes": 60,
+    "get_feature_handler_rva": "0x1000",
+    "output_handler_rva": "0x12b0",
+    "feature_source": "cached fields; no current link-register read in reviewed handler",
+    "vendor_commands_sent": 0
+  },
+  "cold_start": {
+    "ps51_checks": 29,
+    "actual_preparation": "Passed_AfterEmptyPropertyCorrection",
+    "hardware_startup": "Pending",
+    "coverage": "Post-sign-in inventory plus 20 seconds passive ETW; no pre-OS/physical PD capture"
+  },
+  "limits": [
+    "No validated Windows fix",
+    "No identified deployable firmware patch",
+    "Source/static checks are not hardware success"
+  ]
+}
