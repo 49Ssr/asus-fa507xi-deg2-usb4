@@ -1,0 +1,223 @@
+{
+  "schema": 1,
+  "date": "2026-11-01",
+  "interval": 9,
+  "status": "EC queue classified; one direct retimer-table consumer question remains",
+  "ec70_code": {
+    "full_ec_sha256": "103721578b66daed81dcf7a0bed06709c072f9da1dc75a6d7887321e6e32b060",
+    "bank1_view_sha256": "81076d584ce5d35b6f8435ab162e90971eebcdbf350183cbe5fdf02f76bf8ab4",
+    "mapping": "Common lower32KiB plus selector1 upper32KiB; exact view verified against full image. Live flash identity unverified.",
+    "helper": {
+      "cpu_hex": "c0d6",
+      "channel": 1,
+      "address_byte_hex": "70",
+      "write_length": 2,
+      "read_length": 0,
+      "setup_helpers_cpu_hex": [
+        "bfce",
+        "bfd4",
+        "bfd5"
+      ],
+      "scope": "Shared two-byte preparation, not a chip identity or mode decision."
+    },
+    "reviewed_calls": [
+      {
+        "helper_call_cpu_hex": "9cf7",
+        "bus_call_cpu_hex": "9cfa",
+        "payload_hex": "010f",
+        "return_handling": "Next request prepared without testing this return."
+      },
+      {
+        "helper_call_cpu_hex": "9d09",
+        "bus_call_cpu_hex": "9d0c",
+        "payload_hex": "023f",
+        "return_handling": "Next request prepared without testing this return."
+      },
+      {
+        "helper_call_cpu_hex": "9d14",
+        "bus_call_cpu_hex": "9d17",
+        "payload_hex": "0401",
+        "return_handling": "Further setup proceeds without testing this return."
+      },
+      {
+        "helper_call_cpu_hex": "9df6",
+        "bus_call_cpu_hex": "9df9",
+        "payload": "20 followed by the high nibble of one tracked byte",
+        "return_handling": "Second nibble request prepared without testing this return."
+      },
+      {
+        "helper_call_cpu_hex": "9e0c",
+        "bus_call_cpu_hex": "9e0f",
+        "payload": "21 followed by the low nibble of the same tracked byte",
+        "return_handling": "Tail jump to bus transport; reviewed caller advances its history index without testing returned R7."
+      }
+    ],
+    "tracked_byte_flow": {
+      "cpu_range_hex": "9d8c..9e11",
+      "source_xdata_hex": "2280",
+      "operation": "Compare source byte with a software mirror. On change, store the mirror and a history byte before calling the nibble-forwarding routine, then advance/wrap a history index.",
+      "limit": "Tracked source, target peripheral and physical meaning are unidentified. Diagnostic-display-like structure is not a proven device label or proof of USB4 irrelevance."
+    },
+    "spans": [
+      {
+        "cpu_start_hex": "c0d6",
+        "cpu_end_exclusive_hex": "c0de",
+        "sha256": "47ef7c85b96f348acfcbb461de6e9188597df077c6eb462dcb411686ec9fffa7"
+      },
+      {
+        "cpu_start_hex": "bfce",
+        "cpu_end_exclusive_hex": "bff1",
+        "sha256": "8ce791e8ada40457068a7cc49d8c9b8323ffb93e735658a5fe832a72c24a691d"
+      },
+      {
+        "cpu_start_hex": "9cec",
+        "cpu_end_exclusive_hex": "9d1a",
+        "sha256": "90c830efaa9f727798c29785e7c926c13638329beceebbc598075149f4b827a8"
+      },
+      {
+        "cpu_start_hex": "9d8c",
+        "cpu_end_exclusive_hex": "9e12",
+        "sha256": "2bb0a39b6b4433370e7c36e7fd19e170edf2565d36985424c60bf9f8f8c64be5"
+      }
+    ],
+    "scope": "Five direct helper-call sites decoded at reviewed boundaries. No new hardware request, execution/timing evidence or complete indirect-call coverage."
+  },
+  "retimer_records": {
+    "artifact": "Reconstructed image from the retained installed CFU package",
+    "image_sha256": "a6cf7221832bc4d5f1a62a5a99013f1d448ff19f0646c5fea2828e13aa38456e",
+    "image_bytes": 65536,
+    "offer_word_hex": "01030002",
+    "offer_matches_physical_flash_verified": false,
+    "source_record": "Existing installed-package content analysis; raw image and offer remain private. Offered/reported versions are not an independent physical flash readback.",
+    "record_table": {
+      "start_image_offset_hex": "b2de",
+      "end_exclusive_image_offset_hex": "b31a",
+      "record_bytes": 5,
+      "record_count": 12,
+      "table_sha256": "bea3018fb6ce0fac8ecfa09d581afbdc02cfa823ed282e5acc2c6ae5e0cf0548",
+      "layout": "Two-byte big-endian word, ff tag, two-byte image offset to a NUL-terminated label. Semantic type/default/live use is not yet qualified.",
+      "records": [
+        {
+          "record_image_offset_hex": "b2de",
+          "word_be": 5,
+          "tag_hex": "ff",
+          "label_image_offset_hex": "b07a",
+          "label_role_paraphrase": "TX FFE polling A"
+        },
+        {
+          "record_image_offset_hex": "b2e3",
+          "word_be": 5,
+          "tag_hex": "ff",
+          "label_image_offset_hex": "b07a",
+          "label_role_paraphrase": "TX FFE polling B"
+        },
+        {
+          "record_image_offset_hex": "b2e8",
+          "word_be": 5,
+          "tag_hex": "ff",
+          "label_image_offset_hex": "b0a8",
+          "label_role_paraphrase": "TX FFE write pacing"
+        },
+        {
+          "record_image_offset_hex": "b2ed",
+          "word_be": 80,
+          "tag_hex": "ff",
+          "label_image_offset_hex": "b0d6",
+          "label_role_paraphrase": "TX FFE timeout"
+        },
+        {
+          "record_image_offset_hex": "b2f2",
+          "word_be": 1000,
+          "tag_hex": "ff",
+          "label_image_offset_hex": "b13a",
+          "label_role_paraphrase": "Receiver0 CTS timer"
+        },
+        {
+          "record_image_offset_hex": "b2f7",
+          "word_be": 1000,
+          "tag_hex": "ff",
+          "label_image_offset_hex": "b150",
+          "label_role_paraphrase": "Receiver1 CTS timer"
+        },
+        {
+          "record_image_offset_hex": "b2fc",
+          "word_be": 200,
+          "tag_hex": "ff",
+          "label_image_offset_hex": "b166",
+          "label_role_paraphrase": "Upstream receiver PLL delay"
+        },
+        {
+          "record_image_offset_hex": "b301",
+          "word_be": 50,
+          "tag_hex": "ff",
+          "label_image_offset_hex": "b18f",
+          "label_role_paraphrase": "Two-port LRoff time window"
+        },
+        {
+          "record_image_offset_hex": "b306",
+          "word_be": 1000,
+          "tag_hex": "ff",
+          "label_image_offset_hex": "b21c",
+          "label_role_paraphrase": "Retraining delay"
+        },
+        {
+          "record_image_offset_hex": "b30b",
+          "word_be": 25,
+          "tag_hex": "ff",
+          "label_image_offset_hex": "b24b",
+          "label_role_paraphrase": "CTS TX FFE polling"
+        },
+        {
+          "record_image_offset_hex": "b310",
+          "word_be": 5,
+          "tag_hex": "ff",
+          "label_image_offset_hex": "b27d",
+          "label_role_paraphrase": "DP AUX detection delay"
+        },
+        {
+          "record_image_offset_hex": "b315",
+          "word_be": 0,
+          "tag_hex": "ff",
+          "label_image_offset_hex": "b2d7",
+          "label_role_paraphrase": "Null-labelled record"
+        }
+      ]
+    },
+    "code_data_correction": {
+      "instruction_image_offsets_hex": [
+        "ae64",
+        "aed8"
+      ],
+      "decoded_instruction": "LJMP b079",
+      "target_byte": "8051 RET opcode22 immediately before text atb07a",
+      "meaning": "These raw b079 hits are branches to a shared return byte, not references to the following training label. Do not promote every two-byte hit to a data-pointer cross-reference."
+    },
+    "known_vs_new": "Training labels and the image were already retained. The new result is the exact adjacent record layout and code/data cross-reference correction, not discovery of a measured training error.",
+    "scope": "Static package data. No proof these words are active timer values, that units are runtime milliseconds, that table consumers change USB4 entry, or that the image is the actual flash content. No value change or patch selected."
+  },
+  "useful_path_audit": {
+    "ec_queue": "The three saved EC bus candidates have now been classified or explicitly deferred. None identifies a qualified ASUS PS8830 mode/entry intervention.",
+    "remaining_specific_path": {
+      "artifact_sha256": "a6cf7221832bc4d5f1a62a5a99013f1d448ff19f0646c5fea2828e13aa38456e",
+      "question": "Trace original-instruction consumers of the12-record PS8830 training-parameter table. Determine whether these are executable timing inputs, metadata only or overridden values, and establish any connection to the actual mode/training state machine.",
+      "first_boundary": "Qualify image/code address mapping and record accessor first. Follow code/data relationships; do not guess an MMIO mapping from Linux register numbers.",
+      "positive_anchors": "Known table layout, exact text offsets, paired training roles and original bytes; branch-to-RET counterexample must remain separate.",
+      "stop_rule": "One bounded consumer-qualification pass next. If no original-code consumer or discriminating state relationship follows, defer it and reassess whether recurring work is useful."
+    },
+    "scheduler_decision": "Keep recurring research active because this specific retained retimer-consumer qualification remains. Do not consume credits by repeating classified EC scans.",
+    "physical_gap": "Actual Enter_USB/reply/exit, ASUS mode/orientation writes and retimer/link-training state during the failed pairing remain unobserved.",
+    "fix_status": "No validated Windows fix; no selected hardware control test or firmware patch."
+  },
+  "actions": {
+    "new_hardware_requests": 0,
+    "driver_installs": 0,
+    "test_boots": 0,
+    "firmware_writes": 0
+  },
+  "quality": {
+    "ec_byte_anchors": 8,
+    "retimer_records_checked": 12,
+    "raw_branch_hits_corrected": 2,
+    "earlier_attempts_preserved": true
+  }
+}

@@ -106,6 +106,11 @@
       "id": "LINUX-PD-REFERENCE",
       "label": "Pinned upstream Linux USB-PD field definitions",
       "limit": "Reference field layout, not a measured ASUS PD reply or vendor register/control specification."
+    },
+    {
+      "id": "PS8830-CFU-REFERENCE",
+      "label": "Retained installed-package PS8830 image; software artifact reference",
+      "limit": "Reconstructed offered image, not an independent readback of either physical retimer or measured active configuration."
     }
   ],
   "stages": [
@@ -170,7 +175,9 @@
         "C13",
         "C23",
         "C44",
-        "C45"
+        "C45",
+        "C52",
+        "C53"
       ]
     },
     {
@@ -799,6 +806,26 @@
         "ASUS-DEEP"
       ],
       "value_sha256": "30e0aad65ac776c04f8415a0139ad8bf55a8ab9406b7ba87a3de9e8705b78271"
+    },
+    {
+      "id": "EC70-CODE",
+      "path": "evidence/ec70-and-retimer-consumer-audit.json",
+      "pointer": "/ec70_code",
+      "kind": "code",
+      "cases": [
+        "ASUS-BIOS314"
+      ],
+      "value_sha256": "c3c96be2973a4a852894b0d160419705e566820a25134249b8c4bec87479b1b7"
+    },
+    {
+      "id": "RETIMER-PARAM-RECORDS",
+      "path": "evidence/ec70-and-retimer-consumer-audit.json",
+      "pointer": "/retimer_records",
+      "kind": "code",
+      "cases": [
+        "PS8830-CFU-REFERENCE"
+      ],
+      "value_sha256": "5bb61ad175cee3492dc18cac661e2ad4386e3ba1ec716a5ff9369cbebd8d12b6"
     }
   ],
   "claims": [
@@ -1531,6 +1558,32 @@
         "ASUS-BIOS314"
       ],
       "limit": "Static pair-body behavior; controller effects and callee-internal behavior are not independently measured. No failed live pair or safe inverse is claimed."
+    },
+    {
+      "id": "C52",
+      "basis": "code_fact",
+      "stage": "link",
+      "statement": "The reviewed EC address70/channel1 helper prepares two-byte writes. Its five reviewed call sites send three fixed pairs and the high/low nibbles of a tracked byte; the caller also maintains a software mirror/history.",
+      "sources": [
+        "EC70-CODE"
+      ],
+      "cases": [
+        "ASUS-BIOS314"
+      ],
+      "limit": "Target identity and USB4 relationship remain unqualified; no link-status read or complete indirect-call coverage is established. Ignored transport returns are not proof of a live failure."
+    },
+    {
+      "id": "C53",
+      "basis": "code_fact",
+      "stage": "link",
+      "statement": "The retained PS8830 package image contains12 adjacent five-byte records pairing words with training-related label offsets. Two apparent label references instead decode as branches to a RET before the text.",
+      "sources": [
+        "RETIMER-PARAM-RECORDS"
+      ],
+      "cases": [
+        "PS8830-CFU-REFERENCE"
+      ],
+      "limit": "Static record/byte facts only. Active timer values, accessor semantics, physical-flash match and connection to the failed ASUS training state remain unverified."
     }
   ],
   "timeline_limit": "T0 is the first recorded Windows attachment report in each run, not physical insertion. Different runs, platforms, power contracts and capture dates are explicit. These tables align software reports only; proximity does not establish wire order or causation. The earlier Dell control supplies the Dell timeline; the deep Dell dump supplies cached-state comparison.",
@@ -2029,6 +2082,14 @@
         "interface": "Caller gate, global selector, pair-enable gate and private latch",
         "limit": "No measured flag state or USB4 meaning. Partial pair failure does not certify unchanged hardware.",
         "decision": true
+      },
+      {
+        "id": "RET_PARAM_TABLE",
+        "label": "Retained retimer training records: consumer UNQUALIFIED",
+        "owner": "Offered PS8830 package image; runtime consumer untraced",
+        "interface": "12 paired word/label records; raw branches distinguished from label pointers",
+        "limit": "Static package data, not current training state or a validated patch point.",
+        "decision": false
       }
     ],
     "edges": [
@@ -2395,6 +2456,16 @@
         "claims": [
           "C49",
           "C51"
+        ],
+        "standards": []
+      },
+      {
+        "from": "RET_PARAM_TABLE",
+        "to": "LINK",
+        "label": "Relationship of record consumers to active link training remains unqualified",
+        "basis": "unknown",
+        "claims": [
+          "C53"
         ],
         "standards": []
       }

@@ -48,6 +48,7 @@ flowchart TD
     PD_POWER["Separate PD status and power-descriptor parsing"]
     PD_VENDOR_CTL["D8/D9 control gate and latch; meaning UNKNOWN"]
     PD_VENDOR_SELECT{"Caller/global-flag selection for D8/D9"}
+    RET_PARAM_TABLE["Retained retimer training records: consumer UNQUALIFIED"]
     ATTACH -->|"documented: controller discovery and mode negotiation"| PD
     PD -.->|"unknown: candidate mode-control path; ASUS ownership/wiring unproven"| RET_CFG
     LINK -.->|"unknown: what makes the native host-port status assert remains untraced"| PORT_REGS
@@ -83,6 +84,7 @@ flowchart TD
     RELAY -->|"traced_code: Shared PD transport also feeds separate status/power parsing"| PD_POWER
     PD_VENDOR_CTL -->|"traced_code: Firmware prepares vendor pair through the reviewed transport wrapper"| PD
     PD_VENDOR_SELECT -->|"traced_code: Reviewed caller and selector choose the prepared vendor pair"| PD_VENDOR_CTL
+    RET_PARAM_TABLE -.->|"unknown: Relationship of record consumers to active link training remains unqualified"| LINK
 ```
 
 ### Who owns each part
@@ -119,6 +121,7 @@ flowchart TD
 | PD_POWER | Retained EC bank3 readers | Private b0/b1 status and cc four-byte parser via shared read setup | Reference PDO correspondence; actual replies and physical contract unknown. |
 | PD_VENDOR_CTL | EC bank3 flags and bank1/common transport wrapper | Prepared80/81 pair, success bookkeeping, separate outer service gate | No qualified USB4/mux meaning, live values or safe intervention. |
 | PD_VENDOR_SELECT | EC bank1 caller, bank3 selector and setup/host-write paths | Caller gate, global selector, pair-enable gate and private latch | No measured flag state or USB4 meaning. Partial pair failure does not certify unchanged hardware. |
+| RET_PARAM_TABLE | Offered PS8830 package image; runtime consumer untraced | 12 paired word/label records; raw branches distinguished from label pointers | Static package data, not current training state or a validated patch point. |
 
 ### Branch evidence
 
@@ -159,6 +162,7 @@ flowchart TD
 | RELAY → PD_POWER | Shared PD transport also feeds separate status/power parsing | traced_code | C46 |
 | PD_VENDOR_CTL → PD | Firmware prepares vendor pair through the reviewed transport wrapper | traced_code | C48 |
 | PD_VENDOR_SELECT → PD_VENDOR_CTL | Reviewed caller and selector choose the prepared vendor pair | traced_code | C49, C51 |
+| RET_PARAM_TABLE → LINK | Relationship of record consumers to active link training remains unqualified | unknown | C53 |
 
 ### Candidate intervention locations
 
@@ -518,6 +522,18 @@ Scope: ASUS-BIOS314. Static pair-body behavior; controller effects and callee-in
 
 [EC-VENDOR-SELECT](../evidence/ec-vendor-request-selection.json) `/firmware_code`, [EC-PD-VENDOR-GATE](../evidence/ec-pd-readers-and-vendor-gates.json) `/vendor_controls`
 
+**C52 — code_fact:** The reviewed EC address70/channel1 helper prepares two-byte writes. Its five reviewed call sites send three fixed pairs and the high/low nibbles of a tracked byte; the caller also maintains a software mirror/history.
+
+Scope: ASUS-BIOS314. Target identity and USB4 relationship remain unqualified; no link-status read or complete indirect-call coverage is established. Ignored transport returns are not proof of a live failure.
+
+[EC70-CODE](../evidence/ec70-and-retimer-consumer-audit.json) `/ec70_code`
+
+**C53 — code_fact:** The retained PS8830 package image contains12 adjacent five-byte records pairing words with training-related label offsets. Two apparent label references instead decode as branches to a RET before the text.
+
+Scope: PS8830-CFU-REFERENCE. Static record/byte facts only. Active timer values, accessor semantics, physical-flash match and connection to the failed ASUS training state remain unverified.
+
+[RETIMER-PARAM-RECORDS](../evidence/ec70-and-retimer-consumer-audit.json) `/retimer_records`
+
 ## Separate runs and observation limits
 
 | Case | Meaning | Important limit |
@@ -542,6 +558,7 @@ Scope: ASUS-BIOS314. Static pair-body behavior; controller effects and callee-in
 | USB4-SPEC-2025 | USB-IF USB4 v2 November 2025 register specification | Normative semantics, not measured ASUS implementation or hardware history. |
 | WINDOWS-USB4HRD | Pinned Windows USB4HostRouter native receive and topology implementation | Static code and matched PDB/TMF, not a new physical negotiation trace. |
 | LINUX-PD-REFERENCE | Pinned upstream Linux USB-PD field definitions | Reference field layout, not a measured ASUS PD reply or vendor register/control specification. |
+| PS8830-CFU-REFERENCE | Retained installed-package PS8830 image; software artifact reference | Reconstructed offered image, not an independent readback of either physical retimer or measured active configuration. |
 
 ## Software-report timelines
 

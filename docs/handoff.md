@@ -1,5 +1,7 @@
 # Independent review and next tests
 
+**Offline path audit:** the remaining EC candidate forwards fixed pairs and a tracked byte split into nibbles; no USB4 target is qualified. A specific next task remains in the retained PS8830 image: identify the consumers of12 structured training-label records, with code/data boundaries checked first. [Pinned record layout and audit](../evidence/ec70-and-retimer-consumer-audit.json). Static words are not measured timer values or a patch plan.
+
 **D8/D9 branch bounded:** its caller and selector flags are mapped, but no USB4-entry meaning is established. A partial pair failure can leave the old software latch without a compensating request, so that latch is not a validated rollback mechanism. [Decision table and original-code scope](../evidence/ec-vendor-request-selection.json). This repair lead is deferred; no hardware test is queued.
 
 **PD candidate separated:** the selected helper serves the known UCSI reply plus status/power reads; its four-byte parser matches USB-PD voltage/current fields. It is not an identified retimer-entry command. Nearby D8/D9 requests have a traced gate and latch, but their USB4 meaning and safe inverse remain unknown. [Code and reference comparison](../evidence/ec-pd-readers-and-vendor-gates.json). No hardware test is queued.
