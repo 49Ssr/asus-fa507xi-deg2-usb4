@@ -1,0 +1,35 @@
+{
+  "schema": 1,
+  "date": "2026-11-01",
+  "target": "Dell Latitude 5540",
+  "capture_result": "NotCompleted",
+  "error": "The property 'Data' cannot be found on this object. Verify that the property exists.",
+  "return_transfer_complete": true,
+  "returned_raw_files": 4,
+  "compressed_and_raw_hashes_verified": true,
+  "trace_started": false,
+  "full_kernel_dump_collected": false,
+  "connect_prompt_recorded": false,
+  "firmware_commands_sent": 0,
+  "settings_changed": false,
+  "failure_stage_inferred_from_workflow": "BeforeInventory",
+  "original_failure_stack_available": false,
+  "classification": "Collector inventory defect; not a USB4 handshake result",
+  "native_reproduction": {
+    "host": "ASUS FA507XI",
+    "scoped_devices": 53,
+    "missing_data_member_replies": 25,
+    "native_class": "Win32_PnPDeviceProperty",
+    "affected_keys": ["DEVPKEY_Device_Service", "DEVPKEY_Device_LocationPaths", "DEVPKEY_Device_DriverVersion"]
+  },
+  "correction": {
+    "optional_missing_metadata": "Explicit unavailable issues; never inferred as zero or false",
+    "critical_service_binding": "Still required to qualify UCSI/GPU state",
+    "installed_driver_resolution": "Service ImagePath with validated expected filename, then normal fallback",
+    "failure_provenance": "Phase and error position/stack retained",
+    "software_assertions_passed": 166,
+    "real_readonly_inventory_and_static_inputs_exercised": true,
+    "revised_dell_hardware_capture": "Pending"
+  },
+  "preservation": "USB return set retained unchanged and verified private import preserved; earlier captures retained"
+}

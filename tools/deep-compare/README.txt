@@ -1,6 +1,6 @@
-USB4 DEEP COMPARISON — DELL FIRST
+USB4 DEEP COMPARISON V2 — DELL FIRST
 
-Use this USB4-Deep-Compare folder. The older USB4-Dell-Control folder is a different, completed experiment.
+Use the new USB4-Deep-Compare-v2 folder. The original USB4-Deep-Compare and its RETURNED folder are preserved. Its first run stopped during inventory before any trace or dump; v2 fixes Windows property replies without a Data field. The older USB4-Dell-Control folder is a different, completed experiment.
 
 1. On the Dell Latitude 5540, connect its normal charger. Keep the same assembled DEG2/GPU/PSU powered, with the external display connected to the RTX 4080 SUPER.
 2. Right-click START-DELL.cmd -> Run as administrator. Leave the USB stick plugged directly into the Dell throughout.
@@ -27,5 +27,6 @@ What is new:
 - Full native kernel dump for offline extraction of UCSI policy, USB4/UCM objects and loaded ACPI namespace. No LiveKD driver/helper is used.
 - ACPI DSDT, first SSDT and FACP exports with length/checksum/hash checks. Windows exposes only the first table of each duplicate name; missing SSDTs are disclosed. Activation/license tables are excluded.
 - Firmware, driver, network, timeline and transport provenance. The transient handshake remains an ETW sequence; the dump follows the passive trace and is not an atomic capture of its earlier stages.
+- V2 preserves unavailable optional PnP metadata as explicit issues, requires a real GPU/UCSI service binding, resolves installed driver paths from their service entries, and records error phase/stack. Read-only native inventory and static-input collection were exercised in qualification.
 
 No firmware/UCSI commands, registry/device/driver/boot-security/network changes or automatic reboot. Task Manager itself creates the snapshot. A valid header does not guarantee every required page or private policy field was captured; analysis checks that after return. This is a diagnostic capture, not a firmware patch or a validated fix.

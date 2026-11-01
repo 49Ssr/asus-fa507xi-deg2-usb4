@@ -1,10 +1,18 @@
 # Portable matched capture: Dell first
 
-**Prepared and locally qualified, 31 October 2026. New Dell/ASUS hardware captures remain unperformed.** This implements the next acquisition in the [reverse-engineering approach](reverse-engineering-approach.md). It adds the full native kernel snapshot and ACPI/policy context missing from the previous Dell recorder; it is not another role-change experiment or a firmware patch.
+**V2 corrected and locally qualified, 1 November 2026.** The first Dell launch stopped during inventory before recording; its return transfer succeeded. A new usable paired capture remains pending. This implements the next acquisition in the [reverse-engineering approach](reverse-engineering-approach.md). It adds the full native kernel snapshot and ACPI/policy context missing from the previous Dell recorder; it is not another role-change experiment or a firmware patch.
+
+## First Dell attempt and correction
+
+The 00:05-00:06 UTC run returned four hash-verified files. Status reports `NotCompleted`, no trace, no dump and no connection marker. The missing `Data` member error occurs in the initial inventory path before static inputs or ETW. The transfer itself is complete; this is a collector defect, not a new negotiation failure. [Sanitized result](../evidence/deep-compare-first-run.json).
+
+The old qualification mocked inventory/static-input acquisition and missed the native response shape. A read-only repro on ASUS inspected 53 scoped devices and found 25 `Win32_PnPDeviceProperty` replies lacking Data. V2 records missing/null/error metadata explicitly, preserving valid zero and array values. Critical UCSI and GPU bindings remain required. It also resolves installed driver images through validated service paths and records phase plus error position/stack.
+
+**166 PS5.1 assertions pass**, including the original regression and actual unmocked scoped inventory/static-input collection with all 14 copied driver hashes verified. No new ETW session, kernel dump, UCSI command or setting change was performed in qualification. The original USB bundle/RETURNED set and a verified private import are preserved. Use the separate v2 source kit; the original 137 checks remain historical qualification, not proof that the first Dell run succeeded.
 
 ## Owner procedure
 
-The prepared USB folder is **USB4-Deep-Compare**. The older USB4-Dell-Control folder is preserved and is not this capture.
+The corrected USB folder is **USB4-Deep-Compare-v2**. The original USB4-Deep-Compare/RETURNED and older USB4-Dell-Control folders are preserved. Start the v2 launcher to create a new run; RETURN.cmd on the original kit only repackages the failed inventory attempt.
 
 1. On the Dell Latitude 5540, keep normal barrel power, DEG2/PSU powered and the GPU-connected display attached. Plug the USB stick directly into the laptop and leave it there.
 2. Right-click **START-DELL.cmd** in the new folder and select **Run as administrator**. The source/hash/model checks run before collection, then the kit stages verified source files onto internal NTFS storage.
@@ -33,7 +41,7 @@ Capture is staged under the running account's **LocalAppData/USB4-Deep-Compare**
 
 FAT32 is supported without formatting. If the compressed set will not fit, no result parts are copied and the script reports the needed space. SSD originals and compressed data remain available. Partial transfers lack a completed RETURN-MANIFEST and must not be treated as complete. Returning again creates a new attempt; it never deletes an earlier partial copy or silently drops the dump.
 
-## Validation completed before USB preparation
+## Original validation before the first USB preparation
 
 - **137 Windows PowerShell 5.1 assertions**: host/model and path refusal; real Windows ACPI API export; malformed tables; actual retained dump header and stale/wrong-header rejection; retained successful Dell GPU/router inventory; passive lifecycle/failure cleanup; source integrity and staging; compression, splitting and independent reconstruction; empty files; actual return copy, dump metadata revalidation, missing-space and mismatched-machine refusal. Hardware attachment, ETW and new snapshot creation are mocked.
 - The exact compressor streamed the existing **2,300,018,688-byte ASUS dump**, beyond the 2 GiB boundary. An independent Python gzip reader reproduced its complete original SHA-256. The compressed file was 327,916,226 bytes. This uses an old artifact and is not a new hardware measurement.

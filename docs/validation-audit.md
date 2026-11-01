@@ -56,3 +56,13 @@ The owner explicitly requested this investigation after retiring earlier experim
 | New Administrator preparation / deep hardware capture | Completed: Ready state, three recorder transcripts, 84 completed GETs; 3,097,071 ETW events with zero reported loss | Diagnostic execution validated on ASUS. Peer works; DEG2 router/GPU remain absent. No cause or repair established. |
 
 The native readiness check enumerates interfaces and requests help; it does not send GET_CAPABILITY before passive recording. Firmware GET batches run only after each passive observation and recorder snapshot, with a second device inventory afterward. ETW covers a fresh peer negotiation as well as DEG2 attachment. Requested provider coverage, actual emitted records, formatting errors, loss and timing must be assessed from the new run.
+
+## Deep passive collector inventory failure, 1 November
+
+The first deep Dell attempt returned NotCompleted during the initial inventory with a missing Data-member error. No connection marker, ETW session or dump was collected. Four returned files verify at part, gzip and raw SHA-256 levels; a private import preserves them without modifying the USB originals.
+
+The original 137-case qualification mocked Save-DeepInventory and Save-DeepInputs. It checked the retained Dell inventory's milestone interpretation but did not exercise current native PnP replies. That gap allowed a normal Win32_PnPDeviceProperty reply without Data to stop StrictMode execution. A read-only ASUS repro found 25 such replies among 53 scoped devices.
+
+V2 tests missing/null/array/zero/malformed and unrequested property replies; unavailable optional data stays unknown, and absent critical binding cannot qualify a working GPU. Actual inventory and static-input collection now run without mocks before lifecycle doubles are installed. All 14 copied driver hashes verify. Two real driver images resolve through service ImagePath in DriverStore, avoiding the incorrect fixed-System32-path assumption. Missing diagnostic parameter keys are recorded absent rather than enabled. Phase/error position/stack improve future failure provenance. The complete PS5.1 suite passes 166 assertions; the revised portable bundle's hashes, compilation and Preview are also checked.
+
+No revised Dell capture, policy extraction or firmware repair is claimed from these software checks. The corrected kit is a separate v2 USB folder; the original failed run and earlier investigation remain intact.

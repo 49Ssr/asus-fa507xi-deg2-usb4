@@ -15,6 +15,48 @@ function Restart-Computer {throw 'No restart in validation'}
 $fixtureRoot=Join-Path ([IO.Path]::GetTempPath()) ('Usb4DeepCompareTests-'+[guid]::NewGuid().ToString('N'))
 $null=[IO.Directory]::CreateDirectory($fixtureRoot)
 Initialize-DeepNative
+# Exercise the precise native response shape that stopped the returned Dell run.
+$script:pnpReplies=@(
+    [pscustomobject]@{KeyName='DEVPKEY_Device_Service';Data='nvlddmkm'},
+    [pscustomobject]@{KeyName='DEVPKEY_Device_LocationPaths';Type='Empty'},
+    [pscustomobject]@{KeyName='DEVPKEY_Device_DriverVersion';Data=$null},
+    [pscustomobject]@{KeyName='DEVPKEY_Device_ProblemCode';Data=0},
+    [pscustomobject]@{KeyName='DEVPKEY_Device_Parent';Data=@('one','two')},
+    [pscustomobject]@{KeyName='Unexpected';Data='ignored'},
+    [pscustomobject]@{Type='Empty'})
+function Get-PnpDeviceProperty { [CmdletBinding()]param($InstanceId,$KeyName);return $script:pnpReplies }
+try{
+    $values=Get-DeepPnpProperties 'fixture' @('DEVPKEY_Device_Service','DEVPKEY_Device_LocationPaths','DEVPKEY_Device_DriverVersion','DEVPKEY_Device_ProblemCode','DEVPKEY_Device_Parent','Absent')
+    Check ($values.Values['DEVPKEY_Device_Service'] -eq 'nvlddmkm') 'Available binding preserved'
+    Check (-not $values.Values.ContainsKey('DEVPKEY_Device_LocationPaths')) 'Missing Data member stays unavailable'
+    Check (@($values.Issues|Where-Object Reason -eq 'ReplyHasNoDataMember').Count -eq 1) 'Original Dell failure shape explicitly recorded'
+    Check (@($values.Issues|Where-Object Reason -eq 'NullData').Count -eq 1) 'Null data distinguished'
+    Check ($values.Values.ContainsKey('DEVPKEY_Device_ProblemCode') -and $values.Values['DEVPKEY_Device_ProblemCode'] -eq 0) 'Valid zero preserved'
+    Check ($values.Values['DEVPKEY_Device_Parent'].Count -eq 2) 'Array metadata preserved'
+    Check (-not $values.Values.ContainsKey('Unexpected')) 'Unrequested response ignored'
+    Check (@($values.Issues|Where-Object Reason -eq 'ReplyHasNoKeyName').Count -eq 1) 'Malformed key recorded'
+    Check (@($values.Issues|Where-Object Reason -eq 'NoReplyForRequestedKey').Count -eq 1) 'Missing requested reply recorded'
+    $script:pnpReplies=@([pscustomobject]@{KeyName='DEVPKEY_Device_Service';Type='Empty'})
+    $unknown=Get-DeepPnpProperties 'fixture' @('DEVPKEY_Device_Service')
+    $device=[pscustomobject]@{InstanceId='PCI\VEN_10DE&DEV_2702\MOCK';Status='OK';Class='Display';Properties=$unknown.Values}
+    $milestone=Get-DeepMilestone ([pscustomobject]@{Devices=@($device)})
+    Check (-not $milestone.ExternalNvidiaBound) 'Missing critical binding cannot qualify a GPU'
+}finally{Remove-Item -LiteralPath Function:\Get-PnpDeviceProperty}
+
+# Read-only integration, deliberately not mocked: this path was missing from the
+# first qualification and must succeed before another donor-laptop run.
+$realInventory=Save-DeepInventory $fixtureRoot 'real-readonly-qualification'
+Check ($realInventory.Devices.Count -gt 0) 'Actual scoped inventory succeeds under StrictMode'
+$issueCount=@($realInventory.Devices|ForEach-Object {$_.PropertyIssues}|Where-Object Reason -eq 'ReplyHasNoDataMember').Count
+Check ($issueCount -gt 0) 'Actual Windows missing-Data replies handled without losing inventory'
+$ucsiDevices=@(Get-PnpDevice -PresentOnly -ErrorAction Stop|Where-Object {$_.InstanceId -match '^ACPI\\USBC000\\'})
+Check ($ucsiDevices.Count -eq 1) 'Read-only qualification identifies the single UCSI device'
+$staticRoot=Join-Path $fixtureRoot 'ActualStaticInputs';$null=[IO.Directory]::CreateDirectory($staticRoot)
+Save-DeepInputs $staticRoot ([pscustomobject]@{Target='ReadOnlyQualification';UcsiInstance=$ucsiDevices[0].InstanceId})
+$inputManifest=Get-Content -LiteralPath (Join-Path $staticRoot 'driver-inputs.private.json') -Raw|ConvertFrom-Json
+Check ($inputManifest.Count -eq 14) 'Actual static input collector copies all fourteen installed driver images'
+foreach($row in $inputManifest){Check ((Get-FileHash -LiteralPath (Join-Path $staticRoot ('DriverImages\'+$row.Name)) -Algorithm SHA256).Hash -ceq $row.SHA256) 'Actual static driver copy hash verified'}
+MustThrow {Resolve-DeepDriverPath 'arbitrary.sys'} 'Driver resolver refuses unrelated images'
 $intel=[pscustomobject]@{InstanceId='PCI\VEN_8086&DEV_A73E';FriendlyName='USB4 Host Router';Status='OK'}
 $amd=[pscustomobject]@{InstanceId='PCI\VEN_1022&DEV_1668';FriendlyName='USB4 Host Router';Status='OK'}
 Assert-DeepHostIdentity 'Dell Inc.' 'Latitude 5540' @($intel) Dell;Check $true 'Dell target passes'

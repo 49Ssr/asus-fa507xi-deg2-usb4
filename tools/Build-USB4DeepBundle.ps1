@@ -33,6 +33,6 @@ $files=@(foreach($name in $map.Keys){
     else{[IO.File]::Copy($source,$dest,$false)}
     [ordered]@{Path=$name;Bytes=(Get-Item -LiteralPath $dest).Length;SHA256=(Get-FileHash -LiteralPath $dest -Algorithm SHA256).Hash}
 })
-$manifest=[ordered]@{Schema=1;Kind='USB4DeepCompare';BundleId=[guid]::NewGuid().ToString('N');CreatedUtc=[DateTime]::UtcNow.ToString('o');Files=$files;ThirdPartyBinariesIncluded=$false;DefaultEntryPoint='START-DELL.cmd';HardwareCaptureQualified=$false}
+$manifest=[ordered]@{Schema=1;Kind='USB4DeepCompare';Revision='2026-11-01-pnp-data-fix';BundleId=[guid]::NewGuid().ToString('N');CreatedUtc=[DateTime]::UtcNow.ToString('o');Files=$files;ThirdPartyBinariesIncluded=$false;DefaultEntryPoint='START-DELL.cmd';HardwareCaptureQualified=$false}
 [IO.File]::WriteAllText((Join-Path $output 'bundle-manifest.json'),($manifest|ConvertTo-Json -Depth 6),(New-Object Text.UTF8Encoding($false)))
 Write-Output ('Built verified-source manifest: '+$output)

@@ -65,7 +65,8 @@ function Get-DeepCaptureContext([string]$Which) {
     Assert-DeepHostIdentity ([string]$bios.SystemManufacturer) ([string]$bios.SystemProductName) $devices $Which
     $ucsi=@($devices|Where-Object {$_.InstanceId -match '^ACPI\\USBC000\\'})
     if($ucsi.Count -ne 1 -or $ucsi[0].Status -ne 'OK'){throw 'Exactly one healthy ACPI UCSI device is required for this comparison.'}
-    $service=[string](Get-PnpDeviceProperty -InstanceId $ucsi[0].InstanceId -KeyName DEVPKEY_Device_Service -ErrorAction Stop).Data
+    $binding=Get-DeepPnpProperties $ucsi[0].InstanceId @('DEVPKEY_Device_Service')
+    $service=[string]$binding.Values['DEVPKEY_Device_Service']
     if($service -ine 'UcmUcsiAcpiClient'){throw 'Unexpected UCSI driver binding.'}
     return [pscustomobject]@{Target=$Which;Manufacturer=[string]$bios.SystemManufacturer;Model=[string]$bios.SystemProductName;MachineHash=(Get-DeepMachineHash);MemoryBytes=[long](Get-CimInstance Win32_ComputerSystem).TotalPhysicalMemory;UcsiInstance=$ucsi[0].InstanceId}
 }
@@ -100,11 +101,33 @@ function Copy-DeepBundle([string]$Source,[string]$Destination) {
     [IO.File]::Copy((Join-Path $Source 'bundle-manifest.json'),(Join-Path $full 'bundle-manifest.json'),$false)
     $null=Read-DeepBundle $full
 }
+function Get-DeepPnpProperties([string]$InstanceId,[string[]]$Keys) {
+    $values=@{};$issues=@();$errors=@();$seen=@{}
+    $replies=@(Get-PnpDeviceProperty -InstanceId $InstanceId -KeyName $Keys -ErrorAction SilentlyContinue -ErrorVariable +errors)
+    foreach($reply in $replies){
+        $keyProperty=$reply.PSObject.Properties['KeyName']
+        if($null -eq $keyProperty -or [string]::IsNullOrWhiteSpace([string]$keyProperty.Value)){$issues+=@{Key=$null;Reason='ReplyHasNoKeyName'};continue}
+        $key=[string]$keyProperty.Value;$seen[$key]=$true
+        if($Keys -notcontains $key){$issues+=@{Key=$key;Reason='UnexpectedReplyKey'};continue}
+        # Windows can return a base Win32_PnPDeviceProperty with no Data member.
+        # Missing optional metadata must remain unknown, never become zero/false.
+        $dataProperty=$reply.PSObject.Properties['Data']
+        if($null -eq $dataProperty){$issues+=@{Key=$key;Reason='ReplyHasNoDataMember'};continue}
+        try{
+            $data=$dataProperty.Value
+            if($null -eq $data){$issues+=@{Key=$key;Reason='NullData'};continue}
+            $values[$key]=$data
+        }catch{$issues+=@{Key=$key;Reason='DataReadFailed';Error=$_.Exception.Message}}
+    }
+    foreach($key in $Keys){if(-not $seen.ContainsKey($key)){$issues+=@{Key=$key;Reason='NoReplyForRequestedKey'}}}
+    foreach($errorRecord in $errors){$issues+=@{Key=$null;Reason='ProviderError';Error=[string]$errorRecord}}
+    return [pscustomobject]@{Values=$values;Issues=$issues}
+}
 function Save-DeepInventory([string]$Directory,[string]$Label) {
     $devices=@(Get-PnpDevice -PresentOnly -ErrorAction Stop|Where-Object {$_.Class -in @('Display','Firmware') -or $_.InstanceId -match '^USB4\\|^ACPI\\(USBC000|PS883)|^USB\\VID_(8087|041F|0BDA)|^PCI\\VEN_(8086|1022)'}|ForEach-Object {
-        $d=$_;$properties=@{}
-        foreach($p in @(Get-PnpDeviceProperty -InstanceId $d.InstanceId -KeyName @('DEVPKEY_Device_Parent','DEVPKEY_Device_Service','DEVPKEY_Device_DriverVersion','DEVPKEY_Device_ProblemCode','DEVPKEY_Device_LocationPaths') -ErrorAction SilentlyContinue)){$properties[$p.KeyName]=$p.Data}
-        [pscustomobject]@{Status=$d.Status;Class=$d.Class;FriendlyName=$d.FriendlyName;InstanceId=$d.InstanceId;Properties=$properties}
+        $d=$_
+        $properties=Get-DeepPnpProperties $d.InstanceId @('DEVPKEY_Device_Parent','DEVPKEY_Device_Service','DEVPKEY_Device_DriverVersion','DEVPKEY_Device_ProblemCode','DEVPKEY_Device_LocationPaths')
+        [pscustomobject]@{Status=$d.Status;Class=$d.Class;FriendlyName=$d.FriendlyName;InstanceId=$d.InstanceId;Properties=$properties.Values;PropertyIssues=$properties.Issues}
     })
     $result=[pscustomobject]@{Utc=[DateTime]::UtcNow.ToString('o');Devices=$devices}
     Write-DeepJson (Join-Path $Directory ('devices-'+$Label+'.private.json')) $result
@@ -151,18 +174,39 @@ function Save-DeepAcpi([string]$Directory) {
     if(-not @($rows|Where-Object {$_.Header.Signature -eq 'DSDT'}).Count){throw 'DSDT export unavailable; preserve the error before another capture.'}
     Write-DeepJson (Join-Path $Directory 'acpi-index.private.json') @{Enumerated=$entries;Tables=$rows;OnlyFirstDuplicateAccessible=$true;FirmwareFlashReadback=$false;LicenseTablesExcluded=$true}
 }
+function Resolve-DeepDriverPath([string]$Name) {
+    $allowed=@('ntoskrnl.exe','ACPI.sys','Wdf01000.sys','WppRecorder.sys','Usb4HostRouter.sys','Usb4DeviceRouter.sys','UcmCx.sys','UcmUcsiCx.sys','UcmUcsiAcpiClient.sys','USBXHCI.sys','UCX01000.sys','USBHUB3.sys','SpbCx.sys','pci.sys')
+    if($allowed -notcontains $Name){throw 'Unexpected driver input name.'}
+    $default=if($Name -eq 'ntoskrnl.exe'){Join-Path $env:SystemRoot ('System32\'+$Name)}else{Join-Path $env:SystemRoot ('System32\drivers\'+$Name)}
+    $service=[IO.Path]::GetFileNameWithoutExtension($Name)
+    $key='HKLM:\SYSTEM\CurrentControlSet\Services\'+$service
+    if(Test-Path -LiteralPath $key){
+        $properties=Get-ItemProperty -LiteralPath $key
+        if($null -ne $properties.PSObject.Properties['ImagePath']){
+            $candidate=[Environment]::ExpandEnvironmentVariables([string]$properties.ImagePath).Trim('"')
+            if($candidate.StartsWith('\SystemRoot\',[StringComparison]::OrdinalIgnoreCase)){$candidate=Join-Path $env:SystemRoot $candidate.Substring(12)}
+            elseif($candidate.StartsWith('\??\')){$candidate=$candidate.Substring(4)}
+            elseif(-not [IO.Path]::IsPathRooted($candidate)){$candidate=Join-Path $env:SystemRoot $candidate}
+            $candidate=Assert-LocalPath $candidate
+            if([IO.Path]::GetFileName($candidate) -ine $Name){throw ('Unexpected service image name for '+$Name)}
+            if(Test-Path -LiteralPath $candidate -PathType Leaf){return $candidate}
+        }
+    }
+    if(Test-Path -LiteralPath $default -PathType Leaf){return $default}
+    throw ('Expected driver input missing: '+$Name)
+}
 function Save-DeepInputs([string]$Directory,[object]$Context) {
     Write-DeepJson (Join-Path $Directory 'context.private.json') $Context
     $os=Get-ItemProperty -LiteralPath 'HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion'
     $key='HKLM:\SYSTEM\CurrentControlSet\Enum\'+$Context.UcsiInstance+'\Device Parameters'
-    $item=Get-Item -LiteralPath $key -ErrorAction Stop;$present=@($item.GetValueNames()) -contains 'TestInterfaceEnabled'
-    Write-DeepJson (Join-Path $Directory 'system.private.json') @{Build=[string]$os.CurrentBuildNumber;UBR=$os.UBR;BIOS=@(Get-CimInstance Win32_BIOS|Select-Object Manufacturer,SMBIOSBIOSVersion,ReleaseDate);PowerShell=[string]$PSVersionTable.PSVersion;TestInterface=@{Present=$present;Value=$(if($present){$item.GetValue('TestInterfaceEnabled')}else{$null})};AllCapturedDriversAreInstalledFileCopies=$true;LoadedIdentityRequiresDump=$true}
+    $keyPresent=Test-Path -LiteralPath $key;$item=$null;$present=$false
+    if($keyPresent){$item=Get-Item -LiteralPath $key -ErrorAction Stop;$present=@($item.GetValueNames()) -contains 'TestInterfaceEnabled'}
+    Write-DeepJson (Join-Path $Directory 'system.private.json') @{Build=[string]$os.CurrentBuildNumber;UBR=$os.UBR;BIOS=@(Get-CimInstance Win32_BIOS|Select-Object Manufacturer,SMBIOSBIOSVersion,ReleaseDate);PowerShell=[string]$PSVersionTable.PSVersion;TestInterface=@{RegistryKeyPresent=$keyPresent;Present=$present;Value=$(if($present){$item.GetValue('TestInterfaceEnabled')}else{$null})};AllCapturedDriversAreInstalledFileCopies=$true;LoadedIdentityRequiresDump=$true}
     $driverRoot=Join-Path $Directory 'DriverImages';$null=New-Item -ItemType Directory -Path $driverRoot
     $rows=foreach($name in @('ntoskrnl.exe','ACPI.sys','Wdf01000.sys','WppRecorder.sys','Usb4HostRouter.sys','Usb4DeviceRouter.sys','UcmCx.sys','UcmUcsiCx.sys','UcmUcsiAcpiClient.sys','USBXHCI.sys','UCX01000.sys','USBHUB3.sys','SpbCx.sys','pci.sys')){
-        $source=if($name -eq 'ntoskrnl.exe'){Join-Path $env:SystemRoot ('System32\'+$name)}else{Join-Path $env:SystemRoot ('System32\drivers\'+$name)}
-        if(-not(Test-Path -LiteralPath $source -PathType Leaf)){throw ('Expected driver input missing: '+$name)}
+        $source=Resolve-DeepDriverPath $name
         $dest=Join-Path $driverRoot $name;[IO.File]::Copy($source,$dest,$false)
-        @{Name=$name;SHA256=(Get-FileHash -LiteralPath $dest -Algorithm SHA256).Hash;Version=[Diagnostics.FileVersionInfo]::GetVersionInfo($dest).FileVersion}
+        @{Name=$name;InstalledPath=$source;SHA256=(Get-FileHash -LiteralPath $dest -Algorithm SHA256).Hash;Version=[Diagnostics.FileVersionInfo]::GetVersionInfo($dest).FileVersion}
     }
     Write-DeepJson (Join-Path $Directory 'driver-inputs.private.json') @($rows)
     Save-DeepAcpi (Join-Path $Directory 'ACPI')
@@ -196,21 +240,25 @@ function Stop-DeepOwnedTrace([string]$Directory) {
     if(-not $trace.Stopped){Stop-ConnectionTrace $trace $Directory;Write-DeepJson $path $trace;if(-not $trace.Stopped){throw 'Owned trace did not stop.'}}
 }
 function Invoke-DeepCapture([object]$Context,[string]$Directory) {
-    $status=[ordered]@{Schema=1;Kind='USB4DeepCompareCapture';Target=$Context.Target;Result='NotCompleted';Error=$null;EvidenceErrors=@();Markers=@();Dump=$null;DumpBaselineQualified=$false;Trace=$null;FirmwareCommandsSent=0;LiveKernelHelperLoaded=$false;SettingsChanged=$false;WirePacketsCaptured=$false;CoverageRequiresAnalysis=$true}
+    $status=[ordered]@{Schema=1;Kind='USB4DeepCompareCapture';Target=$Context.Target;Result='NotCompleted';Phase='DisconnectPrompt';Error=$null;ErrorDetail=$null;EvidenceErrors=@();Markers=@();Dump=$null;DumpBaselineQualified=$false;Trace=$null;FirmwareCommandsSent=0;LiveKernelHelperLoaded=$false;SettingsChanged=$false;WirePacketsCaptured=$false;CoverageRequiresAnalysis=$true}
     $trace=$null
     try{
         $null=Read-Host 'Keep DEG2 powered. Disconnect its upstream cable from this laptop; press Enter when disconnected'
+        $status.Phase='BeforeInventory'
         $before=Save-DeepInventory $Directory 'before';$initial=Get-DeepMilestone $before
         if($initial.RouterPresent -or $initial.BillboardPresent){throw 'DEG2 still appears attached. Capture stopped before tracing; preserve the state.'}
         Write-Host 'Saving firmware tables, driver identities and network state before connection.' -ForegroundColor Cyan
+        $status.Phase='StaticInputs'
         Save-DeepInputs $Directory $Context
         Write-DeepJson (Join-Path $Directory 'network-before.private.json') (Get-DeepNetworkSnapshot)
+        $status.Phase='TraceStartup'
         $trace=Start-ConnectionTrace $Directory;Write-DeepJson (Join-Path $Directory 'trace-status.json') $trace
         Start-Sleep -Seconds 5
         $status.Markers+=@{Name='ConnectPrompt';Utc=[DateTime]::UtcNow.ToString('o')}
         Write-Host 'GREEN: connect powered DEG2 to the SAME tested USB4 port now. Keep it connected through the dump step.' -ForegroundColor Green
+        $status.Phase='PassiveAttachment'
         Start-Sleep -Seconds 45
-        $after=Save-DeepInventory $Directory 'after-passive';$status.Milestone=Get-DeepMilestone $after
+        $status.Phase='AfterPassiveInventory';$after=Save-DeepInventory $Directory 'after-passive';$status.Milestone=Get-DeepMilestone $after
         $status.Markers+=@{Name='PassiveWindowEnd';Utc=[DateTime]::UtcNow.ToString('o')}
         Stop-ConnectionTrace $trace $Directory;Write-DeepJson (Join-Path $Directory 'trace-status.json') $trace
         if(-not $trace.Stopped){throw 'Trace did not stop; use STOP-TRACE.cmd on this laptop.'}
@@ -225,19 +273,21 @@ function Invoke-DeepCapture([object]$Context,[string]$Directory) {
         Write-Host 'Choose FULL, not Kernel stacks or a process dump. Leave extra user/hypervisor-page options off. Wait for completion, then Open File Location.'
         $null=Read-Host 'Close any existing Task Manager window, then press Enter to open an Administrator Task Manager'
         $snapshotStart=[DateTime]::UtcNow
+        $status.Phase='NativeDumpPrompt'
         $status.Markers+=@{Name='FullKernelDumpPrompt';Utc=$snapshotStart.ToString('o')}
         Write-DeepJson (Join-Path $Directory 'status.json') $status
         Open-DeepTaskManager
         $dumpPath=(Read-Host 'Paste the completed .dmp file path here (Copy as path is fine)').Trim().Trim('"')
-        $dump=Read-DeepDumpHeader $dumpPath $snapshotStart.AddSeconds(-2)
+        $status.Phase='DumpValidation';$dump=Read-DeepDumpHeader $dumpPath $snapshotStart.AddSeconds(-2)
         $status.Dump=$dump
-        $afterDump=Save-DeepInventory $Directory 'after-dump';$end=Get-DeepMilestone $afterDump
+        $status.Phase='AfterDumpInventory';$afterDump=Save-DeepInventory $Directory 'after-dump';$end=Get-DeepMilestone $afterDump
         if($Context.Target -eq 'Dell' -and (-not $end.RouterHealthy -or -not $end.ExternalNvidiaBound)){throw 'Dell control changed during dump acquisition; the snapshot is not qualified as the working control.'}
         if($Context.Target -eq 'Asus' -and ($end.RouterPresent -or -not $end.BillboardPresent)){throw 'ASUS baseline changed during snapshot acquisition.'}
         $status.DumpBaselineQualified=$true;$status.Markers+=@{Name='DumpAccepted';Utc=[DateTime]::UtcNow.ToString('o')}
         $status.OwnerOutput=Read-Host 'Did the display connected to the RTX 4080 SUPER show an image? Type Y, N, or Unknown'
         $status.Result='Captured_RequiresOfflinePolicyAndMemoryValidation'
-    }catch{$status.Error=$_.Exception.Message;Write-Warning $status.Error}
+        $status.Phase='Captured'
+    }catch{$status.Error=$_.Exception.Message;$status.ErrorDetail=@{Phase=$status.Phase;Id=$_.FullyQualifiedErrorId;Position=$_.InvocationInfo.PositionMessage;Stack=$_.ScriptStackTrace};Write-Warning $status.Error}
     finally{
         if($null -ne $trace){
             if(-not $trace.Stopped){try{Stop-ConnectionTrace $trace $Directory}catch{$status.EvidenceErrors+=@($_.Exception.Message)}}

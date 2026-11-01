@@ -26,6 +26,8 @@ The linked conversation's latest exchanges and the earlier Dell-bundle/results e
 
 ## What is useful next
 
+**1 November correction:** the first deep Dell launch stopped at inventory before ETW/dump acquisition. All four returned files hash-verify. V2 fixes native PnP replies lacking Data and now exercises real read-only inventory/static inputs; 166 PS5.1 assertions pass. Use the separate corrected [USB4-Deep-Compare-v2 kit](deep-compare-capture.md); original USB results and a private verified import are retained. This failure supplies no new USB4 handshake result, and the earlier successful Dell control remains separate evidence.
+
 **Latest direction:** the owner proposes deeper Dell inspection, a fresh ASUS dump and firmware reverse engineering. The [acquisition and ownership review](reverse-engineering-approach.md) defines the missing data, matched phases, unavailable-memory limits and criteria for a real patch. Dell's internal policy/ACPI is the first missing comparison; a generic larger dump is not a firmware image. This review does not claim new paired captures or a prepared flash.
 
 **Portable kit subsequently prepared at the owner's request:** [Dell-first matched capture](deep-compare-capture.md), using passive ETW, native Task Manager full snapshot, selected ACPI and verified split return transport. 137 PS5.1 assertions and independent reconstruction of the retained >2 GiB ASUS dump pass. New source kit copied/hash-verified to the identified 8 GB USB without formatting or replacing existing folders; new Dell/ASUS execution remains pending.
