@@ -1,7 +1,7 @@
 #requires -Version 5.1
 [CmdletBinding()]
 param([ValidateSet('Preview','Build')][string]$Mode='Preview',
-      [string]$CompilerRoot='', [string]$WdkRoot='', [string]$SdkRoot='', [string]$OutputDirectory='')
+      [string]$CompilerRoot='', [string]$WdkRoot='', [string]$SdkRoot='', [string]$OutputDirectory='', [switch]$Analyze)
 Set-StrictMode -Version Latest
 $ErrorActionPreference='Stop'
 if($Mode -eq 'Preview'){Write-Output 'Compile/test the shared policy parser and build an unsigned x64 KMDF 1.15 filter plus catalog. No install, signing, device restart or setting change.';return}
@@ -30,7 +30,15 @@ try{
     if($LASTEXITCODE -ne 0){throw 'Native core test compilation failed; read native-tests-build.log.'}
     & (Join-Path $out 'TestPolicy.exe') | Tee-Object -FilePath native-tests-result.txt
     if($LASTEXITCODE -ne 0){throw 'Native core test failed.'}
+    & $cl @flags /MT /O2 /TC /DRP_NATIVE_HARNESS (Join-Path $PSScriptRoot 'Driver.c') (Join-Path $PSScriptRoot 'Policy.c') (Join-Path $PSScriptRoot '..\..\tests\role-policy\TestDriver.c') /Fe:TestDriver.exe /link @userLibraries *> driver-callback-tests-build.log
+    if($LASTEXITCODE -ne 0){throw 'Driver callback harness compilation failed; read driver-callback-tests-build.log.'}
+    & (Join-Path $out 'TestDriver.exe') | Tee-Object -FilePath driver-callback-tests-result.txt
+    if($LASTEXITCODE -ne 0){throw 'Driver callback harness failed.'}
     $kernelFlags=$flags+@('/kernel','/DNTDDI_VERSION=0x0A000000','/Zl','/GS','/O2','/Gy','/Z7','/c')
+    if($Analyze){
+        $kernelFlags+=@('/analyze','/analyze:external-','/external:W0','/analyze:log:format:sarif','/analyze:log','driver-analysis.sarif')
+        foreach($path in $includes){$kernelFlags+=('/external:I'+$path)}
+    }
     & $cl @kernelFlags (Join-Path $PSScriptRoot 'Driver.c') (Join-Path $PSScriptRoot 'Policy.c') *> driver-build.log
     if($LASTEXITCODE -ne 0){throw 'Kernel compilation failed; read driver-build.log.'}
     $kernelLibraries=@(('/LIBPATH:'+(Join-Path $WdkRoot ('Lib\'+$version+'\km\x64'))),
@@ -46,7 +54,7 @@ try{
     & $inf2cat ('/driver:'+$package) /os:10_GE_X64 /uselocaltime *> inf2cat.log
     if($LASTEXITCODE -ne 0){throw 'Catalog generation failed; read inf2cat.log.'}
     $files=@(Get-ChildItem -LiteralPath $package -File|ForEach-Object {@{Name=$_.Name;Bytes=$_.Length;SHA256=(Get-FileHash -LiteralPath $_.FullName -Algorithm SHA256).Hash}})
-    $manifest=@{Schema=1;Kind='Usb4RolePolicyExperimentalPackage';Signing='Unsigned';KernelLoaded=$false;HardwareQualified=$false;KMDF='1.15';Wdk='26100';CreatedUtc=[DateTime]::UtcNow.ToString('o');Files=$files}
+    $manifest=@{Schema=1;Kind='Usb4RolePolicyExperimentalPackage';Signing='Unsigned';KernelLoaded=$false;HardwareQualified=$false;KMDF='1.15';Wdk='26100';StaticAnalysis=[bool]$Analyze;CreatedUtc=[DateTime]::UtcNow.ToString('o');Files=$files}
     [IO.File]::WriteAllText((Join-Path $out 'build-manifest.json'),($manifest|ConvertTo-Json -Depth 6),(New-Object Text.UTF8Encoding($false)))
     Write-Output ('Unsigned experimental package built: '+$package)
 }finally{Pop-Location}

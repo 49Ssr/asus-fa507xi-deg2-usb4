@@ -1,3 +1,6 @@
+#ifdef RP_NATIVE_HARNESS
+#include "../../tests/role-policy/DriverShim.h"
+#else
 #include <ntddk.h>
 #pragma warning(push)
 #pragma warning(disable:4324) /* KMDF 1.15 public headers have intentional padding. */
@@ -5,6 +8,7 @@
 #pragma warning(pop)
 #include <acpiioct.h>
 #include <TraceLoggingProvider.h>
+#endif
 #include "Policy.h"
 
 /* A device lower filter; no firmware commands or arbitrary-memory access. */
@@ -25,7 +29,9 @@ DRIVER_INITIALIZE DriverEntry;
 EVT_WDF_DRIVER_DEVICE_ADD RoleDeviceAdd;
 EVT_WDF_DRIVER_UNLOAD RoleUnload;
 EVT_WDF_IO_QUEUE_IO_DEVICE_CONTROL RoleIoctl;
+EVT_WDF_IO_QUEUE_IO_INTERNAL_DEVICE_CONTROL RoleInternalIoctl;
 EVT_WDF_REQUEST_COMPLETION_ROUTINE MaskCompleted;
+static VOID DispatchIoctl(WDFQUEUE,WDFREQUEST,size_t,size_t,ULONG);
 
 static BOOLEAN IsAlphaNumeric(WCHAR c) {
     c = RtlUpcaseUnicodeChar(c);
@@ -49,9 +55,12 @@ static BOOLEAN IsAsusSystem(void) {
     UNICODE_STRING maker = {0, sizeof(makerBuffer), makerBuffer};
     RTL_QUERY_REGISTRY_TABLE query[3] = {0};
     NTSTATUS status;
-    query[0].Flags = RTL_QUERY_REGISTRY_DIRECT | RTL_QUERY_REGISTRY_REQUIRED;
+    query[0].Flags = RTL_QUERY_REGISTRY_DIRECT | RTL_QUERY_REGISTRY_REQUIRED |
+                     RTL_QUERY_REGISTRY_TYPECHECK | RTL_QUERY_REGISTRY_NOEXPAND;
+    query[0].DefaultType = REG_SZ << RTL_QUERY_REGISTRY_TYPECHECK_SHIFT;
     query[0].Name = L"SystemProductName"; query[0].EntryContext = &model;
-    query[1].Flags = RTL_QUERY_REGISTRY_DIRECT | RTL_QUERY_REGISTRY_REQUIRED;
+    query[1].Flags = query[0].Flags;
+    query[1].DefaultType = query[0].DefaultType;
     query[1].Name = L"SystemManufacturer"; query[1].EntryContext = &maker;
     status = RtlQueryRegistryValues(RTL_REGISTRY_ABSOLUTE,
         L"\\Registry\\Machine\\HARDWARE\\DESCRIPTION\\System\\BIOS", query, NULL, NULL);
@@ -100,15 +109,16 @@ NTSTATUS RoleDeviceAdd(WDFDRIVER driver, PWDFDEVICE_INIT init) {
     WDF_IO_QUEUE_CONFIG queue;
     NTSTATUS status;
     UNREFERENCED_PARAMETER(driver);
-    if (!IsAsusSystem() || !IsUcsiDevice(init)) return STATUS_SUCCESS;
+    /* This must also precede a successful early return without a device. */
     WdfFdoInitSetFilter(init);
+    if (!IsAsusSystem() || !IsUcsiDevice(init)) return STATUS_SUCCESS;
     WDF_OBJECT_ATTRIBUTES_INIT_CONTEXT_TYPE(&attributes, DEVICE_CONTEXT);
     status = WdfDeviceCreate(&init, &attributes, &device);
     if (!NT_SUCCESS(status)) return status;
     WDF_IO_QUEUE_CONFIG_INIT_DEFAULT_QUEUE(&queue, WdfIoQueueDispatchParallel);
     queue.PowerManaged = WdfFalse;
     queue.EvtIoDeviceControl = RoleIoctl;
-    queue.EvtIoInternalDeviceControl = RoleIoctl;
+    queue.EvtIoInternalDeviceControl = RoleInternalIoctl;
     return WdfIoQueueCreate(device, &queue, WDF_NO_OBJECT_ATTRIBUTES, WDF_NO_HANDLE);
 }
 
@@ -128,6 +138,14 @@ static VOID Forward(WDFREQUEST request, WDFDEVICE device, BOOLEAN completion) {
 
 VOID RoleIoctl(WDFQUEUE queue, WDFREQUEST request, size_t outputLength,
                size_t inputLength, ULONG code) {
+    DispatchIoctl(queue, request, outputLength, inputLength, code);
+}
+VOID RoleInternalIoctl(WDFQUEUE queue, WDFREQUEST request, size_t outputLength,
+                       size_t inputLength, ULONG code) {
+    DispatchIoctl(queue, request, outputLength, inputLength, code);
+}
+static VOID DispatchIoctl(WDFQUEUE queue, WDFREQUEST request, size_t outputLength,
+                          size_t inputLength, ULONG code) {
     WDFDEVICE device = WdfIoQueueGetDevice(queue);
     DEVICE_CONTEXT *context = DeviceContext(device);
     PVOID input, output; size_t capacity;

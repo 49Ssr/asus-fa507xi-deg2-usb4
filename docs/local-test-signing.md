@@ -1,0 +1,48 @@
+# Local test signing and return to normal boot
+
+**1 November 2026: a private local test-signed copy has been created and cryptographically checked. It has never been installed or loaded.** Its temporary signing key was deleted. No Root/TrustedPublisher trust, BCD setting, Secure Boot setting or Memory Integrity setting was changed during preparation.
+
+The earlier runner accepted only Microsoft-signed catalogs. That was a conservative tool restriction, not the only supported development route. Microsoft documents loading locally test-signed drivers with TESTSIGNING enabled; with HVCI, the binary must itself be signed. Secure Boot normally prevents enabling that mode. [Microsoft test-signing requirements](https://learn.microsoft.com/en-us/windows-hardware/drivers/install/the-testsigning-boot-configuration-option).
+
+## Available routes
+
+| Route | What it needs | Current position |
+| --- | --- | --- |
+| Microsoft hardware signing | Hardware Developer Program/signing access; attestation submissions require an EV certificate. | Not available through an existing local certificate here; external enrollment/access is unconfirmed. It is not a prerequisite to create this private lab package. [Signing options](https://learn.microsoft.com/en-us/windows-hardware/drivers/dashboard/driver-signing-offerings). |
+| Local test signing | Owner-approved temporary Secure Boot off, a separate loader entry with TESTSIGNING on, and trust for this exact test certificate. | Package and guarded scripts prepared. **HVCI must remain running**. Actual activation requires the owner's firmware/reboot actions and has not been performed. |
+| Preproduction signing with Secure Boot on | Microsoft partner submission and explicit device provisioning. | A partner workflow, not an automatic local self-signing shortcut. [Microsoft preproduction guidance](https://learn.microsoft.com/en-us/windows-hardware/drivers/dashboard/driver-signing-offerings#preproduction-signed-drivers). |
+
+The current host reports Secure Boot on, test signing off and HVCI running; native Code Integrity flags are `0xF401`. A 2026 Windows Driver Policy audit file is present, but that alone does not establish the effective policy mode; unprivileged CiTool inspection was denied. No code-integrity policy is disabled by this toolkit. If Windows still blocks a future load, retain its Code Integrity event and stop rather than switching off another protection. [Windows Driver Policy](https://support.microsoft.com/en-us/windows/hardware/drivers/the-windows-driver-policy).
+
+## What was actually signed and verified
+
+[Sign-RolePolicy.ps1](../experimental/role-policy/Sign-RolePolicy.ps1) makes a new private copy, creates a seven-day non-exportable current-user test key, embeds an SHA-256 signature in SYS, regenerates CAT **after** signing SYS, then signs CAT. It checks that the executable's Authenticode digest did not change, verifies both signature mathematics and SYS/INF catalog membership, exports only the public CER, and deletes the newly created private key/certificate. Nothing is imported into a trusted store during this operation.
+
+The read-only [native verifier](../experimental/role-policy/Signing.Native.cs) uses Windows cryptographic/catalog APIs. Tests alter executable bytes and actual signature bytes to confirm rejection. WIN_CERTIFICATE padding is not signature content; the corruption fixture was corrected to alter the encoded signature rather than padding. Cryptographic verification is distinct from Windows accepting a signature under its current boot policy.
+
+The official NuGet WDK's Inf2Cat has an internal-tools certificate chain that is not trusted by this host. Its exact bytes are pinned to the separately hash-verified Microsoft WDK archive. The script does not import that tool's signing root or weaken Windows trust to execute it. The actual SignTool executable has a valid Microsoft signature.
+
+## Controlled activation, not yet performed
+
+Read the [driver review](driver-readiness-review.md) and [experiment](role-policy-experiment.md). This procedure is for the exact analysed ASUS/Windows installation. A separate loader entry shares the same Windows files, registry and driver store; it is **not** a separate isolated installation. Secure Boot is a machine-wide firmware setting. The scripts preserve the original loader/default and do not toggle firmware, disable HVCI or reboot automatically.
+
+Before changing Secure Boot, save work, ensure Windows Recovery is usable and have the recovery key for any encrypted system drive available. Do not paste recovery keys into chat or logs. BitLocker suspension or key extraction is not automated. If these recovery conditions cannot be met, do not activate this route.
+
+1. With original Secure Boot on, run **Snapshot** in [Prepare-LocalTestBoot.ps1](../experimental/role-policy/Prepare-LocalTestBoot.ps1). It records the machine, current loader, boot manager, security flags and exact certificate trust before any boot/trust modification.
+2. Only after owner approval, manually turn Secure Boot off and return to the **original Windows loader**. HVCI must still be running. **Prepare** copies that loader once, enables TESTSIGNING only on the new entry, and imports only this package's public certificate into the local-machine Root and TrustedPublisher stores. It never changes the original loader's test flag or default selection.
+3. Manually select the named test loader. The runner's explicit **LocalTest** mode checks its saved loader ID, machine, actual TESTSIGNING/HVCI flags, Secure Boot state, certificate, package hashes and signature mathematics. Microsoft signing remains the default mode.
+4. Run **Baseline** before installing the filter. It verifies the stock policy-false startup, then captures one ordinary DEG2 attachment in this same test boot. The known retired `EnableUSB4v2Support` and `UserControlOfIdleSettings` values are checked absent, because test signing could otherwise activate previously ignored overrides. If baseline already works or does not reproduce fallback, **stop** and restore the test environment; do not attribute that result to the uninstalled filter.
+5. Disconnect DEG2. **Install** requires that matching fallback baseline, less than 30 minutes old, plus the original guards. The startup trace must prove Microsoft accepted forced policy true before **Observe** permits one new attachment. Core Microsoft image hashes are pinned, not just the ACPI client.
+6. Disconnect DEG2 and run the experiment's **Rollback**. Remove only its recorded owned extension; retain every trace/result. Uncertain or reboot-required results remain pending. An inability to decode a trace does not prevent attempting package removal.
+7. Once the experiment package is absent and its driver is not running, run boot **Restore**. This removes only the uniquely owned test entry and only certificate trust that was absent from the original snapshot. Interrupted copy/deletion states have recovery handling; ambiguous ownership stops removal.
+8. Manually restore Secure Boot, boot the original Windows entry and run **Verify**. It checks original loader, boot-manager state, Secure Boot on, TESTSIGNING off, HVCI running and exact prior certificate-trust presence. A partial cleanup is not reported as complete.
+
+This added baseline is necessary: a production-boot capture versus a test-signing boot would change more than the filter. Only the baseline and filter attachment within the same boot form the intended policy comparison. Neither captures physical PD packets.
+
+The owner-specific output helper binds the exact reviewed package and private paths so there is no manual hash/GUID editing. Its default is Preview. No Snapshot, Prepare, Baseline, Install, real Observe, real Rollback or real boot Restore has been run during this preparation.
+
+## Source defaults and permission boundary
+
+The [repository rule](../AGENTS.md) says: “Never inject a Firmware-class package, cross-flash another model's firmware, alter Secure Boot/test-signing, or patch Windows binaries as a routine troubleshooting step.” Creating the private signature did not change those settings. Activating this development route is a separate, explicit owner decision; the prepared scripts do not assume that approval.
+
+If Windows cannot boot after a driver load, in-Windows scripts cannot guarantee recovery. Use the saved record and Windows Recovery to identify the correct Windows volume and remove only the experiment's verified OEM package offline. Retain the original Microsoft packages. Actual Recovery, kernel loading, HVCI compatibility and physical rollback remain unqualified.

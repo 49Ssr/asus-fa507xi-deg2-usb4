@@ -1,7 +1,7 @@
 {
   "schema": 1,
   "date": "2026-11-01",
-  "status": "PreparedUnsignedNeverLoaded",
+  "status": "LocalTestSignedNeverLoaded_ActivationPendingOwnerDecision",
   "latest_hardware_result": "asus-dell-matched-comparison.json",
   "intervention": {
     "device": "ASUS FA507XI UCSI",
@@ -31,7 +31,7 @@
   "qualification": {
     "native_assertions": 4631,
     "malformed_frames": 4000,
-    "powershell_51_checks": 57,
+    "powershell_51_checks": 64,
     "actual_unsigned_refusal": true,
     "compiler": "MSVC 14.44.35207",
     "sdk": "10.0.26100.0",
@@ -53,9 +53,127 @@
     "hardware_policy_changed": false,
     "vm_tested": false,
     "driver_verifier_tested": false,
-    "hardware_rollback_tested": false
+    "hardware_rollback_tested": false,
+    "actual_driver_callback_assertions": 36,
+    "signing_and_boot_checks": 41,
+    "static_analysis_project_results": 0,
+    "static_analysis_external_headers_excluded": true
   },
   "package": {
+    "kind": "Usb4RolePolicyExperimentalPackage",
+    "signing": "Unsigned",
+    "files": [
+      {
+        "SHA256": "5B7CBB2CF2F0740658C4534771519D402CC06F7D2880D74F850946E5ACFE26C3",
+        "Name": "usb4rolepolicy.cat",
+        "Bytes": 1155
+      },
+      {
+        "SHA256": "ADD2B607D5B49D39C2DC745770FC4F4D745E3E873C3CADD24EF0ECDC91F01A29",
+        "Name": "Usb4RolePolicy.inf",
+        "Bytes": 1140
+      },
+      {
+        "SHA256": "B25F20C9FD8F169ACE5E7104BA4E6ACFECF6C895FC8EF0E2D7055E6418635658",
+        "Name": "Usb4RolePolicy.sys",
+        "Bytes": 18944
+      }
+    ]
+  },
+  "wdk_download": {
+    "source": "https://api.nuget.org/v3-flatcontainer/microsoft.windows.wdk.x64/10.0.26100.6584/microsoft.windows.wdk.x64.10.0.26100.6584.nupkg",
+    "bytes": 110872506,
+    "sha256": "C393D03DFB640B5C92F546B32F6770EF68CD3AAF691956E7D66D8E2C28A1B55E"
+  },
+  "gates": [
+    "Microsoft catalog and kernel-policy membership verification",
+    "reviewed signed SYS hash",
+    "exact model/BIOS/Windows/client and decoder",
+    "default DRP restoration record",
+    "other USB-C partners disconnected",
+    "durable machine/target/package checkpoint",
+    "Microsoft startup policy acceptance with zero loss/format errors",
+    "same boot and 15-minute proof freshness",
+    "single attachment",
+    "exact owned-package rollback and default-policy/network verification",
+    "explicit LocalTest saved-loader/certificate binding",
+    "actual TESTSIGNING on and HVCI running for local route",
+    "known retired test-gated overrides absent",
+    "same-test-boot stock-policy fallback control before filter install"
+  ],
+  "stability": {
+    "owner_reported_input_delay_seconds": "30-60",
+    "owner_later_reported_improved": true,
+    "experimental_driver_present_on_read_only_check": false,
+    "active_logman_trace_on_check": false,
+    "active_debugger_or_build_process_on_check": false,
+    "cause": "Unresolved"
+  },
+  "security_or_network_setting_changes": false,
+  "live_test_blocker": "Local package prepared; explicit owner security decision, recovery readiness and manual Secure Boot/reboot steps remain. No activation performed.",
+  "source_files": [
+    {
+      "path": "experimental/role-policy/README.md",
+      "sha256_utf8_lf": "590d5b496721a1f4f82f7238b82b222a7cf055340306fa9edb55ad01820171b5"
+    },
+    {
+      "path": "experimental/role-policy/Build.ps1",
+      "sha256_utf8_lf": "e04c738ddb3437e1fe69f25c239c9a2c535a74c3367fcc4ec3cac0ca0b74e338"
+    },
+    {
+      "path": "experimental/role-policy/Driver.c",
+      "sha256_utf8_lf": "9f34e41e3eef6d07c47090233418eeeae1ad5a3ac2c7a5041e8dcbfd7f7af67d"
+    },
+    {
+      "path": "experimental/role-policy/Policy.c",
+      "sha256_utf8_lf": "784313d001bc526dab6bfbd0e33e4acc2ef5d6b1cee8180cfe4e7fbf926205ae"
+    },
+    {
+      "path": "experimental/role-policy/Policy.h",
+      "sha256_utf8_lf": "9053827bb7f556936197c7ae24d89de0f9e2cee46ac1d7077e346face3b614dd"
+    },
+    {
+      "path": "experimental/role-policy/Prepare-LocalTestBoot.ps1",
+      "sha256_utf8_lf": "e00801ee0854d65127e71038da925c09285a2a2fc2c6f5b2f5744316c26b250c"
+    },
+    {
+      "path": "experimental/role-policy/Sign-RolePolicy.ps1",
+      "sha256_utf8_lf": "01e99baca7715ddcc067e579e85ddd28ded1133c219470e2d9c1aa230c8146bb"
+    },
+    {
+      "path": "experimental/role-policy/Signing.Native.cs",
+      "sha256_utf8_lf": "54e7d5335b8eda7de5330601712c5300cdb7c719da7e161d842a636fe17527e4"
+    },
+    {
+      "path": "experimental/role-policy/Test-RolePolicy.ps1",
+      "sha256_utf8_lf": "1b4d486f9d3e2bc688578d48b430a9624fac0732605ba95b57943ed0590df869"
+    },
+    {
+      "path": "experimental/role-policy/TestPolicy.c",
+      "sha256_utf8_lf": "d46a8083adb5ec99ba9d2017846b247fe2b3a5d8ddee62c98cd97a2497b03a22"
+    },
+    {
+      "path": "experimental/role-policy/Usb4RolePolicy.inf",
+      "sha256_utf8_lf": "add2b607d5b49d39c2dc745770fc4f4d745e3e873c3cadd24ef0ecdc91f01a29"
+    },
+    {
+      "path": "tests/Test-RolePolicyWorkflow.ps1",
+      "sha256_utf8_lf": "e23acc409492cad7d5bba439752152b3ac4355d8db18ab7dee2e70b1f77efa6d"
+    },
+    {
+      "path": "tests/Test-RolePolicySigning.ps1",
+      "sha256_utf8_lf": "274e2d32d8fadfd790a26fdd6e879b911816803bf8450aa95cd3b0b69ec31c5c"
+    },
+    {
+      "path": "tests/role-policy/DriverShim.h",
+      "sha256_utf8_lf": "b0ba1caab4363be64ba8dc5b18f2f62fa6ee69226f6725119ac5aa61e0595670"
+    },
+    {
+      "path": "tests/role-policy/TestDriver.c",
+      "sha256_utf8_lf": "5f79b5c6e92436db464264f2d7669d61f107131147d14df8a30fec085eb830de"
+    }
+  ],
+  "previous_unsigned_package": {
     "kind": "Usb4RolePolicyExperimentalPackage",
     "signing": "Unsigned",
     "files": [
@@ -76,69 +194,46 @@
       }
     ]
   },
-  "wdk_download": {
-    "source": "https://api.nuget.org/v3-flatcontainer/microsoft.windows.wdk.x64/10.0.26100.6584/microsoft.windows.wdk.x64.10.0.26100.6584.nupkg",
-    "bytes": 110872506,
-    "sha256": "C393D03DFB640B5C92F546B32F6770EF68CD3AAF691956E7D66D8E2C28A1B55E"
+  "local_test_signing": {
+    "performed": true,
+    "signature_math_verified": true,
+    "catalog_membership_verified": true,
+    "certificate_validity_days": 7,
+    "private_key_removed": true,
+    "root_trust_changed": false,
+    "publisher_trust_changed": false,
+    "boot_changed": false,
+    "driver_loaded": false,
+    "files": [
+      {
+        "Name": "usb4rolepolicy.cat",
+        "Bytes": 2941,
+        "SHA256": "419785D446E7D99C83D023ADA1D36D7E9210862E7F1A5CD459DFA210E5B311F5"
+      },
+      {
+        "Name": "Usb4RolePolicy.inf",
+        "Bytes": 1140,
+        "SHA256": "ADD2B607D5B49D39C2DC745770FC4F4D745E3E873C3CADD24EF0ECDC91F01A29"
+      },
+      {
+        "Name": "Usb4RolePolicy.sys",
+        "Bytes": 20864,
+        "SHA256": "EB12195BCEC59201066A13F143CD350B326385B58F64D1763F50D727D879A4A3"
+      }
+    ]
   },
-  "gates": [
-    "Microsoft catalog and kernel-policy membership verification",
-    "reviewed signed SYS hash",
-    "exact model/BIOS/Windows/client and decoder",
-    "default DRP restoration record",
-    "other USB-C partners disconnected",
-    "durable machine/target/package checkpoint",
-    "Microsoft startup policy acceptance with zero loss/format errors",
-    "same boot and 15-minute proof freshness",
-    "single attachment",
-    "exact owned-package rollback and default-policy/network verification"
+  "review_corrections": [
+    "SetFilter before excluded-device return",
+    "REG_SZ TYPECHECK and NOEXPAND",
+    "distinct callback function classes",
+    "preserve CLI RunDirectory across imports",
+    "avoid helper/capture directory shadowing"
   ],
-  "stability": {
-    "owner_reported_input_delay_seconds": "30-60",
-    "owner_later_reported_improved": true,
-    "experimental_driver_present_on_read_only_check": false,
-    "active_logman_trace_on_check": false,
-    "active_debugger_or_build_process_on_check": false,
-    "cause": "Unresolved"
-  },
-  "security_or_network_setting_changes": false,
-  "live_test_blocker": "Windows-accepted package signing unresolved; hardware execution remains pending",
-  "source_files": [
-    {
-      "path": "experimental/role-policy/Build.ps1",
-      "sha256_utf8_lf": "15daaf9dd8a8081101fabdd2c08ce4e274a594e0e15dde3902e515d52072bb3a"
-    },
-    {
-      "path": "experimental/role-policy/Driver.c",
-      "sha256_utf8_lf": "0363b983e8e63e0c94d9f4cf152ea117db166adad624e37a7562e0fedf51cf16"
-    },
-    {
-      "path": "experimental/role-policy/Policy.c",
-      "sha256_utf8_lf": "784313d001bc526dab6bfbd0e33e4acc2ef5d6b1cee8180cfe4e7fbf926205ae"
-    },
-    {
-      "path": "experimental/role-policy/Policy.h",
-      "sha256_utf8_lf": "9053827bb7f556936197c7ae24d89de0f9e2cee46ac1d7077e346face3b614dd"
-    },
-    {
-      "path": "experimental/role-policy/README.md",
-      "sha256_utf8_lf": "f4629a0734d3f4f4477a10668a6e6829fca81de2e69ca15a4f0b704b2c1846e4"
-    },
-    {
-      "path": "experimental/role-policy/Test-RolePolicy.ps1",
-      "sha256_utf8_lf": "337933b1ffa547eaab3bef5832a34d8d1ff757e69ac1de399c33282d20183ff7"
-    },
-    {
-      "path": "experimental/role-policy/TestPolicy.c",
-      "sha256_utf8_lf": "d46a8083adb5ec99ba9d2017846b247fe2b3a5d8ddee62c98cd97a2497b03a22"
-    },
-    {
-      "path": "experimental/role-policy/Usb4RolePolicy.inf",
-      "sha256_utf8_lf": "add2b607d5b49d39c2dc745770fc4f4d745e3e873c3cadd24ef0ecdc91f01a29"
-    },
-    {
-      "path": "tests/Test-RolePolicyWorkflow.ps1",
-      "sha256_utf8_lf": "f7eb36d0ef616ceafb7f51c019f8b82280418bbbfe6a503e84770abec6d078cf"
-    }
-  ]
+  "host_security_read": {
+    "secure_boot": true,
+    "test_signing": false,
+    "hvci_running": true,
+    "code_integrity_flags": "0xF401",
+    "effective_driver_policy_mode": "Not established by unprivileged inspection"
+  }
 }

@@ -1,12 +1,16 @@
 #requires -Version 5.1
 [CmdletBinding()]
-param([ValidateSet('Preview','Preflight','Install','Observe','Rollback')][string]$Mode='Preview',
+param([ValidateSet('Preview','Preflight','Baseline','Install','Observe','Rollback')][string]$Mode='Preview',
       [string]$PackageDirectory='', [string]$ReviewedDriverSHA256='',
-      [string]$SignTool='', [string]$TraceFmt='', [string]$TmfDirectory='', [string]$RunDirectory='')
+      [string]$SignTool='', [string]$TraceFmt='', [string]$TmfDirectory='', [string]$RunDirectory='',
+      [ValidateSet('Microsoft','LocalTest')][string]$SigningMode='Microsoft',
+      [string]$TestBootRecord='', [string]$BaselineDirectory='')
 Set-StrictMode -Version Latest
 $ErrorActionPreference='Stop'
-$rpMode=$Mode
+$rpMode=$Mode;$rpRunDirectory=$RunDirectory;$rpSigningMode=$SigningMode
 . (Join-Path $PSScriptRoot '..\..\tools\Capture-USB4DeepCompare.ps1')
+. (Join-Path $PSScriptRoot 'Prepare-LocalTestBoot.ps1')
+$script:RpSigningMode=$rpSigningMode
 $script:RpRoot=Join-Path $repo 'local\RolePolicyTest'
 $script:RpInfHash=(Get-FileHash -LiteralPath (Join-Path $PSScriptRoot 'Usb4RolePolicy.inf') -Algorithm SHA256).Hash
 $script:RpClientHash='436C580CE96861187A5299F00EAB9E852EFA6B33F127D59819C5283B6482EA4E'
@@ -20,7 +24,16 @@ function Get-RpHost {
     if([string]$bios.BIOSVersion -notmatch '(^|[^0-9])314([^0-9]|$)' -or [string]$version.CurrentBuildNumber -ne '26200' -or $version.UBR -ne 9818){throw 'This experiment is pinned to the analysed BIOS 314 / Windows 26200.9818.'}
     $client=Resolve-DeepDriverPath 'UcmUcsiAcpiClient.sys'
     if((Get-FileHash -LiteralPath $client -Algorithm SHA256).Hash -cne $script:RpClientHash){throw 'Analysed ACPI client image changed.'}
-    if(-not(Confirm-SecureBootUEFI)){throw 'This runner requires Secure Boot to remain enabled; it never changes boot security.'}
+    $pins=@{
+        'UcmUcsiCx.sys'='8F5122333060393180E6578CE22AA51C5D00B2165709EAA8262EA66FD6AFDD67'
+        'UcmCx.sys'='44D2B067D14FCAEA8683BAC73C87700A7B4A3CB2DA88D19AADA21B18978E5D5A'
+        'Usb4HostRouter.sys'='912EFBFCA273C62484DB952632EEB0D2B061BD7A1C830970FDA23CDB50BEEB1F'
+        'Usb4DeviceRouter.sys'='5DB15E8E1FD270C293BE4385A92B85947C93F33396C55B9D1D5265BA1FE1F3A2'
+    }
+    foreach($name in $pins.Keys){if((Get-FileHash -LiteralPath (Resolve-DeepDriverPath $name)).Hash -cne $pins[$name]){throw ('Analysed stack image changed: '+$name)}}
+    if($script:RpSigningMode -eq 'LocalTest'){Assert-PolicyNoOldOverrides;$null=Assert-RpLocalBoot}else{
+        if(-not(Confirm-SecureBootUEFI)){throw 'Microsoft signing mode requires Secure Boot enabled; this runner never changes boot security.'}
+    }
     $p=Get-DeepPnpProperties $context.UcsiInstance @('DEVPKEY_Device_DriverInfPath','DEVPKEY_Device_LowerFilters','DEVPKEY_Device_UpperFilters')
     $base=[string]$p.Values['DEVPKEY_Device_DriverInfPath']
     if([string]::IsNullOrWhiteSpace($base)){throw 'Cannot identify the Microsoft base package.'}
@@ -54,6 +67,21 @@ function Assert-RpSignedPackage([string]$Directory,[string]$ExpectedSHA,[string]
     if((Get-FileHash -LiteralPath (Join-Path $path 'Usb4RolePolicy.inf') -Algorithm SHA256).Hash -cne $script:RpInfHash -or
        (Get-FileHash -LiteralPath (Join-Path $path 'Usb4RolePolicy.sys') -Algorithm SHA256).Hash -ine $ExpectedSHA){throw 'Package differs from the reviewed source/package.'}
     $cat=Join-Path $path 'Usb4RolePolicy.cat';$signature=Get-AuthenticodeSignature -LiteralPath $cat
+    if($script:RpSigningMode -eq 'LocalTest'){
+        $boot=Assert-RpLocalBoot
+        $record=Get-Content -LiteralPath $boot.SigningRecord -Raw|ConvertFrom-Json
+        foreach($name in @('Usb4RolePolicy.sys','Usb4RolePolicy.inf','Usb4RolePolicy.cat')){
+            $expected=@($record.Files|Where-Object Name -ieq $name)
+            $file=Join-Path $path $name
+            if($expected.Count -ne 1 -or (Get-FileHash -LiteralPath $file).Hash -cne $expected[0].SHA256){throw 'Locally signed package changed.'}
+        }
+        foreach($file in @((Join-Path $path 'Usb4RolePolicy.sys'),$cat)){
+            if((Get-AuthenticodeSignature -LiteralPath $file).SignerCertificate.Thumbprint -cne $boot.CertificateThumbprint){throw 'Unexpected local test signer.'}
+            [Usb4RolePolicy.SignatureCheck]::VerifySignatureMath($file,$boot.Certificate)
+        }
+        foreach($name in @('Usb4RolePolicy.sys','Usb4RolePolicy.inf')){if(-not [Usb4RolePolicy.SignatureCheck]::CatalogContains($cat,(Join-Path $path $name))){throw 'Local catalog membership failed.'}}
+        return $path
+    }
     if($signature.Status -ne 'Valid' -or $null -eq $signature.SignerCertificate -or
        $signature.SignerCertificate.Subject -notmatch 'O=Microsoft Corporation(?:,|$)'){throw 'A Microsoft-signed valid catalog is required. Unsigned/test-signed packages are refused before any change.'}
     $verified=Assert-MicrosoftExecutable $Verifier 'signtool.exe'
@@ -62,6 +90,20 @@ function Assert-RpSignedPackage([string]$Directory,[string]$ExpectedSHA,[string]
         if($LASTEXITCODE -ne 0){throw ('Kernel-policy catalog verification failed: '+($result -join ' '))}
     }
     return $path
+}
+function Test-RpLocalSecurity([object]$Security){return (-not $Security.SecureBoot) -and $Security.TestSigning -and $Security.Hvci}
+function Assert-RpLocalBoot {
+    Assert-PolicyAdmin
+    if([string]::IsNullOrWhiteSpace($TestBootRecord)){throw 'Local test signing requires its saved test-boot record.'}
+    $path=Assert-LocalPath $TestBootRecord;Assert-DeepNoReparse $path
+    $boot=Get-Content -LiteralPath $path -Raw|ConvertFrom-Json
+    if($boot.Kind -ne 'Usb4RolePolicyTestBoot' -or $boot.Phase -ne 'Prepared' -or $boot.MachineHash -cne (Get-DeepMachineHash) -or
+       $boot.TestEntry -cne (Get-PolicyCurrentBoot) -or -not(Test-RpLocalSecurity (Get-PolicySecurity))){throw 'Not in the approved local test loader with test signing on, Secure Boot off and HVCI still running.'}
+    if((Get-FileHash -LiteralPath $boot.SigningRecord).Hash -cne $boot.SigningRecordSHA256 -or (Get-FileHash -LiteralPath $boot.Certificate).Hash -cne $boot.CertificateSHA256){throw 'Local signing record/certificate changed.'}
+    $cert=New-Object Security.Cryptography.X509Certificates.X509Certificate2($boot.Certificate)
+    try{if($cert.Thumbprint -cne $boot.CertificateThumbprint -or [DateTime]::UtcNow -lt $cert.NotBefore.ToUniversalTime() -or [DateTime]::UtcNow -gt $cert.NotAfter.ToUniversalTime()){throw 'Test certificate is changed or expired.'}}finally{$cert.Dispose()}
+    foreach($store in @('Root','TrustedPublisher')){if(-not(Test-Path ('Cert:\LocalMachine\'+$store+'\'+$boot.CertificateThumbprint))){throw 'Exact local test certificate trust is not prepared.'}}
+    return $boot
 }
 function Assert-RpDecoder([string]$Executable,[string]$Directory) {
     $null=Assert-MicrosoftExecutable $Executable 'tracefmt.exe'
@@ -103,19 +145,19 @@ function Start-RpTrace([string]$Directory) {
     $null=[IO.Directory]::CreateDirectory($Directory)
     return Start-ConnectionTrace $Directory
 }
-function Invoke-RpDeviceChange([string]$Directory,[scriptblock]$Action,[bool]$AllowWithoutTrace=$false) {
+function Invoke-RpDeviceChange([string]$TraceDirectory,[scriptblock]$Action,[bool]$AllowWithoutTrace=$false) {
     $trace=$null
     try{
-        try{$trace=Start-RpTrace $Directory}catch{
+        try{$trace=Start-RpTrace $TraceDirectory}catch{
             if(-not $AllowWithoutTrace){throw}
             Write-Warning 'Recovery tracing unavailable. Package removal still runs; restoration will remain unverified.'
         }
-        if($null -ne $trace){Write-DeepJson (Join-Path $Directory 'trace.private.json') $trace}
+        if($null -ne $trace){Write-DeepJson (Join-Path $TraceDirectory 'trace.private.json') $trace}
         & $Action
     }finally{
         if($null -ne $trace){
-            Stop-ConnectionTrace $trace $Directory
-            Write-DeepJson (Join-Path $Directory 'trace.private.json') $trace
+            Stop-ConnectionTrace $trace $TraceDirectory
+            Write-DeepJson (Join-Path $TraceDirectory 'trace.private.json') $trace
             if(-not $trace.Stopped){throw 'Owned ETW session did not stop. Use its recorded exact session name; do not stop other sessions.'}
         }
     }
@@ -160,12 +202,14 @@ function Assert-RpSharing([object]$Before,[object]$After) {
     if($a -cne $b){throw 'Enabled ICS bindings changed. Review snapshots; this script does not rewrite networking.'}
 }
 function Invoke-RpInstall([object]$Preflight,[string]$Decoder,[string]$Tmfs) {
+    if($script:RpSigningMode -eq 'LocalTest'){Assert-RpBaseline $BaselineDirectory $Preflight}
     Assert-RpDisconnected
     if((Read-Host 'Windows must be responsive and work saved. Type STABLE to install this one experimental filter') -cne 'STABLE'){throw 'Stable baseline was not confirmed.'}
+    if($script:RpSigningMode -eq 'LocalTest'){Assert-RpBaseline $BaselineDirectory $Preflight}
     $run=Join-Path $script:RpRoot ([DateTime]::UtcNow.ToString('yyyyMMdd-HHmmss')+'-'+[guid]::NewGuid().ToString('N'))
     $null=[IO.Directory]::CreateDirectory($run)
     $before=Get-DeepNetworkSnapshot;Write-DeepJson (Join-Path $run 'network-before.private.json') $before
-    $state=[ordered]@{Schema=1;Kind='Usb4RolePolicyRun';MachineHash=$Preflight.HostState.Context.MachineHash;Target=$Preflight.HostState.Context.UcsiInstance;BaseInf=$Preflight.HostState.BaseInf;InfHash=$script:RpInfHash;SysHash=$Preflight.SysHash;BootStamp=$Preflight.BootStamp;PublishedInf=$null;PendingRollback=$true;Phase='InstallIntent';PolicyProof=$null;Observation=$null;RollbackProof=$null;StartedUtc=[DateTime]::UtcNow.ToString('o')}
+    $state=[ordered]@{Schema=1;Kind='Usb4RolePolicyRun';SigningMode=$script:RpSigningMode;MachineHash=$Preflight.HostState.Context.MachineHash;Target=$Preflight.HostState.Context.UcsiInstance;BaseInf=$Preflight.HostState.BaseInf;InfHash=$script:RpInfHash;SysHash=$Preflight.SysHash;BootStamp=$Preflight.BootStamp;PublishedInf=$null;PendingRollback=$true;Phase='InstallIntent';PolicyProof=$null;Observation=$null;RollbackProof=$null;StartedUtc=[DateTime]::UtcNow.ToString('o')}
     Write-DeepJson (Join-Path $run 'state.private.json') $state
     Write-Host ('Recovery run: '+$run+' ; use -Mode Rollback -RunDirectory with this exact directory.')
     try{
@@ -243,11 +287,50 @@ function Invoke-RpRollback([string]$Directory,[string]$Decoder,[string]$Tmfs) {
         $state.PendingRollback=$false;$state.Phase='RollbackVerified'
     }catch{$state.Phase='RollbackUnverified';throw}finally{Write-DeepJson (Join-Path $Directory 'state.private.json') $state}
 }
+function Invoke-RpBaseline([object]$Preflight,[string]$Decoder,[string]$Tmfs) {
+    Assert-RpDisconnected
+    $directory=Join-Path $repo ('local\RolePolicyBaselines\'+[guid]::NewGuid().ToString('N'))
+    $null=[IO.Directory]::CreateDirectory($directory)
+    $state=[ordered]@{Schema=1;Kind='Usb4RolePolicyBaseline';SigningMode=$script:RpSigningMode;MachineHash=$Preflight.HostState.Context.MachineHash;Target=$Preflight.HostState.Context.UcsiInstance;BootStamp=$Preflight.BootStamp;SysHash=$Preflight.SysHash;StartedUtc=[DateTime]::UtcNow.ToString('o');Phase='NotCompleted';PolicyProof=$null;Milestone=$null;InventorySHA256=$null}
+    Write-DeepJson (Join-Path $directory 'baseline.private.json') $state
+    $before=Get-DeepNetworkSnapshot;Write-DeepJson (Join-Path $directory 'network-before.private.json') $before
+    try{
+        Invoke-RpDeviceChange (Join-Path $directory 'startup') {
+            if((Invoke-RpPnp @('/restart-device',$state.Target) (Join-Path $directory 'baseline-restart.private.txt')) -eq 3010){throw 'Baseline restart requires reboot; baseline not established.'}
+            Start-Sleep -Seconds 4
+        }
+        $state.PolicyProof=Assert-RpPolicyTrace (Join-Path $directory 'startup') $false $Decoder $Tmfs
+        Invoke-RpDeviceChange (Join-Path $directory 'attachment') {
+            $null=Save-DeepInventory $directory 'before'
+            Write-Host 'BASELINE: connect powered DEG2 to the same ASUS USB4 port now. Observe for 45 seconds; no experimental driver is installed.' -ForegroundColor Cyan
+            Start-Sleep -Seconds 45
+            $inventory=Save-DeepInventory $directory 'after';$state.Milestone=Get-DeepMilestone $inventory
+            $state.InventorySHA256=(Get-FileHash -LiteralPath (Join-Path $directory 'devices-after.private.json')).Hash
+        }
+        $after=Get-DeepNetworkSnapshot;Write-DeepJson (Join-Path $directory 'network-after.private.json') $after;Assert-RpSharing $before $after
+        $state.Phase=if($state.Milestone.BillboardPresent -and -not $state.Milestone.RouterPresent -and -not $state.Milestone.ExternalNvidiaBound){'FallbackBaselineReady'}else{'BaselineConditionDiffers_DoNotInstall'}
+    }finally{Write-DeepJson (Join-Path $directory 'baseline.private.json') $state;Write-Host ('Baseline record: '+$directory+'. Disconnect DEG2 before the next stage.')}
+    return $directory
+}
+function Assert-RpBaseline([string]$Directory,[object]$Preflight) {
+    $path=Assert-LocalPath $Directory;Assert-DeepNoReparse $path
+    $root=[IO.Path]::GetFullPath((Join-Path $repo 'local\RolePolicyBaselines'))+'\'
+    if(-not $path.StartsWith($root,[StringComparison]::OrdinalIgnoreCase)){throw 'Use a recorded baseline in the owned baseline directory.'}
+    $baseline=Get-Content -LiteralPath (Join-Path $path 'baseline.private.json') -Raw|ConvertFrom-Json
+    if($baseline.Kind -ne 'Usb4RolePolicyBaseline' -or $baseline.Schema -ne 1 -or $baseline.Phase -ne 'FallbackBaselineReady' -or $baseline.SigningMode -ne $script:RpSigningMode -or
+       $baseline.PolicyProof.ExpectedDisabled -ne $false -or -not $baseline.Milestone.BillboardPresent -or $baseline.Milestone.RouterPresent -or $baseline.Milestone.ExternalNvidiaBound -or
+       $baseline.MachineHash -cne $Preflight.HostState.Context.MachineHash -or $baseline.Target -cne $Preflight.HostState.Context.UcsiInstance -or
+       $baseline.BootStamp -cne $Preflight.BootStamp -or $baseline.BootStamp -cne (Get-RpBootStamp) -or $baseline.SysHash -cne $Preflight.SysHash -or
+       ([DateTime]::UtcNow-[DateTime]::Parse($baseline.StartedUtc).ToUniversalTime()).TotalMinutes -gt 30){throw 'A fresh matching same-boot fallback baseline is required before local-test installation.'}
+    if((Get-FileHash -LiteralPath (Join-Path $path 'startup\connection.etl')).Hash -cne $baseline.PolicyProof.TraceSHA256 -or
+       (Get-FileHash -LiteralPath (Join-Path $path 'devices-after.private.json')).Hash -cne $baseline.InventorySHA256){throw 'Baseline evidence changed.'}
+}
 if($MyInvocation.InvocationName -eq '.'){return}
-if($rpMode -eq 'Preview'){Write-Output 'Unsigned prototype; no installation by default. Preflight verifies Microsoft catalog, reviewed SYS hash, exact host and decoder. Install records intent then one UCSI filter/restart; Observe permits one attachment only after Microsoft startup policy proof. Rollback removes only the owned OEM extension and verifies default policy. No reboot/security/network write.';return}
+if($rpMode -eq 'Preview'){Write-Output 'No installation by default. Microsoft signing remains the default. Explicit LocalTest mode requires the exact saved test loader/certificate, actual test-signing flag and running HVCI, plus a same-boot fallback baseline. Observe permits one attachment only after Microsoft startup policy proof. Rollback removes only the owned extension. No automatic boot/security/network change.';return}
 switch($rpMode){
     'Preflight' {$null=Get-RpPreflight $PackageDirectory $ReviewedDriverSHA256 $SignTool $TraceFmt $TmfDirectory;Write-Output 'Preflight passed without writes or device operations.'}
     'Install' {$preflight=Get-RpPreflight $PackageDirectory $ReviewedDriverSHA256 $SignTool $TraceFmt $TmfDirectory;Invoke-RpInstall $preflight $TraceFmt $TmfDirectory}
-    'Observe' {Invoke-RpObserve $RunDirectory}
-    'Rollback' {Invoke-RpRollback $RunDirectory $TraceFmt $TmfDirectory}
+    'Baseline' {$preflight=Get-RpPreflight $PackageDirectory $ReviewedDriverSHA256 $SignTool $TraceFmt $TmfDirectory;Invoke-RpBaseline $preflight $TraceFmt $TmfDirectory}
+    'Observe' {Invoke-RpObserve $rpRunDirectory}
+    'Rollback' {Invoke-RpRollback $rpRunDirectory $TraceFmt $TmfDirectory}
 }

@@ -65,7 +65,9 @@ function Invoke-RpPnp([string[]]$Arguments,[string]$LogPath){
 }
 function Assert-RpPolicyTrace {
     if($script:FailProof){throw 'mock missing Microsoft acceptance'}
-    return [pscustomobject]@{ExpectedDisabled=$args[1];TraceSHA256=('A'*64);DecodedSHA256=('B'*64)}
+    $traceFile=Join-Path $args[0] 'connection.etl'
+    $hash=if(Test-Path -LiteralPath $traceFile){(Get-FileHash -LiteralPath $traceFile).Hash}else{'A'*64}
+    return [pscustomobject]@{ExpectedDisabled=$args[1];TraceSHA256=$hash;DecodedSHA256=('B'*64)}
 }
 $script:RpRoot=$testRoot
 $pre=[pscustomobject]@{Package=(Split-Path $inf -Parent);SysHash='';BootStamp='test-boot';HostState=[pscustomobject]@{Context=[pscustomobject]@{MachineHash='TEST';UcsiInstance='ACPI\USBC000\TEST'};BaseInf='ucsi.inf'}}
@@ -152,4 +154,27 @@ Check $script:ActionRan 'rollback action proceeds when tracing unavailable'
 $script:StartsFail=$false
 Reject {Invoke-RpDeviceChange $testRoot {throw 'mock operation failed'}} 'operation failure propagates'
 Check $script:Stopped 'real trace owner stops on failure'
+
+# A local-test installation requires its own same-boot fallback control.
+$script:RpSigningMode='LocalTest';$script:Events.Clear()
+Reject {Invoke-RpInstall $pre 'decoder' 'tmfs'} 'local test refuses missing baseline before any device operation'
+Check ($script:Events.Count-eq 0) 'no install-side action without baseline'
+function Start-RpTrace([string]$Directory){$null=[IO.Directory]::CreateDirectory($Directory);[IO.File]::WriteAllText((Join-Path $Directory 'connection.etl'),'mock trace only');return [ordered]@{Stopped=$false}}
+$script:Fallback=$true
+function Save-DeepInventory([string]$Directory,[string]$Label){
+    $devices=if($script:Fallback){@([pscustomobject]@{InstanceId='USB\VID_041F&PID_D002\TEST';Status='OK';Class='USB';Properties=@{}})}else{@([pscustomobject]@{InstanceId='USB4\VID_8087&PID_5786\TEST';Status='OK';Class='System';Properties=@{}})}
+    $value=[pscustomobject]@{Devices=$devices};Write-DeepJson (Join-Path $Directory ('devices-'+$Label+'.private.json')) $value;return $value
+}
+$baseline=Invoke-RpBaseline $pre 'decoder' 'tmfs'
+Assert-RpBaseline $baseline $pre;Check $true 'recorded matching fallback baseline accepted'
+$file=Join-Path $baseline 'baseline.private.json';$savedBaseline=Get-Content -LiteralPath $file -Raw|ConvertFrom-Json
+$savedBaseline.BootStamp='wrong';Write-DeepJson $file $savedBaseline
+Reject {Assert-RpBaseline $baseline $pre} 'baseline from another boot refused'
+$savedBaseline.BootStamp='test-boot';$savedBaseline.Milestone.RouterPresent=$true;Write-DeepJson $file $savedBaseline
+Reject {Assert-RpBaseline $baseline $pre} 'working router is not a fallback control'
+$savedBaseline.Milestone.RouterPresent=$false;$savedBaseline.StartedUtc=[DateTime]::UtcNow.AddMinutes(-31).ToString('o');Write-DeepJson $file $savedBaseline
+Reject {Assert-RpBaseline $baseline $pre} 'expired baseline refused'
+$script:Fallback=$false;$different=Invoke-RpBaseline $pre 'decoder' 'tmfs'
+Reject {Assert-RpBaseline $different $pre} 'changed baseline outcome stops intervention'
+$script:RpSigningMode='Microsoft'
 [pscustomobject]@{Checks=$script:Checks;Actual='Preview, parser, unsigned package, atomic private state files';Mocked='device/ETW/signing-success/install/restart/rollback/network';HardwareTested=$false}|ConvertTo-Json

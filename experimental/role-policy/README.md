@@ -1,6 +1,6 @@
 # UCSI role-policy prototype
 
-**Unsigned, never loaded, not a validated USB4 fix.** Read the [research, controlled procedure and rollback](../../docs/role-policy-experiment.md) before using this source. The default runner and builder only print Preview.
+**Private local test-signed copy prepared, never loaded, not a validated USB4 fix.** Read the [research, controlled procedure and rollback](../../docs/role-policy-experiment.md) before using this source. The default runner and builder only print Preview.
 
 `Driver.c` is an x64 KMDF 1.15 device lower filter. `Policy.c` is the shared bounded protocol parser tested by `TestPolicy.c`. `Usb4RolePolicy.inf` adds an independently removable extension; Microsoft's base UCSI driver is retained. The driver recognizes only the pinned UCSI UUID/revision and functions 0/4 on the guarded ASUS model. It changes a valid support mask and supplies the documented disable-correction reply before attachment.
 
@@ -24,3 +24,5 @@ powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\experimental\role-poli
 ```
 
 The runner's Preflight/Install require an independently reviewed SYS hash and a valid Microsoft-signed catalog verified against Windows kernel policy. The unsigned build fails this gate before writes or device operations. Signing access, live installation, one-attachment behavior and real rollback remain unqualified. No security-setting change or general deployment tool is supplied.
+
+Local signing and the staged test-boot workflow are in [local-test-signing.md](../../docs/local-test-signing.md). Microsoft signing remains the default. Explicit LocalTest mode requires owner-approved boot preparation, running HVCI and a same-boot baseline. The source callback harness is compiled only for user-mode tests; production builds always use actual WDK/WDF headers.

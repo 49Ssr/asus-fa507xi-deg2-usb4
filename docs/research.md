@@ -114,3 +114,7 @@ The [prepared comparison](handoff.md#n5-existing-hardware-partner-handoff-propos
 ## Pre-attachment policy research, 1 November
 
 The [role-policy experiment](role-policy-experiment.md) connects the documented UCSI function-4 contract, Microsoft's sample consumer, the actual pinned client IOCTL/layout and a device lower-filter prototype. It distinguishes AMD host/PD policy, accessory router, retimer and Windows connection-manager responsibilities. UMDF cannot receive the verified internal-device-control path; an extension KMDF driver requires an accepted signing route. Source/software qualification and a rollback procedure are prepared; no driver has been loaded and no new hardware result or firmware patch is claimed. The detailed page links the primary Microsoft, Intel and Parade sources checked for this review.
+
+## Driver signing and readiness review, 1 November
+
+[Local signing](local-test-signing.md) now has a real cryptographically verified private test package, distinct from Microsoft production trust. [The readiness review](driver-readiness-review.md) maps retained dump/trace behaviour to the filter's pass-through, startup and power responsibilities, records new defects caught before load, and retains the physical-PD/firmware coverage gap. Primary Microsoft signing/WDF/registry sources are linked at the claims they support. No driver, trusted root, boot option or firmware setting was changed on the host.
