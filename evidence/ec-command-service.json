@@ -1,0 +1,150 @@
+{
+  "schema": 1,
+  "date": "2026-11-01",
+  "status": "Offline command-service behavior tested; ASUS-DEG2 USB4 failure not reproduced",
+  "firmware_sha256": "103721578b66daed81dcf7a0bed06709c072f9da1dc75a6d7887321e6e32b060",
+  "bank": 3,
+  "service_pc_hex": "c89a",
+  "scope": "Original C89A command-service instructions; synthetic mailbox; PD bus, debug logging and OS-event delivery are doubles; counters are service-call counts, not measured time",
+  "test_doubles": [
+    "PD bus at common1ff4",
+    "debug logging at common364a",
+    "OS event delivery at common3537"
+  ],
+  "synthetic_states_not_live_readbacks": true,
+  "notification_delivery_to_windows_verified": false,
+  "physical_timing_verified": false,
+  "counter_comparisons": "post-increment; old value strictly greater than450 or600",
+  "cases": [
+    {
+      "case": "not-initialized-preserves-request",
+      "busCalls": 0,
+      "notificationRequests": 0,
+      "pendingOpcode": 0,
+      "cciHigh": 0,
+      "counter": 0
+    },
+    {
+      "case": "new-command-forwarded",
+      "busCalls": 1,
+      "notificationRequests": 0,
+      "pendingOpcode": 0,
+      "cciHigh": 0,
+      "counter": 0
+    },
+    {
+      "case": "failed-send-retains-command",
+      "busCalls": 1,
+      "notificationRequests": 0,
+      "pendingOpcode": 18,
+      "cciHigh": 0,
+      "counter": 0
+    },
+    {
+      "case": "next-call-retries-retained-command",
+      "busCalls": 1,
+      "notificationRequests": 0,
+      "pendingOpcode": 0,
+      "cciHigh": 0,
+      "counter": 0
+    },
+    {
+      "case": "inactive-interrupt-no-bus-read",
+      "busCalls": 0,
+      "notificationRequests": 0,
+      "pendingOpcode": 0,
+      "cciHigh": 0,
+      "counter": 0
+    },
+    {
+      "case": "no-ucsi-event-no-notification",
+      "busCalls": 1,
+      "notificationRequests": 0,
+      "pendingOpcode": 0,
+      "cciHigh": 0,
+      "counter": 0
+    },
+    {
+      "case": "completion-read-acknowledged-notification-requested",
+      "busCalls": 3,
+      "notificationRequests": 1,
+      "pendingOpcode": 0,
+      "cciHigh": 128,
+      "counter": 0
+    },
+    {
+      "case": "interrupt-read-fails",
+      "busCalls": 1,
+      "notificationRequests": 0,
+      "pendingOpcode": 0,
+      "cciHigh": 0,
+      "counter": 0
+    },
+    {
+      "case": "completion-read-fails",
+      "busCalls": 2,
+      "notificationRequests": 0,
+      "pendingOpcode": 0,
+      "cciHigh": 0,
+      "counter": 0
+    },
+    {
+      "case": "acknowledgement-fails",
+      "busCalls": 3,
+      "notificationRequests": 0,
+      "pendingOpcode": 0,
+      "cciHigh": 128,
+      "counter": 0
+    },
+    {
+      "case": "busy-reply-resets-counter-without-notification",
+      "busCalls": 3,
+      "notificationRequests": 0,
+      "pendingOpcode": 0,
+      "cciHigh": 8,
+      "counter": 0
+    },
+    {
+      "case": "existing-completion-at-counter-limit",
+      "busCalls": 0,
+      "notificationRequests": 0,
+      "pendingOpcode": 0,
+      "cciHigh": 128,
+      "counter": 451
+    },
+    {
+      "case": "existing-completion-above-counter-limit",
+      "busCalls": 0,
+      "notificationRequests": 1,
+      "pendingOpcode": 0,
+      "cciHigh": 128,
+      "counter": 0
+    },
+    {
+      "case": "existing-busy-at-counter-limit",
+      "busCalls": 0,
+      "notificationRequests": 0,
+      "pendingOpcode": 0,
+      "cciHigh": 8,
+      "counter": 601
+    },
+    {
+      "case": "existing-busy-cleared-above-counter-limit",
+      "busCalls": 0,
+      "notificationRequests": 0,
+      "pendingOpcode": 0,
+      "cciHigh": 0,
+      "counter": 602
+    }
+  ],
+  "passed": 15,
+  "prior_pmc_cases_passed": 69,
+  "prior_relay_cases_passed": 2306,
+  "earlier_failed_counter_assertions_preserved": true,
+  "root_cause_found": false,
+  "windows_fix_found": false,
+  "live_device_requests": 0,
+  "new_boots": 0,
+  "persistent_changes": 0,
+  "interpretation": "Expands coverage of the caller; does not validate the actual controller bus, electrical link or firmware policy. Saved attachment trace already has10 Windows commands and10 terminal completions without CCI error/busy/unsupported."
+}

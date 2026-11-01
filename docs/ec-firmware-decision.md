@@ -55,6 +55,8 @@ No new boot, reconnection, device reset, driver installation, firmware write or 
 
 ## Reproduce offline
 
+**Coverage follow-up:** `--service` now executes the surrounding command-service routine in15 additional scenarios, with the controller bus, debug logger and OS-event delivery explicitly simulated. It tests retries, gates, reply/acknowledgement failures and retained-result counters. It does not establish physical bus operation, wall-clock timing or delivery to Windows. [Plain explanation and missing measurements](investigation-gaps.md), [service results](../evidence/ec-command-service.json). The earlier69 PMC and2,306 relay cases also pass with the revised harness.
+
 1. Obtain the exact official capsule above. Run `python tools/analysis/Extract-BiosEc.py <capsule> <new-private-directory>`. It pins both hashes and refuses an existing output directory.
 2. Obtain `core.c`, `opcodes.c`, `disasm.c`, `emu8051.h` and its MIT license from [emu8051 commit5dc681275151c4a5d7b85ec9ff4ceb1b25abd5a8](https://github.com/jarikomppa/emu8051/tree/5dc681275151c4a5d7b85ec9ff4ceb1b25abd5a8).
 3. In an MSVC developer terminal, build `cl /TC /std:c11 /O2 /MT /W3 /I<emu8051-directory> tools/analysis/Test-EcPmcFirmware.c <emu8051-directory>/core.c <emu8051-directory>/opcodes.c <emu8051-directory>/disasm.c /link bcrypt.lib`.

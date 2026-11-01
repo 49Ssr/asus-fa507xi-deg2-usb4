@@ -21,12 +21,20 @@ static int relay_mode, bus_result;
 static unsigned bus_calls, bus_write_length, bus_read_length;
 static unsigned bus_fail_call, first_register, first_write_length, first_read_length;
 static unsigned char bus_write[32], bus_response[20];
+static int service_mode;
+static unsigned debug_calls, notify_calls, service_interrupt;
+
+static void return_from_double(void) {
+    unsigned high=cpu.mLowerData[cpu.mSFR[REG_SP]--];
+    unsigned low=cpu.mLowerData[cpu.mSFR[REG_SP]--];
+    cpu.mPC=(unsigned short)((high<<8)|low);
+}
 
 static void exception(struct em8051 *c, int n) { (void)c; fw_exception=n+1; }
 static unsigned char read_x(struct em8051 *c, unsigned short address) {
     (void)c;
     if (relay_mode) {
-        if (address>=0x1000 && (address<0x4000 || address>=0x4030)) unexpected_accesses++;
+        if (address>=0x1000 && (address<0x4000 || address>=0x4030) && !(service_mode && address==0x160a)) unexpected_accesses++;
         return xram[address];
     }
     if (address==0x1532) { xram[0x1530]&=~2; input_count++; }
@@ -63,21 +71,32 @@ static void execute(unsigned pc) {
         if (steps>=20000 || (cpu.mSFR[REG_P1]&7)!=3 || fw_exception) {
             fprintf(stderr,"Execution boundary: pc=%04x exception=%d\n",cpu.mPC,fw_exception); exit(2);
         }
+        /* These two bank-switching callees are outside the service model:
+         * debug logging and OS-event delivery. Record requests, do not run
+         * their code or claim that Windows actually received a notification. */
+        if (service_mode && cpu.mPC==0x364a) { debug_calls++; return_from_double(); continue; }
+        if (service_mode && cpu.mPC==0x3537) {
+            if (cpu.mLowerData[7]!=0x79 || cpu.mLowerData[5]!=2) exit(4);
+            notify_calls++; return_from_double(); continue;
+        }
         /* Explicit PD-bus boundary double, not execution of the bus engine. */
         if (relay_mode && cpu.mPC==0x1ff4) {
             unsigned src=(xram[0x6a2]<<8)|xram[0x6a3];
             unsigned dst=(xram[0x6a5]<<8)|xram[0x6a6];
-            if ((cpu.mSFR[REG_PSW]&0x18) || cpu.mLowerData[7]!=4 || cpu.mLowerData[5]!=0x98 || cpu.mLowerData[2]!=0 || ++bus_calls>2) exit(4);
+            if ((cpu.mSFR[REG_PSW]&0x18) || cpu.mLowerData[7]!=4 || cpu.mLowerData[5]!=0x98 || cpu.mLowerData[2]!=0 || ++bus_calls>(service_mode?3u:2u)) exit(4);
             bus_write_length=cpu.mLowerData[3]; bus_read_length=xram[0x6a4];
             if (bus_write_length>sizeof(bus_write) || bus_read_length>sizeof(bus_response) || src+bus_write_length>65536 || dst+bus_read_length>65536 || xram[0x6a7]) exit(4);
             memcpy(bus_write,xram+src,bus_write_length);
             if (bus_calls==1) { first_register=bus_write[0]; first_write_length=bus_write_length; first_read_length=bus_read_length; }
             int result=bus_result && bus_calls!=bus_fail_call;
-            if (result) memcpy(xram+dst,bus_response,bus_read_length);
+            if (result) {
+                if (service_mode && bus_write[0]==0xbd) {
+                    if(bus_read_length!=1) exit(4);
+                    xram[dst]=(unsigned char)service_interrupt;
+                } else memcpy(xram+dst,bus_response,bus_read_length);
+            }
             cpu.mLowerData[7]=(unsigned char)result;
-            unsigned high=cpu.mLowerData[cpu.mSFR[REG_SP]--];
-            unsigned low=cpu.mLowerData[cpu.mSFR[REG_SP]--];
-            cpu.mPC=(unsigned short)((high<<8)|low); continue;
+            return_from_double(); continue;
         }
         if (tick(&cpu)) instructions++;
     }
@@ -89,7 +108,7 @@ static void input(int is_command, unsigned char value) {
     execute(0x9590);
 }
 static void check(int condition, unsigned line) {
-    if (!condition) { fprintf(stderr,"Relay mismatch at line %u, bus calls=%u, writes=%u, reads=%u, pc=%04x\n",line,bus_calls,bus_write_length,bus_read_length,cpu.mPC); exit(5); }
+    if (!condition) { fprintf(stderr,"Firmware mismatch at line %u, bus calls=%u, writes=%u, reads=%u, pc=%04x, notifications=%u, counter=%u\n",line,bus_calls,bus_write_length,bus_read_length,cpu.mPC,notify_calls,(xram[0x583]<<8)|xram[0x584]); exit(5); }
 }
 #define require(condition) check((condition),__LINE__)
 static void relay_init(void) {
@@ -97,6 +116,59 @@ static void relay_init(void) {
     memset(bus_write,0,sizeof(bus_write)); memset(bus_response,0,sizeof(bus_response));
     /* A synthetic mailbox location, not a claim about the live EC mapping. */
     xram[0x580]=0x40; xram[0x581]=0;
+}
+static void service_init(void) {
+    relay_init(); service_mode=1; debug_calls=notify_calls=0;
+    service_interrupt=2; bus_result=1; xram[0x308]=8;
+    bus_response[1]=16; bus_response[3]=0x80;
+    for(unsigned i=4;i<20;i++) bus_response[i]=(unsigned char)(0xa0+i);
+}
+static void service_emit(const char *name) {
+    static unsigned cases=0;
+    require(!unexpected_accesses);
+    printf("%s{\"case\":\"%s\",\"busCalls\":%u,\"notificationRequests\":%u,\"pendingOpcode\":%u,\"cciHigh\":%u,\"counter\":%u}",cases?",\n":"",name,bus_calls,notify_calls,xram[0x585],xram[0x4007],(xram[0x583]<<8)|xram[0x584]); cases++;
+}
+static void test_service(void) {
+    printf("{\"scope\":\"Original C89A command-service instructions; synthetic mailbox; PD bus, debug logging and OS-event delivery are doubles; counters are service-call counts, not measured time\",\"cases\":[\n");
+    service_init(); xram[0x308]=0; xram[0x4008]=0x12; execute(0xc89a);
+    require(!bus_calls && xram[0x4008]==0x12 && !debug_calls && !notify_calls); service_emit("not-initialized-preserves-request");
+    service_init(); xram[0x4008]=0x12; xram[0x4009]=0x5a; execute(0xc89a);
+    require(bus_calls==1 && bus_write[1]==0x12 && bus_write[2]==0x5a && !xram[0x4008] && !xram[0x585] && debug_calls==3); service_emit("new-command-forwarded");
+    service_init(); xram[0x4008]=0x12; xram[0x4009]=0x5a; bus_result=0; execute(0xc89a);
+    require(bus_calls==1 && !xram[0x4008] && xram[0x585]==0x12); service_emit("failed-send-retains-command");
+    bus_calls=0; bus_result=1; execute(0xc89a);
+    require(bus_calls==1 && bus_write[1]==0x12 && bus_write[2]==0x5a && !xram[0x585]); service_emit("next-call-retries-retained-command");
+    service_init(); xram[0x160a]=2; execute(0xc89a);
+    require(!bus_calls && !notify_calls); service_emit("inactive-interrupt-no-bus-read");
+    service_init(); service_interrupt=0; execute(0xc89a);
+    require(bus_calls==1 && !notify_calls); service_emit("no-ucsi-event-no-notification");
+    service_init(); execute(0xc89a);
+    require(bus_calls==3 && notify_calls==1 && bus_write[0]==0xbc && !memcmp(xram+0x4004,bus_response,4) && !memcmp(xram+0x4010,bus_response+4,16)); service_emit("completion-read-acknowledged-notification-requested");
+    for(unsigned fail=1;fail<=3;fail++) {
+        const char *names[]={"interrupt-read-fails", "completion-read-fails", "acknowledgement-fails"};
+        service_init(); bus_fail_call=fail; execute(0xc89a);
+        require(bus_calls==fail && !notify_calls);
+        if(fail==3) require(!memcmp(xram+0x4004,bus_response,4));
+        else require(!xram[0x4007]);
+        service_emit(names[fail-1]);
+    }
+    service_init(); bus_response[3]=8; xram[0x584]=23; execute(0xc89a);
+    require(bus_calls==3 && !notify_calls && !xram[0x583] && !xram[0x584] && xram[0x4007]==8); service_emit("busy-reply-resets-counter-without-notification");
+    /* The original helper post-increments; SETB C before SUBB implements
+     * strictly greater than450/600, not greater than or equal. */
+    for(unsigned counter=450;counter<=451;counter++) {
+        service_init(); xram[0x4007]=0x80; xram[0x583]=(unsigned char)(counter>>8); xram[0x584]=(unsigned char)counter; execute(0xc89a);
+        require(!bus_calls && notify_calls==(counter==451) && xram[0x4007]==0x80);
+        require(((xram[0x583]<<8)|xram[0x584])==(counter==451?0:451));
+        service_emit(counter==450?"existing-completion-at-counter-limit":"existing-completion-above-counter-limit");
+    }
+    for(unsigned counter=600;counter<=601;counter++) {
+        service_init(); xram[0x4007]=8; xram[0x583]=(unsigned char)(counter>>8); xram[0x584]=(unsigned char)counter; execute(0xc89a);
+        require(!bus_calls && !notify_calls && xram[0x4007]==(counter==601?0:8));
+        require(((xram[0x583]<<8)|xram[0x584])==counter+1);
+        service_emit(counter==600?"existing-busy-at-counter-limit":"existing-busy-cleared-above-counter-limit");
+    }
+    printf("\n],\"passed\":15}\n");
 }
 static void test_relay(void) {
     unsigned outgoing=0,incoming=0,ack=0;
@@ -148,13 +220,13 @@ static void emit(const char *kind, unsigned table, unsigned field, unsigned sele
 int main(int argc, char **argv) {
     static const unsigned char pin[32]={0x10,0x37,0x21,0x57,0x8b,0x66,0xda,0xed,0x81,0xdc,0xf7,0xa0,0xbe,0xd0,0x67,0x09,0xc0,0x72,0xf9,0xda,0x1d,0xc7,0x5a,0x6d,0x78,0x87,0x32,0x1e,0x6e,0x32,0xb0,0x60};
     unsigned char digest[32], params[3]; unsigned cases=0;
-    if(argc!=2 && !(argc==3 && !strcmp(argv[2],"--relay"))) { fprintf(stderr,"Usage: Test-EcPmcFirmware private-EC-image.bin [--relay]\n"); return 2; }
+    if(argc!=2 && !(argc==3 && (!strcmp(argv[2],"--relay") || !strcmp(argv[2],"--service")))) { fprintf(stderr,"Usage: Test-EcPmcFirmware private-EC-image.bin [--relay|--service]\n"); return 2; }
     FILE *f=NULL; if(fopen_s(&f,argv[1],"rb") || !f) return 2;
     size_t length=fread(rom,1,sizeof(rom),f); int extra=fgetc(f); fclose(f);
     if(length!=sizeof(rom) || extra!=EOF || BCryptHash(BCRYPT_SHA256_ALG_HANDLE,NULL,0,rom,sizeof(rom),digest,sizeof(digest))<0 || memcmp(pin,digest,32)) {
         fprintf(stderr,"Firmware input pin mismatch\n"); return 2;
     }
-    if(argc==3) { test_relay(); return 0; }
+    if(argc==3) { if(!strcmp(argv[2],"--relay")) test_relay(); else test_service(); return 0; }
     printf("{\"scope\":\"Original PMC4 service/dispatch/getters and switch helper; all peripherals are RAM doubles; no hardware/timing/live-flash qualification\",\"cases\":[\n");
     for(unsigned seed_index=0;seed_index<3;seed_index++) {
         unsigned seed=(unsigned char[]){0,0x5a,0xff}[seed_index];
