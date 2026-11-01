@@ -1,0 +1,155 @@
+{
+  "schema": 1,
+  "date": "2026-11-01",
+  "status": "Retained OEM EC response-ready timeouts recovered by trace-only replay; no qualified Windows USB4 fix",
+  "driver": {
+    "transaction_rva": "1828",
+    "response_timeout_trace_rva": "1990",
+    "sha256": "eef750c7fb515d162a76423531f4f6773bcf837d9607069e797a26d198edd892",
+    "version": "1.0.9.0",
+    "response_timeout_message": 19,
+    "name": "AsusSAIO.sys",
+    "callback_rva": "1660"
+  },
+  "recorder": {
+    "name": "WppRecorder.sys",
+    "message_guid": "f0e2deec-5949-38ce-2ea2-6f135baafa99",
+    "all_flags_replay": false,
+    "replay_entry_rva": "19c0",
+    "version": "10.0.26100.9818",
+    "required_flags": "40000000",
+    "sha256": "8a9b253d4d45200b1f9362d3769aa63a1e01d12351f243524ff212f595a1ced4",
+    "control_guid": "92ad1b60-2d31-485b-8b06-b5b27eec1baf"
+  },
+  "existing_dump": {
+    "control_block_log_offset": "40",
+    "matching_recorder_types": true,
+    "sequence": 0,
+    "live_failure_history_recovered_from_this_old_dump": false,
+    "replay_enabled": true,
+    "default_log_owner_verified": true,
+    "log_empty_at_snapshot": true,
+    "sha256": "fa979a86e3a586cf17a9c04c41564526a1cc748b8f8182df431eaf6a5773928c"
+  },
+  "first_capture": {
+    "original_artifacts_preserved": true,
+    "provider_disabled_after": true,
+    "start_exit": 0,
+    "time_utc": "17:11:16",
+    "stop_exit": 0,
+    "flags": "ffffffff",
+    "unique_active_loggers": 1,
+    "result": "Stopped early on duplicate logger-count guard; dependency rejected replay flag",
+    "actual_replay": false,
+    "active_logger_entries": 3
+  },
+  "corrected_capture": {
+    "start_exit": 0,
+    "events_asus": 4,
+    "sha256": "368ea599cb4bd55a65aec9f02500b6a9a810bcd1eefbc51d12050cab2a38b6c4",
+    "stop_exit": 0,
+    "started_utc": "2026-11-01T17:12:53.6186102Z",
+    "command_arguments_available": false,
+    "provider_disabled_after": true,
+    "bytes": 131072,
+    "message_ids": [
+      19,
+      19,
+      19,
+      19
+    ],
+    "original_event_timestamps_available": false,
+    "finished_utc": "2026-11-01T17:12:54.924297Z",
+    "labels": "Analyst labels derived from exact driver, not vendor source strings",
+    "observation_ms": 750,
+    "buffers": 2,
+    "events_lost": 0,
+    "vendor_pdb_warning_preserved": true,
+    "unknown_formats": 0,
+    "events_total": 8,
+    "format_errors": 0,
+    "provider_disabled_before": true
+  },
+  "interpretation": {
+    "original_transaction_message19_per_failed_request": 2,
+    "hardware_timing_qualified": false,
+    "two_prior_requests_attribution": "Consistent with two internal attempts each; inference only because timestamps/arguments absent",
+    "original_transaction_response_timeout_attempts": 2,
+    "proven": "Retained messages identify EC response-ready timeout after command/parameter stages",
+    "not_proven": [
+      "IT8853 directly received or semantically accepted the requests",
+      "USB-PD rejection",
+      "Exact command/request attribution",
+      "Root cause of USB4 fallback",
+      "Windows repair"
+    ],
+    "original_transaction_response_status_reads": 104
+  },
+  "prerequisites": {
+    "notify_control_attempted": false,
+    "charger_interrupt_getter_calls_clear": true,
+    "power_data_flag_getter_calls_clear": true,
+    "notify_control_minimum_version": 23,
+    "usb4_port_mapping_proven": false,
+    "live_table_version": 17,
+    "charging_as_pdo_prerequisite_proven": false,
+    "big_data_config_getter_invoked": false,
+    "these_clear_getters_invoked": false
+  },
+  "negotiation": {
+    "connector": 1,
+    "standard_ucsi_get_pdos_succeeded_in_existing_asus_trace": true,
+    "raw_mux_link_training_decision_recovered": false,
+    "raw_enter_usb_or_accept_recovered": false,
+    "direct_ite_register_operations": 0,
+    "ite_mode_state_source": "https://lists.openwall.net/linux-kernel/2026/09/18/1326",
+    "source_pdos": [
+      "2f81912c",
+      "0002d12c",
+      "0004b12c",
+      "000641e0"
+    ]
+  },
+  "bios": {
+    "original_preserved": true,
+    "leaf_bodies": 2473,
+    "it8987_labelled_region": {
+      "ff_bytes": 262096,
+      "usable_rollback_image": false,
+      "bytes": 266240,
+      "sha256": "cb8a52e00d8683696060f62757e13cb93ad9aaef76b13f0a4fee0cfab312cf4c",
+      "executable_ec_firmware_recovered": false,
+      "other_bytes": 19,
+      "zero_bytes": 4125
+    },
+    "absence_of_pd_firmware_proven": false,
+    "leaf_bytes": 63036796,
+    "version": "314",
+    "firmware_executed": false,
+    "it8853_name_hits": 0,
+    "named_token_map_is_not_live_configuration": true,
+    "capsule_sha256": "a72291441a378a38a1aa7d5198c4aeb91aed07f787a3025435393719351f4ed1"
+  },
+  "validation": {
+    "new_oem_device_handles": 0,
+    "network_setting_changes": 0,
+    "new_driver_installs": 0,
+    "further_live_control_queued": false,
+    "new_boots": 0,
+    "callback_and_recorder_gate_cases": 11,
+    "ps51_private_capture_parse_and_compile": true,
+    "new_live_trace_replay_measured": true,
+    "firmware_writes": 0,
+    "new_original_code_cases_passed": 20,
+    "ec_transaction_cases": 9,
+    "security_setting_changes": 0,
+    "fresh_firmware_requests": 0,
+    "ec_kernel_logging_and_delay_doubles": true
+  },
+  "sources": [
+    "https://learn.microsoft.com/en-us/windows/win32/api/evntrace/ns-evntrace-trace_provider_instance_info",
+    "https://learn.microsoft.com/en-us/windows-hardware/drivers/devtest/using-wpp-recorder",
+    "https://lists.openwall.net/linux-kernel/2026/08/07/804",
+    "https://lists.openwall.net/linux-kernel/2026/09/18/1326"
+  ]
+}

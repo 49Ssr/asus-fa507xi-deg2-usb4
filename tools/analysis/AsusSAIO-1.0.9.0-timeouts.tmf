@@ -1,0 +1,34 @@
+// Analyst labels derived from the pinned driver; not vendor source messages.
+// AsusSAIO.sys SHA256 eef750c7fb515d162a76423531f4f6773bcf837d9607069e797a26d198edd892
+// No command parameters or original timestamps are supplied by these messages.
+f0e2deec-5949-38ce-2ea2-6f135baafa99 sys // SRC=Pinned_AsusSAIO
+#typev NativeEc 10 "%0EC input-buffer-ready polling timed out; helper RVA16a4" // LEVEL=TRACE_LEVEL_ERROR FLAGS=EC
+{
+}
+#typev NativeEc 11 "%0EC output-drain polling timed out; helper RVA1734" // LEVEL=TRACE_LEVEL_ERROR FLAGS=EC
+{
+}
+#typev NativeEc 12 "%0EC command-byte input-ready wait failed; helper RVA1bcc" // LEVEL=TRACE_LEVEL_ERROR FLAGS=EC
+{
+}
+#typev NativeEc 13 "%0EC parameter buffer is null; routine RVA1828" // LEVEL=TRACE_LEVEL_ERROR FLAGS=EC
+{
+}
+#typev NativeEc 14 "%0EC pre-command drain timed out; routine RVA1828" // LEVEL=TRACE_LEVEL_ERROR FLAGS=EC
+{
+}
+#typev NativeEc 15 "%0EC FF prefix send timed out; routine RVA1828" // LEVEL=TRACE_LEVEL_ERROR FLAGS=EC
+{
+}
+#typev NativeEc 16 "%0EC opcode send timed out; routine RVA1828" // LEVEL=TRACE_LEVEL_ERROR FLAGS=EC
+{
+}
+#typev NativeEc 17 "%0EC parameter send timed out; routine RVA1828" // LEVEL=TRACE_LEVEL_ERROR FLAGS=EC
+{
+}
+#typev NativeEc 18 "%0EC post-command input-ready wait timed out; routine RVA1828" // LEVEL=TRACE_LEVEL_ERROR FLAGS=EC
+{
+}
+#typev NativeEc 19 "%0EC response-ready wait timed out after command/parameters; routine RVA1828" // LEVEL=TRACE_LEVEL_ERROR FLAGS=EC
+{
+}

@@ -1,5 +1,7 @@
 # Reaching the firmware: recovered code and tested access boundary
 
+**Recorder access now measured:** trace-only replay recovered four retained ASUS message19 records, narrowing the EC failure to response readiness after command/parameter transmission. Both owned trace sessions stopped and logging returned to disabled; no new PDO/device request or boot. The saved UCSI route already returns source profiles. Neither this diagnostic access nor the BIOS token names establishes a Windows USB4 repair. [Recovery, original-code tests and firmware coverage](it8853-transport.md).
+
 **Subsequent live work:** [the installed ASUS PD route](oem-pd-diagnostics.md) successfully returned capability17 and IT8853 identity. Dynamic PDO reads timed out both disconnected and with DEG2 detected; the connected sequence includes a reported UGREEN insertion. No valid PDO or repair is established. All four follow-up handles/tasks cleaned. The measurements below remain the earlier completed metadata-path results.
 
 **1 November 2026:** recovered 23 cached AML tables from the existing ASUS dump, including firmware code absent from the original table files. A real ASUS memory-read helper exists, but the ordinary-process route tested here rejected both metadata requests. DEG2 also exposes a vendor USB interface; its diagnostic protocol remains unidentified. **No Windows repair or replacement test boot is prepared.**

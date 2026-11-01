@@ -1,5 +1,7 @@
 # Live ASUS PD access: IT8853 identified, power-profile boundary measured
 
+**Follow-up:** a trace-only replay recovered four retained message19 records, identifying the EC response-ready stage after command/parameter transmission. No failed field read was repeated. Standard UCSI power-profile reads already succeed in the saved ASUS trace. Original timestamps/command arguments are absent; exact attribution remains an inference. Both trace sessions cleaned up, twenty new original-code cases pass, and no USB4 repair is qualified. [Detailed recovery and prerequisites](it8853-transport.md).
+
 **1 November 2026:** the installed ASUS driver successfully returned capability-table version **17** and the OEM PD-controller identity **`IT8853`**. Subsequent power-profile queries timed out in the driver's EC transport both while disconnected and with DEG2 detected. Neither produced a valid PDO. The connected run also has an owner-reported UGREEN insertion confound. The identity result remains valid; a USB4 repair and USB4-port association remain unproven.
 
 ## Completed live reads
@@ -17,7 +19,7 @@ The identity is **firmware-reported through ASUS's getter**. It does not supply 
 
 ## What the timeout means
 
-The pinned driver's polling helpers synthesize `0x102` when a transport wait expires. Multiple stages can return it: pre-command drain, command/parameter acceptance, post-command readiness and response readiness. The saved completion does not identify which stage timed out. **It is not a USB-PD rejection code, proof of a faulty chip or proof that the dock has no advertised power profiles.**
+The pinned driver's polling helpers synthesize `0x102` when a transport wait expires. Multiple stages can return it: pre-command drain, command/parameter acceptance, post-command readiness and response readiness. The original completion packets do not identify the stage; the subsequent recorder replay linked above recovers response-ready timeout records, with attribution limits retained. **It is not a USB-PD rejection code, proof of a faulty chip or proof that the dock has no advertised power profiles.**
 
 The raw private reader historically names the completion field `EcStatus`. Its precise meaning is the **driver's EC transport status**; that field must not be interpreted as a PD protocol error. Executed scripts/results retain their original hashes. The newly prepared connected-only reader uses the clearer `DriverTransportStatus` name.
 

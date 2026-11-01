@@ -1,7 +1,7 @@
 {
   "schema": 2,
   "date": "2026-11-01",
-  "status": "Live OEM capability17 and IT8853 identity verified; source-PDO field times out disconnected and with DEG2 present; connected run has owner-reported UGREEN insertion confound; no valid PDO or qualified Windows fix",
+  "status": "Capability17 and IT8853 identity verified; dynamic field timed out; subsequent trace-only replay recovered EC response-ready timeout records with attribution limits; no qualified Windows USB4 fix",
   "binaries": [
     {
       "name": "AsusSAIO.sys",
@@ -219,5 +219,13 @@
     "two_connector_binding": "https://lkml.iu.edu/hypermail/linux/kernel/2609.2/07383.html",
     "direct_i2c_transport_is_asus_ec_table_interface": false,
     "direct_ite_register_commands_sent": false
+  },
+  "subsequent_recorder_followup": {
+    "document": "docs/it8853-transport.md",
+    "retained_message19_records": 4,
+    "qualified_windows_usb4_fix": false,
+    "both_owned_trace_sessions_stopped": true,
+    "evidence": "evidence/it8853-transport.json",
+    "new_firmware_requests": 0
   }
 }
