@@ -1,5 +1,7 @@
 # USB4 investigation continuation
 
+**Latest, 1 November:** [fresh ASUS-Dell comparison completed](asus-dell-matched-comparison.md). Verified 35 ASUS capture files plus 3.17 GB full dump; current policy 0 versus Dell 1, same 14 Windows images. ASUS completes SET_UOR but controller detection stays negative before/after it. Failure also occurs with USB flag 1, weakening any explanation that requires the earlier alternate-mode-only flag. No generic recapture or new firmware intervention is queued; no supported Windows fix is established.
+
 **1 November recovery update:** the second Dell run's 33-file return and separate 2.25 GB dump are [verified and analysed](dell-dump-recovery.md). Dell cached policy is 1 versus ASUS 0; Dell additionally exposes the documented role-correction `_DSM` function 4, although its raw return fields are absent from the dump. The USB handoff failure did not lose the trace or snapshot. The revised selector/resume flow passes 183 PS5.1 assertions. Do not repeat Dell for this handoff; a new normal-fallback ASUS comparison and a causal repair remain outstanding. Ethernet link is up at 1 Gbps, but usable share access is not yet established; Internet sharing was left untouched.
 
 **31 October 2026: unresolved.** This is the durable starting point after the Device Management chat `Tech V (Work)` reached its limit. The aim is to understand and, if evidence supports it, repair the ASUS-DEG2 pairing, with a possible diagnostic tool for other owners later. A deployable repair has not been established.

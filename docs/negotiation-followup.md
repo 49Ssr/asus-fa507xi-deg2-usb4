@@ -1,5 +1,7 @@
 # Role negotiation: follow-up on the existing captures
 
+**1 November matched follow-up:** [fresh ASUS versus recovered Dell](asus-dell-matched-comparison.md) corroborates the role-order and cached-policy difference. The new failing ASUS run reports post-swap USB flag 1, whereas the older sequences below report flag 2; the alternate-mode-only report is not a universal failure marker. No prior raw observation is overwritten.
+
 **31 October 2026. Offline analysis completed; initial-role hardware test subsequently completed without reported attachment.** The comparison justified a narrowly defined Windows-initiated test, but it did not establish the requested connection or a working repair. [Measured result](initial-role-test.md#measured-result-2303-2304-utc).
 
 ## What was examined

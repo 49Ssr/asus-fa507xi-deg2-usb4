@@ -1,6 +1,8 @@
 # Fresh ASUS comparison against the recovered Dell
 
-**1 November 2026: local acquisition prepared; new ASUS result pending.** The [recovered Dell dump and passive trace](dell-dump-recovery.md) supply a working external router/PCIe baseline, loaded UCSI policy and ACPI methods. An identical Dell recollection is not justified by the remaining missing firmware page. The next acquisition targets the ASUS's current normal USB/Billboard fallback using the same DEG2, GPU, PSU and supplied cable.
+**Completed and analysed, 1 November:** the [fresh ASUS-Dell comparison](asus-dell-matched-comparison.md) supersedes the preparation status below. The native Task Manager dump and valid-path selection completed; all 35 capture files and the full dump verify. The procedure below is retained for reproducibility, not an instruction to repeat this acquisition.
+
+**Preparation record, superseded by the measured result above.** The [recovered Dell dump and passive trace](dell-dump-recovery.md) supply a working external router/PCIe baseline, loaded UCSI policy and ACPI methods. An identical Dell recollection is not justified by the remaining missing firmware page. The next acquisition targets the ASUS's current normal USB/Billboard fallback using the same DEG2, GPU, PSU and supplied cable.
 
 ## Why another ASUS capture
 
@@ -30,6 +32,6 @@ The same entry point's `StopTrace` mode addresses only its saved owned session i
 
 ## Qualification and next analysis
 
-The local entry point passes **28 PS5.1 checks**, including actual manifest verification/file receipts and mocked capture/resume/cleanup, source/machine/target/storage refusal, separate run preservation and failed completion status. The reused collector's existing **183 checks** remain separate. The new ASUS hardware trace, Task Manager interaction and dump coverage remain unverified until the owner completes this acquisition.
+The local entry point passes **28 PS5.1 checks**, including actual manifest verification/file receipts and mocked capture/resume/cleanup, source/machine/target/storage refusal, separate run preservation and failed completion status. The reused collector's existing **183 checks** remain separate. The owner subsequently completed the hardware trace, native Full Task Manager snapshot and valid pasted-path selection. Their measured coverage and limits are in the comparison linked above; automatic/Browse UI paths remain separately software-tested.
 
 Afterward, validate the new trace's loss and decoding coverage, open the new ASUS dump with matching symbols, discover its object addresses afresh, and compare the table above against the recovered Dell. Record missing pages explicitly. Do not repeat the old missing-memory reads, role/mode commands or generic resets unchanged. Any proposed Windows fix still needs an identified applicable control and a result that changes external-router enumeration.

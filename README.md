@@ -1,8 +1,8 @@
 # ASUS FA507XI / Minisforum DEG2 USB4 investigation
 
-**Next capture:** [fresh ASUS comparison saved locally](docs/asus-local-comparison.md), against the recovered Dell baseline. No repeat Dell capture or USB transfer is required. Local entry point: 28 PS5.1 checks; new ASUS result pending.
+**[Fresh ASUS-Dell comparison completed](docs/asus-dell-matched-comparison.md).** New 3.17 GB ASUS dump and 35 capture files verify. Current policy remains ASUS **0** versus Dell **1**; all 14 installed Windows images match. ASUS completes its normal data-role correction but still has no external USB4 router. This failure reports USB flag 1 rather than the earlier alternate-mode-only flag 2. No repeat generic capture is queued; native USB4 entry remains unresolved and no Windows fix is established.
 
-**Unresolved, 31 October 2026.** The ASUS TUF A15 FA507XI detects ordinary USB functions on the DEG2 but does not enumerate its external USB4 router or RTX 4080 SUPER. The identical assembled dock, GPU, PSU and supplied cable work on a Dell Intel Thunderbolt 4 laptop. A separate full Windows installation on the ASUS reproduces the failure.
+**Unresolved, 1 November 2026.** The ASUS TUF A15 FA507XI detects ordinary USB functions on the DEG2 but does not enumerate its external USB4 router or RTX 4080 SUPER. The identical assembled dock, GPU, PSU and supplied cable work on a Dell Intel Thunderbolt 4 laptop. A separate full Windows installation on the ASUS reproduces the failure.
 
 **[Dell dump recovered; policy difference identified](docs/dell-dump-recovery.md).** All 33 returned files and the separate 2.25 GB kernel dump verify. Offline inspection recovers Dell policy flag **1** versus ASUS **0**, plus Dell's additional UCSI ACPI function 4. The new passive trace repeats the successful role ordering. A late freshness cutoff could reject a valid dump; the revised handoff adds automatic/Browse selection, retry and saved-run completion (**183 PS5.1 assertions**). No repeat Dell capture is needed for this failure. ASUS root cause and an applicable Windows fix remain unresolved.
 

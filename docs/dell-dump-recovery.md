@@ -1,5 +1,7 @@
 # Dell dump recovery and platform-policy comparison
 
+**Subsequent matched comparison completed:** the [fresh ASUS trace/dump](asus-dell-matched-comparison.md) independently confirms current ASUS policy 0, failed external-router detection before/after correction, and a post-swap USB-capable report. The earlier outstanding ASUS acquisition is now complete; generic recollection is not queued.
+
 **1 November 2026: the Dell capture is recovered; do not repeat it for the failed handoff.** The separate dump placed in the USB root opens in Microsoft's offline debugger. The returned trace, firmware tables, driver images and metadata also verify. ASUS USB4 failure remains unresolved. [Structured evidence](../evidence/deep-compare-recovery.json).
 
 ## What was preserved and recovered

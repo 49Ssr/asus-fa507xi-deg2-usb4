@@ -1,5 +1,7 @@
 # What the traces say
 
+**1 November matched follow-up:** [fresh ASUS versus working Dell](asus-dell-matched-comparison.md) confirms current policy 0 versus 1, identical 14 installed Windows images and no external router after a completed Windows role correction. The new failure reports USB flag 1, so the older alternate-mode-only flag 2 is not a universal failure marker. PCIe-disable remains 0. No applicable Windows fix or firmware patch is established.
+
 ## Failure stage
 
 On the ASUS, the host and root router initialize. The root's downstream adapter remains disconnected; no external router is enumerated. Ordinary USB hubs and the dock's Billboard interface appear through the native xHCI path instead.

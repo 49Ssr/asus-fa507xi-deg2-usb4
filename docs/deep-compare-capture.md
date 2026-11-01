@@ -1,8 +1,10 @@
 # Portable matched capture: Dell first
 
+**Acquisition update, 1 November:** both the [Dell recovery](dell-dump-recovery.md) and [fresh local ASUS comparison](asus-dell-matched-comparison.md) are now analysed. The portable Dell instructions and historical qualification below are retained; do not repeat them as the next action. The ASUS owner run used native Full dump creation and a valid pasted path; automatic/Browse selection remains separately software-tested.
+
 **Current status, 1 November:** the second Dell trace and separate dump have been [recovered and analysed](dell-dump-recovery.md). No repeat Dell run is needed for the failed handoff. The revised source kit fixes the late freshness cutoff and provides automatic/Browse selection, retry, pending status and FINISH-DUMP.cmd for a new saved run. **183 PS5.1 assertions pass**; its new UI/hardware workflow has not been exercised on Dell. The V2 inventory correction below is retained as history.
 
-**V2 inventory correction, historical.** The first Dell launch stopped during inventory before recording; its return transfer succeeded. The later Dell acquisition is now recovered; a fresh matched ASUS acquisition remains outstanding. This implements the next acquisition in the [reverse-engineering approach](reverse-engineering-approach.md). It adds the full native kernel snapshot and ACPI/policy context missing from the previous Dell recorder; it is not another role-change experiment or a firmware patch.
+**V2 inventory correction, historical.** The first Dell launch stopped during inventory before recording; its return transfer succeeded. The later Dell acquisition is recovered and the fresh matched ASUS acquisition has subsequently completed, as linked above. This implements the next acquisition in the [reverse-engineering approach](reverse-engineering-approach.md). It adds the full native kernel snapshot and ACPI/policy context missing from the previous Dell recorder; it is not another role-change experiment or a firmware patch.
 
 ## First Dell attempt and correction
 

@@ -1,0 +1,147 @@
+{
+  "schema": 1,
+  "date": "2026-11-01",
+  "status": "Comparison completed; original USB4 failure unresolved",
+  "acquisition": {
+    "target": "ASUS FA507XI",
+    "bios": "314",
+    "windows_build": "26200.9818",
+    "raw_files_verified": 35,
+    "dump_bytes": 3172020224,
+    "dump_sha256": "FA979A86E3A586CF17A9C04C41564526A1CC748B8F8182DF431EAF6A5773928C",
+    "dump_snapshot_utc": "2026-11-01T00:53:54.969Z",
+    "capture_result": "Captured_RequiresOfflinePolicyAndMemoryValidation",
+    "capture_errors": [],
+    "evidence_errors": [],
+    "before_and_after_dump_fallback_confirmed": true,
+    "owner_display_output": "N",
+    "originals_preserved": true,
+    "diagnostic_interface_enabled": true,
+    "new_dell_diagnostic_interface_present": false
+  },
+  "trace": {
+    "bytes": 239206400,
+    "sha256": "9E0501DAE7910FC709AECA47EA64017A63539AE72CFAF240B602389ADA0EF172",
+    "start_utc": "2026-11-01T00:52:05.8475366Z",
+    "end_utc": "2026-11-01T00:53:16.8845896Z",
+    "duration_seconds": 71.037053,
+    "events": 1114490,
+    "lost_events": 0,
+    "lost_buffers": 0,
+    "format_errors": 0,
+    "unknown_records": 342,
+    "formatted_driver_lines": {
+      "UcmUcsiCx": 464,
+      "UcmCx": 26,
+      "usb4hrd": 902,
+      "usb4drd": 1230
+    },
+    "selected_driver_log_sha256": "75EA73F7F2EB11CE37EA11B6BC027B15B932B18E75FF0CA03CC8CE8A8BDD3158",
+    "milestones": [
+      {
+        "event": "Initial partner DFP / USB flag 1",
+        "utc": "2026-11-01T00:52:16.9317051Z"
+      },
+      {
+        "event": "First PD report remains partner DFP / USB flag 1",
+        "utc": "2026-11-01T00:52:17.0075650Z"
+      },
+      {
+        "event": "USB4 port 2 plugged check No, before correction",
+        "utc": "2026-11-01T00:52:17.0829942Z"
+      },
+      {
+        "event": "USB4 port 2 router-detected check No, before correction",
+        "utc": "2026-11-01T00:52:17.0830516Z"
+      },
+      {
+        "event": "PD negotiation reported successful",
+        "utc": "2026-11-01T00:52:17.0965056Z"
+      },
+      {
+        "event": "Windows role-correction decision Yes",
+        "utc": "2026-11-01T00:52:17.1299775Z"
+      },
+      {
+        "event": "Windows SET_UOR DFP requested",
+        "utc": "2026-11-01T00:52:17.1464315Z"
+      },
+      {
+        "event": "SET_UOR command completed without CCI error",
+        "utc": "2026-11-01T00:52:17.1631249Z"
+      },
+      {
+        "event": "Windows reports local DFP role success",
+        "utc": "2026-11-01T00:52:17.1631368Z"
+      },
+      {
+        "event": "Firmware later reports partner UFP / USB flag 1",
+        "utc": "2026-11-01T00:52:17.2060961Z"
+      },
+      {
+        "event": "Second USB4 port 2 plugged check No, after correction",
+        "utc": "2026-11-01T00:52:27.8953049Z"
+      },
+      {
+        "event": "Second USB4 port 2 router-detected check No, after correction",
+        "utc": "2026-11-01T00:52:27.8953782Z"
+      }
+    ],
+    "windows_commands": 10,
+    "windows_acks": 10,
+    "terminal_command_completions": 10,
+    "cci_error_busy_unsupported": 0,
+    "windows_command_types": {
+      "UcsiCommandGetConnectorStatus": 3,
+      "UcsiCommandGetPdos": 4,
+      "UcsiCommandGetAlternateModes": 2,
+      "UcsiCommandSetUor": 1
+    },
+    "collector_injected_ucsi_commands": 0,
+    "physical_pd_packets_captured": false
+  },
+  "comparison": {
+    "installed_driver_images_sha256_equal": 14,
+    "asus_device_controller_policy": 0,
+    "dell_device_controller_policy": 1,
+    "asus_ppm_config_device_controller_enabled": 0,
+    "asus_ucsi_dsm_mask": "0x0f",
+    "dell_ucsi_dsm_mask": "0x1f",
+    "asus_function_4_advertised": false,
+    "dell_function_4_advertised": true,
+    "dell_raw_function_return_fields": "Unavailable in retained dump",
+    "asus_usb4_capabilities_granted": "0x0f",
+    "asus_pcie_tunnels_disabled_in_bios": 0,
+    "asus_external_routers": 0,
+    "asus_tunnels": 0,
+    "dell_operational_external_router": true,
+    "dell_pcie_and_usb3_tunnels": true,
+    "asus_first_pd_partner": "DFP",
+    "dell_first_pd_partner": "UFP",
+    "asus_os_set_uor": 1,
+    "dell_os_set_uor": 0,
+    "asus_post_swap_partner_flags": "0x1 USB",
+    "earlier_asus_post_swap_partner_flags": "0x2 alternate-mode-only",
+    "alternate_mode_only_report_required_for_observed_failure": false,
+    "asus_rdo": "0x1384b12c",
+    "dell_rdo": "0x438781e0",
+    "power_contract_difference_causal_effect": "Untested",
+    "supported_windows_fix_established": false,
+    "firmware_patch_target_established": false
+  },
+  "network": {
+    "enabled_ics_bindings_unchanged": true,
+    "preexisting_adapter_changes": 0,
+    "additional_dock_adapters": 1,
+    "configuration_writes": 0
+  },
+  "limits": [
+    "Windows reports are not raw CC/PD discovery, Enter_USB or link-training packets.",
+    "The snapshot follows the stopped trace; idle D3 is not established as the cause.",
+    "USB4KD relation-helper errors, missing WDFLDR input and unavailable client Fdo type do not prove a device fault.",
+    "Transient role-correction flag is consumed; its history comes from ETW.",
+    "Firmware buffer probes were not repeated; no AML was executed.",
+    "ASUS diagnostic-interface setting and PD RDO differ from Dell; equality of all platform conditions is not claimed."
+  ],
+  "next_scope": "Inspect existing evidence for an applicable ASUS firmware USB4 entry/re-entry mechanism. No generic recapture or repeated role/mode/reset is queued."
+}
