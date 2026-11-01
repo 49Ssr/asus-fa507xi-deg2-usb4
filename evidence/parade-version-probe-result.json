@@ -1,0 +1,32 @@
+{
+  "schema": 1,
+  "status": "ControlVersionReadFailed_Bank18Untested",
+  "started_utc": "2026-11-01T14:41:07.2187220Z",
+  "finished_utc": "2026-11-01T14:41:45.0016187Z",
+  "readiness_checks_passed": true,
+  "native_test_boot": true,
+  "parade_cfu_packages": 0,
+  "parade_cfu_bindings": 0,
+  "connected_deg2": 0,
+  "active_physical_networks": 0,
+  "script_sha256": "2F41FB3976DB487608AC7D2B5B0F0881675A1AB88ADC0BA9AE8D62E8F6F2E1EE",
+  "transport_sha256": "FDA7CD887B0362F560BAA27D6062337A757DD13AAE98AF3283202B8DBAF738E9",
+  "endpoint": "PS883011",
+  "file_open_succeeded": true,
+  "bus_initialization_succeeded": true,
+  "failure_stage": "ReadVersionRegister1",
+  "win32_error": 433,
+  "win32_error_name": "ERROR_NO_SUCH_DEVICE",
+  "version_bytes_recovered": false,
+  "own_handle_closed": true,
+  "bank18_attempted": false,
+  "no_cfu_offer_or_payload": true,
+  "read_only_evidence_import": true,
+  "image_detached_after_import": true,
+  "interpretation": "Inconclusive for bank18 health, physical population and USB4 cause",
+  "design_limits": [
+    "Control not qualified in disconnected clean-Windows state",
+    "Probe initialized MCU endpoint alone; native driver initializes three endpoints; equivalence unproven"
+  ],
+  "repeat_queued": false
+}

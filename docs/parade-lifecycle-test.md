@@ -1,5 +1,17 @@
 # Retimer target leak: reproduced code path and controlled next test
 
+## Actual probe result: control failed, bank 18 not reached
+
+**1 November, 14:41 UTC:** the owner ran the prepared kit in the existing clean test Windows. Every readiness check passed: correct native boot/driver, CFU package and bindings absent, offline, no DEG2, fresh boot. It reached the real device operations. Opening control endpoint `PS883011` and initializing its bus succeeded; the register-1 version-read completion returned Win32 **433, `ERROR_NO_SUCH_DEVICE`**. No version bytes were recovered. The owned file handle closed successfully. The first-failure stop then prevented testing `PS883021`/bank 18. [Actual result](../evidence/parade-version-probe-result.json).
+
+The error name/message is verified against the installed Windows SDK and [Microsoft's winerror.h](https://github.com/microsoft/win32metadata/blob/main/generation/WinSDK/RecompiledIdlHeaders/shared/winerror.h). It identifies the reported completion failure, not physical chip absence, a dead retimer or its cause. The broad Learn error-code page did not list this value; no conclusion relies on its omission.
+
+**Design limitation:** control bank 08 had not been qualified to answer in this disconnected clean-Windows condition. The probe also initialized only the MCU endpoint, whereas the native offer handler opens/initializes three endpoints before querying the MCU. Equivalence of those prerequisites was not proven. Power state, initialization requirements and transport differences remain open. The test therefore cannot discriminate bank 18 health or validate the proposed Windows cleanup correction on hardware. It is recorded as **control read failed / bank 18 untested**, not a successful comparison or a new USB4 failure proof.
+
+This was an actual I/O failure after the guards, not rejection by a prerequisite check or a timeout. The original captured evidence and emulator result remain intact. The owner result and test-image event records were recovered by a **read-only** image mount, then the image was detached. No retry, driver/firmware/security/network-setting change or replacement kit was performed. The stop-on-failure rule is retained; removing it would not make an unqualified control valid. Next work is offline qualification of the original read prerequisites before asking for another hardware session.
+
+## Earlier preparation and software findings
+
 **The original driver has a reproducible missing-cleanup path after a failed MCU-version read.** The candidate cleanup corrects that path in offline emulation. It is not an installed Windows patch or a demonstrated USB4 fix. The separate cause of the first failed I2C read remains unresolved.
 
 ## Why the target is left open
@@ -45,7 +57,7 @@ Both HID devices have `_STA` returning constant `0x0f`, so ACPI presence/healthy
 
 ## Prepared hardware test and rollback boundary
 
-**Prepared at 14:33 UTC, not executed:** the existing test image was checked for the reviewed SPB binary and absence of a Parade CFU package. The kit was copied with verified hashes to its Administrator desktop folder **USB4 Retimer Version Test**, then the image was detached. The original-Windows Preview correctly refuses Test. Windows PowerShell 5.1 parsing, seven readiness refusals and transport compilation/unknown-endpoint refusal pass without opening an allowed device. An actual Preview also caught an empty `$PSScriptRoot` default-parameter issue in PS5.1; initialization was moved after parameter binding before the final kit was staged. Earlier failed preparation logs were retained. [Preparation receipt](../evidence/parade-version-probe-preparation.json).
+**Preparation record, 14:33 UTC (result above supersedes its unexecuted status):** the existing test image was checked for the reviewed SPB binary and absence of a Parade CFU package. The kit was copied with verified hashes to its Administrator desktop folder **USB4 Retimer Version Test**, then the image was detached. The original-Windows Preview correctly refuses Test. Windows PowerShell 5.1 parsing, seven readiness refusals and transport compilation/unknown-endpoint refusal pass without opening an allowed device. An actual Preview also caught an empty `$PSScriptRoot` default-parameter issue in PS5.1; initialization was moved after parameter binding before the final kit was staged. Earlier failed preparation logs were retained. [Preparation receipt](../evidence/parade-version-probe-preparation.json).
 
 [Test-ParadeMcuVersion.ps1](../tools/analysis/Test-ParadeMcuVersion.ps1) with its pinned [C# transport](../tools/analysis/ParadeVersionProbe.cs) tests the first read without the CFU offer/retry path. It defaults to Preview. Actual Test requires:
 
@@ -60,4 +72,4 @@ Each owned handle closes in `finally`, invoking the reviewed stock file-cleanup 
 
 **Rollback:** this probe changes no persistent Windows setting. Close its own handles, preserve the result, and manually return to normal Windows. The original boot default/security state is unchanged. The prepared desktop kit adds only test/evidence files to the existing test image; it installs nothing. No new clean-Windows deployment or repeat DEG2 attachment test is required.
 
-If control bank `0x11` answers but bank `0x21` does not, the cleanup bug is secondary to that failed read; investigate board population/address/port mapping before any firmware update. If both return usable versions, a transient or transaction-order problem becomes a stronger target for a narrowly scoped Windows correction. Zero/all-ones replies are retained as invalid/unknown versions. A control-bank failure stops the test and is inconclusive about bank 18; power gating in the disconnected condition remains possible. Neither outcome alone establishes a USB4 fix. No live version probe or patch has yet been executed.
+If control bank `0x11` answers but bank `0x21` does not, the cleanup bug is secondary to that failed read; investigate board population/address/port mapping before any firmware update. If both return usable versions, a transient or transaction-order problem becomes a stronger target for a narrowly scoped Windows correction. Zero/all-ones replies are retained as invalid/unknown versions. A control-bank failure stops the test and is inconclusive about bank 18; power gating in the disconnected condition remains possible. Neither outcome alone establishes a USB4 fix. The live version probe has now stopped without version data; no patch was executed and no repeat is queued.
