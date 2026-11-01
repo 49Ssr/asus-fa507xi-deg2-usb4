@@ -1,6 +1,6 @@
 # UCSI role-policy prototype
 
-**First private local test-signed ASUS load and Microsoft policy-1 acceptance passed; USB4 attachment and rollback remain pending. No USB4 fix is validated.** Read the [research, controlled procedure and rollback](../../docs/role-policy-experiment.md) before using this source. The default runner and builder only print Preview.
+**Actual policy-1 load passed but the single USB4 attachment still failed. Driver rollback and owned boot/trust cleanup are verified; final original-security Verify is pending. No USB4 fix is validated.** Read the [research, controlled procedure and rollback](../../docs/role-policy-experiment.md) before using this source. The default runner and builder only print Preview.
 
 `Driver.c` is an x64 KMDF 1.15 device lower filter. `Policy.c` is the shared bounded protocol parser tested by `TestPolicy.c`. `Usb4RolePolicy.inf` adds an independently removable extension; Microsoft's base UCSI driver is retained. The driver recognizes only the pinned UCSI UUID/revision and functions 0/4 on the guarded ASUS model. It changes a valid support mask and supplies the documented disable-correction reply before attachment.
 

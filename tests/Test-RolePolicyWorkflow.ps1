@@ -1,6 +1,6 @@
 #requires -Version 5.1
 [CmdletBinding()]
-param([string]$UnsignedPackage='', [string]$RetainedPolicyTraceDirectory='', [string]$TraceFmt='', [string]$TmfDirectory='')
+param([string]$UnsignedPackage='', [string]$RetainedPolicyTraceDirectory='', [string]$TraceFmt='', [string]$TmfDirectory='', [string]$RetainedRollbackTraceDirectory='')
 Set-StrictMode -Version Latest
 $ErrorActionPreference='Stop'
 $retainedDecoder=$TraceFmt;$retainedTmfs=$TmfDirectory
@@ -46,6 +46,10 @@ if($RetainedPolicyTraceDirectory){
     $realProof=Assert-RpPolicyTrace $RetainedPolicyTraceDirectory $false $retainedDecoder $retainedTmfs
     Check ($realProof.ExpectedDisabled -eq $false -and $realProof.TraceSHA256 -ceq (Get-FileHash -LiteralPath (Join-Path $RetainedPolicyTraceDirectory 'connection.etl')).Hash) 'real retained ETL decoded and stock policy proven without device operation'
 }
+if($RetainedRollbackTraceDirectory){
+    $realRollbackProof=Assert-RpPolicyTrace $RetainedRollbackTraceDirectory $false $retainedDecoder $retainedTmfs
+    Check ($realRollbackProof.ExpectedDisabled -eq $false -and $realRollbackProof.TraceSHA256 -ceq (Get-FileHash -LiteralPath (Join-Path $RetainedRollbackTraceDirectory 'connection.etl')).Hash) 'real deep rollback trace decodes with summary below path limit'
+}
 $net=[pscustomobject]@{Sharing=@([pscustomobject]@{Guid='up';Shared=$true;Type=0},[pscustomobject]@{Guid='down';Shared=$true;Type=1},[pscustomobject]@{Guid='other';Shared=$false;Type=-1})}
 Assert-RpSharing $net $net;Check $true 'same ICS accepted'
 $changed=$net|ConvertTo-Json -Depth 4|ConvertFrom-Json;$changed.Sharing[1].Type=0
@@ -66,6 +70,7 @@ function Get-DeepNetworkSnapshot {return $net}
 function Assert-RpDecoder {}
 function Invoke-RpDeviceChange([string]$Directory,[scriptblock]$Action){$null=[IO.Directory]::CreateDirectory($Directory);$script:Events.Add('trace-start');try{& $Action}finally{$script:Events.Add('trace-stop')}}
 function Start-Sleep {}
+function Get-RpBootStamp {return 'test-boot'}
 $script:Owned=@();$script:PnpExit=0;$script:FailProof=$false
 function Get-RpOwnedPackages {return $script:Owned}
 function Invoke-RpPnp([string[]]$Arguments,[string]$LogPath){
@@ -113,6 +118,16 @@ Invoke-RpRollback $run 'decoder' 'tmfs'
 Check (-not $script:Saved.PendingRollback -and $script:Saved.Phase -eq 'RollbackVerified') 'rollback verified only after default proof'
 Check ($script:Events.Contains('/delete-driver|oem123.inf|/uninstall')) 'only owned OEM package removed'
 Check (-not @($script:Events|Where-Object {$_ -match '/force|/subtree|/reboot'}).Count) 'no force subtree or reboot'
+$retainedRollback=@(Get-ChildItem -LiteralPath $run -Directory -Filter 'rollback-*')
+Check ($retainedRollback.Count -eq 1) 'one exact saved rollback directory'
+$script:Saved.PendingRollback=$true;$script:Saved.Phase='RollbackUnverified';$script:Events.Clear()
+Invoke-RpVerifyRollback $run $retainedRollback[0].FullName 'decoder' 'tmfs'
+Check ($script:Saved.Phase -eq 'RollbackVerified' -and -not $script:Saved.PendingRollback) 'verification-only clears pending after all original postconditions'
+Check (-not @($script:Events|Where-Object {$_ -match '/delete-driver|/restart-device|trace-start'}).Count) 'verification-only does not remove restart or start tracing'
+$script:Saved.PendingRollback=$true;$script:Saved.Phase='RollbackUnverified'
+Reject {Invoke-RpVerifyRollback $run $testRoot 'decoder' 'tmfs'} 'verification rejects unrelated retained trace directory'
+Check $script:Saved.PendingRollback 'failed verification preserves pending'
+$script:Saved.PendingRollback=$false;$script:Saved.Phase='RollbackVerified'
 $script:Events.Clear();Invoke-RpRollback $run 'decoder' 'tmfs'
 Check ($script:Events.Count -eq 0) 'idempotent verified rollback'
 $script:Saved.PendingRollback=$true;$script:Owned=@($good);$script:PnpExit=3010

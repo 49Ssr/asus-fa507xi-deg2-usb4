@@ -1,7 +1,7 @@
 {
   "schema": 1,
   "date": "2026-11-01",
-  "status": "ActualFilterLoaded_PolicyOneAcceptedBeforeAttachment_ObservationPending",
+  "status": "PolicyOverrideEffective_USB4StillFailed_RollbackVerified_FinalSecurityVerifyPending",
   "latest_hardware_result": "asus-dell-matched-comparison.json",
   "intervention": {
     "device": "ASUS FA507XI UCSI",
@@ -31,7 +31,7 @@
   "qualification": {
     "native_assertions": 4631,
     "malformed_frames": 4000,
-    "powershell_51_checks": 79,
+    "powershell_51_checks": 87,
     "actual_unsigned_refusal": true,
     "compiler": "MSVC 14.44.35207",
     "sdk": "10.0.26100.0",
@@ -53,7 +53,7 @@
     "hardware_policy_changed": true,
     "vm_tested": false,
     "driver_verifier_tested": false,
-    "hardware_rollback_tested": false,
+    "hardware_rollback_tested": true,
     "actual_driver_callback_assertions": 36,
     "signing_and_boot_checks": 41,
     "static_analysis_project_results": 0,
@@ -110,11 +110,11 @@
     "cause": "Unresolved"
   },
   "security_or_network_setting_changes": true,
-  "live_test_blocker": "Exact reviewed filter is running; Microsoft policy-1 startup proof accepted. Single same-boot attachment window opened; observation and exact owned-package rollback pending.",
+  "live_test_blocker": "Trial complete without USB4 success. Driver rollback and owned boot/trust cleanup verified; owner must enable Secure Boot and boot original loader, then final Verify.",
   "source_files": [
     {
       "path": "experimental/role-policy/README.md",
-      "sha256_utf8_lf": "530f99954e4add265eb6d75c4232f94d669d5a6f7be7f3e836885d45d5883cf3"
+      "sha256_utf8_lf": "117b67f00add8f6754e4e2818b4db9ccc0d8903f055cc00b635189a120c3e0f3"
     },
     {
       "path": "experimental/role-policy/Build.ps1",
@@ -146,7 +146,7 @@
     },
     {
       "path": "experimental/role-policy/Test-RolePolicy.ps1",
-      "sha256_utf8_lf": "e80656e12c2fe160b14680a3534ee8dbd3d3ec32abe631918924c8751ba45c75"
+      "sha256_utf8_lf": "dbf080a9e9a13e13e68fb6f80ea232b6842ea023f3f4f2963d136c1c0c66954d"
     },
     {
       "path": "experimental/role-policy/TestPolicy.c",
@@ -158,7 +158,7 @@
     },
     {
       "path": "tests/Test-RolePolicyWorkflow.ps1",
-      "sha256_utf8_lf": "835cfbfda0d0d19beeef31e6e66ac4dc7b51a925c3ded907deb277db54794799"
+      "sha256_utf8_lf": "5f8474377c9fada168de83fda695820fd39f8ff36138f384607c3b56a4f42bfd"
     },
     {
       "path": "tests/Test-RolePolicySigning.ps1",
@@ -260,7 +260,7 @@
     "owned_loader_and_exact_test_certificate_trust_prepared": true,
     "hvci_setting_changed": false,
     "network_changed": false,
-    "driver_installed": true
+    "driver_installed": false
   },
   "local_test_boot_preparation": {
     "completed_utc": "2026-11-01T11:57:22.9900868Z",
@@ -346,7 +346,151 @@
     "startup_sha256": "EE016F74E7C3F5A64E38F2143A15F3A425ABF28575E696FB83EBB2CEF26032C5",
     "same_boot_and_freshness_rechecked": true,
     "usb4_success_verified": false,
-    "pending_rollback": true,
-    "rollback_verified": false
+    "pending_rollback": false,
+    "rollback_verified": true
+  },
+  "current_state": {
+    "experimental_package_present": false,
+    "experimental_driver_running": false,
+    "policy": 0,
+    "pending_driver_rollback": false,
+    "original_base_and_enabled_ics_restored": true,
+    "owned_test_entry_present": false,
+    "exact_prior_certificate_trust_restored": true,
+    "original_boot_manager_restored": true,
+    "current_test_signing": true,
+    "current_secure_boot": false,
+    "hvci_running": true,
+    "final_original_security_verified": false
+  },
+  "actual_attachment_result": {
+    "completed_utc": "2026-11-01T12:21:48.7140071Z",
+    "observation": {
+      "RouterPresent": false,
+      "RouterHealthy": false,
+      "BillboardPresent": true,
+      "ExternalNvidiaBound": false,
+      "DisplayAnswer": "N"
+    },
+    "controlled_comparison": {
+      "stock": {
+        "trace": {
+          "events": 1010054,
+          "lost": 0,
+          "format_errors": 0,
+          "unknown": 286
+        },
+        "commands": {
+          "UcsiCommandGetConnectorStatus": 3,
+          "UcsiCommandAckCcCi": 7,
+          "UcsiCommandGetPdos": 2,
+          "UcsiCommandGetAlternateModes": 1,
+          "UcsiCommandSetUor": 1
+        },
+        "cci_error_events": 0,
+        "partner_reports": [
+          {
+            "partner": "Dfp",
+            "flags": "0x1"
+          },
+          {
+            "partner": "Dfp",
+            "flags": "0x1"
+          },
+          {
+            "partner": "Ufp",
+            "flags": "0x2"
+          }
+        ],
+        "power_reports": [
+          {
+            "mode": "UcsiPowerOperationModeTypeC3000",
+            "rdo": "0x0"
+          },
+          {
+            "mode": "UcsiPowerOperationModePd",
+            "rdo": "0x1384b12c"
+          },
+          {
+            "mode": "UcsiPowerOperationModePd",
+            "rdo": "0x1384b12c"
+          }
+        ],
+        "root_port_decisions": {
+          "USB4PortPlugged_No": 2,
+          "RouterDetected_No": 2
+        },
+        "correction_decisions": [],
+        "etl_sha256": "45CFE26678E7332CBEE6A384B949C36998AFE06A808B3352CC14D2121D7DDD35",
+        "endpoint_inventory_sha256": "BA07C8369B61D1760CA7C72D7B38C77B898A3086DB56ED2F04946F420F5EF422"
+      },
+      "override": {
+        "trace": {
+          "events": 999504,
+          "lost": 0,
+          "format_errors": 0,
+          "unknown": 244
+        },
+        "commands": {
+          "UcsiCommandGetConnectorStatus": 2,
+          "UcsiCommandAckCcCi": 5,
+          "UcsiCommandGetPdos": 2,
+          "UcsiCommandGetAlternateModes": 1
+        },
+        "cci_error_events": 0,
+        "partner_reports": [
+          {
+            "partner": "Dfp",
+            "flags": "0x1"
+          },
+          {
+            "partner": "Dfp",
+            "flags": "0x1"
+          }
+        ],
+        "power_reports": [
+          {
+            "mode": "UcsiPowerOperationModeTypeC3000",
+            "rdo": "0x0"
+          },
+          {
+            "mode": "UcsiPowerOperationModePd",
+            "rdo": "0x1384b12c"
+          }
+        ],
+        "root_port_decisions": {
+          "USB4PortPlugged_No": 2,
+          "RouterDetected_No": 2
+        },
+        "correction_decisions": [],
+        "etl_sha256": "6AB9DF9EFD67B5B9696E07BAF051FEC685E21434FBAB19BCB8899C823AB13EE3",
+        "endpoint_inventory_sha256": "CEFDC67BCBB925AE5BBECDF632C7FAA9CEFFCA3D09738269CB5197D2BF88E092"
+      }
+    },
+    "conclusion": "Suppression reached Windows and removed the decoded SET_UOR correction, but policy 1 alone did not enable USB4. Physical PD/entry/root cause remains unresolved.",
+    "single_controlled_pair": true
+  },
+  "rollback_verification": {
+    "completed_utc": "2026-11-01T12:26:40.4371786Z",
+    "first_removal_succeeded": true,
+    "initial_verification_failure": "TraceFmt output path 259 characters; appended .sum exceeds legacy limit",
+    "verification_only_recovery": true,
+    "repeated_removal_or_restart": false,
+    "events": 30782,
+    "events_lost": 0,
+    "format_errors": 0,
+    "unknown_formats": 0,
+    "support_mask": "0x0f",
+    "policy": 0,
+    "trace_sha256": "C9D022703AFFA66371B9B848C9549859274C4D4AA73F2E6B87103931D7DA068D",
+    "pending": false
+  },
+  "owned_boot_trust_restoration": {
+    "completed_utc": "2026-11-01T12:27:26.3399044Z",
+    "test_entry_removed": true,
+    "exact_prior_trust_restored": true,
+    "original_boot_manager_matches": true,
+    "automatic_restart": false,
+    "manual_firmware_and_original_boot_pending": true
   }
 }

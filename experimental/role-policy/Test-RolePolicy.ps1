@@ -1,10 +1,10 @@
 #requires -Version 5.1
 [CmdletBinding()]
-param([ValidateSet('Preview','Preflight','Baseline','ResumeBaseline','Install','Observe','Rollback')][string]$Mode='Preview',
+param([ValidateSet('Preview','Preflight','Baseline','ResumeBaseline','Install','Observe','Rollback','VerifyRollback')][string]$Mode='Preview',
       [string]$PackageDirectory='', [string]$ReviewedDriverSHA256='',
       [string]$SignTool='', [string]$TraceFmt='', [string]$TmfDirectory='', [string]$RunDirectory='',
       [ValidateSet('Microsoft','LocalTest')][string]$SigningMode='Microsoft',
-      [string]$TestBootRecord='', [string]$BaselineDirectory='')
+      [string]$TestBootRecord='', [string]$BaselineDirectory='', [string]$RollbackTraceDirectory='')
 Set-StrictMode -Version Latest
 $ErrorActionPreference='Stop'
 $rpMode=$Mode;$rpRunDirectory=$RunDirectory;$rpSigningMode=$SigningMode
@@ -185,9 +185,13 @@ function Assert-RpPolicyTrace([string]$Directory,[bool]$Enabled,[string]$Decoder
     Assert-RpDecoder $Decoder $Tmfs
     $trace=Get-Content -LiteralPath (Join-Path $Directory 'trace.private.json') -Raw|ConvertFrom-Json
     if(-not $trace.Stopped -or $trace.StopExitCode -ne 0){throw 'Startup trace is incomplete.'}
-    $decoded=Join-Path $Directory ('policy-'+[guid]::NewGuid().ToString('N')+'.private.txt')
+    # TraceFmt appends .sum and uses legacy path limits even when PS accepts the path.
+    $decoded=Join-Path $Directory ('p-'+[guid]::NewGuid().ToString('N')+'.txt')
+    if(($decoded+'.sum').Length -ge 260){throw 'TraceFmt output/summary path exceeds its limit; retain the trace and use a shorter owned evidence directory.'}
     $output=& $Decoder (Join-Path $Directory 'connection.etl') -p $Tmfs -o $decoded -gmt 2>&1
-    if($LASTEXITCODE -ne 0 -or -not(Test-Path -LiteralPath ($decoded+'.sum'))){throw 'Trace decoding did not produce its summary.'}
+    $decodeExit=$LASTEXITCODE
+    [IO.File]::WriteAllText(($decoded+'.log'),($output -join [Environment]::NewLine),(New-Object Text.UTF8Encoding($false)))
+    if($decodeExit -ne 0 -or -not(Test-Path -LiteralPath ($decoded+'.sum'))){throw ('Trace decoding did not produce its summary; exit '+$decodeExit+'. Decoder output retained beside the trace.')}
     if(-not(Test-RpPolicyText ([IO.File]::ReadAllText($decoded)) ([IO.File]::ReadAllText($decoded+'.sum')) $Enabled)){throw 'Microsoft startup policy acceptance/restoration is not proven. Do not attach DEG2.'}
     return [pscustomobject]@{ExpectedDisabled=$Enabled;TraceSHA256=(Get-FileHash -LiteralPath (Join-Path $Directory 'connection.etl')).Hash;DecodedSHA256=(Get-FileHash -LiteralPath $decoded).Hash}
 }
@@ -288,17 +292,31 @@ function Invoke-RpRollback([string]$Directory,[string]$Decoder,[string]$Tmfs) {
             if((Invoke-RpPnp @('/restart-device',$state.Target) (Join-Path $rollback 'restart.private.txt')) -eq 3010){throw 'Rollback needs reboot; pending remains true.'}
             Start-Sleep -Seconds 4
         } $true
-        if(@(Get-RpOwnedPackages).Count){throw 'Experiment package remains in the driver store.'}
-        $driver=Get-CimInstance Win32_SystemDriver -Filter "Name='Usb4RolePolicy'"
-        if($null -ne $driver -and $driver.State -eq 'Running'){throw 'Experimental driver is still running.'}
-        $hostState=Get-RpHost
-        if($hostState.BaseInf -ine $state.BaseInf -or @($hostState.Lower|Where-Object {$_}).Count -or @($hostState.Upper|Where-Object {$_}).Count){throw 'Original base/filter state is not restored.'}
-        $state.RollbackProof=Assert-RpPolicyTrace $rollback $false $Decoder $Tmfs
-        $after=Get-DeepNetworkSnapshot;Write-DeepJson (Join-Path $rollback 'network-after.private.json') $after
-        $before=Get-Content -LiteralPath (Join-Path $Directory 'network-before.private.json') -Raw|ConvertFrom-Json
-        Assert-RpSharing $before $after
-        $state.PendingRollback=$false;$state.Phase='RollbackVerified'
+        Complete-RpRollbackVerification $Directory $state $rollback $Decoder $Tmfs
     }catch{$state.Phase='RollbackUnverified';throw}finally{Write-DeepJson (Join-Path $Directory 'state.private.json') $state}
+}
+function Complete-RpRollbackVerification([string]$Directory,[object]$State,[string]$TraceDirectory,[string]$Decoder,[string]$Tmfs) {
+    $tracePath=Assert-LocalPath $TraceDirectory;Assert-DeepNoReparse $tracePath
+    if([IO.Path]::GetDirectoryName($tracePath) -ine [IO.Path]::GetFullPath($Directory) -or
+       [IO.Path]::GetFileName($tracePath) -notmatch '^rollback-[a-f0-9]{32}$'){throw 'Verification requires this exact run''s retained rollback trace.'}
+    if($State.BootStamp -cne (Get-RpBootStamp)){throw 'Retained rollback verification must remain in the same boot.'}
+    if(@(Get-RpOwnedPackages).Count){throw 'Experiment package remains in the driver store.'}
+    $driver=Get-CimInstance Win32_SystemDriver -Filter "Name='Usb4RolePolicy'"
+    if($null -ne $driver -and $driver.State -eq 'Running'){throw 'Experimental driver is still running.'}
+    $hostState=Get-RpHost
+    if($hostState.BaseInf -ine $State.BaseInf -or @($hostState.Lower|Where-Object {$_}).Count -or @($hostState.Upper|Where-Object {$_}).Count){throw 'Original base/filter state is not restored.'}
+    $proof=Assert-RpPolicyTrace $tracePath $false $Decoder $Tmfs
+    $after=Get-DeepNetworkSnapshot;Write-DeepJson (Join-Path $tracePath 'network-after.private.json') $after
+    $before=Get-Content -LiteralPath (Join-Path $Directory 'network-before.private.json') -Raw|ConvertFrom-Json
+    Assert-RpSharing $before $after
+    $State.RollbackProof=$proof;$State.PendingRollback=$false;$State.Phase='RollbackVerified'
+}
+function Invoke-RpVerifyRollback([string]$Directory,[string]$TraceDirectory,[string]$Decoder,[string]$Tmfs) {
+    $state=Read-RpRun $Directory -ForRollback
+    if(-not $state.PendingRollback){Write-Output 'Rollback already verified; no device operation.';return}
+    if($state.Phase -ne 'RollbackUnverified'){throw 'VerifyRollback requires a retained unverified removal; it does not remove or restart anything.'}
+    try{Complete-RpRollbackVerification $Directory $state $TraceDirectory $Decoder $Tmfs}
+    finally{Write-DeepJson (Join-Path $Directory 'state.private.json') $state}
 }
 function Invoke-RpBaseline([object]$Preflight,[string]$Decoder,[string]$Tmfs,[string]$ResumeDirectory='') {
     if($ResumeDirectory){
@@ -371,4 +389,5 @@ switch($rpMode){
     'ResumeBaseline' {if([string]::IsNullOrWhiteSpace($BaselineDirectory)){throw 'ResumeBaseline requires the exact retained directory; no new baseline is started.'};$preflight=Get-RpPreflight $PackageDirectory $ReviewedDriverSHA256 $SignTool $TraceFmt $TmfDirectory;Invoke-RpBaseline $preflight $TraceFmt $TmfDirectory $BaselineDirectory}
     'Observe' {Invoke-RpObserve $rpRunDirectory}
     'Rollback' {Invoke-RpRollback $rpRunDirectory $TraceFmt $TmfDirectory}
+    'VerifyRollback' {Invoke-RpVerifyRollback $rpRunDirectory $RollbackTraceDirectory $TraceFmt $TmfDirectory}
 }

@@ -1,6 +1,6 @@
 # Driver readiness review, 1 November 2026
 
-**First actual ASUS load and Microsoft startup-policy acceptance passed; attachment and rollback remain pending.** The parser tests were useful but did not establish that the complete filter was ready. This review found and corrected additional kernel-framework and workflow defects before a live load. [Signing route and controlled activation](local-test-signing.md).
+**One actual ASUS load, failed USB4 attachment and exact driver rollback have completed. Original-security Verify remains pending.** The parser tests were useful but did not establish that the complete filter was ready. This review found and corrected additional kernel-framework and workflow defects before a live load. [Signing route and controlled activation](local-test-signing.md).
 
 At 11:57 UTC, the approved copied test loader and exact certificate trust were prepared and read back after the owner's Secure Boot change. At 12:06 UTC, the actual owned test-loader boot and full LocalTest preflight also passed with TESTSIGNING on and HVCI running. At that stage no driver was installed. A powered fallback baseline and actual filter load have now completed as recorded below; hardware rollback remains unperformed. See the signing record above for current activation state.
 
@@ -9,6 +9,8 @@ The first live baseline then exposed a trace-parser mismatch: real TMF output us
 **First actual filter load accepted, 1 November at 12:18 UTC:** the exact reviewed local test-signed extension installed on the original Microsoft UCSI base. The filter reports Running. In the owned same-boot test environment with HVCI required and TESTSIGNING on, Microsoft initialization records support mask `0x1f`, the exact forced-disable-correction message, ACPI `UsbDeviceControllerEnabled:0x00000001(true)` and class-extension configuration 1. Both initializations in the startup trace report the same policy. The 26-second ETL has 186,183 events, zero loss, zero format errors and zero unknowns. Enabled ICS bindings are preserved. Trace hash, same boot and proof freshness have been rechecked.
 
 This establishes that the filter loads and Windows accepts the intended startup-policy change from the powered stock baseline's 0 to 1. It does not establish native USB4 entry or GPU/display operation. The single-attachment window is open; its exact result and rollback remain pending. The owned package/run record and all raw evidence are retained privately. No extra boot/security change, firmware command, controller-wide removal or automatic reboot occurred.
+
+**Controlled trial completed:** Windows accepted policy 1 and the decoded automatic SET_UOR count changed from 1 to 0, but Billboard fallback remained with no external router/GPU/display. Exact driver rollback is verified; the owned boot entry and certificate trust are removed. Manual Secure Boot restoration, original-loader boot and final Verify remain pending. [Measured comparison and recovery](role-policy-test-result.md).
 
 ## What the retained dumps and traces establish
 
