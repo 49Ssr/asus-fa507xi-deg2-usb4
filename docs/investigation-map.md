@@ -37,8 +37,10 @@ flowchart TD
     NO_ROLE_CMD["No Windows SET_UOR; other processing continues"]
     EC_SKIPPED["Skip this EC worker invocation"]
     RET_CFG["PS8830 mode/orientation control; ASUS owner unverified"]
-    PORT_REGS["Native host-port scalar status reads"]
+    PORT_REGS{"Native status reads: is RouterDetected set?"}
     APU_CFG["AMD APU crossbar configuration: ASUS caller UNMAPPED"]
+    CL0_POLL["Windows lane0 CL0 polling"]
+    WAIT_RD["Windows waits for router connect (RD No)"]
     ATTACH -->|"documented: controller discovery and mode negotiation"| PD
     PD -.->|"unknown: candidate mode-control path; ASUS ownership/wiring unproven"| RET_CFG
     LINK -.->|"unknown: what makes the native host-port status assert remains untraced"| PORT_REGS
@@ -61,9 +63,13 @@ flowchart TD
     AML -->|"traced_code: firmware status delivered to Type-C stack"| STATUS
     CFU -.->|"unknown: effect of updater resource state on this physical pairing"| LINK
     RET_CFG -.->|"unknown: requested retimer configuration to usable physical link"| LINK
-    PORT_REGS -->|"traced_code: native bit tests select recorded No/Yes branch"| PORT
+    PORT_REGS -.->|"unknown: sampled router-detection branch to eventual operational-router discovery; distinct milestones"| PORT
     PD -.->|"unknown: reference-guided PD-to-APU mode coordination; ASUS path untraced"| APU_CFG
     APU_CFG -.->|"unknown: APU routing combined with retimer mode and physical training"| LINK
+    PORT_REGS -->|"measured: Dell RD Yes requests lane0 CL0 polling"| CL0_POLL
+    CL0_POLL -.->|"unknown: link-state polling to operational-router discovery"| PORT
+    PORT_REGS -->|"measured: ASUS RD No selects waiting for router connect"| WAIT_RD
+    WAIT_RD -.->|"unknown: relation to final no-router snapshots; transient history unmeasured"| ABSENT
 ```
 
 ### Who owns each part
@@ -91,6 +97,8 @@ flowchart TD
 | RET_CFG | Parade reference PD-I2C / platform-SMBus interfaces; actual ASUS writer unknown | Reference programming sets requested mode/orientation, not a verified link-ready witness | Generic manufacturer diagram and upstream driver are not ASUS board wiring; no live access qualified. |
 | PORT_REGS | Windows USB4DeviceRouter native Port routines | ADP_CS_4 bit30 and USB4 port CS18 bit13; returned values available in saved traces | Current samples do not establish ever/never entry or link history; legacy TBT layout differs. |
 | APU_CFG | Actual ASUS PD/EC/platform firmware ownership unknown | Reference designs coordinate PD-to-APU mode requests/results and retimer safe/target-mode programming | Reference architecture only; no recovered ASUS command sequence or live bus history. |
+| CL0_POLL | Windows USB4 port state machine | Dell RD Yes requests polling; successful completion is recorded before PortConfigured | ASUS does not reach this branch in the two sampled initialization passes. Not complete physical link history. |
+| WAIT_RD | Windows USB4 port state machine | ASUS sampled initialisation branches select WaitingForRouterConnect | Current No is not proof that entry or link never existed; no complete physical history. |
 
 ### Branch evidence
 
@@ -118,9 +126,13 @@ flowchart TD
 | AML → STATUS | firmware status delivered to Type-C stack | traced_code | C06, C22 |
 | CFU → LINK | effect of updater resource state on this physical pairing | unknown | C02, C13 |
 | RET_CFG → LINK | requested retimer configuration to usable physical link | unknown | C23 |
-| PORT_REGS → PORT | native bit tests select recorded No/Yes branch | traced_code | C24, C25, C26 |
+| PORT_REGS → PORT | sampled router-detection branch to eventual operational-router discovery; distinct milestones | unknown | C24, C25, C26, C36 |
 | PD → APU_CFG | reference-guided PD-to-APU mode coordination; ASUS path untraced | unknown | C30 |
 | APU_CFG → LINK | APU routing combined with retimer mode and physical training | unknown | C30 |
+| PORT_REGS → CL0_POLL | Dell RD Yes requests lane0 CL0 polling | measured | C34 |
+| CL0_POLL → PORT | link-state polling to operational-router discovery | unknown | C34, C36 |
+| PORT_REGS → WAIT_RD | ASUS RD No selects waiting for router connect | measured | C34 |
+| WAIT_RD → ABSENT | relation to final no-router snapshots; transient history unmeasured | unknown | C34, C36 |
 
 ### Candidate intervention locations
 
@@ -361,6 +373,32 @@ Scope: ASUS-BIOS314. Private protocols, direct IO, SMU/EC paths and PD-private f
 Reason: Independent code inspection resolves the link routine to USB4 configuration packets and an OEM bus-GUID candidate to a notify/configuration callback. Positive protocol matches validate the bounded scan, not an exhaustive owner search.
 
 [ASUS-PREOS-NATIVE](../evidence/asus-preos-control-scope.json) `/native_control`, [ASUS-PREOS-PROTOCOL-SCOPE](../evidence/asus-preos-control-scope.json) `/bus_protocol_scan`
+
+**C34 — measured:** Dell records RouterDetected Yes, then successful lane0 CL0 polling, then CS19 PortConfigured changing0x40006 to0x4000e. ASUS records only two root-adapter CS19 writes in this retained log, both later sleep/wake programming0x40006 to0x10006 after the initial No.
+
+Scope: ASUS-DEEP, DELL-DEEP. Packet/read-phase association and write acknowledgements verified. Counts are retained-log scope, not complete physical/pre-capture history. ASUS lane-disable status before the initial decision remains unobserved.
+
+[PORT-CONFIG-ORDER](../evidence/windows-port-configuration-order.json) `/captured_order`
+
+**C35 — code_fact:** The pinned native Port::WritePortConfigured changes CS19 bit3/bit4 in cache20a and calls the CS19 writer. The lane1-disable test uses a different cached CS1 field and mask4000; a DPR workaround predicate uses router flags.
+
+Scope: WINDOWS-USB4DRD. Different controls and register spaces; legacy TBT differs. No live cache/flags read or reset occurred, and code presence does not establish the branch executed.
+
+[PORT-CONFIG-CODE](../evidence/windows-port-configuration-order.json) `/native_code`
+
+**C36 — inference:** The later Windows PortConfigured write is not the original trigger of the earlier RouterDetected Yes in the saved Dell sequence. Router detection, CL0 polling and final operational-router presence are separate milestones.
+
+Scope: ASUS-DEEP, DELL-DEEP, WINDOWS-USB4DRD. This ordering does not prove all earlier hardware history, identify ASUS mode programming or qualify an early configured-bit/reset intervention.
+
+Reason: The matched current CS19 read has configured clear after RD Yes and CL0 polling; its acknowledged bit3 write occurs afterward. ASUS failure predates its recorded wake-control changes.
+
+[PORT-CONFIG-ORDER](../evidence/windows-port-configuration-order.json) `/captured_order`, [PORT-CONFIG-CODE](../evidence/windows-port-configuration-order.json) `/native_code`
+
+**C37 — measured:** The saved working ASUS peer rundown identifies root lane0 adapter2, both lane states2 and bonding1, matching the logical adapter number sampled in the failed ASUS-DEG2 run.
+
+Scope: ASUS-PEER. Historical peer result, not an equivalent DEG2 attachment or direct RD-bit measurement; UCSI connector mapping and complete entry history remain unqualified.
+
+[PEER-LOGICAL-PORT](../evidence/windows-port-configuration-order.json) `/peer_positive`
 
 ## Separate runs and observation limits
 

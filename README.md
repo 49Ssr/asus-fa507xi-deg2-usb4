@@ -2,6 +2,8 @@
 
 **Current result, 1 November 2026:** ASUS still does not discover DEG2 as a USB4 dock. No working Windows repair has been demonstrated.
 
+**Windows ordering clarified:** Dell detects the router and completes CL0 polling before Windows sets the separate Port Configured bit. ASUS's two recorded root-port writes instead program wake settings after its initial No. That later configured-bit write is not the initial trigger in the recorded Dell sequence. [Matched packet values, native code and same-ASUS logical-port control](evidence/windows-port-configuration-order.json), [interval checkpoint](docs/ps8830-investigation-intervals.md).
+
 **Pre-OS code scope checked:** the BIOS routine named `AmdUsb4PortLinkConfigure` operates USB4 adapter registers for FEC/reset/lane state; it does not supply the missing PS8830 mode-programming sequence. Reviewed PEI and event callbacks also do not identify that writer. [Code anchors, bounded protocol search and next capture analysis](docs/ps8830-investigation-intervals.md). No new startup test is selected from these findings.
 
 **PS8830 ownership follow-up:** the reviewed ASUS ACPI resource methods expose both retimer address groups but return constants rather than selecting the live mode. TI and Infineon AMD references identify a specific PD-to-APU crossbar plus retimer coordination path to trace; ASUS's actual implementation remains unresolved. [Interval checkpoint, exact scope and next task](docs/ps8830-investigation-intervals.md), [structured evidence](evidence/ps8830-configuration-path.json). Recurring offline intervals are now owner-authorized, with a10% remaining-allowance stop; no new hardware action is selected.

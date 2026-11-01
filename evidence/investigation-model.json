@@ -617,6 +617,37 @@
         "ASUS-BIOS314"
       ],
       "value_sha256": "b93c0c8c6afd73e9522c9c2e84a501857d075433cd2bfa3dea15403ec80ba67c"
+    },
+    {
+      "id": "PORT-CONFIG-ORDER",
+      "path": "evidence/windows-port-configuration-order.json",
+      "pointer": "/captured_order",
+      "kind": "capture",
+      "cases": [
+        "ASUS-DEEP",
+        "DELL-DEEP"
+      ],
+      "value_sha256": "ce13fbf847ab286b86161aecb2820d75176d34ebddd6681cc7ae9b5c07e3b0ff"
+    },
+    {
+      "id": "PORT-CONFIG-CODE",
+      "path": "evidence/windows-port-configuration-order.json",
+      "pointer": "/native_code",
+      "kind": "code",
+      "cases": [
+        "WINDOWS-USB4DRD"
+      ],
+      "value_sha256": "4a2ca32dd987232fab471ec6f39dce821623fc533155dc14461f3287a12a8645"
+    },
+    {
+      "id": "PEER-LOGICAL-PORT",
+      "path": "evidence/windows-port-configuration-order.json",
+      "pointer": "/peer_positive",
+      "kind": "capture",
+      "cases": [
+        "ASUS-PEER"
+      ],
+      "value_sha256": "5aafd09b931ccb3a8ab5ba7b57bd7aa611d9b20ff1b8a13d6d2df38ad12170e5"
     }
   ],
   "claims": [
@@ -1096,6 +1127,63 @@
       ],
       "reason": "Independent code inspection resolves the link routine to USB4 configuration packets and an OEM bus-GUID candidate to a notify/configuration callback. Positive protocol matches validate the bounded scan, not an exhaustive owner search.",
       "limit": "Private protocols, direct IO, SMU/EC paths and PD-private firmware remain open. Actual ASUS writer and physical cause unresolved."
+    },
+    {
+      "id": "C34",
+      "basis": "measured",
+      "stage": "router",
+      "statement": "Dell records RouterDetected Yes, then successful lane0 CL0 polling, then CS19 PortConfigured changing0x40006 to0x4000e. ASUS records only two root-adapter CS19 writes in this retained log, both later sleep/wake programming0x40006 to0x10006 after the initial No.",
+      "sources": [
+        "PORT-CONFIG-ORDER"
+      ],
+      "cases": [
+        "ASUS-DEEP",
+        "DELL-DEEP"
+      ],
+      "limit": "Packet/read-phase association and write acknowledgements verified. Counts are retained-log scope, not complete physical/pre-capture history. ASUS lane-disable status before the initial decision remains unobserved."
+    },
+    {
+      "id": "C35",
+      "basis": "code_fact",
+      "stage": "router",
+      "statement": "The pinned native Port::WritePortConfigured changes CS19 bit3/bit4 in cache20a and calls the CS19 writer. The lane1-disable test uses a different cached CS1 field and mask4000; a DPR workaround predicate uses router flags.",
+      "sources": [
+        "PORT-CONFIG-CODE"
+      ],
+      "cases": [
+        "WINDOWS-USB4DRD"
+      ],
+      "limit": "Different controls and register spaces; legacy TBT differs. No live cache/flags read or reset occurred, and code presence does not establish the branch executed."
+    },
+    {
+      "id": "C36",
+      "basis": "inference",
+      "stage": "link",
+      "statement": "The later Windows PortConfigured write is not the original trigger of the earlier RouterDetected Yes in the saved Dell sequence. Router detection, CL0 polling and final operational-router presence are separate milestones.",
+      "sources": [
+        "PORT-CONFIG-ORDER",
+        "PORT-CONFIG-CODE"
+      ],
+      "cases": [
+        "ASUS-DEEP",
+        "DELL-DEEP",
+        "WINDOWS-USB4DRD"
+      ],
+      "reason": "The matched current CS19 read has configured clear after RD Yes and CL0 polling; its acknowledged bit3 write occurs afterward. ASUS failure predates its recorded wake-control changes.",
+      "limit": "This ordering does not prove all earlier hardware history, identify ASUS mode programming or qualify an early configured-bit/reset intervention."
+    },
+    {
+      "id": "C37",
+      "basis": "measured",
+      "stage": "link",
+      "statement": "The saved working ASUS peer rundown identifies root lane0 adapter2, both lane states2 and bonding1, matching the logical adapter number sampled in the failed ASUS-DEG2 run.",
+      "sources": [
+        "PEER-LOGICAL-PORT"
+      ],
+      "cases": [
+        "ASUS-PEER"
+      ],
+      "limit": "Historical peer result, not an equivalent DEG2 attachment or direct RD-bit measurement; UCSI connector mapping and complete entry history remain unqualified."
     }
   ],
   "timeline_limit": "T0 is the first recorded Windows attachment report in each run, not physical insertion. Different runs, platforms, power contracts and capture dates are explicit. These tables align software reports only; proximity does not establish wire order or causation. The earlier Dell control supplies the Dell timeline; the deep Dell dump supplies cached-state comparison.",
@@ -1509,11 +1597,11 @@
       },
       {
         "id": "PORT_REGS",
-        "label": "Native host-port scalar status reads",
+        "label": "Native status reads: is RouterDetected set?",
         "owner": "Windows USB4DeviceRouter native Port routines",
         "interface": "ADP_CS_4 bit30 and USB4 port CS18 bit13; returned values available in saved traces",
         "limit": "Current samples do not establish ever/never entry or link history; legacy TBT layout differs.",
-        "decision": false
+        "decision": true
       },
       {
         "id": "APU_CFG",
@@ -1521,6 +1609,22 @@
         "owner": "Actual ASUS PD/EC/platform firmware ownership unknown",
         "interface": "Reference designs coordinate PD-to-APU mode requests/results and retimer safe/target-mode programming",
         "limit": "Reference architecture only; no recovered ASUS command sequence or live bus history.",
+        "decision": false
+      },
+      {
+        "id": "CL0_POLL",
+        "label": "Windows lane0 CL0 polling",
+        "owner": "Windows USB4 port state machine",
+        "interface": "Dell RD Yes requests polling; successful completion is recorded before PortConfigured",
+        "limit": "ASUS does not reach this branch in the two sampled initialization passes. Not complete physical link history.",
+        "decision": false
+      },
+      {
+        "id": "WAIT_RD",
+        "label": "Windows waits for router connect (RD No)",
+        "owner": "Windows USB4 port state machine",
+        "interface": "ASUS sampled initialisation branches select WaitingForRouterConnect",
+        "limit": "Current No is not proof that entry or link never existed; no complete physical history.",
         "decision": false
       }
     ],
@@ -1758,12 +1862,13 @@
       {
         "from": "PORT_REGS",
         "to": "PORT",
-        "label": "native bit tests select recorded No/Yes branch",
-        "basis": "traced_code",
+        "label": "sampled router-detection branch to eventual operational-router discovery; distinct milestones",
+        "basis": "unknown",
         "claims": [
           "C24",
           "C25",
-          "C26"
+          "C26",
+          "C36"
         ],
         "standards": []
       },
@@ -1784,6 +1889,48 @@
         "basis": "unknown",
         "claims": [
           "C30"
+        ],
+        "standards": []
+      },
+      {
+        "from": "PORT_REGS",
+        "to": "CL0_POLL",
+        "label": "Dell RD Yes requests lane0 CL0 polling",
+        "basis": "measured",
+        "claims": [
+          "C34"
+        ],
+        "standards": []
+      },
+      {
+        "from": "CL0_POLL",
+        "to": "PORT",
+        "label": "link-state polling to operational-router discovery",
+        "basis": "unknown",
+        "claims": [
+          "C34",
+          "C36"
+        ],
+        "standards": []
+      },
+      {
+        "from": "PORT_REGS",
+        "to": "WAIT_RD",
+        "label": "ASUS RD No selects waiting for router connect",
+        "basis": "measured",
+        "claims": [
+          "C34"
+        ],
+        "standards": []
+      },
+      {
+        "from": "WAIT_RD",
+        "to": "ABSENT",
+        "label": "relation to final no-router snapshots; transient history unmeasured",
+        "basis": "unknown",
+        "claims": [
+          "C34",
+          "C36"
         ],
         "standards": []
       }

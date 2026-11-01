@@ -1,0 +1,230 @@
+{
+  "schema": 1,
+  "date": "2026-11-01",
+  "interval": 3,
+  "status": "Native PortConfigured is a later recorded step; the initial ASUS RouterDetected cause is unresolved",
+  "captured_order": {
+    "ASUS-DEEP": {
+      "input_sha256": "75ea73f7f2eb11ce37ea11b6bc027b15b932b18e75ff0ca03cc8ce8a8bdd3158",
+      "logical_adapter": 2,
+      "scalar_root_adapter_records": [
+        {
+          "kind": "Read Response",
+          "header_line": 598,
+          "time": "11/01/2026-00:52:17.0829871",
+          "phase": "ReadingPluggedStateForUSB4",
+          "dword_offset": 4,
+          "sequence": 1,
+          "payload_line": 599,
+          "value": 2281701376
+        },
+        {
+          "kind": "Read Response",
+          "header_line": 620,
+          "time": "11/01/2026-00:52:17.0830451",
+          "phase": "ReadingRouterDetected",
+          "dword_offset": 210,
+          "sequence": 2,
+          "payload_line": 621,
+          "value": 66560
+        },
+        {
+          "kind": "Read Response",
+          "header_line": 1492,
+          "time": "11/01/2026-00:52:27.8264564",
+          "phase": "ReadingSleepWakeControlOnDomainPowerDown",
+          "dword_offset": 211,
+          "sequence": 3,
+          "payload_line": 1493,
+          "value": 262150
+        },
+        {
+          "kind": "Write",
+          "header_line": 1498,
+          "time": "11/01/2026-00:52:27.8265083",
+          "phase": "SettingSleepAndWakeBits",
+          "dword_offset": 211,
+          "sequence": 0,
+          "payload_line": 1499,
+          "value": 65542,
+          "ack_line": 1501,
+          "ack_time": "11/01/2026-00:52:27.8266460"
+        },
+        {
+          "kind": "Read Response",
+          "header_line": 1975,
+          "time": "11/01/2026-00:52:27.8952851",
+          "phase": "ReadingPluggedStateForUSB4",
+          "dword_offset": 4,
+          "sequence": 1,
+          "payload_line": 1976,
+          "value": 2281701376
+        },
+        {
+          "kind": "Read Response",
+          "header_line": 2009,
+          "time": "11/01/2026-00:52:27.8953682",
+          "phase": "ReadingRouterDetected",
+          "dword_offset": 210,
+          "sequence": 2,
+          "payload_line": 2010,
+          "value": 66560
+        },
+        {
+          "kind": "Read Response",
+          "header_line": 2558,
+          "time": "11/01/2026-00:52:38.6278652",
+          "phase": "ReadingSleepWakeControlOnDomainPowerDown",
+          "dword_offset": 211,
+          "sequence": 3,
+          "payload_line": 2559,
+          "value": 262150
+        },
+        {
+          "kind": "Write",
+          "header_line": 2564,
+          "time": "11/01/2026-00:52:38.6278900",
+          "phase": "SettingSleepAndWakeBits",
+          "dword_offset": 211,
+          "sequence": 0,
+          "payload_line": 2565,
+          "value": 65542,
+          "ack_line": 2567,
+          "ack_time": "11/01/2026-00:52:38.6279042"
+        }
+      ],
+      "root_adapter_configuration_writes_in_retained_log": 2,
+      "writes_before_first_router_detected_sample": 0,
+      "first_router_detected_decision": {
+        "utc": "2026-11-01T00:52:17.0830516Z",
+        "line": 629,
+        "value": "No",
+        "next": "WaitingForRouterConnect"
+      },
+      "second_router_detected_decision": {
+        "utc": "2026-11-01T00:52:27.8953782Z",
+        "line": 2018,
+        "value": "No",
+        "next": "WaitingForRouterConnect"
+      },
+      "lane_disable_value_before_initial_decision": "Unknown: not supplied by these retained reads",
+      "limit": "Counts describe this selected root adapter in the decoded retained log. They do not exclude pre-capture programming, other buses or transient physical events."
+    },
+    "DELL-DEEP": {
+      "input_sha256": "6081a1c438433e96eed6b505a430e7d7677dda72ab5897416dd00be978fa3cd5",
+      "logical_adapter": 1,
+      "first_router_detected_read": {
+        "kind": "Read Response",
+        "header_line": 756,
+        "time": "11/01/2026-00:17:45.0348116",
+        "phase": "ReadingRouterDetected",
+        "dword_offset": 162,
+        "sequence": 0,
+        "payload_line": 757,
+        "value": 13584
+      },
+      "first_router_detected_decision": {
+        "utc": "2026-11-01T00:17:45.0348339Z",
+        "line": 764,
+        "value": "Yes",
+        "next": "RequestingPollLane0ForCL0"
+      },
+      "lane0_poll_complete": {
+        "utc": "2026-11-01T00:17:45.4420079Z",
+        "line": 1770,
+        "source": "PollingLane0ForCL0OnPortRequest",
+        "event": "Success",
+        "target": "SignalingPollingComplete"
+      },
+      "port_configured_transaction": [
+        {
+          "kind": "Read Response",
+          "header_line": 4197,
+          "time": "11/01/2026-00:17:45.6230382",
+          "phase": "ReadingPortCS19OnPortConfigure",
+          "dword_offset": 163,
+          "sequence": 3,
+          "payload_line": 4198,
+          "value": 262150
+        },
+        {
+          "kind": "Write",
+          "header_line": 4203,
+          "time": "11/01/2026-00:17:45.6230557",
+          "phase": "WritingPortConfigured",
+          "dword_offset": 163,
+          "sequence": 0,
+          "payload_line": 4204,
+          "value": 262158,
+          "ack_line": 4207,
+          "ack_time": "11/01/2026-00:17:45.6232044"
+        }
+      ],
+      "mask_changed_hex": "00000008",
+      "read_configured_bit": false,
+      "write_configured_bit": true,
+      "write_acknowledgement_recorded": true,
+      "limit": "Observed ordering within this capture. Not a complete pre-capture register or PD-wire history."
+    }
+  },
+  "native_code": {
+    "image_sha256": "5db15e8e1fd270c293be4385a92b85947c93f33396c55b9d1d5265ba1fe1f3a2",
+    "pdb_sha256": "61acae842dbbfbc06d9dd0f608371ac3dadca63364c0b36cd49d6cf475f65c5c",
+    "pdb_guid": "f8f321dc-bc5e-899c-25d5-c5462dceba09",
+    "matched_pe_and_dbi_age": 1,
+    "stripped_info_age": 4,
+    "write_port_configured_rva": "79860",
+    "native_branch_rva": "7999a",
+    "cs19_cache_offset": "20a",
+    "native_mode1_operation": "(cached_value & ~0x10) | 0x08",
+    "native_mode2_operation": "(cached_value & ~0x08) | 0x10",
+    "cs19_write_helper_rva": "793b0",
+    "lane1_disabled_test_rva": "67e58",
+    "lane1_cached_cs1_offset": "26b",
+    "lane_disable_mask_hex": "00004000",
+    "dpr_workaround_predicate_rva": "74840",
+    "dpr_router_flags_valid_offset": "53c",
+    "dpr_router_flags_offset": "540",
+    "dpr_router_flag_mask_hex": "40",
+    "limit": "Native and legacy TBT paths differ. These are original-code predicates, not live flag/cache values or authorization to reset/clear anything."
+  },
+  "peer_positive": {
+    "case": "ASUS-PEER",
+    "input_sha256": "be3fdcc4099d5b2cb2ca393566e61e1b32edccfc9b95d90964ebcdbbd6046fff",
+    "record_index": 1639,
+    "utc": "2026-10-31T13:37:49.1873586Z",
+    "fields": {
+      "IsRundownEvent": 1,
+      "IsNewDeviceRouter": 0,
+      "TopologyID": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "IsDFP": 1,
+      "Lane0AdapterNumber": 2,
+      "Lane1AdapterNumber": 3,
+      "CurrentLinkSpeed": "0x4",
+      "NegotiatedLinkWidth": "0x2",
+      "AdapterState": "0x2",
+      "Lane1AdapterState": "0x2",
+      "LaneBonded": 1,
+      "CableUsb4Version": "0x10",
+      "Tbt3CompatibleMode": 0
+    },
+    "meaning": "The same ASUS root logical lane0 adapter2 is operational in the saved peer-link rundown, with both lanes in state2 and bonding1. This supports a partner-specific failure rather than an invariably disabled logical port.",
+    "limit": "Historical working-peer rundown, not a fresh attachment/Enter_USB trace or a direct CS18 read. Does not establish UCSI connector-number mapping or identical runtime conditions."
+  },
+  "analysis_quality": {
+    "packet_header_payload_association": "Matched provider/controller/opaque-buffer keys internally; exact root route and adapter. Missing/ambiguous scalar payloads and write acknowledgements rejected. Opaque identities omitted.",
+    "assertions": "Both input hashes, scalar indices, two ASUS wake-phase writes, Dell CS19 old/new values, bit3-only delta, ordering and unique peer record checked.",
+    "new_hardware_requests": 0,
+    "driver_installs": 0,
+    "test_boots": 0
+  },
+  "conclusion": "In the recorded Dell sequence, RouterDetected Yes and successful lane0 CL0 polling precede the Windows PortConfigured write. The two ASUS recorded root-port CS19 writes instead occur during later sleep/wake programming after initial No. Forcing PortConfigured early is not supported as a fix. Actual ASUS entry/retimer mode writer and failure cause remain unresolved."
+}
