@@ -1,7 +1,7 @@
 {
   "schema": 1,
   "date": "2026-11-01",
-  "status": "RetainedStockStartupValidated_AttachmentPending_DriverNeverLoaded",
+  "status": "PoweredSameBootFallbackBaselineReady_InstallationStageOpened",
   "latest_hardware_result": "asus-dell-matched-comparison.json",
   "intervention": {
     "device": "ASUS FA507XI UCSI",
@@ -110,7 +110,7 @@
     "cause": "Unresolved"
   },
   "security_or_network_setting_changes": true,
-  "live_test_blocker": "First baseline stopped before attachment on corrected literal-versus-TMF boolean mismatch; exact retained stock startup validates. Guarded same-boot ResumeBaseline opened; require completed fallback attachment before installation.",
+  "live_test_blocker": "Powered matching fallback baseline qualified. Approved installation stage opened and awaiting physical disconnection/responsiveness confirmation; actual startup acceptance required before attachment.",
   "source_files": [
     {
       "path": "experimental/role-policy/README.md",
@@ -278,7 +278,7 @@
     "driver_loaded": false,
     "automatic_restart": false,
     "actual_test_boot_verified": true,
-    "baseline_performed": false,
+    "baseline_performed": true,
     "hardware_policy_changed": false
   },
   "actual_local_test_boot": {
@@ -292,7 +292,7 @@
     "deg2_present": false,
     "driver_installed": false,
     "driver_loaded": false,
-    "baseline_completed": false,
+    "baseline_completed": true,
     "hardware_policy_acceptance_verified": false,
     "usb4_fix_verified": false
   },
@@ -309,6 +309,24 @@
     "signed_package_changed": false,
     "resume_requires": "Exact fresh same-boot machine/target/package record, pre-attachment state, valid stock startup and unchanged sharing",
     "resume_repeats_ucsi_restart": false,
-    "actual_resumed_attachment_completed": false
+    "actual_resumed_attachment_completed": true,
+    "resumed_attachment_result": "No devices; owner confirmed dock powered off. Retained as dock-off control, not installation qualification."
+  },
+  "powered_same_boot_baseline": {
+    "completed_utc": "2026-11-01T12:16:21.7225674Z",
+    "result": "FallbackBaselineReady",
+    "stock_policy_proven": true,
+    "startup_events": 15856,
+    "events_lost": 0,
+    "format_errors": 0,
+    "unknown_formats": 0,
+    "billboard_present": true,
+    "external_router_present": false,
+    "external_gpu_bound": false,
+    "enabled_ics_preserved": true,
+    "startup_sha256": "E14BBF99C8FCD1450F6CB55F3DB4E6EACEB891DE95CB575C4AF89742C467E717",
+    "inventory_sha256": "BA07C8369B61D1760CA7C72D7B38C77B898A3086DB56ED2F04946F420F5EF422",
+    "freshness_and_same_boot_rechecked": true,
+    "installation_result_recorded": false
   }
 }
