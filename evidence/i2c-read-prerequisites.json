@@ -1,0 +1,193 @@
+{
+  "schema": 1,
+  "status": "ReadFramingReviewed_AddressNackMappingQualified_Usb4LeakSoleCauseWeakened",
+  "hardware_experiments_performed": 0,
+  "new_driver_or_firmware_change": false,
+  "native_read": {
+    "register": 1,
+    "write_bytes": 1,
+    "read_bytes": 4,
+    "matches_probe_packet": true,
+    "additional_endpoint_init_programs_retimer_registers": false,
+    "one_vs_three_endpoint_power_equivalence_proven": false
+  },
+  "amd_abort_mapping": {
+    "schema": 1,
+    "scope": "Offline original AMD driver branch with seeded abort bits",
+    "driver_sha256": "d12c0ef69b3c3a7284ade336404cecaaacc7029b8cdeb1891c873ee5f919fe82",
+    "entry_rva": "0x22A9",
+    "stop_rva": "0x2395",
+    "hardware_register_read_into_cache_rva": "0x5EF2",
+    "cached_abort_field": "0xA4",
+    "address_nack_mask": "0x7",
+    "no_such_device_status": "0xC000000E",
+    "actual_windows_status_translation": 433,
+    "cases": [
+      {
+        "abort_mask": "0x0",
+        "clear_flag": 0,
+        "native_status": "0xC0000001",
+        "cached_abort_after": "0x0"
+      },
+      {
+        "abort_mask": "0x0",
+        "clear_flag": 1,
+        "native_status": "0xC0000001",
+        "cached_abort_after": "0x0"
+      },
+      {
+        "abort_mask": "0x1",
+        "clear_flag": 0,
+        "native_status": "0xC000000E",
+        "cached_abort_after": "0x1"
+      },
+      {
+        "abort_mask": "0x1",
+        "clear_flag": 1,
+        "native_status": "0xC000000E",
+        "cached_abort_after": "0x0"
+      },
+      {
+        "abort_mask": "0x2",
+        "clear_flag": 0,
+        "native_status": "0xC000000E",
+        "cached_abort_after": "0x2"
+      },
+      {
+        "abort_mask": "0x2",
+        "clear_flag": 1,
+        "native_status": "0xC000000E",
+        "cached_abort_after": "0x0"
+      },
+      {
+        "abort_mask": "0x4",
+        "clear_flag": 0,
+        "native_status": "0xC000000E",
+        "cached_abort_after": "0x4"
+      },
+      {
+        "abort_mask": "0x4",
+        "clear_flag": 1,
+        "native_status": "0xC000000E",
+        "cached_abort_after": "0x0"
+      },
+      {
+        "abort_mask": "0x3",
+        "clear_flag": 0,
+        "native_status": "0xC000000E",
+        "cached_abort_after": "0x3"
+      },
+      {
+        "abort_mask": "0x3",
+        "clear_flag": 1,
+        "native_status": "0xC000000E",
+        "cached_abort_after": "0x0"
+      },
+      {
+        "abort_mask": "0x5",
+        "clear_flag": 0,
+        "native_status": "0xC000000E",
+        "cached_abort_after": "0x5"
+      },
+      {
+        "abort_mask": "0x5",
+        "clear_flag": 1,
+        "native_status": "0xC000000E",
+        "cached_abort_after": "0x0"
+      },
+      {
+        "abort_mask": "0x6",
+        "clear_flag": 0,
+        "native_status": "0xC000000E",
+        "cached_abort_after": "0x6"
+      },
+      {
+        "abort_mask": "0x6",
+        "clear_flag": 1,
+        "native_status": "0xC000000E",
+        "cached_abort_after": "0x0"
+      },
+      {
+        "abort_mask": "0x7",
+        "clear_flag": 0,
+        "native_status": "0xC000000E",
+        "cached_abort_after": "0x7"
+      },
+      {
+        "abort_mask": "0x7",
+        "clear_flag": 1,
+        "native_status": "0xC000000E",
+        "cached_abort_after": "0x0"
+      },
+      {
+        "abort_mask": "0x8",
+        "clear_flag": 0,
+        "native_status": "0x00000000",
+        "cached_abort_after": "0x8"
+      },
+      {
+        "abort_mask": "0x8",
+        "clear_flag": 1,
+        "native_status": "0x00000000",
+        "cached_abort_after": "0x0"
+      },
+      {
+        "abort_mask": "0x1000",
+        "clear_flag": 0,
+        "native_status": "0xC0000001",
+        "cached_abort_after": "0x1000"
+      },
+      {
+        "abort_mask": "0x1000",
+        "clear_flag": 1,
+        "native_status": "0xC0000001",
+        "cached_abort_after": "0x0"
+      },
+      {
+        "abort_mask": "0x8000",
+        "clear_flag": 0,
+        "native_status": "0xC0000001",
+        "cached_abort_after": "0x8000"
+      },
+      {
+        "abort_mask": "0x8000",
+        "clear_flag": 1,
+        "native_status": "0xC0000001",
+        "cached_abort_after": "0x0"
+      }
+    ],
+    "device_calls": 0,
+    "driver_file_changed": false,
+    "real_probe_raw_abort_bits_recovered": false
+  },
+  "original_error_raw_abort_bits_recovered": false,
+  "dump_fault_history_limits": {
+    "amd_ifr_retained_entries": 67,
+    "old_fault_overwritten": true,
+    "abort_cache_at_snapshot": 0,
+    "retained_completion": "Reset NoFormat/status0; not historical success",
+    "actual_earlier_dump_ifr_retained_entries": 67,
+    "actual_earlier_dump_ifr_window": "2026-10-31T04:27:38; original 04:11 fault not retained"
+  },
+  "same_boot_correlation": {
+    "earlier_dump_utc": "2026-10-31T04:27:38.513Z",
+    "earlier_dump_bytes": 2300018688,
+    "earlier_dump_sha256": "7195F0B0799958785840226C5750700B49632CF932680AB976CC2BEEC0ED965B",
+    "peer_trace_start_utc": "2026-10-31T13:37:49.1851530Z",
+    "peer_trace_end_utc": "2026-10-31T13:37:52.3048867Z",
+    "peer_trace_header_boot_utc": "2026-10-31T04:11:34.5000000Z",
+    "peer_trace_sha256": "9A77EEFACB155F79585B536000347500133A61D5FD907AC28A4C4A5EA6BF6D77",
+    "reported_link_gbps": 40,
+    "later_dump_utc": "2026-11-01T00:53:54.969Z",
+    "later_dump_sha256": "FA979A86E3A586CF17A9C04C41564526A1CC748B8F8182DF431EAF6A5773928C",
+    "same_retained_outer_target_identities": true,
+    "both_dump_states": "Started",
+    "target_state_sampled_inside_peer_trace": false,
+    "dump_vs_trace_boot_times_within_seconds": 1,
+    "system_boot_events_in_interval": 1,
+    "earlier_mislabelled_dump_review_corrected": true
+  },
+  "conclusion": "Strong counterevidence to updater leak as sole/universal USB4 blocker; pairing-specific effects not excluded",
+  "next_boundary": "ASUS-DEG2 entry/training and firmware report, not unqualified updater cleanup deployment",
+  "new_hardware_test_queued": false
+}

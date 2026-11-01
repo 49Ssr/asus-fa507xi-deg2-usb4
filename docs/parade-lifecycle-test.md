@@ -1,5 +1,7 @@
 # Retimer target leak: reproduced code path and controlled next test
 
+**Further qualification:** [initialization and same-boot counterexample](i2c-read-prerequisites.md) verifies the packet framing, traces an AMD address-NACK status path and correlates the leaked targets with a successful 40 Gbps peer link in the same boot. The first-read prerequisites remain unresolved, and updater cleanup alone is not an established eGPU repair. No replacement test is queued.
+
 ## Actual probe result: control failed, bank 18 not reached
 
 **1 November, 14:41 UTC:** the owner ran the prepared kit in the existing clean test Windows. Every readiness check passed: correct native boot/driver, CFU package and bindings absent, offline, no DEG2, fresh boot. It reached the real device operations. Opening control endpoint `PS883011` and initializing its bus succeeded; the register-1 version-read completion returned Win32 **433, `ERROR_NO_SUCH_DEVICE`**. No version bytes were recovered. The owned file handle closed successfully. The first-failure stop then prevented testing `PS883021`/bank 18. [Actual result](../evidence/parade-version-probe-result.json).
