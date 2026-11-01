@@ -189,5 +189,21 @@
   },
   "conclusion": "Strong counterevidence to updater leak as sole/universal USB4 blocker; pairing-specific effects not excluded",
   "next_boundary": "ASUS-DEG2 entry/training and firmware report, not unqualified updater cleanup deployment",
-  "new_hardware_test_queued": false
+  "new_hardware_test_queued": false,
+  "windows_rate_control_review": {
+    "scope": "Pinned host binary parameter strings and matching PDB registry-loader metadata; not exhaustive consumer analysis",
+    "host_sha256": "912EFBFCA273C62484DB952632EEB0D2B061BD7A1C830970FDA23CDB50BEEB1F",
+    "matching_pdb_guid_age": "467BC6215A3EDC9640ABA1BC45993F68-1",
+    "obvious_native_force_gen2_parameter_found": false,
+    "undocumented_control_absence_proven": false,
+    "settings_written": 0
+  },
+  "vendor_material_review": {
+    "access": "Read-only",
+    "inspected_asus_technical_reply": "Automated troubleshooting, no exact-model firmware correction",
+    "later_applicable_correction_found_in_bounded_searches": false,
+    "vendor_private_fix_absence_proven": false,
+    "messages_sent": 0,
+    "private_case_identifiers_published": false
+  }
 }
