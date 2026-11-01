@@ -12,7 +12,7 @@ python tools/analysis/Run-Investigation.py
 
 The runner validates the [curated evidence](../evidence/investigation-model.json), evaluates the [declared constraints](../evidence/investigation-logic.json), and refreshes only changed outputs: the [architecture map](investigation-map.md), [truth table](investigation-truth-table.md) and [machine-readable results](../evidence/investigation-logic-results.json). `--check` verifies those outputs without writing. It stops on changed source pins rather than silently accepting or repinning evidence. Reports are computed before writing, with atomic replacement per file; a multi-file refresh is not a filesystem transaction.
 
-This is the owner's selected **offline runner**, not recurring chat work. It has no hardware, network, scheduler or driver-loading backend. It neither simulates cable insertion nor invents controller responses. The optional saved-log extractor described below is also offline.
+This **offline runner** has no hardware, network, scheduler or driver-loading backend. It neither simulates cable insertion nor invents controller responses. The optional saved-log extractor described below is also offline. The owner initially chose the runner alone and has now separately authorized [recurring offline research intervals](ps8830-investigation-intervals.md); scheduling does not add device access to this tool.
 
 The truth table separates an event that happened at least once from a final snapshot. Successful host UCSI exchanges do not imply successful USB4 entry or a usable link. Exit can occur before a later re-entry, so it is a separate history variable rather than an exclusive failure stage. Unknown values remain unknown.
 

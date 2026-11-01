@@ -81,6 +81,16 @@
       "id": "PS8830-REFERENCE",
       "label": "Parade product diagram and upstream Linux PS883x implementation",
       "limit": "Generic/reference architecture and programming example, not an ASUS wiring or runtime observation."
+    },
+    {
+      "id": "TBTOOLS-REFERENCE",
+      "label": "Pinned Intel tbtools register definitions",
+      "limit": "Public USB4 field layout, not a new ASUS measurement or a complete hardware implementation."
+    },
+    {
+      "id": "AMD-PD-REFERENCE",
+      "label": "TI and Infineon AMD/PD reference programming architecture",
+      "limit": "Different PD-controller implementations, not recovered ASUS ITE code or board wiring."
     }
   ],
   "stages": [
@@ -557,6 +567,36 @@
         "PS8830-REFERENCE"
       ],
       "value_sha256": "144b4c8c475c2ffe9c7fc5f26204c77bdd90c7d0ec82ef1523e57053cc512932"
+    },
+    {
+      "id": "ASUS-RETIMER-AML",
+      "path": "evidence/ps8830-configuration-path.json",
+      "pointer": "/asus_acpi",
+      "kind": "code",
+      "cases": [
+        "ASUS-DEEP"
+      ],
+      "value_sha256": "08a21df95851b6fca76708af9449b239d5777d4c553f9669526f451b8bdce45c"
+    },
+    {
+      "id": "TBTOOLS-PORT-FIELDS",
+      "path": "evidence/ps8830-configuration-path.json",
+      "pointer": "/register_reference",
+      "kind": "code",
+      "cases": [
+        "TBTOOLS-REFERENCE"
+      ],
+      "value_sha256": "b109ce2ed8cd822eb1d990bdf98605682656b732b73bfafd604dc37fa1c00c10"
+    },
+    {
+      "id": "AMD-PD-PROGRAMMING-REFERENCE",
+      "path": "evidence/ps8830-configuration-path.json",
+      "pointer": "/amd_reference",
+      "kind": "documentation",
+      "cases": [
+        "AMD-PD-REFERENCE"
+      ],
+      "value_sha256": "23a3cf20c1e2cc499ff713932511e77f56ae02961893a10170a9c3cecc913908"
     }
   ],
   "claims": [
@@ -939,6 +979,62 @@
       ],
       "limit": "Upstream software programming/policy effects remain possible. These observations do not identify what prevented the ASUS bit from asserting or justify forcing it.",
       "reason": "Clear native bit13 accompanies No on ASUS; set bit13 accompanies Yes on Dell, while both initially have Plugged clear."
+    },
+    {
+      "id": "C27",
+      "basis": "code_fact",
+      "stage": "entry",
+      "statement": "The reviewed ASUS PS8830 ACPI devices expose eight400kHz I2C endpoints on I2CD; their DSM methods return constants rather than writing attachment-time mode registers.",
+      "sources": [
+        "ASUS-RETIMER-AML"
+      ],
+      "cases": [
+        "ASUS-DEEP"
+      ],
+      "limit": "Resource bytes verified in recovered original AML. Logical endpoints are not physical-chip count or connector ownership; other firmware/callers remain open."
+    },
+    {
+      "id": "C28",
+      "basis": "code_fact",
+      "stage": "router",
+      "statement": "Pinned Intel tbtools definitions identify CS18 bit16 as Wake on Connect Status, bit13 Router Detected, bits0..7 Cable USB4 Version and bit8 Bonding Enabled.",
+      "sources": [
+        "TBTOOLS-PORT-FIELDS"
+      ],
+      "cases": [
+        "TBTOOLS-REFERENCE"
+      ],
+      "limit": "Reference field layout supplies names, not the history or writer of the ASUS returned value."
+    },
+    {
+      "id": "C29",
+      "basis": "inference",
+      "stage": "router",
+      "statement": "The saved ASUS CS18 sample has Wake on Connect Status set, RouterDetected/Bonding clear and cable version0; Dell has RouterDetected/Bonding set, wake status clear and cable version16.",
+      "sources": [
+        "PORT-READS",
+        "TBTOOLS-PORT-FIELDS"
+      ],
+      "cases": [
+        "ASUS-DEEP",
+        "DELL-DEEP",
+        "TBTOOLS-REFERENCE"
+      ],
+      "reason": "Apply the independently published field masks to the already pinned native readback values.",
+      "limit": "A status bit and absent cable metadata do not prove an uncleared interrupt, missing entry, retimer error or a specific failed training stage."
+    },
+    {
+      "id": "C30",
+      "basis": "unknown",
+      "stage": "entry",
+      "statement": "ASUS attachment-time ownership of both APU crossbar and PS8830 mode programming remains untraced; TI and Infineon references motivate following the PD-to-APU and retimer coordination path.",
+      "sources": [
+        "AMD-PD-PROGRAMMING-REFERENCE"
+      ],
+      "cases": [
+        "AMD-PD-REFERENCE"
+      ],
+      "limit": "Vendor reference architectures are not proof of ASUS implementation. No TI register/control value is qualified for ASUS ITE hardware."
     }
   ],
   "timeline_limit": "T0 is the first recorded Windows attachment report in each run, not physical insertion. Different runs, platforms, power contracts and capture dates are explicit. These tables align software reports only; proximity does not establish wire order or causation. The earlier Dell control supplies the Dell timeline; the deep Dell dump supplies cached-state comparison.",
@@ -1357,6 +1453,14 @@
         "interface": "ADP_CS_4 bit30 and USB4 port CS18 bit13; returned values available in saved traces",
         "limit": "Current samples do not establish ever/never entry or link history; legacy TBT layout differs.",
         "decision": false
+      },
+      {
+        "id": "APU_CFG",
+        "label": "AMD APU crossbar configuration: ASUS caller UNMAPPED",
+        "owner": "Actual ASUS PD/EC/platform firmware ownership unknown",
+        "interface": "Reference designs coordinate PD-to-APU mode requests/results and retimer safe/target-mode programming",
+        "limit": "Reference architecture only; no recovered ASUS command sequence or live bus history.",
+        "decision": false
       }
     ],
     "edges": [
@@ -1599,6 +1703,26 @@
           "C24",
           "C25",
           "C26"
+        ],
+        "standards": []
+      },
+      {
+        "from": "PD",
+        "to": "APU_CFG",
+        "label": "reference-guided PD-to-APU mode coordination; ASUS path untraced",
+        "basis": "unknown",
+        "claims": [
+          "C30"
+        ],
+        "standards": []
+      },
+      {
+        "from": "APU_CFG",
+        "to": "LINK",
+        "label": "APU routing combined with retimer mode and physical training",
+        "basis": "unknown",
+        "claims": [
+          "C30"
         ],
         "standards": []
       }

@@ -42,7 +42,7 @@ Some private firmware meanings may require ASUS or controller-vendor engineering
 
 ## The evidence system now in the repository
 
-The current curated view covers **26 claims, 38 exact JSON source values, 15 explicitly separated cases and two software-report timelines**. The control-flow graph tags relationships as measured, traced from code, documented architecture or unmapped. Distinct branches remain distinct: choosing no Windows role command and skipping an EC service invocation are different outcomes. The index covers decision-relevant evidence; it does not claim every file or raw event has been ingested.
+The current curated view covers **30 claims, 41 exact JSON source values, 17 explicitly separated cases and two software-report timelines**. The control-flow graph tags relationships as measured, traced from code, documented architecture or unmapped. Distinct branches remain distinct: choosing no Windows role command and skipping an EC service invocation are different outcomes. The index covers decision-relevant evidence; it does not claim every file or raw event has been ingested.
 
 Each claim records its evidence class, case, source location and limit. Inferences require a stated reason. Relevant counterevidence is linked to the competing explanations. Source values are pinned by a canonical SHA-256; a missing or changed field fails validation rather than becoming zero or silently retaining an old interpretation. Changes elsewhere in a source file do not invalidate an unrelated pinned field.
 
@@ -57,7 +57,7 @@ python tools/analysis/Read-Investigation.py --stage entry
 python tools/analysis/Read-Investigation.py --write-report
 ```
 
-The reader's last command writes the architecture report in UTF-8 after validation. For the owner's selected offline automation, use `python tools/analysis/Run-Investigation.py`: it also refreshes the [truth table](investigation-truth-table.md) and its machine-readable results. `--check` checks all three outputs without writing. [Operation and limits](offline-investigation.md). No recurring work is configured. The tools have no capture, firmware-access, driver-loading or network backend. They do not automatically repin changed source values. Updating a claim requires reviewing the changed value, its case and any counterevidence, then updating the pin deliberately.
+The reader's last command writes the architecture report in UTF-8 after validation. For the owner's selected offline automation, use `python tools/analysis/Run-Investigation.py`: it also refreshes the [truth table](investigation-truth-table.md) and its machine-readable results. `--check` checks all three outputs without writing. [Operation and limits](offline-investigation.md). The owner subsequently authorized separate recurring offline research intervals with a10% usage reserve; see the [interval checkpoint](ps8830-investigation-intervals.md). The runner itself does not schedule work. The tools have no capture, firmware-access, driver-loading or network backend. They do not automatically repin changed source values. Updating a claim requires reviewing the changed value, its case and any counterevidence, then updating the pin deliberately.
 
 The timelines preserve original timestamps and align T0 to the first recorded software attachment report in each run. They preserve different capture dates and distinguish the earlier Dell control from the later Dell deep dump. They do not align physical insertion or turn asynchronous Windows reporting into wire-level causation.
 

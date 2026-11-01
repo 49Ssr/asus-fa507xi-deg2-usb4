@@ -38,6 +38,7 @@ flowchart TD
     EC_SKIPPED["Skip this EC worker invocation"]
     RET_CFG["PS8830 mode/orientation control; ASUS owner unverified"]
     PORT_REGS["Native host-port scalar status reads"]
+    APU_CFG["AMD APU crossbar configuration: ASUS caller UNMAPPED"]
     ATTACH -->|"documented: controller discovery and mode negotiation"| PD
     PD -.->|"unknown: candidate mode-control path; ASUS ownership/wiring unproven"| RET_CFG
     LINK -.->|"unknown: what makes the native host-port status assert remains untraced"| PORT_REGS
@@ -61,6 +62,8 @@ flowchart TD
     CFU -.->|"unknown: effect of updater resource state on this physical pairing"| LINK
     RET_CFG -.->|"unknown: requested retimer configuration to usable physical link"| LINK
     PORT_REGS -->|"traced_code: native bit tests select recorded No/Yes branch"| PORT
+    PD -.->|"unknown: reference-guided PD-to-APU mode coordination; ASUS path untraced"| APU_CFG
+    APU_CFG -.->|"unknown: APU routing combined with retimer mode and physical training"| LINK
 ```
 
 ### Who owns each part
@@ -87,6 +90,7 @@ flowchart TD
 | EC_SKIPPED | EC outer service gate | Return before bank3bc20 group | This is one invocation; continued suppression depends on gate state. It is not the Windows no-role-command branch. |
 | RET_CFG | Parade reference PD-I2C / platform-SMBus interfaces; actual ASUS writer unknown | Reference programming sets requested mode/orientation, not a verified link-ready witness | Generic manufacturer diagram and upstream driver are not ASUS board wiring; no live access qualified. |
 | PORT_REGS | Windows USB4DeviceRouter native Port routines | ADP_CS_4 bit30 and USB4 port CS18 bit13; returned values available in saved traces | Current samples do not establish ever/never entry or link history; legacy TBT layout differs. |
+| APU_CFG | Actual ASUS PD/EC/platform firmware ownership unknown | Reference designs coordinate PD-to-APU mode requests/results and retimer safe/target-mode programming | Reference architecture only; no recovered ASUS command sequence or live bus history. |
 
 ### Branch evidence
 
@@ -115,6 +119,8 @@ flowchart TD
 | CFU → LINK | effect of updater resource state on this physical pairing | unknown | C02, C13 |
 | RET_CFG → LINK | requested retimer configuration to usable physical link | unknown | C23 |
 | PORT_REGS → PORT | native bit tests select recorded No/Yes branch | traced_code | C24, C25, C26 |
+| PD → APU_CFG | reference-guided PD-to-APU mode coordination; ASUS path untraced | unknown | C30 |
+| APU_CFG → LINK | APU routing combined with retimer mode and physical training | unknown | C30 |
 
 ### Candidate intervention locations
 
@@ -310,6 +316,32 @@ Reason: Clear native bit13 accompanies No on ASUS; set bit13 accompanies Yes on 
 
 [PORT-READS](../evidence/router-detection-branch.json) `/cases`, [PORT-CODE](../evidence/router-detection-branch.json) `/native_code`
 
+**C27 — code_fact:** The reviewed ASUS PS8830 ACPI devices expose eight400kHz I2C endpoints on I2CD; their DSM methods return constants rather than writing attachment-time mode registers.
+
+Scope: ASUS-DEEP. Resource bytes verified in recovered original AML. Logical endpoints are not physical-chip count or connector ownership; other firmware/callers remain open.
+
+[ASUS-RETIMER-AML](../evidence/ps8830-configuration-path.json) `/asus_acpi`
+
+**C28 — code_fact:** Pinned Intel tbtools definitions identify CS18 bit16 as Wake on Connect Status, bit13 Router Detected, bits0..7 Cable USB4 Version and bit8 Bonding Enabled.
+
+Scope: TBTOOLS-REFERENCE. Reference field layout supplies names, not the history or writer of the ASUS returned value.
+
+[TBTOOLS-PORT-FIELDS](../evidence/ps8830-configuration-path.json) `/register_reference`
+
+**C29 — inference:** The saved ASUS CS18 sample has Wake on Connect Status set, RouterDetected/Bonding clear and cable version0; Dell has RouterDetected/Bonding set, wake status clear and cable version16.
+
+Scope: ASUS-DEEP, DELL-DEEP, TBTOOLS-REFERENCE. A status bit and absent cable metadata do not prove an uncleared interrupt, missing entry, retimer error or a specific failed training stage.
+
+Reason: Apply the independently published field masks to the already pinned native readback values.
+
+[PORT-READS](../evidence/router-detection-branch.json) `/cases`, [TBTOOLS-PORT-FIELDS](../evidence/ps8830-configuration-path.json) `/register_reference`
+
+**C30 — unknown:** ASUS attachment-time ownership of both APU crossbar and PS8830 mode programming remains untraced; TI and Infineon references motivate following the PD-to-APU and retimer coordination path.
+
+Scope: AMD-PD-REFERENCE. Vendor reference architectures are not proof of ASUS implementation. No TI register/control value is qualified for ASUS ITE hardware.
+
+[AMD-PD-PROGRAMMING-REFERENCE](../evidence/ps8830-configuration-path.json) `/amd_reference`
+
 ## Separate runs and observation limits
 
 | Case | Meaning | Important limit |
@@ -329,6 +361,8 @@ Reason: Clear native bit13 accompanies No on ASUS; set bit13 accompanies Yes on 
 | ASUS-MODE-EXIT | One guarded mode-exit request2026-10-31 22:12 | Terminal firmware rejection; immediate snapshot only. No successful exit or USB4 recovery. |
 | WINDOWS-USB4DRD | Pinned Microsoft USB4DeviceRouter image/PDB | Original native decision/read routines inspected offline; legacy TBT path differs. |
 | PS8830-REFERENCE | Parade product diagram and upstream Linux PS883x implementation | Generic/reference architecture and programming example, not an ASUS wiring or runtime observation. |
+| TBTOOLS-REFERENCE | Pinned Intel tbtools register definitions | Public USB4 field layout, not a new ASUS measurement or a complete hardware implementation. |
+| AMD-PD-REFERENCE | TI and Infineon AMD/PD reference programming architecture | Different PD-controller implementations, not recovered ASUS ITE code or board wiring. |
 
 ## Software-report timelines
 

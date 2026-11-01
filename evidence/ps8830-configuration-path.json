@@ -1,0 +1,180 @@
+{
+  "schema": 1,
+  "date": "2026-11-01",
+  "interval": 1,
+  "status": "Runtime mode writer untraced; host resource endpoints and register meanings separated from configuration ownership",
+  "asus_acpi": {
+    "case": "ASUS-DEEP",
+    "aml_sha256": "f57e3bb75b6a15725ff295ed451161d33f3b238bb6cfda683a45286851f1938a",
+    "validated_table_checksum": true,
+    "endpoints": [
+      {
+        "device": "PSX8",
+        "hardware_id": "PS883008",
+        "address_7bit_hex": "08",
+        "speed_hz": 400000,
+        "resource_source": "\\_SB.I2CD",
+        "resource_bytes_verified_in_original_aml": true,
+        "dsm_behavior": "Unconditional zero buffer; no register access"
+      },
+      {
+        "device": "PS11",
+        "hardware_id": "PS883011",
+        "address_7bit_hex": "11",
+        "speed_hz": 400000,
+        "resource_source": "\\_SB.I2CD",
+        "resource_bytes_verified_in_original_aml": true,
+        "dsm_behavior": "UUID/function-selected constant buffers; no register access"
+      },
+      {
+        "device": "PSXA",
+        "hardware_id": "PS88300A",
+        "address_7bit_hex": "0a",
+        "speed_hz": 400000,
+        "resource_source": "\\_SB.I2CD",
+        "resource_bytes_verified_in_original_aml": true,
+        "dsm_behavior": "Unconditional zero buffer; no register access"
+      },
+      {
+        "device": "PSXF",
+        "hardware_id": "PS88300F",
+        "address_7bit_hex": "0f",
+        "speed_hz": 400000,
+        "resource_source": "\\_SB.I2CD",
+        "resource_bytes_verified_in_original_aml": true,
+        "dsm_behavior": "Unconditional zero buffer; no register access"
+      },
+      {
+        "device": "PS18",
+        "hardware_id": "PS883018",
+        "address_7bit_hex": "18",
+        "speed_hz": 400000,
+        "resource_source": "\\_SB.I2CD",
+        "resource_bytes_verified_in_original_aml": true,
+        "dsm_behavior": "Unconditional zero buffer; no register access"
+      },
+      {
+        "device": "PS21",
+        "hardware_id": "PS883021",
+        "address_7bit_hex": "21",
+        "speed_hz": 400000,
+        "resource_source": "\\_SB.I2CD",
+        "resource_bytes_verified_in_original_aml": true,
+        "dsm_behavior": "Unconditional zero buffer; no register access"
+      },
+      {
+        "device": "PS1A",
+        "hardware_id": "PS88301A",
+        "address_7bit_hex": "1a",
+        "speed_hz": 400000,
+        "resource_source": "\\_SB.I2CD",
+        "resource_bytes_verified_in_original_aml": true,
+        "dsm_behavior": "Unconditional zero buffer; no register access"
+      },
+      {
+        "device": "PS1F",
+        "hardware_id": "PS88301F",
+        "address_7bit_hex": "1f",
+        "speed_hz": 400000,
+        "resource_source": "\\_SB.I2CD",
+        "resource_bytes_verified_in_original_aml": true,
+        "dsm_behavior": "Unconditional zero buffer; no register access"
+      }
+    ],
+    "meaning": "Eight logical ACPI endpoints, not eight physical chips. These resource/constant-return methods do not implement attachment-time mode selection. This excludes only these reviewed methods, not every AML/Windows/firmware path.",
+    "physical_connector_mapping_established": false
+  },
+  "register_reference": {
+    "repository": "intel/tbtools",
+    "commit": "5de2ac9d5325c3746adbda7d9874b98397109ebb",
+    "path": "src/data/registers.json",
+    "url": "https://github.com/intel/tbtools/blob/5de2ac9d5325c3746adbda7d9874b98397109ebb/src/data/registers.json",
+    "fields": {
+      "ADP_CS_4": {
+        "30": "Plugged",
+        "31": "Lock"
+      },
+      "PORT_CS_18": {
+        "0:7": "Cable USB4 Version",
+        "8": "Bonding Enabled",
+        "9": "TBT3-Compatible Mode",
+        "10": "CLx Protocol Support",
+        "12": "RS-FEC Enabled (Gen 3)",
+        "13": "Router Detected",
+        "16": "Wake on Connect Status"
+      }
+    }
+  },
+  "saved_field_decode": [
+    {
+      "case": "ASUS-DEEP",
+      "raw_hex": "00010400",
+      "sample_utc": "2026-11-01T00:52:17.0830453Z",
+      "cable_usb4_version": 0,
+      "bonding_enabled": false,
+      "tbt3_compatible_mode": false,
+      "clx_protocol_support": true,
+      "rs_fec_gen3_enabled": false,
+      "router_detected": false,
+      "wake_on_connect_status": true,
+      "limit": "Current saved register sample. Wake status does not establish current mode, pending interrupt failure, entry success, or full link history."
+    },
+    {
+      "case": "DELL-DEEP",
+      "raw_hex": "00003510",
+      "sample_utc": "2026-11-01T00:17:45.0348129Z",
+      "cable_usb4_version": 16,
+      "bonding_enabled": true,
+      "tbt3_compatible_mode": false,
+      "clx_protocol_support": true,
+      "rs_fec_gen3_enabled": true,
+      "router_detected": true,
+      "wake_on_connect_status": false,
+      "limit": "Current saved register sample. Wake status does not establish current mode, pending interrupt failure, entry success, or full link history."
+    }
+  ],
+  "amd_reference": {
+    "ti_url": "https://www.ti.com.cn/cn/lit/an/zhcag60/zhcag60.pdf?ts=1779483983495",
+    "ti_document": "ZHCAG60, dated Dec2025; TI TPS6X99X example, not ASUS IT8853 firmware",
+    "ti_pages": [
+      2,
+      3,
+      4,
+      7,
+      8,
+      9
+    ],
+    "ti_summary": "PD-controlled AMD crossbar handshake and separate retimer programming through a safe state precede the target mode; command/result/status traffic is distinct from ordinary Windows UCSI completion.",
+    "infineon_url": "https://www.infineon.com/row/public/documents/30/316/infineon-ez-pd-ccgx-host-sdk-user-guide-productqualificationreport-en.pdf",
+    "infineon_document": "002-24327 RevH,2023-03-15",
+    "infineon_pages": [
+      11,
+      38
+    ],
+    "infineon_summary": "AMD platform firmware supplies I2C-master support for APU and retimers; configuration includes PS8830 selection, per-port retimer address, AMD port index and role preferences.",
+    "asus_applicability": "Architecture lead only. Exact ITE firmware implementation, ASUS control bus, addresses, events, ordering and safe observer remain unverified. No TI register/opcode is an ASUS command."
+  },
+  "reviewed_windows_scope": {
+    "spb_driver_sha256": "a366fafb3fe15f466d6ce0f302dcc5430b9964a6339ceaf10182ad0b94f8925c",
+    "device_control_rva": "20d0",
+    "initialize_rva": "3f68",
+    "cleanup_rva": "2ef0",
+    "ioctl_dispatch": [
+      "04001c00:3f68",
+      "04001c04:2ef0",
+      "04001c08:3830",
+      "04001c0c:46fc",
+      "04001c10:4d58",
+      "04001c14:399c",
+      "04001c18:4868",
+      "04001c1c:45c8",
+      "04001c24:3220"
+    ],
+    "limit": "Reviewed request dispatch and existing update caller chain; the bridge can carry I/O but no ASUS attachment-time mode writer has been identified. Not a claim that all Windows code is passive."
+  },
+  "next_question": "Find the actual ASUS PD-to-APU and retimer mode-programming messages/caller, then relate them to fresh router-detection state. Do not equate wake status, cable version, a configured-mode flag or successful UCSI completion with a usable link.",
+  "new_hardware_requests": 0,
+  "driver_installs": 0,
+  "test_boots": 0,
+  "working_windows_fix": false
+}
