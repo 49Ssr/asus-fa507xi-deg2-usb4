@@ -1,5 +1,7 @@
 # DEG2's own USB4/DP report: ASUS versus Dell
 
+**Subsequent access research:** the existing dump yielded 23 cached firmware tables. The actual controller read helper and DEG2 vendor endpoints are now identified; direct Windows metadata requests were rejected, and no live memory/vendor read was performed. [Code recovery, measured access boundary and next scope](control-reachability.md).
+
 **1 November 2026: new data recovered from both existing dumps, without a new boot, connection, device request or driver change.** DEG2 reports USB4 success on Dell and DP-mode success on ASUS. Its reported USB4 entry word is identical on both. This narrows the comparison but does not yet supply a Windows repair.
 
 ## What the device reports

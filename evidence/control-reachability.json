@@ -1,0 +1,304 @@
+{
+  "schema": 1,
+  "date": "2026-11-01",
+  "status": "Firmware code recovered; two direct Windows metadata requests rejected; no qualified Windows fix or live memory/dock probe",
+  "source_dump": {
+    "sha256": "FA979A86E3A586CF17A9C04C41564526A1CC748B8F8182DF431EAF6A5773928C",
+    "bytes": 3172020224,
+    "snapshot_utc": "2026-11-01T00:53:54.969Z"
+  },
+  "actions": {
+    "new_boots": 0,
+    "live_device_handles_opened": 2,
+    "acpi_metadata_requests": 2,
+    "firmware_control_methods_executed": 0,
+    "physical_memory_reads": 0,
+    "vendor_requests": 0,
+    "persistent_settings_changed": 0,
+    "registry_reads": "ACPI table cache and existing host service identity only",
+    "pnp_reads": "DEG2 presence and exact AMD host identity/location only"
+  },
+  "recovery": {
+    "cached_aml_tables": 23,
+    "ssdt_tables": 22,
+    "dsdt_tables": 1,
+    "bytes": 277336,
+    "checksums_valid": 23,
+    "original_two_tables_match_exactly": true,
+    "cache_log_sha256": "5b3c14795deb0ae0c1206b7799c3d5224975698859265f515116267352a42dce",
+    "readout_sha256": "6b3bdb25591b6f8b68a989ba11afa4b91e8480dec341c0d6e8f5a28459e2d004",
+    "tables": [
+      {
+        "signature": "SSDT",
+        "table_id": "AmdTable",
+        "bytes": 33814,
+        "sha256": "f0176d45cf8c0d09bbb05ed3877f13c37ed16407aced8e0cc70d7b887c362271",
+        "checksum_valid": true
+      },
+      {
+        "signature": "SSDT",
+        "table_id": "CPUSSDT",
+        "bytes": 545,
+        "sha256": "2fc81e75156864a765dbc857ad63f42e2c55b79c20513c5ed69191eeaa8f9eee",
+        "checksum_valid": true
+      },
+      {
+        "signature": "SSDT",
+        "table_id": "AmdTable",
+        "bytes": 21630,
+        "sha256": "6236380c047f1b4dc5cce60744a039843278a12382db8a2a0917823a611ff5b9",
+        "checksum_valid": true
+      },
+      {
+        "signature": "SSDT",
+        "table_id": "Opt2Tabl",
+        "bytes": 20088,
+        "sha256": "84ec38b7bd918f559ad74fe4a220eb166375c06d8c04ecf0e039d7cde0536a05",
+        "checksum_valid": true
+      },
+      {
+        "signature": "SSDT",
+        "table_id": "CPMDFIG2",
+        "bytes": 5576,
+        "sha256": "9933dd6b4c97f52e106bb21792d5bf5f87058736855df3f72a2a689713d297f1",
+        "checksum_valid": true
+      },
+      {
+        "signature": "SSDT",
+        "table_id": "CDFAAIG2",
+        "bytes": 10895,
+        "sha256": "465276865a341b484747cc84b8deb64577adc3d432a3222ff07adaed83545009",
+        "checksum_valid": true
+      },
+      {
+        "signature": "SSDT",
+        "table_id": "OEMACP",
+        "bytes": 1149,
+        "sha256": "853fb62abe621125babb8c66ec7d241aa03f4ecf12fabedc1abbdb69e15f2e5b",
+        "checksum_valid": true
+      },
+      {
+        "signature": "SSDT",
+        "table_id": "OEMPMF",
+        "bytes": 1596,
+        "sha256": "36819416056cdd4771d4d0f17c5b17405bc4c212617d7b8cbc9cd2ec99b983f6",
+        "checksum_valid": true
+      },
+      {
+        "signature": "SSDT",
+        "table_id": "CPMCMN",
+        "bytes": 38945,
+        "sha256": "a1220f7837f40335b9f69de3f4b69304b2fa8f2d3718817cded016ba8236a2a0",
+        "checksum_valid": true
+      },
+      {
+        "signature": "SSDT",
+        "table_id": "CPMMSOSC",
+        "bytes": 2390,
+        "sha256": "222f4b41bcc2839920a5453999323f2ee917e6b626fe515a2d41ab60845a1db0",
+        "checksum_valid": true
+      },
+      {
+        "signature": "SSDT",
+        "table_id": "CPMACPV5",
+        "bytes": 3763,
+        "sha256": "1274736a623d4f1a35b92b21222154c49956b03f69154ccd0c475784f6be1d68",
+        "checksum_valid": true
+      },
+      {
+        "signature": "SSDT",
+        "table_id": "GPP_PME_",
+        "bytes": 4087,
+        "sha256": "8fdcbbc3ab9790362eb5bf4ee6fd594bb040418318535d0a9502ae95f694e50a",
+        "checksum_valid": true
+      },
+      {
+        "signature": "SSDT",
+        "table_id": "INTGPP03",
+        "bytes": 38509,
+        "sha256": "920a31bb1454bb8e8354731e6957ba2421cd474a0863ebf3b6f5f8e3a0ce79a0",
+        "checksum_valid": true
+      },
+      {
+        "signature": "SSDT",
+        "table_id": "INTGPP01",
+        "bytes": 20459,
+        "sha256": "6b83f28d9eb76c9da7096c970d84d29ddd2f313b231cbb33d599048fe19bf017",
+        "checksum_valid": true
+      },
+      {
+        "signature": "SSDT",
+        "table_id": "CPMGPIO0",
+        "bytes": 2692,
+        "sha256": "ee519709df87fb03251401bec71ed3007ac91bab9d3e3c9f2cfe438ab372ca72",
+        "checksum_valid": true
+      },
+      {
+        "signature": "SSDT",
+        "table_id": "CPMMSLPI",
+        "bytes": 141,
+        "sha256": "be5c9113bb2fbc186cd878c3db16b52c30bc9bd5ddee462345fa752e565b435c",
+        "checksum_valid": true
+      },
+      {
+        "signature": "SSDT",
+        "table_id": "CPMUCSI",
+        "bytes": 2936,
+        "sha256": "5245ab44793308f094a431b82a798eba072eb4554cbeabd7e3929c0a13b4503e",
+        "checksum_valid": true
+      },
+      {
+        "signature": "SSDT",
+        "table_id": "WwanSsdt",
+        "bytes": 3296,
+        "sha256": "03346b4afeb36d069b4011b3c38f657f50329bd37b16d02da015534ccf365fc6",
+        "checksum_valid": true
+      },
+      {
+        "signature": "SSDT",
+        "table_id": "NVME",
+        "bytes": 1863,
+        "sha256": "e88c2a58ff415fc2b71b7ed8bf9068ddd77a52654c974123c44b4aff193f5cef",
+        "checksum_valid": true
+      },
+      {
+        "signature": "SSDT",
+        "table_id": "NVME",
+        "bytes": 1863,
+        "sha256": "07254303d933734dc3c0fe12b9b610123e094591ee1876fc3bb5e5aec58cc354",
+        "checksum_valid": true
+      },
+      {
+        "signature": "SSDT",
+        "table_id": "GpMsSsdt",
+        "bytes": 3208,
+        "sha256": "8edb8af8aebad25242b5448f1842fcd2e29d9244014ef21b78201aba9a0ddb56",
+        "checksum_valid": true
+      },
+      {
+        "signature": "SSDT",
+        "table_id": "UPEP",
+        "bytes": 5554,
+        "sha256": "2a763d24df6794e7adf978373900eef0cd3bd738d1f2b6490023b25ebfb73b7d",
+        "checksum_valid": true
+      },
+      {
+        "signature": "DSDT",
+        "table_id": "Notebook",
+        "bytes": 52337,
+        "sha256": "f57e3bb75b6a15725ff295ed451161d33f3b238bb6cfda683a45286851f1938a",
+        "checksum_valid": true
+      }
+    ]
+  },
+  "disassembly": {
+    "tool": "ACPICA iASL 20260408",
+    "archive_sha256": "121F5E4F30B1DF63D09052294E4A605D4DEE2DFB9599FA24AF4AC6015DF02B70",
+    "archive_digest_source": "https://www.intel.com/content/www/us/en/download/774881/acpi-component-architecture-downloads-windows-binary-tools.html",
+    "archive_transport": "Embedded Intel archive from Chocolatey package, verified against Intel digest; no package script executed or software installed",
+    "individual_tables_completed": 23,
+    "method_reference": "M000 argument count 1 confirmed in loaded AML namespace",
+    "combined_namespace_attempt": "Failed on duplicate definitions; not treated as a valid combined disassembly",
+    "scope_limit": "Reviewed methods cross-checked with loaded AML; successful individual disassembly is not proof that all external calls in all tables were resolved"
+  },
+  "findings": {
+    "ucsi": "Recovered CPMUCSI table exposes standard DSM command/status mailbox copies. No separate USB4 entry method identified in that table.",
+    "physical_read_helper": {
+      "method": "NHI0.RPRM",
+      "present_in_loaded_namespace": true,
+      "argument_count": 2,
+      "operation": "Four-byte SystemMemory read at argument 0; argument 1 masks returned width",
+      "live_invoked": false,
+      "application_to_driver_route_qualified": false,
+      "mailbox_access_or_useful_capture_proven": false
+    },
+    "live_metadata_route_tests": [
+      {
+        "request": "Static _ADR object, confirmed Integer 5 in loaded dump namespace",
+        "ioctl": "0x0032c004",
+        "open_error": 0,
+        "win32_error": 1,
+        "returned_bytes": 0,
+        "own_handle_closed": true,
+        "repeated": false,
+        "source_sha256": "DE7C5D31CC9AF83E947A3E97E30D58F610E1ABC5C82E7B915DDF8D248732F6D4"
+      },
+      {
+        "request": "Immediate namespace-child enumeration, supported SDK layout",
+        "ioctl": "0x0032c020",
+        "open_error": 0,
+        "win32_error": 1,
+        "returned_bytes": 0,
+        "own_handle_closed": true,
+        "repeated": false,
+        "source_sha256": "ABCFC4C3D167DCA87100E7D190C120F2F42DCF18D131D9943307B036CABD6F74"
+      }
+    ],
+    "osc": {
+      "local_U4PC": "0x0f",
+      "optional_M625_method_found_in_loaded_namespace": false,
+      "new_policy_override_issued": false
+    },
+    "native_debug_interface": {
+      "parameter": "EnableDebugInterface",
+      "matching_driver_sha256": "912EFBFCA273C62484DB952632EEB0D2B061BD7A1C830970FDA23CDB50BEEB1F",
+      "requires_test_signing_in_reviewed_loader": true,
+      "gate_rva": "0x86df1",
+      "read_ioctl_dispatch_code": "0x006011ac",
+      "reviewed_dispatch": "Only debug config-space read code accepted; other requests rejected with STATUS_INVALID_DEVICE_REQUEST",
+      "firmware_memory_bridge_established": false,
+      "enabled": false
+    },
+    "deg2_usb_interface": {
+      "source": "Cached configuration descriptor in same ASUS dump",
+      "configuration_bytes": 32,
+      "interfaces": 1,
+      "interface_class": "0xff",
+      "interface_subclass": "0x00",
+      "interface_protocol": "0x00",
+      "endpoints": [
+        {
+          "address": "0x01",
+          "direction": "OUT",
+          "type": "bulk",
+          "max_packet_bytes": 64
+        },
+        {
+          "address": "0x82",
+          "direction": "IN",
+          "type": "interrupt",
+          "max_packet_bytes": 64,
+          "interval": 1
+        }
+      ],
+      "ms_compatible_id": "WINUSB",
+      "ms_os_descriptor_vendor_code": "0x05",
+      "pd_log_protocol_qualified": false,
+      "controller_silicon_identified_from_interface": false,
+      "transport_probe_prepared_or_run": false
+    },
+    "sdk_lead": {
+      "repository": "Infineon/pmg-app-common",
+      "commit": "6e1aa9e5786abef91f288bf70b64d89ea400be81",
+      "header": "cy_app_dmc_vendor.h",
+      "documented_requests": [
+        "GET_DOCK_STATUS 0xd6",
+        "GET_DOCK_IDENTITY 0xd7",
+        "RETRIEVE_FLASH_LOG 0xde when enabled"
+      ],
+      "applicability_to_deg2": "Unproven. Similar endpoints/WinUSB binding are insufficient; no vendor request sent."
+    }
+  },
+  "private_log_hashes": {
+    "ec-route.private.txt": "23f369afc639da1c043b504600ffe4badfce8f214766d620caa3014983c484cb",
+    "host-debug-interface.private.txt": "d9731d54ff100356d60604c25d68a99a6c83b456801e18ba842da243b744a6ea",
+    "host-control-dispatch.private.txt": "de03538331265a99e5e91dd22e425910d5d495bf70d4f02b4a2f8e52748eb483",
+    "iasl-ucsi.private.txt": "75ab72a9b1e784be720818f1ef2c2554614e90d376fe28e3f4a5241022df9449"
+  },
+  "sources": [
+    "https://learn.microsoft.com/en-us/windows-hardware/drivers/debuggercmds/-acpicache",
+    "https://learn.microsoft.com/en-us/windows-hardware/drivers/acpi/evaluating-acpi-control-methods-synchronously",
+    "https://raw.githubusercontent.com/Infineon/pmg-app-common/6e1aa9e5786abef91f288bf70b64d89ea400be81/cy_app_dmc_vendor.h"
+  ],
+  "next_scope": "Ordinary-process direct requests through the host PDO were rejected; no ACPI bridge is qualified. Identify a legitimate supported driver route, or DEG2 exact firmware protocol for diagnostic reads. Even mailbox access would not by itself supply raw PD packets."
+}
