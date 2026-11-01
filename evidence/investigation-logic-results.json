@@ -1,0 +1,526 @@
+{
+  "schema": 1,
+  "logic_model_sha256": "b2b2c0d880b9e51d5e285793e90c1c189a7cd859df4728680adb1c62662a7880",
+  "evidence_model_sha256": "111b2f64d4cd4c01292de226d80318aad3058dd731a534d3b1ee186ee07a1f2f",
+  "scope": "A coarse milestone abstraction for one recorded attachment episode and its follow-up snapshot. Ever reached and final present are different facts. Sources span trace/snapshot reporting, not a common physical wire clock. Entry means admission to USB4-domain operation, including compatible mode where applicable; it does not mean a native Enter_USB packet was captured. Failure-stage rows partition the modeled unfinished milestone, not the root cause. Exit is a cross-cutting event. Logical combinations have no assigned probability.",
+  "probabilities_assigned": false,
+  "physical_simulation": false,
+  "cases": [
+    {
+      "case": "ASUS-DEEP",
+      "observed_facts": {
+        "E": null,
+        "L": null,
+        "R": null,
+        "F": false,
+        "X": null,
+        "C": true
+      },
+      "fact_provenance": {
+        "E": "C11/C12: cached device status cannot separate skipped entry from exit; no fresh entry witness.",
+        "L": "C04/C19: no qualified usable-link history; no-router checks are not never-link evidence.",
+        "R": "C04: final absence and sampled No checks do not prove an operational router never existed transiently.",
+        "F": "ASUS-COMPARE /asus_external_routers =0 in the recorded normal failed comparison snapshot.",
+        "X": "C11/C12: NotAttemptedOrExited is not an ordered exit witness.",
+        "C": "Pinned ASUS-COMMANDS/ASUS-COMPLETIONS/ASUS-ERRORS establish10 commands,10 terminal completions and zero CCI error/busy/unsupported. A failed quality rule would leave C unknown."
+      },
+      "model_implied_not_measured": {
+        "E": null,
+        "L": null,
+        "R": null,
+        "F": false,
+        "X": null,
+        "C": true
+      },
+      "consistent": true,
+      "abstract_worlds": [
+        {
+          "E": false,
+          "L": false,
+          "R": false,
+          "F": false,
+          "X": false,
+          "C": true
+        },
+        {
+          "E": true,
+          "L": false,
+          "R": false,
+          "F": false,
+          "X": false,
+          "C": true
+        },
+        {
+          "E": true,
+          "L": false,
+          "R": false,
+          "F": false,
+          "X": true,
+          "C": true
+        },
+        {
+          "E": true,
+          "L": true,
+          "R": false,
+          "F": false,
+          "X": false,
+          "C": true
+        },
+        {
+          "E": true,
+          "L": true,
+          "R": false,
+          "F": false,
+          "X": true,
+          "C": true
+        },
+        {
+          "E": true,
+          "L": true,
+          "R": true,
+          "F": false,
+          "X": false,
+          "C": true
+        },
+        {
+          "E": true,
+          "L": true,
+          "R": true,
+          "F": false,
+          "X": true,
+          "C": true
+        }
+      ],
+      "frontier_counts": {
+        "ENTRY_NOT_ESTABLISHED": 1,
+        "LINK_NOT_ESTABLISHED": 2,
+        "ROUTER_NOT_ESTABLISHED": 2,
+        "ROUTER_NOT_RETAINED": 2
+      },
+      "ideal_observations": [
+        {
+          "variable": "L",
+          "outcomes": {
+            "false": {
+              "worlds": 3,
+              "frontiers": [
+                "ENTRY_NOT_ESTABLISHED",
+                "LINK_NOT_ESTABLISHED"
+              ]
+            },
+            "true": {
+              "worlds": 4,
+              "frontiers": [
+                "ROUTER_NOT_ESTABLISHED",
+                "ROUTER_NOT_RETAINED"
+              ]
+            }
+          },
+          "worst_remaining_frontiers": 2,
+          "caveat": "A qualified positive link-ready sample can witness this. A negative current sample cannot prove never-ready; that requires validated event/history coverage."
+        },
+        {
+          "variable": "E",
+          "outcomes": {
+            "false": {
+              "worlds": 1,
+              "frontiers": [
+                "ENTRY_NOT_ESTABLISHED"
+              ]
+            },
+            "true": {
+              "worlds": 6,
+              "frontiers": [
+                "LINK_NOT_ESTABLISHED",
+                "ROUTER_NOT_ESTABLISHED",
+                "ROUTER_NOT_RETAINED"
+              ]
+            }
+          },
+          "worst_remaining_frontiers": 3,
+          "caveat": "Requires an understood entry/history witness. A cached NotAttemptedOrExited code is unknown; an inferred domain milestone is not a captured native Enter_USB request/Accept."
+        },
+        {
+          "variable": "R",
+          "outcomes": {
+            "false": {
+              "worlds": 5,
+              "frontiers": [
+                "ENTRY_NOT_ESTABLISHED",
+                "LINK_NOT_ESTABLISHED",
+                "ROUTER_NOT_ESTABLISHED"
+              ]
+            },
+            "true": {
+              "worlds": 2,
+              "frontiers": [
+                "ROUTER_NOT_RETAINED"
+              ]
+            }
+          },
+          "worst_remaining_frontiers": 3,
+          "caveat": "Requires a fresh, correctly owned operational-router witness. A cached node, a capability bit or merely identifying a register is insufficient."
+        },
+        {
+          "variable": "X",
+          "outcomes": {
+            "false": {
+              "worlds": 4,
+              "frontiers": [
+                "ENTRY_NOT_ESTABLISHED",
+                "LINK_NOT_ESTABLISHED",
+                "ROUTER_NOT_ESTABLISHED",
+                "ROUTER_NOT_RETAINED"
+              ]
+            },
+            "true": {
+              "worlds": 3,
+              "frontiers": [
+                "LINK_NOT_ESTABLISHED",
+                "ROUTER_NOT_ESTABLISHED",
+                "ROUTER_NOT_RETAINED"
+              ]
+            }
+          },
+          "worst_remaining_frontiers": 4,
+          "caveat": "Requires understood ordered history. Exit may occur before usable link/router creation; later re-entry is allowed. No captured exit is unknown without complete coverage."
+        }
+      ],
+      "action": "Review source alignment/model if inconsistent; otherwise qualify a discriminating observer. No automatic hardware action."
+    },
+    {
+      "case": "DELL-CONTROL",
+      "observed_facts": {
+        "E": null,
+        "L": null,
+        "R": null,
+        "F": true,
+        "X": null,
+        "C": true
+      },
+      "fact_provenance": {
+        "E": "No direct wire-entry observation is imported. Any model implication from an operational router is labeled inferred.",
+        "L": "No standalone link-history field is imported; downstream operational-router evidence may imply a milestone within the abstract model.",
+        "R": "The direct imported topology fact is F; F implies R within the model.",
+        "F": "DELL-WORKING records a newly present router in the successful earlier control. This is not the later Dell deep-dump timeline.",
+        "X": "No complete entry/exit history is imported; successful final state alone does not exclude an earlier exit/re-entry.",
+        "C": "The pinned Dell control records matched command/completion counts with zero error completions. It is a host-control result."
+      },
+      "model_implied_not_measured": {
+        "E": true,
+        "L": true,
+        "R": true,
+        "F": true,
+        "X": null,
+        "C": true
+      },
+      "consistent": true,
+      "abstract_worlds": [
+        {
+          "E": true,
+          "L": true,
+          "R": true,
+          "F": true,
+          "X": false,
+          "C": true
+        },
+        {
+          "E": true,
+          "L": true,
+          "R": true,
+          "F": true,
+          "X": true,
+          "C": true
+        }
+      ],
+      "frontier_counts": {
+        "ROUTER_PRESENT": 2
+      },
+      "ideal_observations": [
+        {
+          "variable": "X",
+          "outcomes": {
+            "false": {
+              "worlds": 1,
+              "frontiers": [
+                "ROUTER_PRESENT"
+              ]
+            },
+            "true": {
+              "worlds": 1,
+              "frontiers": [
+                "ROUTER_PRESENT"
+              ]
+            }
+          },
+          "worst_remaining_frontiers": 1,
+          "caveat": "Requires understood ordered history. Exit may occur before usable link/router creation; later re-entry is allowed. No captured exit is unknown without complete coverage."
+        }
+      ],
+      "action": "Review source alignment/model if inconsistent; otherwise qualify a discriminating observer. No automatic hardware action."
+    },
+    {
+      "case": "ASUS-POLICY-OVERRIDE",
+      "observed_facts": {
+        "E": null,
+        "L": null,
+        "R": null,
+        "F": false,
+        "X": null,
+        "C": null
+      },
+      "fact_provenance": {
+        "E": "Suppressing the Windows role command supplies no direct entry witness.",
+        "L": "The policy-only trial did not record qualified physical-link history.",
+        "R": "The final inventory does not by itself establish absence throughout the whole trial.",
+        "F": "POLICY-PAIR /observation/RouterPresent is false after the one experimental attachment; stock and override are distinct cases.",
+        "X": "No qualified ordered entry/exit history in this trial.",
+        "C": "This runner does not substitute per-command summary counts for a new complete terminal-completion comparison in the override case."
+      },
+      "model_implied_not_measured": {
+        "E": null,
+        "L": null,
+        "R": null,
+        "F": false,
+        "X": null,
+        "C": null
+      },
+      "consistent": true,
+      "abstract_worlds": [
+        {
+          "E": false,
+          "L": false,
+          "R": false,
+          "F": false,
+          "X": false,
+          "C": false
+        },
+        {
+          "E": false,
+          "L": false,
+          "R": false,
+          "F": false,
+          "X": false,
+          "C": true
+        },
+        {
+          "E": true,
+          "L": false,
+          "R": false,
+          "F": false,
+          "X": false,
+          "C": false
+        },
+        {
+          "E": true,
+          "L": false,
+          "R": false,
+          "F": false,
+          "X": false,
+          "C": true
+        },
+        {
+          "E": true,
+          "L": false,
+          "R": false,
+          "F": false,
+          "X": true,
+          "C": false
+        },
+        {
+          "E": true,
+          "L": false,
+          "R": false,
+          "F": false,
+          "X": true,
+          "C": true
+        },
+        {
+          "E": true,
+          "L": true,
+          "R": false,
+          "F": false,
+          "X": false,
+          "C": false
+        },
+        {
+          "E": true,
+          "L": true,
+          "R": false,
+          "F": false,
+          "X": false,
+          "C": true
+        },
+        {
+          "E": true,
+          "L": true,
+          "R": false,
+          "F": false,
+          "X": true,
+          "C": false
+        },
+        {
+          "E": true,
+          "L": true,
+          "R": false,
+          "F": false,
+          "X": true,
+          "C": true
+        },
+        {
+          "E": true,
+          "L": true,
+          "R": true,
+          "F": false,
+          "X": false,
+          "C": false
+        },
+        {
+          "E": true,
+          "L": true,
+          "R": true,
+          "F": false,
+          "X": false,
+          "C": true
+        },
+        {
+          "E": true,
+          "L": true,
+          "R": true,
+          "F": false,
+          "X": true,
+          "C": false
+        },
+        {
+          "E": true,
+          "L": true,
+          "R": true,
+          "F": false,
+          "X": true,
+          "C": true
+        }
+      ],
+      "frontier_counts": {
+        "ENTRY_NOT_ESTABLISHED": 2,
+        "LINK_NOT_ESTABLISHED": 4,
+        "ROUTER_NOT_ESTABLISHED": 4,
+        "ROUTER_NOT_RETAINED": 4
+      },
+      "ideal_observations": [
+        {
+          "variable": "L",
+          "outcomes": {
+            "false": {
+              "worlds": 6,
+              "frontiers": [
+                "ENTRY_NOT_ESTABLISHED",
+                "LINK_NOT_ESTABLISHED"
+              ]
+            },
+            "true": {
+              "worlds": 8,
+              "frontiers": [
+                "ROUTER_NOT_ESTABLISHED",
+                "ROUTER_NOT_RETAINED"
+              ]
+            }
+          },
+          "worst_remaining_frontiers": 2,
+          "caveat": "A qualified positive link-ready sample can witness this. A negative current sample cannot prove never-ready; that requires validated event/history coverage."
+        },
+        {
+          "variable": "E",
+          "outcomes": {
+            "false": {
+              "worlds": 2,
+              "frontiers": [
+                "ENTRY_NOT_ESTABLISHED"
+              ]
+            },
+            "true": {
+              "worlds": 12,
+              "frontiers": [
+                "LINK_NOT_ESTABLISHED",
+                "ROUTER_NOT_ESTABLISHED",
+                "ROUTER_NOT_RETAINED"
+              ]
+            }
+          },
+          "worst_remaining_frontiers": 3,
+          "caveat": "Requires an understood entry/history witness. A cached NotAttemptedOrExited code is unknown; an inferred domain milestone is not a captured native Enter_USB request/Accept."
+        },
+        {
+          "variable": "R",
+          "outcomes": {
+            "false": {
+              "worlds": 10,
+              "frontiers": [
+                "ENTRY_NOT_ESTABLISHED",
+                "LINK_NOT_ESTABLISHED",
+                "ROUTER_NOT_ESTABLISHED"
+              ]
+            },
+            "true": {
+              "worlds": 4,
+              "frontiers": [
+                "ROUTER_NOT_RETAINED"
+              ]
+            }
+          },
+          "worst_remaining_frontiers": 3,
+          "caveat": "Requires a fresh, correctly owned operational-router witness. A cached node, a capability bit or merely identifying a register is insufficient."
+        },
+        {
+          "variable": "C",
+          "outcomes": {
+            "false": {
+              "worlds": 7,
+              "frontiers": [
+                "ENTRY_NOT_ESTABLISHED",
+                "LINK_NOT_ESTABLISHED",
+                "ROUTER_NOT_ESTABLISHED",
+                "ROUTER_NOT_RETAINED"
+              ]
+            },
+            "true": {
+              "worlds": 7,
+              "frontiers": [
+                "ENTRY_NOT_ESTABLISHED",
+                "LINK_NOT_ESTABLISHED",
+                "ROUTER_NOT_ESTABLISHED",
+                "ROUTER_NOT_RETAINED"
+              ]
+            }
+          },
+          "worst_remaining_frontiers": 4,
+          "caveat": "The captured commands/completions and CCI errors can establish this control-path fact. It has no implication to E, L or R."
+        },
+        {
+          "variable": "X",
+          "outcomes": {
+            "false": {
+              "worlds": 8,
+              "frontiers": [
+                "ENTRY_NOT_ESTABLISHED",
+                "LINK_NOT_ESTABLISHED",
+                "ROUTER_NOT_ESTABLISHED",
+                "ROUTER_NOT_RETAINED"
+              ]
+            },
+            "true": {
+              "worlds": 6,
+              "frontiers": [
+                "LINK_NOT_ESTABLISHED",
+                "ROUTER_NOT_ESTABLISHED",
+                "ROUTER_NOT_RETAINED"
+              ]
+            }
+          },
+          "worst_remaining_frontiers": 4,
+          "caveat": "Requires understood ordered history. Exit may occur before usable link/router creation; later re-entry is allowed. No captured exit is unknown without complete coverage."
+        }
+      ],
+      "action": "Review source alignment/model if inconsistent; otherwise qualify a discriminating observer. No automatic hardware action."
+    }
+  ]
+}

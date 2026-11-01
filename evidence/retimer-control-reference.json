@@ -1,0 +1,43 @@
+{
+  "schema": 1,
+  "date": "2026-11-01",
+  "scope": "Manufacturer reference topology and upstream programming example; actual ASUS wiring/runtime ownership unverified",
+  "manufacturer": {
+    "url": "https://www.paradetech.com/products/ps8830/",
+    "diagram_url": "https://www.paradetech.com/products/ps8830/ps8830-block-diagram/",
+    "diagram_observations": [
+      "High-speed signal path between platform and connector includes CDR",
+      "Integrated sideband/AUX mux",
+      "Platform-facing SMBUS_SCL/SMBUS_SDA",
+      "Separate CSCL/CSDA connection to PD controller I2C; PD handles connector CC1/CC2"
+    ],
+    "asus_wiring_proven": false
+  },
+  "upstream": {
+    "repository": "torvalds/linux",
+    "commit": "46fec1c3029b552ec63b2d01af9d43a386f043ea",
+    "path": "drivers/usb/typec/mux/ps883x.c",
+    "sha256": "2a07f62a89d644306e36929bbe55755cb5aa195037ca105bc619074ee0267c4f",
+    "url": "https://github.com/torvalds/linux/blob/46fec1c3029b552ec63b2d01af9d43a386f043ea/drivers/usb/typec/mux/ps883x.c",
+    "findings": [
+      "Driver configures connection/mode and orientation via regmap/I2C",
+      "USB4 mode sets CONN_STATUS_2_USB4_CONNECTED, bit7 of the driver connection-status2 configuration, before configuring the retimer",
+      "A Qualcomm-platform compatibility list rejects USB4 while that Linux platform stack is incomplete; no evidence this quirk applies to ASUS Windows"
+    ],
+    "software_written_mode_flag_is_link_ready_measurement": false,
+    "asus_register_interface_qualified": false
+  },
+  "missing": [
+    "ASUS physical port-to-retimer mapping and control-bus ownership",
+    "Which firmware component writes runtime mode/orientation in this board",
+    "Readable link/CDR/training state with understood semantics and side effects",
+    "Windows access path, address framing and exact undo before any change"
+  ],
+  "actions": {
+    "vendor_commands_sent": 0,
+    "i2c_register_reads": 0,
+    "mode_writes": 0,
+    "firmware_updates": 0,
+    "driver_installs": 0
+  }
+}

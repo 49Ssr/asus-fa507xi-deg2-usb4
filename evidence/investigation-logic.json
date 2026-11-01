@@ -1,0 +1,53 @@
+{
+  "schema": 1,
+  "scope": "A coarse milestone abstraction for one recorded attachment episode and its follow-up snapshot. Ever reached and final present are different facts. Sources span trace/snapshot reporting, not a common physical wire clock. Entry means admission to USB4-domain operation, including compatible mode where applicable; it does not mean a native Enter_USB packet was captured. Failure-stage rows partition the modeled unfinished milestone, not the root cause. Exit is a cross-cutting event. Logical combinations have no assigned probability.",
+  "variables": [
+    {"id": "E", "meaning": "Domain-mode entry was achieved at least once in this episode", "observation_limit": "Requires an understood entry/history witness. A cached NotAttemptedOrExited code is unknown; an inferred domain milestone is not a captured native Enter_USB request/Accept."},
+    {"id": "L", "meaning": "A usable USB4-domain link existed at least once", "observation_limit": "A qualified positive link-ready sample can witness this. A negative current sample cannot prove never-ready; that requires validated event/history coverage."},
+    {"id": "R", "meaning": "An operational external router was established at least once", "observation_limit": "Requires a fresh, correctly owned operational-router witness. A cached node, a capability bit or merely identifying a register is insufficient."},
+    {"id": "F", "meaning": "The external router is present at the final recorded observation", "observation_limit": "A recorded topology/inventory result is scoped to its snapshot. It does not establish whether a router existed earlier."},
+    {"id": "X", "meaning": "Domain-mode exit occurred after an entry during this episode", "observation_limit": "Requires understood ordered history. Exit may occur before usable link/router creation; later re-entry is allowed. No captured exit is unknown without complete coverage."},
+    {"id": "C", "meaning": "Captured normal host UCSI exchanges completed successfully", "observation_limit": "The captured commands/completions and CCI errors can establish this control-path fact. It has no implication to E, L or R."}
+  ],
+  "implications": [
+    {"id": "LINK_REQUIRES_ENTRY", "if": "L", "then": "E", "assumption": "For this coarse model a valid domain link follows successful domain-mode admission. A contradictory record requires checking field meaning, timestamps and this assumption."},
+    {"id": "ROUTER_REQUIRES_LINK", "if": "R", "then": "L", "assumption": "An operational external router requires a usable domain link; stale software objects are excluded from R's definition."},
+    {"id": "FINAL_REQUIRES_EVER", "if": "F", "then": "R", "assumption": "A genuinely present operational router at the final observation is also an ever-present witness."},
+    {"id": "EXIT_REQUIRES_ENTRY", "if": "X", "then": "E", "assumption": "X is specifically an exit after entry. It is not a generic disconnect, failed request or descriptor error."}
+  ],
+  "cases": [
+    {
+      "id": "ASUS-DEEP",
+      "facts": {
+        "E": {"value": "unknown", "reason": "C11/C12: cached device status cannot separate skipped entry from exit; no fresh entry witness."},
+        "L": {"value": "unknown", "reason": "C04/C19: no qualified usable-link history; no-router checks are not never-link evidence."},
+        "R": {"value": "unknown", "reason": "C04: final absence and sampled No checks do not prove an operational router never existed transiently."},
+        "F": {"terms": [{"source": "ASUS-COMPARE", "pointer": "/asus_external_routers", "op": "positive_count"}], "when_true": "true", "when_false": "false", "reason": "ASUS-COMPARE /asus_external_routers =0 in the recorded normal failed comparison snapshot."},
+        "X": {"value": "unknown", "reason": "C11/C12: NotAttemptedOrExited is not an ordered exit witness."},
+        "C": {"terms": [{"source": "ASUS-COMMANDS", "op": "positive_count"}, {"source": "ASUS-COMPLETIONS", "op": "same_as", "other_source": "ASUS-COMMANDS"}, {"source": "ASUS-ERRORS", "op": "equals", "value": 0}], "when_true": "true", "when_false": "unknown", "reason": "Pinned ASUS-COMMANDS/ASUS-COMPLETIONS/ASUS-ERRORS establish10 commands,10 terminal completions and zero CCI error/busy/unsupported. A failed quality rule would leave C unknown."}
+      }
+    },
+    {
+      "id": "DELL-CONTROL",
+      "facts": {
+        "E": {"value": "unknown", "reason": "No direct wire-entry observation is imported. Any model implication from an operational router is labeled inferred."},
+        "L": {"value": "unknown", "reason": "No standalone link-history field is imported; downstream operational-router evidence may imply a milestone within the abstract model."},
+        "R": {"value": "unknown", "reason": "The direct imported topology fact is F; F implies R within the model."},
+        "F": {"terms": [{"source": "DELL-WORKING", "pointer": "/new_router_present", "op": "boolean"}], "when_true": "true", "when_false": "false", "reason": "DELL-WORKING records a newly present router in the successful earlier control. This is not the later Dell deep-dump timeline."},
+        "X": {"value": "unknown", "reason": "No complete entry/exit history is imported; successful final state alone does not exclude an earlier exit/re-entry."},
+        "C": {"terms": [{"source": "DELL-WORKING", "pointer": "/ucsi_commands", "op": "positive_count"}, {"source": "DELL-WORKING", "pointer": "/ucsi_command_completions", "op": "same_as", "other_source": "DELL-WORKING", "other_pointer": "/ucsi_commands"}, {"source": "DELL-WORKING", "pointer": "/ucsi_error_completions", "op": "equals", "value": 0}], "when_true": "true", "when_false": "unknown", "reason": "The pinned Dell control records matched command/completion counts with zero error completions. It is a host-control result."}
+      }
+    },
+    {
+      "id": "ASUS-POLICY-OVERRIDE",
+      "facts": {
+        "E": {"value": "unknown", "reason": "Suppressing the Windows role command supplies no direct entry witness."},
+        "L": {"value": "unknown", "reason": "The policy-only trial did not record qualified physical-link history."},
+        "R": {"value": "unknown", "reason": "The final inventory does not by itself establish absence throughout the whole trial."},
+        "F": {"terms": [{"source": "POLICY-PAIR", "pointer": "/observation/RouterPresent", "op": "boolean"}], "when_true": "true", "when_false": "false", "reason": "POLICY-PAIR /observation/RouterPresent is false after the one experimental attachment; stock and override are distinct cases."},
+        "X": {"value": "unknown", "reason": "No qualified ordered entry/exit history in this trial."},
+        "C": {"value": "unknown", "reason": "This runner does not substitute per-command summary counts for a new complete terminal-completion comparison in the override case."}
+      }
+    }
+  ]
+}

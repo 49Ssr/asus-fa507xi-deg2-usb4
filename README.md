@@ -2,6 +2,8 @@
 
 **Current result, 1 November 2026:** ASUS still does not discover DEG2 as a USB4 dock. No working Windows repair has been demonstrated.
 
+**Offline runner and a concrete saved difference:** both hosts initially report `USB4 plugged: No`. Dell's next router-detection read is set (`00003510`, bit13); ASUS's is clear (`00010400`). The original driver branches agree with those bits. [Exact comparison, PS8830 control reference and cleanup](docs/offline-investigation.md). Run `python tools/analysis/Run-Investigation.py` to validate the evidence and refresh the [truth table](docs/investigation-truth-table.md) and architecture map. Unknown entry/link history stays unknown; no new hardware trial or recurring automation is selected.
+
 **Start with the [architecture/control-flow map](docs/investigation-map.md) and [current investigation plan](docs/investigation-plan.md).** Components, message paths, proven branches, unmapped decisions and possible intervention locations are now tied to a checked evidence index. The current goal is to locate the first failed branch and its owner before selecting a reversible change. A dedicated flag-reader driver is deferred; no new driver or live trial is queued.
 
 - The suspected EC flag now has a proven standard-read offset and a traced host-command setter. It also gates the entire Windows UCSI worker, making the successful commands in the failed capture evidence against a continuously stuck flag. Its live value remains unread; the saved dump lacks the candidate EC window and new ordinary-process access checks were refused. [Flag writers, measured access results and next measurement](docs/ec-blocking-flag.md).

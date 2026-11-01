@@ -42,7 +42,7 @@ Some private firmware meanings may require ASUS or controller-vendor engineering
 
 ## The evidence system now in the repository
 
-The first curated view covers **22 claims, 35 exact JSON source values, 13 explicitly separated cases and two software-report timelines**. The control-flow graph tags relationships as measured, traced from code, documented architecture or unmapped. Distinct branches remain distinct: choosing no Windows role command and skipping an EC service invocation are different outcomes. The index covers decision-relevant evidence; it does not claim every file or raw event has been ingested.
+The current curated view covers **26 claims, 38 exact JSON source values, 15 explicitly separated cases and two software-report timelines**. The control-flow graph tags relationships as measured, traced from code, documented architecture or unmapped. Distinct branches remain distinct: choosing no Windows role command and skipping an EC service invocation are different outcomes. The index covers decision-relevant evidence; it does not claim every file or raw event has been ingested.
 
 Each claim records its evidence class, case, source location and limit. Inferences require a stated reason. Relevant counterevidence is linked to the competing explanations. Source values are pinned by a canonical SHA-256; a missing or changed field fails validation rather than becoming zero or silently retaining an old interpretation. Changes elsewhere in a source file do not invalidate an unrelated pinned field.
 
@@ -57,11 +57,13 @@ python tools/analysis/Read-Investigation.py --stage entry
 python tools/analysis/Read-Investigation.py --write-report
 ```
 
-The last command writes the known report path in UTF-8 after validation. The tool has no capture, firmware-access, driver-loading or network backend. It does not automatically repin changed source values. Updating a claim requires reviewing the changed value, its case and any counterevidence, then updating the pin deliberately.
+The reader's last command writes the architecture report in UTF-8 after validation. For the owner's selected offline automation, use `python tools/analysis/Run-Investigation.py`: it also refreshes the [truth table](investigation-truth-table.md) and its machine-readable results. `--check` checks all three outputs without writing. [Operation and limits](offline-investigation.md). No recurring work is configured. The tools have no capture, firmware-access, driver-loading or network backend. They do not automatically repin changed source values. Updating a claim requires reviewing the changed value, its case and any counterevidence, then updating the pin deliberately.
 
 The timelines preserve original timestamps and align T0 to the first recorded software attachment report in each run. They preserve different capture dates and distinguish the earlier Dell control from the later Dell deep dump. They do not align physical insertion or turn asynchronous Windows reporting into wire-level causation.
 
 ## The next offline job
+
+The [saved native port reads](offline-investigation.md) already distinguish the next Windows decision: both hosts initially take Plugged No, but Dell's following RouterDetected bit13 is set and ASUS's is clear. Original code agrees with those readbacks. Follow what supplies the ASUS retimer mode configuration and native port-status value, including ownership and timing. The PS8830 reference shows two control paths but does not establish actual ASUS wiring. A software-written USB4 mode flag is not an independent link-ready measurement.
 
 Use the map to qualify **one observation of the missing transition**. Audit the retained connection-manager traces and original routines for a specific status or error that reports entry/exit, physical-link readiness, or the first router/configuration transaction. Reuse the already decoded records and Microsoft [trace/rundown/debugger mechanisms](https://learn.microsoft.com/en-us/windows-hardware/design/component-guidelines/usb4-debugging-and-troubleshooting); decoding the same fields again is not new evidence.
 

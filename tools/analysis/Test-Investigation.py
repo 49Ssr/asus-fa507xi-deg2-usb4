@@ -99,7 +99,7 @@ class EvidenceBoundaries(unittest.TestCase):
 
     def test_diagram_edge_cannot_promote_a_gap_to_measurement(self):
         model = self.changed()
-        next(e for e in model["architecture"]["edges"] if e["from"] == "PD" and e["to"] == "LINK")["basis"] = "measured"
+        next(e for e in model["architecture"]["edges"] if e["from"] == "PD" and e["basis"] == "unknown")["basis"] = "measured"
         with self.assertRaisesRegex(ValueError, "requires a measured claim"):
             reader.Investigation(reader.ROOT, model)
 

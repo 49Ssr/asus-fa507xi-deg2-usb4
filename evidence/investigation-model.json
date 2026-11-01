@@ -71,6 +71,16 @@
       "id": "ASUS-MODE-EXIT",
       "label": "One guarded mode-exit request2026-10-31 22:12",
       "limit": "Terminal firmware rejection; immediate snapshot only. No successful exit or USB4 recovery."
+    },
+    {
+      "id": "WINDOWS-USB4DRD",
+      "label": "Pinned Microsoft USB4DeviceRouter image/PDB",
+      "limit": "Original native decision/read routines inspected offline; legacy TBT path differs."
+    },
+    {
+      "id": "PS8830-REFERENCE",
+      "label": "Parade product diagram and upstream Linux PS883x implementation",
+      "limit": "Generic/reference architecture and programming example, not an ASUS wiring or runtime observation."
     }
   ],
   "stages": [
@@ -126,7 +136,8 @@
       "missing": "Per-port routing, retimer and PHY state during this failed pairing.",
       "claims": [
         "C02",
-        "C13"
+        "C13",
+        "C23"
       ]
     },
     {
@@ -137,7 +148,10 @@
       "missing": "Whether a usable physical link ever existed before failed/absent discovery.",
       "claims": [
         "C01",
-        "C04"
+        "C04",
+        "C24",
+        "C25",
+        "C26"
       ]
     },
     {
@@ -512,6 +526,37 @@
         "ASUS-INTERFACES"
       ],
       "value_sha256": "2fce1114b0cd5c1b684fd7579bd7a6276b69fa8785869b93e2668fcb79f35d09"
+    },
+    {
+      "id": "PORT-READS",
+      "path": "evidence/router-detection-branch.json",
+      "pointer": "/cases",
+      "kind": "capture",
+      "cases": [
+        "ASUS-DEEP",
+        "DELL-DEEP"
+      ],
+      "value_sha256": "b4aafc65ada4b6138f4ae8011bf4c97f2b4feaf10f426e994b0ad2ab0e5580ed"
+    },
+    {
+      "id": "PORT-CODE",
+      "path": "evidence/router-detection-branch.json",
+      "pointer": "/native_code",
+      "kind": "code",
+      "cases": [
+        "WINDOWS-USB4DRD"
+      ],
+      "value_sha256": "ce654f230282799650d85c651cfc7a630f2a37a789afa3e241be9fe05676893d"
+    },
+    {
+      "id": "RETIMER-REFERENCE",
+      "path": "evidence/retimer-control-reference.json",
+      "pointer": "/upstream",
+      "kind": "code",
+      "cases": [
+        "PS8830-REFERENCE"
+      ],
+      "value_sha256": "144b4c8c475c2ffe9c7fc5f26204c77bdd90c7d0ec82ef1523e57053cc512932"
     }
   ],
   "claims": [
@@ -837,6 +882,63 @@
         "ASUS-INTERFACES"
       ],
       "limit": "An ACPI transport method is not the full controller policy state machine. Finding a method does not qualify an application interface to invoke it."
+    },
+    {
+      "id": "C23",
+      "basis": "code_fact",
+      "stage": "link",
+      "statement": "The public PS883x driver programs retimer mode/orientation overI2C; its USB4_CONNECTED configuration flag is software-written, not a measured usable-link result.",
+      "sources": [
+        "RETIMER-REFERENCE"
+      ],
+      "cases": [
+        "PS8830-REFERENCE"
+      ],
+      "limit": "This is an upstream platform implementation. ASUS control-bus ownership, register framing and actual runtime state remain unqualified; the Qualcomm software quirk is not an ASUS finding."
+    },
+    {
+      "id": "C24",
+      "basis": "measured",
+      "stage": "router",
+      "statement": "ASUS returns CS18=00010400 with RouterDetected bit13 clear on both sampled passes; Dell deep control returns00003510 with that bit set and takes Yes. Both initially take Plugged No.",
+      "sources": [
+        "PORT-READS"
+      ],
+      "cases": [
+        "ASUS-DEEP",
+        "DELL-DEEP"
+      ],
+      "limit": "Matched read-phase samples with distinct logical adapters and capture times, not complete entry/link history or proof of never-ready state."
+    },
+    {
+      "id": "C25",
+      "basis": "code_fact",
+      "stage": "router",
+      "statement": "The pinned native Windows code tests ADP_CS_4 bit30 and USB4 port-capability CS18 bit13 from scalar configuration-read caches; its legacy TBT layout uses a separate branch.",
+      "sources": [
+        "PORT-CODE"
+      ],
+      "cases": [
+        "WINDOWS-USB4DRD"
+      ],
+      "limit": "Original instructions and exact PDB identities inspected; no new live requests or hardware-model validation."
+    },
+    {
+      "id": "C26",
+      "basis": "inference",
+      "stage": "router",
+      "statement": "The sampled Windows RouterDetected decisions follow the returned bit values; Plugged No alone is not sufficient to explain failure.",
+      "sources": [
+        "PORT-READS",
+        "PORT-CODE"
+      ],
+      "cases": [
+        "ASUS-DEEP",
+        "DELL-DEEP",
+        "WINDOWS-USB4DRD"
+      ],
+      "limit": "Upstream software programming/policy effects remain possible. These observations do not identify what prevented the ASUS bit from asserting or justify forcing it.",
+      "reason": "Clear native bit13 accompanies No on ASUS; set bit13 accompanies Yes on Dell, while both initially have Plugged clear."
     }
   ],
   "timeline_limit": "T0 is the first recorded Windows attachment report in each run, not physical insertion. Different runs, platforms, power contracts and capture dates are explicit. These tables align software reports only; proximity does not establish wire order or causation. The earlier Dell control supplies the Dell timeline; the deep Dell dump supplies cached-state comparison.",
@@ -1239,6 +1341,22 @@
         "interface": "Return before bank3bc20 group",
         "limit": "This is one invocation; continued suppression depends on gate state. It is not the Windows no-role-command branch.",
         "decision": false
+      },
+      {
+        "id": "RET_CFG",
+        "label": "PS8830 mode/orientation control; ASUS owner unverified",
+        "owner": "Parade reference PD-I2C / platform-SMBus interfaces; actual ASUS writer unknown",
+        "interface": "Reference programming sets requested mode/orientation, not a verified link-ready witness",
+        "limit": "Generic manufacturer diagram and upstream driver are not ASUS board wiring; no live access qualified.",
+        "decision": false
+      },
+      {
+        "id": "PORT_REGS",
+        "label": "Native host-port scalar status reads",
+        "owner": "Windows USB4DeviceRouter native Port routines",
+        "interface": "ADP_CS_4 bit30 and USB4 port CS18 bit13; returned values available in saved traces",
+        "limit": "Current samples do not establish ever/never entry or link history; legacy TBT layout differs.",
+        "decision": false
       }
     ],
     "edges": [
@@ -1254,24 +1372,25 @@
       },
       {
         "from": "PD",
-        "to": "LINK",
-        "label": "entry outcome to actual routing and electrical startup",
+        "to": "RET_CFG",
+        "label": "candidate mode-control path; ASUS ownership/wiring unproven",
         "basis": "unknown",
         "claims": [
           "C12",
-          "C19"
+          "C19",
+          "C23"
         ],
         "standards": []
       },
       {
         "from": "LINK",
-        "to": "PORT",
-        "label": "how board/controller readiness becomes host-port state",
+        "to": "PORT_REGS",
+        "label": "what makes the native host-port status assert remains untraced",
         "basis": "unknown",
         "claims": [
-          "C04",
           "C12",
-          "C19"
+          "C19",
+          "C24"
         ],
         "standards": []
       },
@@ -1460,6 +1579,28 @@
           "C13"
         ],
         "standards": []
+      },
+      {
+        "from": "RET_CFG",
+        "to": "LINK",
+        "label": "requested retimer configuration to usable physical link",
+        "basis": "unknown",
+        "claims": [
+          "C23"
+        ],
+        "standards": []
+      },
+      {
+        "from": "PORT_REGS",
+        "to": "PORT",
+        "label": "native bit tests select recorded No/Yes branch",
+        "basis": "traced_code",
+        "claims": [
+          "C24",
+          "C25",
+          "C26"
+        ],
+        "standards": []
       }
     ],
     "interventions": [
@@ -1511,10 +1652,11 @@
       {
         "node": "PORT",
         "effect": "Windows router-discovery/configuration behavior.",
-        "decision": "A usable-link/failed-discovery observation would make this branch a targeted investigation; none yet.",
+        "decision": "The native sampled No/Yes branch agrees with returned status. Follow why ASUS RouterDetected stays clear; forcing the software decision is not a physical-link repair.",
         "claims": [
-          "C04",
-          "C19"
+          "C24",
+          "C25",
+          "C26"
         ]
       }
     ]

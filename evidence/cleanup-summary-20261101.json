@@ -1,0 +1,23 @@
+{
+  "schema": 1,
+  "date": "2026-11-01",
+  "scope": "USB4 research project only",
+  "disposition": "Recycle Bin",
+  "files": 35,
+  "bytes": 1531932479,
+  "categories": {
+    "redundant_multiarchitecture_debugger_download": 1,
+    "validated_duplicate_compressed_dump": 1,
+    "byte_identical_malformed_aml_exports": 28,
+    "rebuildable_compiler_objects": 5
+  },
+  "recovery_items_verified": 35,
+  "original_captures_removed": 0,
+  "original_dumps_removed": 0,
+  "firmware_symbols_or_recovery_packages_removed": 0,
+  "recycle_bin_emptied": false,
+  "disk_space_freed_claim": false,
+  "full_restore_tested": false,
+  "private_receipt_sha256": "e0e1d7f2528c91857a1dce1e783280c7cc27d9e2ddfe6d1163f08aedd689288e",
+  "note": "Retained counterparts verified before cleanup. Private receipt maps original paths to recycled staging names. All recovery items verified in bin; restore not performed. No unrelated files cleaned."
+}

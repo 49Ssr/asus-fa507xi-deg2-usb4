@@ -1,5 +1,7 @@
 # What we know, what we are missing, and what can be tested without another boot
 
+**Offline follow-up:** [saved native port reads](offline-investigation.md) now show the sampled branch difference: initial Plugged No occurs on both hosts, then Dell reads RouterDetected set while ASUS reads it clear. The decisions agree with the raw bits. Neither current samples nor final absence reconstruct entry/link history. The [truth table](investigation-truth-table.md) preserves those unknowns; a software-written PS883x USB4 mode flag is also distinct from measured link readiness. The runner needs no new driver or hardware trial.
+
 **Current approach:** use the [architecture/control-flow map](investigation-map.md) and [investigation plan](investigation-plan.md). The next observation must distinguish a branch in the failed connection path. A dedicated flag-reader driver is deferred; no new boot or live trial is queued. Existing discoveries remain evidence with their original scope.
 
 **Flag follow-up:** original firmware proves the read offset and a host-command setter, and shows that the bit skips the entire Windows UCSI worker. This strengthens the evidence against a continuously stuck flag during the successful commands in the failed capture. The running value is still missing: the saved dump cannot read the candidate EC window, and new EC/root-ACPI application requests were refused. No flag clear or new test boot was attempted. [Writers, access results and next measurement](ec-blocking-flag.md).

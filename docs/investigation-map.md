@@ -36,9 +36,11 @@ flowchart TD
     CFU["Parade updater target-lifetime side path"]
     NO_ROLE_CMD["No Windows SET_UOR; other processing continues"]
     EC_SKIPPED["Skip this EC worker invocation"]
+    RET_CFG["PS8830 mode/orientation control; ASUS owner unverified"]
+    PORT_REGS["Native host-port scalar status reads"]
     ATTACH -->|"documented: controller discovery and mode negotiation"| PD
-    PD -.->|"unknown: entry outcome to actual routing and electrical startup"| LINK
-    LINK -.->|"unknown: how board/controller readiness becomes host-port state"| PORT
+    PD -.->|"unknown: candidate mode-control path; ASUS ownership/wiring unproven"| RET_CFG
+    LINK -.->|"unknown: what makes the native host-port status assert remains untraced"| PORT_REGS
     PORT -->|"measured: ASUS captured No checks and absent external router"| ABSENT
     PORT -->|"measured: working Dell external-router outcome"| ROUTER
     ROUTER -->|"measured: Dell bound GPU and owner-confirmed output"| GPU
@@ -57,6 +59,8 @@ flowchart TD
     MAILBOX -->|"traced_code: status and reply readback"| AML
     AML -->|"traced_code: firmware status delivered to Type-C stack"| STATUS
     CFU -.->|"unknown: effect of updater resource state on this physical pairing"| LINK
+    RET_CFG -.->|"unknown: requested retimer configuration to usable physical link"| LINK
+    PORT_REGS -->|"traced_code: native bit tests select recorded No/Yes branch"| PORT
 ```
 
 ### Who owns each part
@@ -81,14 +85,16 @@ flowchart TD
 | CFU | Existing retimer update-driver software | Retained target handles after failed version read | Its physical effect on DEG2 negotiation is unproved; peer control weakens a universal blocker. |
 | NO_ROLE_CMD | Windows role-correction decision | No role command issued for this decision | Dell success and ASUS policy-trial failure are separate outcomes; no command is not a connection failure. |
 | EC_SKIPPED | EC outer service gate | Return before bank3bc20 group | This is one invocation; continued suppression depends on gate state. It is not the Windows no-role-command branch. |
+| RET_CFG | Parade reference PD-I2C / platform-SMBus interfaces; actual ASUS writer unknown | Reference programming sets requested mode/orientation, not a verified link-ready witness | Generic manufacturer diagram and upstream driver are not ASUS board wiring; no live access qualified. |
+| PORT_REGS | Windows USB4DeviceRouter native Port routines | ADP_CS_4 bit30 and USB4 port CS18 bit13; returned values available in saved traces | Current samples do not establish ever/never entry or link history; legacy TBT layout differs. |
 
 ### Branch evidence
 
 | From → to | Branch / message | Basis | Evidence |
 | --- | --- | --- | --- |
 | ATTACH → PD | controller discovery and mode negotiation | documented | MS-DESIGN |
-| PD → LINK | entry outcome to actual routing and electrical startup | unknown | C12, C19 |
-| LINK → PORT | how board/controller readiness becomes host-port state | unknown | C04, C12, C19 |
+| PD → RET_CFG | candidate mode-control path; ASUS ownership/wiring unproven | unknown | C12, C19, C23 |
+| LINK → PORT_REGS | what makes the native host-port status assert remains untraced | unknown | C12, C19, C24 |
 | PORT → ABSENT | ASUS captured No checks and absent external router | measured | C04 |
 | PORT → ROUTER | working Dell external-router outcome | measured | C01 |
 | ROUTER → GPU | Dell bound GPU and owner-confirmed output | measured | C01 |
@@ -107,6 +113,8 @@ flowchart TD
 | MAILBOX → AML | status and reply readback | traced_code | C22 |
 | AML → STATUS | firmware status delivered to Type-C stack | traced_code | C06, C22 |
 | CFU → LINK | effect of updater resource state on this physical pairing | unknown | C02, C13 |
+| RET_CFG → LINK | requested retimer configuration to usable physical link | unknown | C23 |
+| PORT_REGS → PORT | native bit tests select recorded No/Yes branch | traced_code | C24, C25, C26 |
 
 ### Candidate intervention locations
 
@@ -117,7 +125,7 @@ flowchart TD
 | GATE | Vendor host command76 clears the outer service-blocking bit. | Unmeasured live state and no link to private entry policy; no selected write test or dedicated driver. (C08, C09, C10) |
 | PD | Private controller entry/cable-policy change. | Target firmware, command semantics and recovery unidentified; no qualified intervention. (C12, C19) |
 | LINK | Actual routing, retimer or PHY setting. | Needs port ownership and observed failing state; no arbitrary mux/reset/flash. (C02, C13, C19) |
-| PORT | Windows router-discovery/configuration behavior. | A usable-link/failed-discovery observation would make this branch a targeted investigation; none yet. (C04, C19) |
+| PORT | Windows router-discovery/configuration behavior. | The native sampled No/Yes branch agrees with returned status. Follow why ASUS RouterDetected stays clear; forcing the software decision is not a physical-link repair. (C24, C25, C26) |
 
 ## Connection stages
 
@@ -276,6 +284,32 @@ Scope: ASUS-INTERFACES. An ACPI transport method is not the full controller poli
 
 [AML-TRANSPORT](../evidence/control-reachability.json) `/findings/ucsi`
 
+**C23 — code_fact:** The public PS883x driver programs retimer mode/orientation overI2C; its USB4_CONNECTED configuration flag is software-written, not a measured usable-link result.
+
+Scope: PS8830-REFERENCE. This is an upstream platform implementation. ASUS control-bus ownership, register framing and actual runtime state remain unqualified; the Qualcomm software quirk is not an ASUS finding.
+
+[RETIMER-REFERENCE](../evidence/retimer-control-reference.json) `/upstream`
+
+**C24 — measured:** ASUS returns CS18=00010400 with RouterDetected bit13 clear on both sampled passes; Dell deep control returns00003510 with that bit set and takes Yes. Both initially take Plugged No.
+
+Scope: ASUS-DEEP, DELL-DEEP. Matched read-phase samples with distinct logical adapters and capture times, not complete entry/link history or proof of never-ready state.
+
+[PORT-READS](../evidence/router-detection-branch.json) `/cases`
+
+**C25 — code_fact:** The pinned native Windows code tests ADP_CS_4 bit30 and USB4 port-capability CS18 bit13 from scalar configuration-read caches; its legacy TBT layout uses a separate branch.
+
+Scope: WINDOWS-USB4DRD. Original instructions and exact PDB identities inspected; no new live requests or hardware-model validation.
+
+[PORT-CODE](../evidence/router-detection-branch.json) `/native_code`
+
+**C26 — inference:** The sampled Windows RouterDetected decisions follow the returned bit values; Plugged No alone is not sufficient to explain failure.
+
+Scope: ASUS-DEEP, DELL-DEEP, WINDOWS-USB4DRD. Upstream software programming/policy effects remain possible. These observations do not identify what prevented the ASUS bit from asserting or justify forcing it.
+
+Reason: Clear native bit13 accompanies No on ASUS; set bit13 accompanies Yes on Dell, while both initially have Plugged clear.
+
+[PORT-READS](../evidence/router-detection-branch.json) `/cases`, [PORT-CODE](../evidence/router-detection-branch.json) `/native_code`
+
 ## Separate runs and observation limits
 
 | Case | Meaning | Important limit |
@@ -293,6 +327,8 @@ Scope: ASUS-INTERFACES. An ACPI transport method is not the full controller poli
 | ASUS-INTERFACES | Recovered AML/interface/driver inspection | Method existence and similar endpoint layout do not qualify live access/protocol. |
 | ASUS-BIOS314 | Pinned ASUS BIOS314 EC image and offline execution | Running EC flash not hash-matched; peripherals are modeled, not hardware-tested. |
 | ASUS-MODE-EXIT | One guarded mode-exit request2026-10-31 22:12 | Terminal firmware rejection; immediate snapshot only. No successful exit or USB4 recovery. |
+| WINDOWS-USB4DRD | Pinned Microsoft USB4DeviceRouter image/PDB | Original native decision/read routines inspected offline; legacy TBT path differs. |
+| PS8830-REFERENCE | Parade product diagram and upstream Linux PS883x implementation | Generic/reference architecture and programming example, not an ASUS wiring or runtime observation. |
 
 ## Software-report timelines
 

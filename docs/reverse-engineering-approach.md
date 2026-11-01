@@ -1,5 +1,7 @@
 # Matched comparison and firmware investigation
 
+**Offline automation follow-up:** [runner, saved native router-detection branch and PS8830 reference](offline-investigation.md). The next target is the actual ASUS owner/code feeding retimer configuration and native port status. The saved Windows tests agree with returned bits; forcing a Yes result is not a link repair. The owner selected offline analysis only, with no recurring automation or new live trial.
+
 **Current plan:** [architecture/control-flow map](investigation-map.md), [goal and experiment-selection method](investigation-plan.md). The acquisition and role-policy questions below are historical where subsequent captures and interventions resolved their scope. Current work targets the missing controller-entry/link/router-discovery branch; a new driver or repeated matched capture is not automatically next.
 
 **1 November acquisition gap closed:** the [fresh matched comparison](asus-dell-matched-comparison.md) now recovers current ASUS policy/ACPI and confirms no external router after successful OS correction. Dell remains the sufficient working control. Next scope is identifying an applicable firmware USB4 discovery/entry mechanism from existing evidence; no repeated generic capture or prepared patch is implied.

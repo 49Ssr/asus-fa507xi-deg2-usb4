@@ -1,0 +1,306 @@
+{
+  "schema": 1,
+  "date": "2026-11-01",
+  "status": "Saved native port readbacks matched to Windows decision branches; upstream entry/link history still missing",
+  "input_etl_sha256": {
+    "asus": "9e0501dae7910fc709aeca47ea64017a63539ae72cfaf240b602389ada0ef172"
+  },
+  "driver": {
+    "image_sha256": "5db15e8e1fd270c293be4385a92b85947c93f33396c55b9d1d5265ba1fe1f3a2",
+    "pdb_sha256": "61acae842dbbfbc06d9dd0f608371ac3dadca63364c0b36cd49d6cf475f65c5c",
+    "guid": "f8f321dc-bc5e-899c-25d5-c5462dceba09",
+    "pe_age": 1,
+    "dbi_age": 1,
+    "info_age": 4,
+    "pe_guid_dbi_age_match": true
+  },
+  "native_code": {
+    "plugged_test_rva_hex": "677a8",
+    "plugged_read_rva_hex": "6e330",
+    "plugged_cache_offset_hex": "161",
+    "plugged_mask_hex": "40000000",
+    "plugged_adapter_dword_offset_hex": "4",
+    "router_test_rva_hex": "68754",
+    "router_read_rva_hex": "6e7dc",
+    "router_cache_offset_hex": "206",
+    "router_mask_hex": "2000",
+    "router_read": "one DWORD at capability-byte base plus18 DWORDs",
+    "request_code_hex": "0060101f",
+    "read_size_bytes": 4,
+    "event_when_bit_clear_hex": "26",
+    "event_when_bit_set_hex": "3a",
+    "legacy_tbt_path": "Separate branch selected through Fdo IsTbt; reads TBT3 region157 and compares cached byte to31hex. Native masks must not be applied to that layout.",
+    "code_executed_live": false,
+    "raw_vendor_binary_published": false
+  },
+  "cases": [
+    {
+      "case": "ASUS-DEEP",
+      "input_sha256": "75ea73f7f2eb11ce37ea11b6bc027b15b932b18e75ff0ca03cc8ce8a8bdd3158",
+      "logical_root_adapter": 2,
+      "router_capability_base_dword_derived": 192,
+      "samples": [
+        {
+          "header_line": 598,
+          "read_response_utc": "2026-11-01T00:52:17.0829871Z",
+          "adapter": 2,
+          "dword_offset": 4,
+          "sequence": 1,
+          "payload_line": 599,
+          "payload_utc": "2026-11-01T00:52:17.0829874Z",
+          "value": 2281701376
+        },
+        {
+          "header_line": 620,
+          "read_response_utc": "2026-11-01T00:52:17.0830451Z",
+          "adapter": 2,
+          "dword_offset": 210,
+          "sequence": 2,
+          "payload_line": 621,
+          "payload_utc": "2026-11-01T00:52:17.0830453Z",
+          "value": 66560
+        },
+        {
+          "header_line": 1975,
+          "read_response_utc": "2026-11-01T00:52:27.8952851Z",
+          "adapter": 2,
+          "dword_offset": 4,
+          "sequence": 1,
+          "payload_line": 1976,
+          "payload_utc": "2026-11-01T00:52:27.8952858Z",
+          "value": 2281701376
+        },
+        {
+          "header_line": 2009,
+          "read_response_utc": "2026-11-01T00:52:27.8953682Z",
+          "adapter": 2,
+          "dword_offset": 210,
+          "sequence": 2,
+          "payload_line": 2010,
+          "payload_utc": "2026-11-01T00:52:27.8953686Z",
+          "value": 66560
+        }
+      ],
+      "branches": [
+        {
+          "kind": "plugged",
+          "read_phase_start_utc": "2026-11-01T00:52:17.0829368Z",
+          "read_phase_line": 556,
+          "decision_utc": "2026-11-01T00:52:17.0829942Z",
+          "decision_line": 606,
+          "result": "No",
+          "next_state": "ShouldCheckRouterDetectedBit",
+          "mask_hex": "0x40000000",
+          "sample": {
+            "header_line": 598,
+            "read_response_utc": "2026-11-01T00:52:17.0829871Z",
+            "adapter": 2,
+            "dword_offset": 4,
+            "sequence": 1,
+            "payload_line": 599,
+            "payload_utc": "2026-11-01T00:52:17.0829874Z",
+            "value": 2281701376
+          },
+          "response_to_decision_seconds": "0.0000068"
+        },
+        {
+          "kind": "router_detected",
+          "read_phase_start_utc": "2026-11-01T00:52:17.0830011Z",
+          "read_phase_line": 608,
+          "decision_utc": "2026-11-01T00:52:17.0830516Z",
+          "decision_line": 629,
+          "result": "No",
+          "next_state": "WaitingForRouterConnect",
+          "mask_hex": "0x00002000",
+          "sample": {
+            "header_line": 620,
+            "read_response_utc": "2026-11-01T00:52:17.0830451Z",
+            "adapter": 2,
+            "dword_offset": 210,
+            "sequence": 2,
+            "payload_line": 621,
+            "payload_utc": "2026-11-01T00:52:17.0830453Z",
+            "value": 66560
+          },
+          "response_to_decision_seconds": "0.0000063"
+        },
+        {
+          "kind": "plugged",
+          "read_phase_start_utc": "2026-11-01T00:52:27.8950886Z",
+          "read_phase_line": 1951,
+          "decision_utc": "2026-11-01T00:52:27.8953049Z",
+          "decision_line": 1983,
+          "result": "No",
+          "next_state": "ShouldCheckRouterDetectedBit",
+          "mask_hex": "0x40000000",
+          "sample": {
+            "header_line": 1975,
+            "read_response_utc": "2026-11-01T00:52:27.8952851Z",
+            "adapter": 2,
+            "dword_offset": 4,
+            "sequence": 1,
+            "payload_line": 1976,
+            "payload_utc": "2026-11-01T00:52:27.8952858Z",
+            "value": 2281701376
+          },
+          "response_to_decision_seconds": "0.0000191"
+        },
+        {
+          "kind": "router_detected",
+          "read_phase_start_utc": "2026-11-01T00:52:27.8953132Z",
+          "read_phase_line": 1985,
+          "decision_utc": "2026-11-01T00:52:27.8953782Z",
+          "decision_line": 2018,
+          "result": "No",
+          "next_state": "WaitingForRouterConnect",
+          "mask_hex": "0x00002000",
+          "sample": {
+            "header_line": 2009,
+            "read_response_utc": "2026-11-01T00:52:27.8953682Z",
+            "adapter": 2,
+            "dword_offset": 210,
+            "sequence": 2,
+            "payload_line": 2010,
+            "payload_utc": "2026-11-01T00:52:27.8953686Z",
+            "value": 66560
+          },
+          "response_to_decision_seconds": "0.0000096"
+        }
+      ]
+    },
+    {
+      "case": "DELL-DEEP",
+      "input_sha256": "6081a1c438433e96eed6b505a430e7d7677dda72ab5897416dd00be978fa3cd5",
+      "logical_root_adapter": 1,
+      "router_capability_base_dword_derived": 144,
+      "samples": [
+        {
+          "header_line": 711,
+          "read_response_utc": "2026-11-01T00:17:45.0340274Z",
+          "adapter": 1,
+          "dword_offset": 4,
+          "sequence": 3,
+          "payload_line": 712,
+          "payload_utc": "2026-11-01T00:17:45.0340286Z",
+          "value": 2210398208
+        },
+        {
+          "header_line": 756,
+          "read_response_utc": "2026-11-01T00:17:45.0348116Z",
+          "adapter": 1,
+          "dword_offset": 162,
+          "sequence": 0,
+          "payload_line": 757,
+          "payload_utc": "2026-11-01T00:17:45.0348129Z",
+          "value": 13584
+        },
+        {
+          "header_line": 815,
+          "read_response_utc": "2026-11-01T00:17:45.0353469Z",
+          "adapter": 1,
+          "dword_offset": 162,
+          "sequence": 1,
+          "payload_line": 816,
+          "payload_utc": "2026-11-01T00:17:45.0353482Z",
+          "value": 13584
+        },
+        {
+          "header_line": 1838,
+          "read_response_utc": "2026-11-01T00:17:45.4429785Z",
+          "adapter": 1,
+          "dword_offset": 162,
+          "sequence": 3,
+          "payload_line": 1839,
+          "payload_utc": "2026-11-01T00:17:45.4429877Z",
+          "value": 13584
+        },
+        {
+          "header_line": 1891,
+          "read_response_utc": "2026-11-01T00:17:45.4436089Z",
+          "adapter": 1,
+          "dword_offset": 4,
+          "sequence": 1,
+          "payload_line": 1892,
+          "payload_utc": "2026-11-01T00:17:45.4436090Z",
+          "value": 3284140032
+        },
+        {
+          "header_line": 4002,
+          "read_response_utc": "2026-11-01T00:17:45.6204432Z",
+          "adapter": 1,
+          "dword_offset": 4,
+          "sequence": 0,
+          "payload_line": 4003,
+          "payload_utc": "2026-11-01T00:17:45.6204436Z",
+          "value": 1199570944
+        },
+        {
+          "header_line": 4091,
+          "read_response_utc": "2026-11-01T00:17:45.6215341Z",
+          "adapter": 1,
+          "dword_offset": 162,
+          "sequence": 1,
+          "payload_line": 4092,
+          "payload_utc": "2026-11-01T00:17:45.6215347Z",
+          "value": 13584
+        }
+      ],
+      "branches": [
+        {
+          "kind": "plugged",
+          "read_phase_start_utc": "2026-11-01T00:17:45.0335897Z",
+          "read_phase_line": 619,
+          "decision_utc": "2026-11-01T00:17:45.0340499Z",
+          "decision_line": 719,
+          "result": "No",
+          "next_state": "ShouldCheckRouterDetectedBit",
+          "mask_hex": "0x40000000",
+          "sample": {
+            "header_line": 711,
+            "read_response_utc": "2026-11-01T00:17:45.0340274Z",
+            "adapter": 1,
+            "dword_offset": 4,
+            "sequence": 3,
+            "payload_line": 712,
+            "payload_utc": "2026-11-01T00:17:45.0340286Z",
+            "value": 2210398208
+          },
+          "response_to_decision_seconds": "0.0000213"
+        },
+        {
+          "kind": "router_detected",
+          "read_phase_start_utc": "2026-11-01T00:17:45.0340687Z",
+          "read_phase_line": 721,
+          "decision_utc": "2026-11-01T00:17:45.0348339Z",
+          "decision_line": 764,
+          "result": "Yes",
+          "next_state": "RequestingPollLane0ForCL0",
+          "mask_hex": "0x00002000",
+          "sample": {
+            "header_line": 756,
+            "read_response_utc": "2026-11-01T00:17:45.0348116Z",
+            "adapter": 1,
+            "dword_offset": 162,
+            "sequence": 0,
+            "payload_line": 757,
+            "payload_utc": "2026-11-01T00:17:45.0348129Z",
+            "value": 13584
+          },
+          "response_to_decision_seconds": "0.0000210"
+        }
+      ]
+    }
+  ],
+  "conclusions": [
+    "Both sampled ASUS initialisation passes have ADP_CS_4=88000000 and USB4 port CS18=00010400; Plugged bit30 and RouterDetected bit13 clear.",
+    "The Dell deep control initially also has Plugged clear (83c00000); its following CS18 read is00003510 with RouterDetected bit13 set, followed by the recorded Yes branch and request to poll lane0 forCL0.",
+    "Plugged No alone is not the discriminating failure branch: it also occurs in the successful Dell control.",
+    "For these samples the recorded RouterDetected No/Yes choices agree with the bits returned by configuration reads. This narrows the opaque Windows branch; it does not exclude upstream Windows policy/programming effects.",
+    "These are current samples during driver initialisation, not complete physical attachment history; they do not establish that mode entry or a usable link never existed.",
+    "Logical root adapter numbers differ between hosts and are not assumed equal to UCSI connector numbers or identical physical board wiring."
+  ],
+  "physical_entry_history_recovered": false,
+  "usable_link_ever_resolved": false,
+  "new_driver_installs": 0,
+  "new_hardware_requests": 0
+}
