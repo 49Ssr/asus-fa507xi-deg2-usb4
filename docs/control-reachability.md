@@ -1,5 +1,7 @@
 # Reaching the firmware: recovered code and tested access boundary
 
+**Subsequent work:** [the installed ASUS PD diagnostic path](oem-pd-diagnostics.md) provides a concrete legacy EC capability getter. The guarded probe is prepared, but Windows cancelled its administrator launch before any device request. That follow-up has no hardware result yet. The measurements below remain the completed metadata-path results.
+
 **1 November 2026:** recovered 23 cached AML tables from the existing ASUS dump, including firmware code absent from the original table files. A real ASUS memory-read helper exists, but the ordinary-process route tested here rejected both metadata requests. DEG2 also exposes a vendor USB interface; its diagnostic protocol remains unidentified. **No Windows repair or replacement test boot is prepared.**
 
 ## Recovering the code already in the dump

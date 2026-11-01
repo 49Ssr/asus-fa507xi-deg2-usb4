@@ -1,0 +1,69 @@
+{
+  "schema": 1,
+  "date": "2026-11-01",
+  "status": "OEM read path identified; Windows administrator launch cancelled before execution; no device attempt",
+  "binaries": [
+    {"name": "AsusSAIO.sys", "version": "1.0.9.0", "sha256": "eef750c7fb515d162a76423531f4f6773bcf837d9607069e797a26d198edd892", "signature": "Valid", "already_running": true},
+    {"name": "AsusWinIO64.dll", "version": "1.1.4.0", "sha256": "a07802f565b9b1ec527b2d1eec69debfb92f90022953b63f1122edb50d2d5b54", "signature": "Valid", "loaded_by_probe": false},
+    {"name": "AsusEC_X64.dll", "version": "2.0.0.4", "sha256": "c7f337191d2366dfedbe90a6423ec743094a588a032c0a0cb2434dad688c29fe", "signature": "Valid", "loaded_by_probe": false}
+  ],
+  "capability": {
+    "client_getter_rva": "55470",
+    "legacy_ec_ioctl": "80102070",
+    "command": "bb",
+    "input": "50",
+    "output_bytes": 1,
+    "driver_packet_bytes": 16,
+    "driver_packet_hex": "bb015000000000000000010000000000",
+    "api_control_ioctl": "80102040",
+    "required_api_reply": "00010001",
+    "ec_error_client_sentinel": "7fffffff",
+    "pd_identity_minimum_table_version": 14,
+    "required_process_identity": "SYSTEM",
+    "driver_can_retry_internally": true,
+    "hard_user_mode_timeout_guaranteed": false
+  },
+  "pd_getter_leads_not_issued": {
+    "identity": {"table": 5, "offsets_inclusive": [2, 13], "bytes": 12},
+    "event": {"table": 6, "offset_hex": "34"},
+    "temperature": {"table": 6, "offset_hex": "33"},
+    "port_mapping_qualified": false,
+    "wire_packet_freshness_qualified": false
+  },
+  "existing_vendor_cache": {
+    "HealthyTableVersion": 17,
+    "fresh_ec_read": false,
+    "archived_table_m5_record_date": "2026-10-16",
+    "archived_table_m5_bytes": 256,
+    "archived_table_m5_sha256": "3b43be6583127864ed8b4719bbc76620f9e6faa200b60bbe2c06113c38518d68",
+    "archived_table_m5_non_ff_bytes": [{"offset": 1, "value": 1}],
+    "archive_selection_matches_pd_identity_getter": false,
+    "absence_of_controller_proven": false
+  },
+  "execution": {
+    "uac_requested": true,
+    "windows_reported_launch_cancelled": true,
+    "automatically_relaunched": false,
+    "task_receipt_collected": false,
+    "device_attempt_marker_collected": false,
+    "api_reply": null,
+    "capability_reply": null,
+    "new_boots": 0,
+    "new_driver_installs": 0,
+    "security_setting_changes": 0,
+    "network_changes": 0,
+    "firmware_updates": 0,
+    "automatic_relaunch_allowed": false,
+    "manual_administrator_launcher_prepared": true
+  },
+  "validation": {
+    "offline_original_code_cases_passed": 16,
+    "hardware_and_kernel_calls_are_test_doubles": true,
+    "ps51_worker_and_runner_parse": true,
+    "csharp_compiles_without_device_entrypoint_invocation": true,
+    "vendor_trace_files_inspected": 17,
+    "vendor_job_log_proves_completed_ec_read": false
+  },
+  "windows_fix_qualified": false,
+  "private_material": "Installed binary copies, disassembly, logs, scripts, intent and eventual task/results remain private. No serials or paths published."
+}
