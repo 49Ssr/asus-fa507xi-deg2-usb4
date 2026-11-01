@@ -1,5 +1,7 @@
 # ASUS FA507XI / Minisforum DEG2 USB4 investigation
 
+**Next capture:** [fresh ASUS comparison saved locally](docs/asus-local-comparison.md), against the recovered Dell baseline. No repeat Dell capture or USB transfer is required. Local entry point: 28 PS5.1 checks; new ASUS result pending.
+
 **Unresolved, 31 October 2026.** The ASUS TUF A15 FA507XI detects ordinary USB functions on the DEG2 but does not enumerate its external USB4 router or RTX 4080 SUPER. The identical assembled dock, GPU, PSU and supplied cable work on a Dell Intel Thunderbolt 4 laptop. A separate full Windows installation on the ASUS reproduces the failure.
 
 **[Dell dump recovered; policy difference identified](docs/dell-dump-recovery.md).** All 33 returned files and the separate 2.25 GB kernel dump verify. Offline inspection recovers Dell policy flag **1** versus ASUS **0**, plus Dell's additional UCSI ACPI function 4. The new passive trace repeats the successful role ordering. A late freshness cutoff could reject a valid dump; the revised handoff adds automatic/Browse selection, retry and saved-run completion (**183 PS5.1 assertions**). No repeat Dell capture is needed for this failure. ASUS root cause and an applicable Windows fix remain unresolved.
