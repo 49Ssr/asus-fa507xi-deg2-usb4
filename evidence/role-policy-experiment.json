@@ -1,7 +1,7 @@
 {
   "schema": 1,
   "date": "2026-11-01",
-  "status": "PoweredSameBootFallbackBaselineReady_InstallationStageOpened",
+  "status": "ActualFilterLoaded_PolicyOneAcceptedBeforeAttachment_ObservationPending",
   "latest_hardware_result": "asus-dell-matched-comparison.json",
   "intervention": {
     "device": "ASUS FA507XI UCSI",
@@ -49,8 +49,8 @@
       "rollback",
       "network"
     ],
-    "driver_loaded": false,
-    "hardware_policy_changed": false,
+    "driver_loaded": true,
+    "hardware_policy_changed": true,
     "vm_tested": false,
     "driver_verifier_tested": false,
     "hardware_rollback_tested": false,
@@ -110,11 +110,11 @@
     "cause": "Unresolved"
   },
   "security_or_network_setting_changes": true,
-  "live_test_blocker": "Powered matching fallback baseline qualified. Approved installation stage opened and awaiting physical disconnection/responsiveness confirmation; actual startup acceptance required before attachment.",
+  "live_test_blocker": "Exact reviewed filter is running; Microsoft policy-1 startup proof accepted. Single same-boot attachment window opened; observation and exact owned-package rollback pending.",
   "source_files": [
     {
       "path": "experimental/role-policy/README.md",
-      "sha256_utf8_lf": "590d5b496721a1f4f82f7238b82b222a7cf055340306fa9edb55ad01820171b5"
+      "sha256_utf8_lf": "530f99954e4add265eb6d75c4232f94d669d5a6f7be7f3e836885d45d5883cf3"
     },
     {
       "path": "experimental/role-policy/Build.ps1",
@@ -203,7 +203,7 @@
     "root_trust_changed": false,
     "publisher_trust_changed": false,
     "boot_changed": false,
-    "driver_loaded": false,
+    "driver_loaded": true,
     "files": [
       {
         "Name": "usb4rolepolicy.cat",
@@ -260,7 +260,7 @@
     "owned_loader_and_exact_test_certificate_trust_prepared": true,
     "hvci_setting_changed": false,
     "network_changed": false,
-    "driver_installed": false
+    "driver_installed": true
   },
   "local_test_boot_preparation": {
     "completed_utc": "2026-11-01T11:57:22.9900868Z",
@@ -290,10 +290,10 @@
     "code_integrity_flags": "0x283603",
     "full_preflight_passed": true,
     "deg2_present": false,
-    "driver_installed": false,
-    "driver_loaded": false,
+    "driver_installed": true,
+    "driver_loaded": true,
     "baseline_completed": true,
-    "hardware_policy_acceptance_verified": false,
+    "hardware_policy_acceptance_verified": true,
     "usb4_fix_verified": false
   },
   "baseline_gate_correction": {
@@ -327,6 +327,26 @@
     "startup_sha256": "E14BBF99C8FCD1450F6CB55F3DB4E6EACEB891DE95CB575C4AF89742C467E717",
     "inventory_sha256": "BA07C8369B61D1760CA7C72D7B38C77B898A3086DB56ED2F04946F420F5EF422",
     "freshness_and_same_boot_rechecked": true,
-    "installation_result_recorded": false
+    "installation_result_recorded": true
+  },
+  "actual_filter_load": {
+    "completed_utc": "2026-11-01T12:18:36.4289820Z",
+    "driver_running_verified": true,
+    "microsoft_base_retained": true,
+    "supported_functions": "0x1f",
+    "exact_forced_policy_message": true,
+    "acpi_policy": 1,
+    "class_config_policy": 1,
+    "startup_initializations_with_same_policy": 2,
+    "events": 186183,
+    "events_lost": 0,
+    "format_errors": 0,
+    "unknown_formats": 0,
+    "enabled_ics_preserved": true,
+    "startup_sha256": "EE016F74E7C3F5A64E38F2143A15F3A425ABF28575E696FB83EBB2CEF26032C5",
+    "same_boot_and_freshness_rechecked": true,
+    "usb4_success_verified": false,
+    "pending_rollback": true,
+    "rollback_verified": false
   }
 }
