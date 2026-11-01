@@ -1,0 +1,45 @@
+{
+  "schema": 1,
+  "date": "2026-11-01",
+  "status": "Flag read translation and host-command setter traced; live flag value and runtime writer unknown",
+  "firmware_sha256": "103721578b66daed81dcf7a0bed06709c072f9da1dc75a6d7887321e6e32b060",
+  "live_flash_hash_matched": false,
+  "flag": {"xdata_hex": "030e", "bit": 1, "live_value": null},
+  "standard_ec_read": {"command_hex": "80", "offset_hex": "0e", "getter_bank": 1, "getter_pc_hex": "e421", "address_helper_pc_hex": "f081", "reads_xdata_hex": "030e", "executed_live": false},
+  "host_window": {"source": "Recovered checksum-verified DSDT EC0.ERAM", "space": "SystemMemory", "base_hex": "fedd8300", "length_hex": "100", "candidate_flag_address_hex": "fedd830e", "live_alias_validated": false, "rmem_invoked": false},
+  "writers": [
+    {"path": "common0a71 PMC3 receiver ->30eb trampoline ->bank3b947 switch75 ->ba07", "effect": "OR02", "live_invoked": false},
+    {"path": "same receiver, switch76 ->bank3ba0f", "effect": "ANDfd;03a3=0a", "live_invoked": false},
+    {"path": "bank1be2d inside broader initialization", "effect": "ANDfd", "live_invoked": false},
+    {"path": "bank2c93b..c942", "effect": "030e=221b", "storage_source_emulated": false},
+    {"path": "bank1e427 +f081; generic EC write offset0e", "effect": "replace030e", "live_invoked": false}
+  ],
+  "retained_save": {"bank": 1, "start_pc_hex": "a35e", "stop_before_pc_hex": "a368", "effect": "221b=030e AND40", "blocking_bit_preserved_by_this_path": false},
+  "outer_gate": {"bank": 1, "pc_hex": "b23c", "other_gate_xdata_hex": "03ad", "skipped_worker": "trampoline32f8 ->bank3bc20 ->includesc89a", "ucsi_worker_doubled_in_test": true},
+  "ownership_exhaustive": false,
+  "normal_attachment_setter_found": false,
+  "host_and_indirect_writes_excluded": false,
+  "live_access_checks": [
+    {"target": "EC PDO constant_STA", "result": "OpenRefused_NoRequest", "open_win32": 1, "ioctl_sent": false, "bytes": 0, "handle_closed": true},
+    {"target": "ACPI root namespace enumeration", "result": "RequestRefused_NoRetry", "io_win32": 50, "bytes": 0, "handle_closed": true},
+    {"target": "ACPI root EX constant EC_STA", "result": "RequestRefused_NoRetry", "io_win32": 50, "bytes": 0, "handle_closed": true}
+  ],
+  "preparation_failure": "Initial EC PDO regex rejected lowercase name before open; original preserved and corrected source used",
+  "dump_check": {"source": "Existing ASUS failed-connection full live dump", "sha256": "fa979a86e3a586cf17a9c04c41564526a1cc748b8f8182df431eaf6a5773928c", "physical_start_hex": "fedd8300", "length_bytes": 16, "result": "Physical memory read failed", "returned_bytes": 0, "separate_amli_metadata_query_failed_without_matching_symbols": true},
+  "kernel_debugger_metadata": {"query_status": 0, "enabled": false, "not_present": true},
+  "offline_check": {"tool": "tools/analysis/Test-EcFlagPaths.c", "groups_passed": 6, "emulator_commit": "5dc681275151c4a5d7b85ec9ff4ceb1b25abd5a8", "original_pmc3_receiver_and_bank_trampolines_executed": true, "hardware_backend": false, "host_alias_tested": false, "physical_timing_tested": false},
+  "live_ec_commands_this_turn": 0,
+  "live_physical_reads_this_turn": 0,
+  "live_ec_writes_this_turn": 0,
+  "driver_installs_this_turn": 0,
+  "boot_changes_this_turn": 0,
+  "qualified_live_reader": false,
+  "qualified_windows_fix": false,
+  "test_boot_queued": false,
+  "sources": [
+    "https://uefi.org/htmlspecs/ACPI_Spec_6_4_html/12_ACPI_Embedded_Controller_Interface_Specification/embedded-controller-command-set.html",
+    "https://uefi.org/specs/ACPI/6.5/12_Embedded_Controller_Interface_Specification.html",
+    "https://learn.microsoft.com/en-us/windows-hardware/drivers/ddi/acpiioct/ni-acpiioct-ioctl_acpi_eval_method_ex",
+    "https://learn.microsoft.com/en-us/windows-hardware/drivers/debuggercmds/-db---dc---dd---dp---dq---du---dw"
+  ]
+}

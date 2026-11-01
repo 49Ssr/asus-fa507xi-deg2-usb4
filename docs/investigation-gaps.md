@@ -1,5 +1,7 @@
 # What we know, what we are missing, and what can be tested without another boot
 
+**Flag follow-up:** original firmware proves the read offset and a host-command setter, and shows that the bit skips the entire Windows UCSI worker. This strengthens the evidence against a continuously stuck flag during the successful commands in the failed capture. The running value is still missing: the saved dump cannot read the candidate EC window, and new EC/root-ACPI application requests were refused. No flag clear or new test boot was attempted. [Writers, access results and next measurement](ec-blocking-flag.md).
+
 **Completed follow-up:** the data fields in all342 previously unread trace records have now been decoded. They do not supply the USB-C entry exchange. Ten original EC bus-engine scenarios also pass with modeled peripherals; this includes the code previously replaced by a whole-call test double. [What those records and tests actually show](trace-gaps-and-ec-bus.md).
 
 **1 November 2026: the failure is unresolved, not proved impossible to fix.** We have narrowed several explanations. We have not observed the whole connection attempt, recovered all firmware involved, or identified a working Windows repair. Test counts below describe software checks, not thousands of real connection attempts.
