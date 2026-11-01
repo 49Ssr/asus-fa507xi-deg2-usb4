@@ -4,7 +4,7 @@ param([ValidateSet('Preview','Build')][string]$Mode='Preview',[string]$OutputDir
 Set-StrictMode -Version Latest
 $ErrorActionPreference='Stop'
 if($Mode -eq 'Preview'){
-    Write-Output 'Build an eight-source-file USB4 deep-comparison kit with SHA-256 manifest. No third-party binaries or symbols are bundled. Output must be a new local directory.'
+    Write-Output 'Build a nine-source-file USB4 deep-comparison kit with SHA-256 manifest. No third-party binaries or symbols are bundled. Output must be a new local directory.'
     exit 0
 }
 if([string]::IsNullOrWhiteSpace($OutputDirectory) -or $OutputDirectory.StartsWith('\\')){throw 'Supply a new local output directory.'}
@@ -16,6 +16,7 @@ $map=[ordered]@{
     'deep-compare\DeepCapture.Native.cs'='deep-compare\DeepCapture.Native.cs'
     'START-DELL.cmd'='deep-compare\START-DELL.cmd'
     'START-ASUS.cmd'='deep-compare\START-ASUS.cmd'
+    'FINISH-DUMP.cmd'='deep-compare\FINISH-DUMP.cmd'
     'RETURN.cmd'='deep-compare\RETURN.cmd'
     'STOP-TRACE.cmd'='deep-compare\STOP-TRACE.cmd'
     'README.txt'='deep-compare\README.txt'
@@ -33,6 +34,6 @@ $files=@(foreach($name in $map.Keys){
     else{[IO.File]::Copy($source,$dest,$false)}
     [ordered]@{Path=$name;Bytes=(Get-Item -LiteralPath $dest).Length;SHA256=(Get-FileHash -LiteralPath $dest -Algorithm SHA256).Hash}
 })
-$manifest=[ordered]@{Schema=1;Kind='USB4DeepCompare';Revision='2026-11-01-pnp-data-fix';BundleId=[guid]::NewGuid().ToString('N');CreatedUtc=[DateTime]::UtcNow.ToString('o');Files=$files;ThirdPartyBinariesIncluded=$false;DefaultEntryPoint='START-DELL.cmd';HardwareCaptureQualified=$false}
+$manifest=[ordered]@{Schema=1;Kind='USB4DeepCompare';Revision='2026-11-01-resumable-dump-handoff';BundleId=[guid]::NewGuid().ToString('N');CreatedUtc=[DateTime]::UtcNow.ToString('o');Files=$files;ThirdPartyBinariesIncluded=$false;DefaultEntryPoint='START-DELL.cmd';HardwareCaptureQualified=$false}
 [IO.File]::WriteAllText((Join-Path $output 'bundle-manifest.json'),($manifest|ConvertTo-Json -Depth 6),(New-Object Text.UTF8Encoding($false)))
 Write-Output ('Built verified-source manifest: '+$output)

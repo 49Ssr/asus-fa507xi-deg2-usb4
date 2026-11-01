@@ -1,5 +1,7 @@
 # Research and maintenance rules
 
+Current recovery, 1 November: read docs/dell-dump-recovery.md and evidence/deep-compare-recovery.json first. V2 Dell returned 33 verified files plus a separately recovered 2.25 GB full dump. The original NotCompleted status is preserved; offline KD verifies working external router/PCIe/USB3 topology and cached device-controller policy 1 versus ASUS 0. Dell UCSI _DSM supports function 4 (mask 0x1f versus ASUS 0x0f); XDCE/UDRS values are absent, so do not uniquely attribute the cache value to function 4 or claim a fix. Do not repeat Dell for the failed handoff. Revised source passes 183 PS5.1 assertions and adds auto/Browse/retry/pending plus FINISH-DUMP saved-run completion without a new trace; new UI/hardware workflow is not exercised. Keep exact model/bundle/machine guards, passive-only acquisition and private originals. Leave Ethernet/ICS/firewall unchanged: direct link 1 Gbps, SMB port answers, usable share not established. Fresh normal-fallback ASUS comparison remains outstanding; no new firmware intervention is prepared.
+
 This is an unresolved hardware compatibility investigation, not a published fix.
 Keep confirmed observations, hypotheses, ineffective tests, and unperformed tests distinct.
 Record meaningful mistakes and corrections. Never claim that successful driver installation proves a firmware update or working USB4 link.

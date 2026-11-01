@@ -1,5 +1,7 @@
 # Portable Intel Dell-DEG2 control
 
+**Later passive comparison, 1 November:** the [recovered native Dell dump and new trace](dell-dump-recovery.md) add operational PCIe/USB3 topology, cached UCSI policy and loaded ACPI branches. They are a separate acquisition from the successful diagnostic control below; no repeat Dell capture is needed for its failed file handoff.
+
 **Successful control recorded, 31 October 2026.** The corrected collector recorded the Intel Dell Latitude 5540 establishing native USB4 and enumerating the DEG2 and RTX 4080 SUPER. NVIDIA binding was present before diagnostic GET requests; after recording, the owner confirmed display output. The ASUS remains unresolved. The first invocation had stopped during import; that separate startup defect is documented below.
 
 ## Measured result

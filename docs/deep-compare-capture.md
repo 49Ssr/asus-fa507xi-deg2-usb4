@@ -1,6 +1,8 @@
 # Portable matched capture: Dell first
 
-**V2 corrected and locally qualified, 1 November 2026.** The first Dell launch stopped during inventory before recording; its return transfer succeeded. A new usable paired capture remains pending. This implements the next acquisition in the [reverse-engineering approach](reverse-engineering-approach.md). It adds the full native kernel snapshot and ACPI/policy context missing from the previous Dell recorder; it is not another role-change experiment or a firmware patch.
+**Current status, 1 November:** the second Dell trace and separate dump have been [recovered and analysed](dell-dump-recovery.md). No repeat Dell run is needed for the failed handoff. The revised source kit fixes the late freshness cutoff and provides automatic/Browse selection, retry, pending status and FINISH-DUMP.cmd for a new saved run. **183 PS5.1 assertions pass**; its new UI/hardware workflow has not been exercised on Dell. The V2 inventory correction below is retained as history.
+
+**V2 inventory correction, historical.** The first Dell launch stopped during inventory before recording; its return transfer succeeded. The later Dell acquisition is now recovered; a fresh matched ASUS acquisition remains outstanding. This implements the next acquisition in the [reverse-engineering approach](reverse-engineering-approach.md). It adds the full native kernel snapshot and ACPI/policy context missing from the previous Dell recorder; it is not another role-change experiment or a firmware patch.
 
 ## First Dell attempt and correction
 
@@ -12,12 +14,12 @@ The old qualification mocked inventory/static-input acquisition and missed the n
 
 ## Owner procedure
 
-The corrected USB folder is **USB4-Deep-Compare-v2**. The original USB4-Deep-Compare/RETURNED and older USB4-Dell-Control folders are preserved. Start the v2 launcher to create a new run; RETURN.cmd on the original kit only repackages the failed inventory attempt.
+The current revised source is built into a new directory; do not overwrite an existing kit or its results. Historical V2 files were recovered from the returned USB. The resume launcher is for a saved run created with the revised kit on the same laptop. Existing captures need no repeat or migration.
 
 1. On the Dell Latitude 5540, keep normal barrel power, DEG2/PSU powered and the GPU-connected display attached. Plug the USB stick directly into the laptop and leave it there.
 2. Right-click **START-DELL.cmd** in the new folder and select **Run as administrator**. The source/hash/model checks run before collection, then the kit stages verified source files onto internal NTFS storage.
 3. Follow the disconnection prompt. Connect DEG2 at **GREEN**, using the same known-working Dell port. Leave it attached through the snapshot step.
-4. After the 45-second passive window, the script stops its trace and opens Administrator Task Manager when requested. In **Details**, right-click **System (PID 4)**, select **Create live kernel memory dump file**, then **Full live kernel memory dump**. Choose Full rather than Kernel stacks or a process dump. Wait for completion, select Open File Location, copy the completed dump's path and paste it into the script. [Microsoft's procedure](https://learn.microsoft.com/en-us/windows-hardware/drivers/debugger/task-manager-live-dump).
+4. After the nominal 45-second passive sleep and endpoint inventory, the script stops its trace and opens Administrator Task Manager. In **Details**, right-click **System (PID 4)**, select **Create live kernel memory dump file**, then **Full live kernel memory dump**. Wait for completion, return to the capture window and press Enter to find the completed file automatically, or B to browse. Invalid input can be retried; P/cancel leaves the dump pending. FINISH-DUMP.cmd resumes that saved run on the same laptop without another connection trace. Actual ETW duration includes workflow overhead and must be measured offline. [Microsoft's procedure](https://learn.microsoft.com/en-us/windows-hardware/drivers/debugger/task-manager-live-dump).
 5. Answer the display-output question. Wait for compression and **RETURN COPY VERIFIED**. The capture result must also say `Captured_RequiresOfflinePolicyAndMemoryValidation`; a successful copy alone does not mean acquisition succeeded. Return the USB to ASUS and keep the Dell originals until import is confirmed.
 
 Full [bundle instructions](../tools/deep-compare/README.txt) include **RETURN.cmd** for packaging the same saved run again and **STOP-TRACE.cmd** for its owned trace after an interruption. Both are machine-bound and run with the same Windows account on the laptop that recorded that run. START-ASUS.cmd is for the later corresponding FA507XI normal-fallback capture, not the current Dell step.

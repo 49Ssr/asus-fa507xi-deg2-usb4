@@ -85,6 +85,25 @@ if(Test-Path -LiteralPath $oldDump){$header=Read-DeepDumpHeader $oldDump ([datet
 $fakeDump=Join-Path $fixtureRoot 'synthetic.dmp';$bytes=New-Object byte[] 8192
 [Text.Encoding]::ASCII.GetBytes('PAGEDU64').CopyTo($bytes,0);[BitConverter]::GetBytes([uint32]0x8664).CopyTo($bytes,48);[BitConverter]::GetBytes([uint32]0x161).CopyTo($bytes,56)
 [IO.File]::WriteAllBytes($fakeDump,$bytes);$null=Read-DeepDumpHeader $fakeDump ([DateTime]::MinValue);Check $true 'Synthetic live-kernel header passes'
+$oneFolder=Join-Path $fixtureRoot 'OneDump';$null=[IO.Directory]::CreateDirectory($oneFolder);$onePath=Join-Path $oneFolder 'livedump.dmp';[IO.File]::WriteAllBytes($onePath,$bytes)
+$folderChoice=Resolve-DeepDumpSelection $oneFolder ([DateTime]::MinValue);Check ($folderChoice.Path -eq $onePath) 'Folder input resolves the single eligible dump'
+$quotedChoice=Resolve-DeepDumpSelection ('"'+$onePath+'"') ([DateTime]::MinValue);Check ($quotedChoice.Path -eq $onePath) 'Quoted file path resolves'
+$duplicateChoice=Resolve-DeepDumpSelection ($onePath+'\livedump.dmp') ([DateTime]::MinValue);Check ($duplicateChoice.Path -eq $onePath) 'Filename appended to complete path is tolerated'
+$early=[DateTime]::UtcNow.AddMinutes(-2);[IO.File]::SetLastWriteTimeUtc($onePath,$early.AddSeconds(30))
+$earlyChoice=Resolve-DeepDumpSelection $onePath $early;Check $earlyChoice.HeaderValidated 'Dump after endpoint observation remains eligible before a delayed Enter/prompt'
+[IO.File]::WriteAllBytes((Join-Path $oneFolder 'another.dmp'),$bytes);MustThrow {Resolve-DeepDumpSelection $oneFolder ([DateTime]::MinValue)} 'Multiple eligible dumps require explicit selection'
+$pickerOriginal=(Get-Command Show-DeepDumpPicker).ScriptBlock
+$script:answers=New-Object Collections.Queue
+$script:pickerResult=$onePath
+function Read-Host {param($Prompt);return $script:answers.Dequeue()}
+function Show-DeepDumpPicker {param($InitialDirectory);return $script:pickerResult}
+try{
+    $single=Join-Path $fixtureRoot 'AutomaticDump';$null=[IO.Directory]::CreateDirectory($single);$singlePath=Join-Path $single 'full.dmp';[IO.File]::WriteAllBytes($singlePath,$bytes)
+    $script:answers.Enqueue('');$selected=Select-DeepCompletedDump $single ([DateTime]::MinValue);Check ($selected.Path -eq $singlePath) 'Enter discovers a unique eligible dump automatically'
+    $script:answers.Enqueue('B');$selected=Select-DeepCompletedDump $single ([DateTime]::MinValue);Check ($selected.Path -eq $onePath) 'Browse selection validated'
+    $script:pickerResult=$null;$script:answers.Enqueue('B');$selected=Select-DeepCompletedDump $single ([DateTime]::MinValue);Check ($null -eq $selected) 'Picker cancellation leaves snapshot pending'
+    $script:answers.Enqueue('Z:\missing\bad.dmp');$script:answers.Enqueue($singlePath);$selected=Select-DeepCompletedDump $single ([DateTime]::MinValue);Check ($selected.Path -eq $singlePath) 'Bad selection retries without terminating capture'
+}finally{Remove-Item -LiteralPath Function:\Read-Host;Set-Item -LiteralPath Function:\Show-DeepDumpPicker -Value $pickerOriginal}
 $bytes[0]=0;[IO.File]::WriteAllBytes($fakeDump,$bytes);MustThrow {Read-DeepDumpHeader $fakeDump ([DateTime]::MinValue)} 'Wrong dump magic refused'
 
 # Compress/split, then reconstruct independently with framework gzip decompression.
@@ -116,41 +135,55 @@ $script:deepScenario='Good';$script:starts=0;$script:stops=0;$script:readCount=0
 $empty=[pscustomobject]@{Devices=@()}
 $working=[pscustomobject]@{Devices=@([pscustomobject]@{InstanceId='USB4\VID_8087&PID_5786\MOCK';Status='OK';Class='USB';Properties=@{}},[pscustomobject]@{InstanceId='PCI\VEN_10DE&DEV_2702\MOCK';Status='OK';Class='Display';Properties=@{DEVPKEY_Device_Service='nvlddmkm'}})}
 function Save-DeepInventory {param($Directory,$Label)
-    if($Label -eq 'before'){if($script:deepScenario -eq 'AlreadyAttached'){return $working};return $empty}
-    if($script:deepScenario -eq 'ControlMissing'){return $empty}
-    if($Label -eq 'after-dump' -and $script:deepScenario -eq 'LostDuringDump'){return $empty}
-    return $working
+    $chosen=$working
+    if($Label -eq 'before'){if($script:deepScenario -ne 'AlreadyAttached'){$chosen=$empty}}
+    elseif($script:deepScenario -eq 'ControlMissing'){$chosen=$empty}
+    elseif($Label -eq 'after-dump' -and $script:deepScenario -eq 'LostDuringDump'){$chosen=$empty}
+    $result=[pscustomobject]@{Utc=[DateTime]::UtcNow.ToString('o');Devices=$chosen.Devices}
+    Write-DeepJson (Join-Path $Directory ('devices-'+$Label+'.private.json')) $result
+    return $result
 }
 function Save-DeepInputs {param($Directory,$Context);if($script:deepScenario -eq 'InputsFail'){throw 'mock input failure'}}
 function Get-DeepNetworkSnapshot {return @{Mock=$true}}
-function Read-Host {param($Prompt);$script:readCount++;return $fakeDump}
+function Read-Host {param($Prompt);$script:readCount++;if($Prompt -like 'After the FULL*' -and $script:deepScenario -eq 'Pending'){return 'P'};return $fakeDump}
 function Open-DeepTaskManager {}
 function Start-Sleep {param($Seconds)}
 function Start-ConnectionTrace {param($Directory);$script:starts++;[IO.File]::WriteAllBytes((Join-Path $Directory 'connection.etl'),[byte[]]@(1));return @{Name='USB4_Ucsi_0123456789ab';Stopped=$false}}
 function Stop-ConnectionTrace {param($Trace,$Directory);Check ($Trace.Name -eq 'USB4_Ucsi_0123456789ab') 'Only owned trace stops';$script:stops++;$Trace.Stopped=$true}
 function Read-DeepDumpHeader {param($Path,$NotBefore);if($script:deepScenario -eq 'BadDump'){throw 'mock invalid dump'};return @{Path=$Path;Bytes=8192;LastWriteUtc=[DateTime]::UtcNow.ToString('o')}}
-foreach($case in @('Good','AlreadyAttached','InputsFail','ControlMissing','LostDuringDump','BadDump')){
+foreach($case in @('Good','AlreadyAttached','InputsFail','ControlMissing','LostDuringDump','BadDump','Pending')){
     $script:deepScenario=$case;$script:starts=0;$script:stops=0;$script:readCount=0
     $dir=Join-Path $fixtureRoot $case;$null=[IO.Directory]::CreateDirectory($dir)
     $r=Invoke-DeepCapture ([pscustomobject]@{Target='Dell'}) $dir
     if($case -eq 'Good'){Check ($r.Result -eq 'Captured_RequiresOfflinePolicyAndMemoryValidation' -and $null -ne $r.Dump) 'Good capture qualifies acquisition only';Check ($script:starts -eq 1 -and $script:stops -eq 1) 'Trace starts/stops once'}
     elseif($case -in @('AlreadyAttached','InputsFail')){Check ($script:starts -eq 0 -and $script:stops -eq 0) 'Failed preflight sends no trace/dump operation'}
+    elseif($case -in @('Pending','BadDump')){Check ($r.Result -eq 'TraceCaptured_DumpPending' -and $null -eq $r.Dump -and $null -eq $r.Error) 'Pending or repeated invalid input preserves trace without fatal capture result';Check ($script:stops -eq 1) 'Pending selection retains stopped trace'}
     elseif($case -eq 'LostDuringDump'){Check ($null -ne $r.Dump -and -not $r.DumpBaselineQualified -and $null -ne $r.Error) 'Changed control preserves snapshot without qualifying it';Check ($script:stops -eq 1) 'Failure closes owned trace'}
     else{Check ($null -eq $r.Dump -and $null -ne $r.Error) 'Bad baseline/dump refuses qualification';Check ($script:stops -eq 1) 'Failure closes owned trace'}
     Check ($r.FirmwareCommandsSent -eq 0 -and -not $r.SettingsChanged -and -not $r.LiveKernelHelperLoaded) 'Passive operation declaration'
     Check (Test-Path -LiteralPath (Join-Path $dir 'status.json')) 'Outcome retained'
 }
+$script:deepScenario='Good'
+$pendingDir=Join-Path $fixtureRoot 'Pending'
+$pendingStatus=Get-Content -LiteralPath (Join-Path $pendingDir 'status.json') -Raw|ConvertFrom-Json
+$startsBefore=$script:starts
+Complete-DeepDumpCapture ([pscustomobject]@{Target='Dell'}) $pendingDir $pendingStatus
+Check ($pendingStatus.DumpBaselineQualified -and $pendingStatus.Result -eq 'Captured_RequiresOfflinePolicyAndMemoryValidation') 'Saved pending JSON resumes dump completion'
+Check ($script:starts -eq $startsBefore) 'Resuming dump never starts another trace'
+$readsBefore=$script:readCount
+Complete-DeepDumpCapture ([pscustomobject]@{Target='Dell'}) $pendingDir $pendingStatus
+Check ($script:readCount -eq $readsBefore) 'Completed snapshot is preserved without another prompt'
 
 # Real source staging/return-copy integration on isolated temporary folders.
 $script:DeepWorkRoot=Join-Path $fixtureRoot 'Owned'
 $sourceKit=Join-Path $fixtureRoot 'SourceKit';$null=[IO.Directory]::CreateDirectory($sourceKit)
-$names=@('Capture-USB4DeepCompare.ps1','Usb4Capture.Common.ps1','deep-compare\DeepCapture.Native.cs','START-DELL.cmd','START-ASUS.cmd','RETURN.cmd','STOP-TRACE.cmd','README.txt')
+$names=@('Capture-USB4DeepCompare.ps1','Usb4Capture.Common.ps1','deep-compare\DeepCapture.Native.cs','START-DELL.cmd','START-ASUS.cmd','FINISH-DUMP.cmd','RETURN.cmd','STOP-TRACE.cmd','README.txt')
 $fileRecords=@(foreach($name in $names){$path=Join-Path $sourceKit $name;$null=[IO.Directory]::CreateDirectory((Split-Path $path -Parent));[IO.File]::WriteAllText($path,('fixture '+$name));@{Path=$name;SHA256=(Get-FileHash -LiteralPath $path -Algorithm SHA256).Hash}})
 $bundleId='0123456789abcdef0123456789abcdef'
 Write-DeepJson (Join-Path $sourceKit 'bundle-manifest.json') @{Schema=1;Kind='USB4DeepCompare';BundleId=$bundleId;Files=$fileRecords}
 $null=Read-DeepBundle $sourceKit;Check $true 'Actual bundle verification passes'
 $staged=Join-Path $script:DeepWorkRoot 'Kits\qualified'
-Copy-DeepBundle $sourceKit $staged;Check ((Read-DeepBundle $staged).Files.Count -eq 8) 'Actual staging read-back matches all eight files'
+Copy-DeepBundle $sourceKit $staged;Check ((Read-DeepBundle $staged).Files.Count -eq 9) 'Actual staging read-back matches all nine files'
 MustThrow {Copy-DeepBundle $sourceKit $staged} 'Staging refuses an existing folder'
 MustThrow {Copy-DeepBundle $sourceKit (Join-Path $fixtureRoot 'outside')} 'Staging outside owned root refused'
 [IO.File]::AppendAllText((Join-Path $sourceKit 'README.txt'),'tamper')

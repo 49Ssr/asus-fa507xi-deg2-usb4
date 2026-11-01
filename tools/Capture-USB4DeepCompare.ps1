@@ -2,7 +2,7 @@
 <# Passive Dell/ASUS comparison. Native Task Manager dump is owner-generated.
    No UcsiControl, LiveKD, firmware command, device restart or setting change. #>
 [CmdletBinding()]
-param([ValidateSet('Preview','Capture','Return','StopTrace')][string]$Mode='Preview',
+param([ValidateSet('Preview','Capture','FinishDump','Return','StopTrace')][string]$Mode='Preview',
       [ValidateSet('Dell','Asus')][string]$Target='Dell', [string]$TransportDirectory='', [string]$RunDirectory='')
 Set-StrictMode -Version Latest
 $ErrorActionPreference='Stop'
@@ -80,7 +80,7 @@ function Read-DeepBundle([string]$Directory=$PSScriptRoot) {
         $path=Join-Path $Directory $file.Path;Assert-DeepNoReparse $path
         if((Get-FileHash -LiteralPath $path -Algorithm SHA256).Hash -cne $file.SHA256){throw ('Bundle hash mismatch: '+$file.Path)}
     }
-    foreach($required in @('Capture-USB4DeepCompare.ps1','Usb4Capture.Common.ps1','deep-compare\DeepCapture.Native.cs','START-DELL.cmd','START-ASUS.cmd','RETURN.cmd','STOP-TRACE.cmd','README.txt')){
+    foreach($required in @('Capture-USB4DeepCompare.ps1','Usb4Capture.Common.ps1','deep-compare\DeepCapture.Native.cs','START-DELL.cmd','START-ASUS.cmd','FINISH-DUMP.cmd','RETURN.cmd','STOP-TRACE.cmd','README.txt')){
         if(-not $seen.ContainsKey($required)){throw ('Bundle entry missing: '+$required)}
     }
     return $manifest
@@ -213,7 +213,7 @@ function Save-DeepInputs([string]$Directory,[object]$Context) {
 }
 function Read-DeepDumpHeader([string]$Path,[datetime]$NotBefore) {
     $file=Get-Item -LiteralPath $Path -ErrorAction Stop;Assert-DeepNoReparse $file.FullName
-    if($file.PSIsContainer -or $file.Extension -ine '.dmp' -or $file.Length -lt 8192 -or $file.LastWriteTimeUtc -lt $NotBefore){throw 'Dump is missing, too small, or older than this snapshot prompt.'}
+    if($file.PSIsContainer -or $file.Extension -ine '.dmp' -or $file.Length -lt 8192 -or $file.LastWriteTimeUtc -lt $NotBefore){throw 'Dump is missing, too small, or older than the recorded endpoint state.'}
     $stream=New-Object IO.FileStream($file.FullName,[IO.FileMode]::Open,[IO.FileAccess]::Read,[IO.FileShare]::Read)
     try{$header=New-Object byte[] 64;if($stream.Read($header,0,64) -ne 64){throw 'Short dump header.'}}finally{$stream.Dispose()}
     if([Text.Encoding]::ASCII.GetString($header,0,8) -cne 'PAGEDU64' -or [BitConverter]::ToUInt32($header,48) -ne 0x8664 -or [BitConverter]::ToUInt32($header,56) -ne 0x161){throw 'Expected an x64 native full live-kernel dump (PAGE/DU64, LIVE_SYSTEM_DUMP). Kernel stacks/user dumps are not sufficient.'}
@@ -223,6 +223,74 @@ function Open-DeepTaskManager {
     # This visible native window is the owner-operated snapshot step.
     $taskManager=Assert-MicrosoftExecutable (Join-Path $env:SystemRoot 'System32\Taskmgr.exe') 'Taskmgr.exe'
     Start-Process -FilePath $taskManager -Verb RunAs -WindowStyle Normal | Out-Null
+}
+function Get-DeepDumpCandidates([string]$Directory,[datetime]$NotBefore) {
+    if(-not(Test-Path -LiteralPath $Directory -PathType Container)){return @()}
+    $files=@(Get-ChildItem -LiteralPath $Directory -File -Recurse -Filter '*.dmp' -ErrorAction SilentlyContinue|Where-Object {$_.LastWriteTimeUtc -ge $NotBefore}|Sort-Object LastWriteTimeUtc -Descending|Select-Object -First 256)
+    return @($files|ForEach-Object {try{Read-DeepDumpHeader $_.FullName $NotBefore}catch{}})
+}
+function Resolve-DeepDumpSelection([string]$Selection,[datetime]$NotBefore) {
+    $path=$Selection.Trim().Trim('"');$path=Assert-LocalPath $path
+    if(Test-Path -LiteralPath $path -PathType Container){
+        $candidates=@(Get-DeepDumpCandidates $path $NotBefore)
+        if($candidates.Count -ne 1){throw 'That folder must contain exactly one eligible live kernel dump; use Browse to select the file.'}
+        return $candidates[0]
+    }
+    if(-not(Test-Path -LiteralPath $path -PathType Leaf)){
+        $parent=[IO.Path]::GetDirectoryName($path)
+        # Tolerate appending the filename to a path that already names the file.
+        if([IO.Path]::GetExtension($parent) -ieq '.dmp' -and (Test-Path -LiteralPath $parent -PathType Leaf)){$path=$parent}
+    }
+    return Read-DeepDumpHeader $path $NotBefore
+}
+function Show-DeepDumpPicker([string]$InitialDirectory) {
+    Add-Type -AssemblyName System.Windows.Forms
+    $dialog=New-Object Windows.Forms.OpenFileDialog
+    try{
+        $dialog.Title='Select the completed FULL live kernel dump';$dialog.Filter='Kernel dump (*.dmp)|*.dmp';$dialog.CheckFileExists=$true;$dialog.Multiselect=$false
+        if(Test-Path -LiteralPath $InitialDirectory -PathType Container){$dialog.InitialDirectory=$InitialDirectory}
+        if($dialog.ShowDialog() -eq [Windows.Forms.DialogResult]::OK){return $dialog.FileName}
+        return $null
+    }finally{$dialog.Dispose()}
+}
+function Select-DeepCompletedDump([string]$DefaultDirectory,[datetime]$NotBefore) {
+    foreach($attempt in 1..3){
+        $answer=Read-Host 'After the FULL dump completes, press Enter to find it automatically; B browses, P leaves the dump pending. A file or folder path also works'
+        if($answer -match '^(?i:p|pending)$'){return $null}
+        try{
+            if([string]::IsNullOrWhiteSpace($answer)){
+                $found=@(Get-DeepDumpCandidates $DefaultDirectory $NotBefore)
+                if($found.Count -eq 1){Write-Host ('Found completed dump: '+$found[0].Path);return $found[0]}
+                $answer=Show-DeepDumpPicker $DefaultDirectory
+            }elseif($answer -match '^(?i:b|browse)$'){$answer=Show-DeepDumpPicker $DefaultDirectory}
+            if([string]::IsNullOrWhiteSpace($answer)){return $null}
+            return Resolve-DeepDumpSelection $answer $NotBefore
+        }catch{Write-Warning ('Dump not accepted: '+$_.Exception.Message+' The saved trace is retained; retry or choose P.')}
+    }
+    return $null
+}
+function Complete-DeepDumpCapture([object]$Context,[string]$Directory,[object]$Status) {
+    if($Status.DumpBaselineQualified -and $null -ne $Status.Dump){Write-Host 'This run already has a qualified snapshot; preserving it.';return}
+    $after=Get-Content -LiteralPath (Join-Path $Directory 'devices-after-passive.private.json') -Raw|ConvertFrom-Json
+    # The earliest valid snapshot is tied to the observed endpoint state, BEFORE
+    # displaying instructions. A later Enter press must not make a valid file stale.
+    $notBefore=[datetime]::Parse($after.Utc).ToUniversalTime().AddSeconds(-2)
+    $Status.Phase='DumpPending';$Status.Result='TraceCaptured_DumpPending';$Status.Error=$null;$Status.ErrorDetail=$null
+    $Status.Markers+=@{Name='FullKernelDumpInstructions';Utc=[DateTime]::UtcNow.ToString('o');EarliestEligibleDumpUtc=$notBefore.ToString('o')}
+    Write-DeepJson (Join-Path $Directory 'status.json') $Status
+    Write-Host 'Trace is saved. KEEP DEG2 CONNECTED. Task Manager will open for the FULL kernel snapshot.' -ForegroundColor Cyan
+    Write-Host 'Details -> System (PID 4) -> Create live kernel memory dump file -> Full live kernel memory dump. Wait for completion, then return here.'
+    Open-DeepTaskManager
+    $default=Join-Path ([Environment]::GetFolderPath('LocalApplicationData')) 'Microsoft\Windows\TaskManager\LiveKernelDumps'
+    $dump=Select-DeepCompletedDump $default $notBefore
+    if($null -eq $dump){Write-Host 'Dump pending. The trace is retained. FINISH-DUMP.cmd on this laptop resumes this saved run without another connection capture.';return}
+    $Status.Dump=$dump;$Status.Phase='AfterDumpInventory'
+    $afterDump=Save-DeepInventory $Directory 'after-dump';$end=Get-DeepMilestone $afterDump
+    if($Context.Target -eq 'Dell' -and (-not $end.RouterHealthy -or -not $end.ExternalNvidiaBound)){throw 'Dell control changed during snapshot acquisition; dump retained without qualifying the baseline.'}
+    if($Context.Target -eq 'Asus' -and ($end.RouterPresent -or -not $end.BillboardPresent)){throw 'ASUS baseline changed during snapshot acquisition; dump retained without qualifying the baseline.'}
+    $Status.DumpBaselineQualified=$true;$Status.Markers+=@{Name='DumpAccepted';Utc=[DateTime]::UtcNow.ToString('o')}
+    $Status.OwnerOutput=Read-Host 'Did the display connected to the RTX 4080 SUPER show an image? Type Y, N, or Unknown'
+    $Status.Result='Captured_RequiresOfflinePolicyAndMemoryValidation';$Status.Phase='Captured'
 }
 function Assert-DeepRun([string]$Directory) {
     $full=Assert-LocalPath $Directory;$prefix=[IO.Path]::GetFullPath((Join-Path $script:DeepWorkRoot 'Runs'))+'\'
@@ -240,7 +308,7 @@ function Stop-DeepOwnedTrace([string]$Directory) {
     if(-not $trace.Stopped){Stop-ConnectionTrace $trace $Directory;Write-DeepJson $path $trace;if(-not $trace.Stopped){throw 'Owned trace did not stop.'}}
 }
 function Invoke-DeepCapture([object]$Context,[string]$Directory) {
-    $status=[ordered]@{Schema=1;Kind='USB4DeepCompareCapture';Target=$Context.Target;Result='NotCompleted';Phase='DisconnectPrompt';Error=$null;ErrorDetail=$null;EvidenceErrors=@();Markers=@();Dump=$null;DumpBaselineQualified=$false;Trace=$null;FirmwareCommandsSent=0;LiveKernelHelperLoaded=$false;SettingsChanged=$false;WirePacketsCaptured=$false;CoverageRequiresAnalysis=$true}
+    $status=[ordered]@{Schema=1;Kind='USB4DeepCompareCapture';Target=$Context.Target;Result='NotCompleted';Phase='DisconnectPrompt';Error=$null;ErrorDetail=$null;EvidenceErrors=@();Markers=@();Dump=$null;DumpBaselineQualified=$false;OwnerOutput=$null;Trace=$null;FirmwareCommandsSent=0;LiveKernelHelperLoaded=$false;SettingsChanged=$false;WirePacketsCaptured=$false;CoverageRequiresAnalysis=$true}
     $trace=$null
     try{
         $null=Read-Host 'Keep DEG2 powered. Disconnect its upstream cable from this laptop; press Enter when disconnected'
@@ -267,26 +335,7 @@ function Invoke-DeepCapture([object]$Context,[string]$Directory) {
         $status.EtlBytes=$etl.Length
         if($Context.Target -eq 'Dell' -and (-not $status.Milestone.RouterHealthy -or -not $status.Milestone.ExternalNvidiaBound)){$status.Result='WorkingDellControlNotEstablished';throw 'Working Dell router/GPU binding was not confirmed. No dump requested; preserve this unexpected baseline.'}
         if($Context.Target -eq 'Asus' -and ($status.Milestone.RouterPresent -or -not $status.Milestone.BillboardPresent)){$status.Result='ExpectedAsusFallbackNotEstablished';throw 'Expected attached ASUS fallback was not confirmed. Preserve this changed result; no automatic intervention.'}
-        Write-DeepJson (Join-Path $Directory 'status.json') $status
-        Write-Host 'Passive trace saved. KEEP DEG2 CONNECTED. Now create the full kernel snapshot:' -ForegroundColor Cyan
-        Write-Host 'Task Manager -> Details -> right-click System (PID 4) -> Create live kernel memory dump file -> Full live kernel memory dump.'
-        Write-Host 'Choose FULL, not Kernel stacks or a process dump. Leave extra user/hypervisor-page options off. Wait for completion, then Open File Location.'
-        $null=Read-Host 'Close any existing Task Manager window, then press Enter to open an Administrator Task Manager'
-        $snapshotStart=[DateTime]::UtcNow
-        $status.Phase='NativeDumpPrompt'
-        $status.Markers+=@{Name='FullKernelDumpPrompt';Utc=$snapshotStart.ToString('o')}
-        Write-DeepJson (Join-Path $Directory 'status.json') $status
-        Open-DeepTaskManager
-        $dumpPath=(Read-Host 'Paste the completed .dmp file path here (Copy as path is fine)').Trim().Trim('"')
-        $status.Phase='DumpValidation';$dump=Read-DeepDumpHeader $dumpPath $snapshotStart.AddSeconds(-2)
-        $status.Dump=$dump
-        $status.Phase='AfterDumpInventory';$afterDump=Save-DeepInventory $Directory 'after-dump';$end=Get-DeepMilestone $afterDump
-        if($Context.Target -eq 'Dell' -and (-not $end.RouterHealthy -or -not $end.ExternalNvidiaBound)){throw 'Dell control changed during dump acquisition; the snapshot is not qualified as the working control.'}
-        if($Context.Target -eq 'Asus' -and ($end.RouterPresent -or -not $end.BillboardPresent)){throw 'ASUS baseline changed during snapshot acquisition.'}
-        $status.DumpBaselineQualified=$true;$status.Markers+=@{Name='DumpAccepted';Utc=[DateTime]::UtcNow.ToString('o')}
-        $status.OwnerOutput=Read-Host 'Did the display connected to the RTX 4080 SUPER show an image? Type Y, N, or Unknown'
-        $status.Result='Captured_RequiresOfflinePolicyAndMemoryValidation'
-        $status.Phase='Captured'
+        Complete-DeepDumpCapture $Context $Directory $status
     }catch{$status.Error=$_.Exception.Message;$status.ErrorDetail=@{Phase=$status.Phase;Id=$_.FullyQualifiedErrorId;Position=$_.InvocationInfo.PositionMessage;Stack=$_.ScriptStackTrace};Write-Warning $status.Error}
     finally{
         if($null -ne $trace){
@@ -354,13 +403,13 @@ function Export-DeepReturn([string]$Directory,[string]$Transport) {
 if($MyInvocation.InvocationName -eq '.'){return}
 if($deepMode -eq 'Preview'){
     Write-Output 'Passive matched capture: model/USB4 guards, internal-SSD staging, ACPI tables and driver/network inventory, five-second baseline and 45-second attachment trace.'
-    Write-Output 'Then the owner creates a Task Manager FULL live kernel dump while DEG2 remains attached. Header/freshness and endpoint stability are checked; missing pages/policy still require offline analysis.'
+    Write-Output 'Then the owner creates a Task Manager FULL live kernel dump while DEG2 remains attached. Automatic discovery/Browse handles the file, retries retain the trace, and FINISH-DUMP resumes a pending snapshot without recapture.'
     Write-Output 'No UCSI requests, LiveKD helper, driver/registry/boot/network changes. Return data is compressed on SSD and split into hash-verified <=1 GiB USB files.'
     Write-Output 'Preview performed no capture, staging or firmware operation.'
     exit 0
 }
 $bundle=Read-DeepBundle
-if($deepMode -in @('Return','StopTrace')){
+if($deepMode -in @('Return','StopTrace','FinishDump')){
     if([string]::IsNullOrWhiteSpace($RunDirectory)){
         $link=Get-Content -LiteralPath (Join-Path $PSScriptRoot 'latest-run.private.json') -Raw|ConvertFrom-Json
         if($link.MachineHash -cne (Get-DeepMachineHash) -or $link.BundleId -cne $bundle.BundleId){throw 'Return/cleanup link belongs to another Windows installation or bundle.'}
@@ -368,7 +417,16 @@ if($deepMode -in @('Return','StopTrace')){
     }
     if($deepMode -eq 'StopTrace'){Stop-DeepOwnedTrace $RunDirectory;exit 0}
     if([string]::IsNullOrWhiteSpace($TransportDirectory)){$TransportDirectory=$PSScriptRoot}
-    $null=Export-DeepReturn $RunDirectory $TransportDirectory;exit 0
+    if($deepMode -eq 'FinishDump'){
+        $saved=Assert-DeepRun $RunDirectory;Stop-DeepOwnedTrace $RunDirectory
+        $context=Get-DeepCaptureContext $saved.Target
+        $status=Get-Content -LiteralPath (Join-Path $RunDirectory 'status.json') -Raw|ConvertFrom-Json
+        try{Complete-DeepDumpCapture $context $RunDirectory $status}catch{$status.Error=$_.Exception.Message;$status.ErrorDetail=@{Phase=$status.Phase;Id=$_.FullyQualifiedErrorId;Stack=$_.ScriptStackTrace};Write-Warning $status.Error}
+        finally{$status.FinishedUtc=[DateTime]::UtcNow.ToString('o');Write-DeepJson (Join-Path $RunDirectory 'status.json') $status}
+    }
+    $null=Export-DeepReturn $RunDirectory $TransportDirectory
+    if($deepMode -eq 'FinishDump'){Write-Output ('Saved run result: '+$status.Result);if($status.Result -ne 'Captured_RequiresOfflinePolicyAndMemoryValidation' -or $null -ne $status.Error){exit 1}}
+    exit 0
 }
 $context=Get-DeepCaptureContext $deepTarget
 $sourceDrive=Get-DeepDrive $PSScriptRoot

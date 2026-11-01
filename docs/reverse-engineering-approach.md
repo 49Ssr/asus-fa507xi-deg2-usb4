@@ -12,7 +12,7 @@ The [existing captures](negotiation-followup.md) already record both hosts initi
 
 | Question | Existing evidence | Specific next evidence |
 | --- | --- | --- |
-| Why is Dell's correction decision No? | Successful trace, but Dell's persistent device-controller policy was not independently recovered | Dell's loaded UCSI/ACPI objects, `m_IsUsbDeviceControllerEnabled`, corresponding ACPI `_DSM` branches and initialization/configuration evidence |
+| Why is Dell's correction decision No? | [Recovered 1 November](dell-dump-recovery.md): cached device-controller policy 1 versus ASUS 0; `_DSM` mask `0x1f` versus `0x0f`, with function 4 present | Raw `XDCE`/`UDRS` fields remain absent; separate policy origin from the earlier PD-time role divergence and USB4 entry |
 | Is ASUS's current driver state consistent with the older dump? | The ASUS dump is from 04:27, before the later instrumented comparisons and temporary CC-mode test | One fresh kernel snapshot with normal DRP, DEG2 attached in ordinary USB/Billboard failure, timestamped against a new passive trace |
 | Where is the first divergence? | UCSI-visible role/partner reports and USB4 host state; no physical PD packets | Aligned attachment/PD/role/mode-entry/port-link milestones, with missing stages marked unknown |
 | Which component owns the failure? | AMD host, ASUS AML/EC transport, Parade driver family and DEG2 Intel router are identified at different levels | Board/controller identities, firmware provenance and a call/message path assigning the failed transition to a component |
@@ -30,7 +30,7 @@ Use the same assembled DEG2/GPU/PSU/cable and recorded plug orientation; normal 
 4. Extract the UCM/UCSI/USB4 objects and ACPI namespace from each dump offline with matching symbols. Discover object addresses per dump; do not reuse ASUS addresses on Dell. Record unavailable pages and command failures explicitly. If a required field is absent, change the acquisition method for that field before repeating.
 5. Stop only owned tracing, preserve hashes and network/ICS snapshots, and compare the same milestones. Acquire additional disconnected/transient snapshots only when a specific remaining question requires them.
 
-The old Dell collector does not independently recover all these policy fields. Use the subsequently prepared [USB4-Deep-Compare kit](deep-compare-capture.md), not that old START launcher. It automates preparation, passive tracing and verified return transport, and guides native Task Manager dump creation. It stops ETW before the interactive dump step and records that separation explicitly. No new dump has yet been recorded with this kit.
+The old Dell collector does not independently recover all these policy fields. Use the subsequently prepared [USB4-Deep-Compare kit](deep-compare-capture.md), not that old START launcher. It automates preparation, passive tracing and verified return transport, and guides native Task Manager dump creation. It stops ETW before the interactive dump step and records that separation explicitly. The second Dell run and separately returned native dump have now been [recovered](dell-dump-recovery.md); do not repeat Dell for the handoff failure. A fresh normal-fallback ASUS comparison remains outstanding. The current selector/resume flow avoids mandatory pasted paths and passes 183 PS5.1 assertions; its new UI/hardware workflow is not yet exercised.
 
 ## What a newer dump can and cannot supply
 
