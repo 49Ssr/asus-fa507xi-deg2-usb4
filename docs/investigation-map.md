@@ -342,6 +342,26 @@ Scope: AMD-PD-REFERENCE. Vendor reference architectures are not proof of ASUS im
 
 [AMD-PD-PROGRAMMING-REFERENCE](../evidence/ps8830-configuration-path.json) `/amd_reference`
 
+**C31 — code_fact:** The inspected BIOS314 IA32 TE USB4 PEI entry checks platform support, emits diagnostics and returns; the DXE manager is separately gated. Reviewed DXE ReadyToBoot/ExitBootServices bodies close their events rather than implementing PD mode programming.
+
+Scope: ASUS-BIOS314. These are original package code paths, not evidence of live execution, gate values, full firmware coverage or a startup repair.
+
+[ASUS-PREOS-NATIVE](../evidence/asus-preos-control-scope.json) `/native_control`
+
+**C32 — code_fact:** AmdUsb4PortLinkConfigure in the reviewed BIOS module uses USB4 adapter configuration reads/writes for PORT_CS_19 FEC/reset and lane state; it is not an identified PS8830 mode/orientation I2C writer.
+
+Scope: ASUS-BIOS314. No retimer programming sequence recovered in this reviewed routine. Downstream port reset is not USB-PD entry and was not executed.
+
+[ASUS-PREOS-NATIVE](../evidence/asus-preos-control-scope.json) `/native_control`
+
+**C33 — inference:** The selected modules and six standard bus GUIDs do not yet locate ASUS attachment-time PD-to-APU/retimer programming. A GUID dependency or a routine named link configure is insufficient to assign runtime control ownership.
+
+Scope: ASUS-BIOS314. Private protocols, direct IO, SMU/EC paths and PD-private firmware remain open. Actual ASUS writer and physical cause unresolved.
+
+Reason: Independent code inspection resolves the link routine to USB4 configuration packets and an OEM bus-GUID candidate to a notify/configuration callback. Positive protocol matches validate the bounded scan, not an exhaustive owner search.
+
+[ASUS-PREOS-NATIVE](../evidence/asus-preos-control-scope.json) `/native_control`, [ASUS-PREOS-PROTOCOL-SCOPE](../evidence/asus-preos-control-scope.json) `/bus_protocol_scan`
+
 ## Separate runs and observation limits
 
 | Case | Meaning | Important limit |

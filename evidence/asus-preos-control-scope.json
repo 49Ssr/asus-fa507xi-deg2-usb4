@@ -1,0 +1,129 @@
+{
+  "schema": 1,
+  "date": "2026-11-01",
+  "interval": 2,
+  "status": "Reviewed BIOS CM paths operate USB4 adapter configuration; ASUS PD/retimer mode writer remains unlocated",
+  "inputs": {
+    "AmdUsb4Dxe": {
+      "sha256": "e89bf3a8d965e122d5541715ff29dd42f53a687db292cf36513c22ffb6176bfa",
+      "guid_hits": {
+        "gEfiPciIoProtocolGuid": [
+          "0x13e60"
+        ],
+        "gEfiPciEnumerationCompleteProtocolGuid": [
+          "0x13ec0"
+        ],
+        "gEfiEventReadyToBootGuid": [
+          "0x13df0"
+        ],
+        "gEfiEventExitBootServicesGuid": [
+          "0x13ef0"
+        ],
+        "gEfiEndOfDxeEventGroupGuid": [
+          "0x13f00"
+        ],
+        "gPcdProtocolGuid": [
+          "0x13e20"
+        ],
+        "gEfiPcdProtocolGuid": [
+          "0x13e70"
+        ]
+      }
+    },
+    "AmdUsb4Pei": {
+      "sha256": "e341a2d43c847dfc566bca93973645e303181528e2c1d1d907664b787f96420c",
+      "guid_hits": {}
+    },
+    "AmdCpmUcsiDxe": {
+      "sha256": "b338177eaa4c7469e00ad42bef79e279855a92c2cccfe62f1f96e6af20a482c5",
+      "guid_hits": {
+        "gEfiEventReadyToBootGuid": [
+          "0x820"
+        ],
+        "gPcdProtocolGuid": [
+          "0x830"
+        ],
+        "gEfiPcdProtocolGuid": [
+          "0x850"
+        ]
+      }
+    },
+    "AmdCpmUcsiPeim": {
+      "sha256": "32a7dcdec1b7b13924156af25cfab1720b25d03c592f8454cb9e3a567408f9be",
+      "guid_hits": {}
+    }
+  },
+  "native_control": {
+    "dxe_image_sha256": "e89bf3a8d965e122d5541715ff29dd42f53a687db292cf36513c22ffb6176bfa",
+    "dxe_core_entry_rva": "650",
+    "preos_gate_token": "1dd",
+    "preos_manager_rva": "1828",
+    "ready_to_boot_callback_rva": "93c",
+    "exit_boot_services_callback_rva": "9c0",
+    "callbacks_scope": "Reviewed bodies log and close their event; no PD mode request or retimer I2C programming in those callback bodies. This is not a whole-firmware exclusion.",
+    "link_configure_rva": "13150",
+    "link_configure_name_string_rva": "1a618",
+    "link_configure_single_direct_caller_rva": "104df",
+    "link_configure_scope": "Native USB4 lane/adapter configuration: reads PORT_CS_19 at USB4 capability base+19 DWORDs, changes RS-FEC request bits1/2, invokes downstream port reset helper, then rereads adapter capabilities/link state. No PS8830 mode/orientation I2C write sequence identified in the reviewed routine.",
+    "configuration_read_rva": "8088",
+    "configuration_write_rva": "891c",
+    "downstream_port_reset_helper_rva": "11f28",
+    "reset_helper_scope": "Sets and clears PORT_CS_19 bit0 using configuration packets; not USB-PD Enter_USB or a qualified repair request.",
+    "pei_image_sha256": "e341a2d43c847dfc566bca93973645e303181528e2c1d1d907664b787f96420c",
+    "pei_format": "IA32 TE, not x64 PE",
+    "pei_stripped_size": 424,
+    "pei_rva_to_file_delta": 384,
+    "pei_entry_rva": "395",
+    "pei_entry_file_offset": "215",
+    "pei_core_file_offset": "21a",
+    "pei_core_end_file_offset": "29c",
+    "pei_entry_scope": "The inspected core reads the platform support Boolean, selects diagnostic text and returns. It does not call a PEI USB4 manager or issue retimer-mode writes in this entry body. Helpers include logging/timing/service access; not a full firmware model.",
+    "live_execution_or_support_gate_value_measured": false,
+    "independent_disassembly": "RVA/file mapping crosschecked with raw bytes and raw-mode x86-64 disassembly for selected DXE ranges. TE entries decoded as IA32 with0x180 stripping correction."
+  },
+  "bus_protocol_scan": {
+    "edk2_commit": "33663d6d0971b567aaa369242987cfaecbcbd68d",
+    "definitions_url": "https://github.com/tianocore/edk2/blob/33663d6d0971b567aaa369242987cfaecbcbd68d/MdePkg/MdePkg.dec",
+    "services_url": "https://github.com/tianocore/edk2/blob/33663d6d0971b567aaa369242987cfaecbcbd68d/MdePkg/Include/Uefi/UefiSpec.h",
+    "pei_services_url": "https://github.com/tianocore/edk2/blob/33663d6d0971b567aaa369242987cfaecbcbd68d/MdePkg/Include/Pi/PiPeiCis.h",
+    "exact_standard_guids": [
+      "gEfiI2cMasterProtocolGuid",
+      "gEfiI2cIoProtocolGuid",
+      "gEfiI2cHostProtocolGuid",
+      "gEfiSmbusHcProtocolGuid",
+      "gEfiPeiI2cMasterPpiGuid",
+      "gEfiPeiSmbus2PpiGuid"
+    ],
+    "valid_leaf_files": 2473,
+    "valid_leaf_bytes": 63036796,
+    "matched_leaves": 19,
+    "unique_matched_content_hashes": 14,
+    "four_selected_modules_contain_six_bus_guids": false,
+    "positive_control": "Bus providers, HID consumer and SMBus users/dependency sections match in the same corpus. Matches are references, not transaction measurements.",
+    "oem_candidate": {
+      "image_sha256": "53460dafff07321ac2caab3d21f0f7e131f8cc31122c33b97f0277b87bd3f061",
+      "module": "AmdCpmOemInitPeim",
+      "format": "IA32 TE",
+      "guid_file_offset": "1fe0",
+      "descriptor_file_offset": "2158",
+      "descriptor_flags_hex": "80000040",
+      "callback_file_offset": "4f3",
+      "callback_end_file_offset": "6a2",
+      "finding": "The reference is a notify-dispatch descriptor. Reviewed callback copies/installs configuration structures after dependency availability; the GUID match itself is not an SMBus Execute call or identified PS8830 transaction."
+    },
+    "limit": "Exact standard GUID search only. Private protocols, raw controller IO, SMU/EC paths, constructed identifiers and PD-private firmware remain outside this exclusion."
+  },
+  "analysis_corrections": [
+    "Initial Store Python scan could not see the AppData extraction directory and returned0files; rejected, not used as absence evidence. Native PowerShell scan verified2473files/63036796bytes.",
+    "Initial generic PE header probe was invalid for the IA32 TE modules; corrected from TE signature, machine and section header.",
+    "Initial automatic radare2 PE base shifted DXE addresses by10000hex; retained separately. Corrected raw-mode disassembly matches original RVA/file bytes.",
+    "A GUID pointer in OEM module data was initially inspected as possible code; section mapping identifies a notify descriptor instead.",
+    "Boot-service offset extraction initially omitted Reserved pointer; corrected44-pointer table yields CloseEvent70, LocateProtocol140, CreateEventEx170hex."
+  ],
+  "conclusion": "The retained pre-OS CM code gives concrete USB4 adapter operations but does not supply the missing ASUS PD-to-APU/PS8830 mode sequence. The clear Windows RouterDetected bit is still not causally explained. No new boot is justified by the presence of this BIOS manager.",
+  "new_hardware_requests": 0,
+  "driver_installs": 0,
+  "test_boots": 0,
+  "firmware_executed": false,
+  "working_windows_fix": false
+}

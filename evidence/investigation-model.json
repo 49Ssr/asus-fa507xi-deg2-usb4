@@ -597,6 +597,26 @@
         "AMD-PD-REFERENCE"
       ],
       "value_sha256": "23a3cf20c1e2cc499ff713932511e77f56ae02961893a10170a9c3cecc913908"
+    },
+    {
+      "id": "ASUS-PREOS-NATIVE",
+      "path": "evidence/asus-preos-control-scope.json",
+      "pointer": "/native_control",
+      "kind": "code",
+      "cases": [
+        "ASUS-BIOS314"
+      ],
+      "value_sha256": "a1b1c707b15d491fca44cd24c30f7bf2edf9fdaa1758eb2b920630c0d8c2fa76"
+    },
+    {
+      "id": "ASUS-PREOS-PROTOCOL-SCOPE",
+      "path": "evidence/asus-preos-control-scope.json",
+      "pointer": "/bus_protocol_scan",
+      "kind": "code",
+      "cases": [
+        "ASUS-BIOS314"
+      ],
+      "value_sha256": "b93c0c8c6afd73e9522c9c2e84a501857d075433cd2bfa3dea15403ec80ba67c"
     }
   ],
   "claims": [
@@ -1035,6 +1055,47 @@
         "AMD-PD-REFERENCE"
       ],
       "limit": "Vendor reference architectures are not proof of ASUS implementation. No TI register/control value is qualified for ASUS ITE hardware."
+    },
+    {
+      "id": "C31",
+      "basis": "code_fact",
+      "stage": "entry",
+      "statement": "The inspected BIOS314 IA32 TE USB4 PEI entry checks platform support, emits diagnostics and returns; the DXE manager is separately gated. Reviewed DXE ReadyToBoot/ExitBootServices bodies close their events rather than implementing PD mode programming.",
+      "sources": [
+        "ASUS-PREOS-NATIVE"
+      ],
+      "cases": [
+        "ASUS-BIOS314"
+      ],
+      "limit": "These are original package code paths, not evidence of live execution, gate values, full firmware coverage or a startup repair."
+    },
+    {
+      "id": "C32",
+      "basis": "code_fact",
+      "stage": "link",
+      "statement": "AmdUsb4PortLinkConfigure in the reviewed BIOS module uses USB4 adapter configuration reads/writes for PORT_CS_19 FEC/reset and lane state; it is not an identified PS8830 mode/orientation I2C writer.",
+      "sources": [
+        "ASUS-PREOS-NATIVE"
+      ],
+      "cases": [
+        "ASUS-BIOS314"
+      ],
+      "limit": "No retimer programming sequence recovered in this reviewed routine. Downstream port reset is not USB-PD entry and was not executed."
+    },
+    {
+      "id": "C33",
+      "basis": "inference",
+      "stage": "entry",
+      "statement": "The selected modules and six standard bus GUIDs do not yet locate ASUS attachment-time PD-to-APU/retimer programming. A GUID dependency or a routine named link configure is insufficient to assign runtime control ownership.",
+      "sources": [
+        "ASUS-PREOS-NATIVE",
+        "ASUS-PREOS-PROTOCOL-SCOPE"
+      ],
+      "cases": [
+        "ASUS-BIOS314"
+      ],
+      "reason": "Independent code inspection resolves the link routine to USB4 configuration packets and an OEM bus-GUID candidate to a notify/configuration callback. Positive protocol matches validate the bounded scan, not an exhaustive owner search.",
+      "limit": "Private protocols, direct IO, SMU/EC paths and PD-private firmware remain open. Actual ASUS writer and physical cause unresolved."
     }
   ],
   "timeline_limit": "T0 is the first recorded Windows attachment report in each run, not physical insertion. Different runs, platforms, power contracts and capture dates are explicit. These tables align software reports only; proximity does not establish wire order or causation. The earlier Dell control supplies the Dell timeline; the deep Dell dump supplies cached-state comparison.",
