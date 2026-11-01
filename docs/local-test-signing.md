@@ -39,7 +39,7 @@ Before changing Secure Boot, save work, ensure Windows Recovery is usable and ha
 
 This added baseline is necessary: a production-boot capture versus a test-signing boot would change more than the filter. Only the baseline and filter attachment within the same boot form the intended policy comparison. Neither captures physical PD packets.
 
-The owner-specific output helper binds the exact reviewed package and private paths so there is no manual hash/GUID editing. Its default is Preview. No Snapshot, Prepare, Baseline, Install, real Observe, real Rollback or real boot Restore has been run during this preparation.
+The owner-specific output helper binds the exact reviewed package and private paths so there is no manual hash/GUID editing. Its default is Preview. The original-state Snapshot subsequently completed with elevated read access: original loader/boot-manager and security/trust presence are saved privately. No test entry or certificate trust was added. Prepare, Baseline, Install, real Observe, real Rollback and real boot Restore remain unperformed.
 
 ## Source defaults and permission boundary
 

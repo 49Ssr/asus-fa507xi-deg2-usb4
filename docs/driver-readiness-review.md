@@ -32,6 +32,8 @@ These were preparation defects, not hardware failures or owner mistakes. None wa
 
 ## Qualification boundary
 
+Subsequent read-only readiness check: the live device advertises the filter's required ACPI hardware ID, remains healthy on Microsoft's original binding with no filter properties, and all signed package hashes still match. BIOS/Windows remain the analysed versions. An original-state boot snapshot is now saved privately; no activation was performed. A focused static scan found one direct read and one direct write of the cached policy field, consistent with the previously analysed correction gate/configuration copy. This is not an exhaustive proof against indirect or aliased accesses.
+
 - **4,631** shared-parser assertions pass, including the measured layout and malformed buffers.
 - **36** assertions execute the actual Driver.c callbacks in user mode with WDF, registry and lower transport doubled. They cover excluded devices, creation failure, internal/external callbacks, pass-through, cancellation/send failure, support-mask arming, short buffers, buffered input/output aliasing and fresh object state.
 - **64** PS5.1 workflow checks pass, including same-boot fallback baseline binding and refusal of changed/expired controls.

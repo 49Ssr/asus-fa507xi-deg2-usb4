@@ -235,5 +235,13 @@
     "hvci_running": true,
     "code_integrity_flags": "0xF401",
     "effective_driver_policy_mode": "Not established by unprivileged inspection"
+  },
+  "read_only_boot_snapshot": {
+    "Completed": true,
+    "Phase": "SnapshotOnly",
+    "TestEntryCreated": false,
+    "TestCertificateTrusted": false,
+    "DriverLoaded": false,
+    "PrivateMachineRecordsRetained": true
   }
 }
