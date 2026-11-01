@@ -2,6 +2,8 @@
 
 **1 November 2026: a private local test-signed copy has been created and cryptographically checked. It has never been installed or loaded.** Its temporary signing key was deleted. No Root/TrustedPublisher trust, BCD setting, Secure Boot setting or Memory Integrity setting was changed during preparation.
 
+The owner has now explicitly approved this temporary development-test route. Original-state snapshot and full BCD export are retained privately. The next owner action is to turn Secure Boot off manually and return to the original analysed Windows entry; the new test loader is created afterward. HVCI remains required. No firmware toggle, copied entry, trust import or driver load has yet been performed.
+
 The earlier runner accepted only Microsoft-signed catalogs. That was a conservative tool restriction, not the only supported development route. Microsoft documents loading locally test-signed drivers with TESTSIGNING enabled; with HVCI, the binary must itself be signed. Secure Boot normally prevents enabling that mode. [Microsoft test-signing requirements](https://learn.microsoft.com/en-us/windows-hardware/drivers/install/the-testsigning-boot-configuration-option).
 
 ## Available routes

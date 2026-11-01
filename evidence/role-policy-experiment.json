@@ -110,7 +110,7 @@
     "cause": "Unresolved"
   },
   "security_or_network_setting_changes": false,
-  "live_test_blocker": "Local package prepared; explicit owner security decision, recovery readiness and manual Secure Boot/reboot steps remain. No activation performed.",
+  "live_test_blocker": "Owner approval received. Awaiting owner-performed Secure Boot disable and return to original Windows before test-loader preparation; no activation or driver load yet.",
   "source_files": [
     {
       "path": "experimental/role-policy/README.md",
@@ -243,5 +243,13 @@
     "TestCertificateTrusted": false,
     "DriverLoaded": false,
     "PrivateMachineRecordsRetained": true
+  },
+  "owner_activation_approval": {
+    "Approved": true,
+    "Date": "2026-11-01",
+    "Scope": "Temporary Secure Boot off; owned copied test-signing loader; exact certificate trust; controlled baseline/test/rollback",
+    "HVCIMustRemainRunning": true,
+    "AutomaticRestart": false,
+    "ActivationPerformed": false
   }
 }
