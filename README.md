@@ -2,6 +2,8 @@
 
 **Current result, 1 November 2026:** ASUS still does not discover DEG2 as a USB4 dock. No working Windows repair has been demonstrated.
 
+**Start with the [architecture/control-flow map](docs/investigation-map.md) and [current investigation plan](docs/investigation-plan.md).** Components, message paths, proven branches, unmapped decisions and possible intervention locations are now tied to a checked evidence index. The current goal is to locate the first failed branch and its owner before selecting a reversible change. A dedicated flag-reader driver is deferred; no new driver or live trial is queued.
+
 - The suspected EC flag now has a proven standard-read offset and a traced host-command setter. It also gates the entire Windows UCSI worker, making the successful commands in the failed capture evidence against a continuously stuck flag. Its live value remains unread; the saved dump lacks the candidate EC window and new ordinary-process access checks were refused. [Flag writers, measured access results and next measurement](docs/ec-blocking-flag.md).
 - All 342 previously unread trace records now have decoded fields. They describe endpoint activity, setup/cleanup and timing policy; they do not contain the missing USB-C entry exchange.
 - The EC diagnostic timeout is explained by an unimplemented getter. The separate controller bus engine now runs through its original transfer, refusal and timeout code in 10 offline scenarios with simulated peripherals.

@@ -1,0 +1,1522 @@
+{
+  "schema": 1,
+  "date": "2026-11-01",
+  "goal": {
+    "current": "Locate the first failed branch in the ASUS-DEG2 control/message flow, identify its owning component and an observable that distinguishes it, then select one reversible intervention with a predicted outcome.",
+    "eventual": "With the existing dock, GPU and cable, restore ASUS router/GPU enumeration and display output using a reversible Windows remedy, then verify reconnect and removal/rollback. No working remedy is established."
+  },
+  "frontier": "Observed boundary: ASUS reports attachment and PD/control activity, yet Windows does not enumerate the external router. The unobserved interval includes USB4 entry, board signal routing, electrical link establishment and the transition to router discovery. A missing router alone cannot separate those steps.",
+  "cases": [
+    {
+      "id": "ASUS-DEEP",
+      "label": "Normal failed attachment; trace2026-11-01 00:52; dump00:53",
+      "limit": "No physical PD packets or complete controller-private memory; dump follows trace."
+    },
+    {
+      "id": "DELL-DEEP",
+      "label": "Working Dell deep capture; dump2026-11-01 00:20",
+      "limit": "Used for cached state/platform comparison, not substituted into the21:25 timeline."
+    },
+    {
+      "id": "DELL-CONTROL",
+      "label": "Working Dell pre-attachment control2026-10-31 21:25",
+      "limit": "Separate earlier run; native diagnostic GETs followed GPU binding; display confirmation followed recording."
+    },
+    {
+      "id": "ASUS-PEER",
+      "label": "ASUS-Dell peer link2026-10-31 13:37",
+      "limit": "Different partner; reported link rate, not DEG2 PCIe throughput; retained targets bookend the trace."
+    },
+    {
+      "id": "ASUS-POLICY-STOCK",
+      "label": "Powered stock-driver baseline2026-11-01 12:xx",
+      "limit": "Separate experimental-session baseline, not the00:52 trace."
+    },
+    {
+      "id": "ASUS-POLICY-OVERRIDE",
+      "label": "One policy1 filter attachment2026-11-01 12:xx",
+      "limit": "Changed Windows role-correction behavior without USB4 recovery; rollback verified."
+    },
+    {
+      "id": "ASUS-COLD",
+      "label": "Preconnected startup observed after sign-in",
+      "limit": "Initial BIOS/PD/link sequence not recorded."
+    },
+    {
+      "id": "ASUS-RP-ONLY",
+      "label": "Initial-role experiment",
+      "limit": "No recorded attachment; the intended changed condition was not established."
+    },
+    {
+      "id": "ASUS-OEM",
+      "label": "OEM capability/identity/PDO reads2026-11-01 16:xx",
+      "limit": "Literal identity; connected PDO run confounded by UGREEN insertion/removal."
+    },
+    {
+      "id": "ASUS-FLAG-RESEARCH",
+      "label": "Static read target and application access checks",
+      "limit": "No live flag value or failed-attachment flag timeline."
+    },
+    {
+      "id": "ASUS-INTERFACES",
+      "label": "Recovered AML/interface/driver inspection",
+      "limit": "Method existence and similar endpoint layout do not qualify live access/protocol."
+    },
+    {
+      "id": "ASUS-BIOS314",
+      "label": "Pinned ASUS BIOS314 EC image and offline execution",
+      "limit": "Running EC flash not hash-matched; peripherals are modeled, not hardware-tested."
+    },
+    {
+      "id": "ASUS-MODE-EXIT",
+      "label": "One guarded mode-exit request2026-10-31 22:12",
+      "limit": "Terminal firmware rejection; immediate snapshot only. No successful exit or USB4 recovery."
+    }
+  ],
+  "stages": [
+    {
+      "id": "attach",
+      "name": "1. USB-C attachment and reported power/data roles",
+      "asus": "Attachment and PD reported; later Windows role correction.",
+      "dell": "Attachment reported; partner UFP by first PD report in control.",
+      "missing": "Raw CC/PD capability exchange, precise physical insertion time.",
+      "claims": [
+        "C03",
+        "C15",
+        "C16"
+      ]
+    },
+    {
+      "id": "control",
+      "name": "2. Windows-UCSI / ACPI / EC supervision",
+      "asus": "Normal commands complete; policy-only trial ineffective.",
+      "dell": "Working control without recorded SET_UOR; platform policy differs.",
+      "missing": "Meaning of private firmware state in the failing physical interval.",
+      "claims": [
+        "C05",
+        "C06",
+        "C07",
+        "C08",
+        "C09",
+        "C10",
+        "C17",
+        "C18",
+        "C20",
+        "C21",
+        "C22"
+      ]
+    },
+    {
+      "id": "entry",
+      "name": "3. Controller USB4 discovery and entry/exit decision",
+      "asus": "Cached status NotAttemptedOrExited.",
+      "dell": "Cached status Successful.",
+      "missing": "Fresh discovery, entry request/reply and exit history; actual PD firmware identity.",
+      "claims": [
+        "C11",
+        "C12",
+        "C19"
+      ]
+    },
+    {
+      "id": "link",
+      "name": "4. Board signal path and electrical link establishment",
+      "asus": "DEG2 path unmeasured; peer link works in a separate control.",
+      "dell": "Usable link inferred from operational router/tunnels.",
+      "missing": "Per-port routing, retimer and PHY state during this failed pairing.",
+      "claims": [
+        "C02",
+        "C13"
+      ]
+    },
+    {
+      "id": "router",
+      "name": "5. Windows USB4 router discovery and tunnels",
+      "asus": "External router absent at captured checks.",
+      "dell": "External router and working tunnels present.",
+      "missing": "Whether a usable physical link ever existed before failed/absent discovery.",
+      "claims": [
+        "C01",
+        "C04"
+      ]
+    },
+    {
+      "id": "fallback",
+      "name": "6. GPU/output and ordinary USB fallback",
+      "asus": "No external GPU/output; USB fallback enumerates.",
+      "dell": "NVIDIA GPU bound; owner confirmed output.",
+      "missing": "A reproducible repair, followed by reconnect and recovery validation.",
+      "claims": [
+        "C01",
+        "C14"
+      ]
+    }
+  ],
+  "sources": [
+    {
+      "id": "ASUS-COMPARE",
+      "path": "evidence/asus-dell-matched-comparison.json",
+      "pointer": "/comparison",
+      "kind": "capture",
+      "cases": [
+        "ASUS-DEEP",
+        "DELL-DEEP"
+      ],
+      "value_sha256": "b176dd44855df44770fe6691c88f1c07942f0665ae155e6f68801c7dbc4f3f55"
+    },
+    {
+      "id": "ASUS-COMMANDS",
+      "path": "evidence/asus-dell-matched-comparison.json",
+      "pointer": "/trace/windows_commands",
+      "kind": "capture",
+      "cases": [
+        "ASUS-DEEP"
+      ],
+      "value_sha256": "4a44dc15364204a80fe80e9039455cc1608281820fe2b24f1e5233ade6af1dd5"
+    },
+    {
+      "id": "ASUS-COMPLETIONS",
+      "path": "evidence/asus-dell-matched-comparison.json",
+      "pointer": "/trace/terminal_command_completions",
+      "kind": "capture",
+      "cases": [
+        "ASUS-DEEP"
+      ],
+      "value_sha256": "4a44dc15364204a80fe80e9039455cc1608281820fe2b24f1e5233ade6af1dd5"
+    },
+    {
+      "id": "ASUS-ERRORS",
+      "path": "evidence/asus-dell-matched-comparison.json",
+      "pointer": "/trace/cci_error_busy_unsupported",
+      "kind": "capture",
+      "cases": [
+        "ASUS-DEEP"
+      ],
+      "value_sha256": "5feceb66ffc86f38d952786c6d696c79c2dbc239dd4e91b46729d73a27fb57e9"
+    },
+    {
+      "id": "ASUS-TIMELINE",
+      "path": "evidence/asus-dell-matched-comparison.json",
+      "pointer": "/trace/milestones",
+      "kind": "capture",
+      "cases": [
+        "ASUS-DEEP"
+      ],
+      "value_sha256": "1961ceca96ff147884ee6661446c461bcdfdd5d9516a4ad7c1954cf3b3e3dc67"
+    },
+    {
+      "id": "DELL-TIMELINE",
+      "path": "evidence/negotiation-followup.json",
+      "pointer": "/Comparisons/3/Events",
+      "kind": "capture",
+      "cases": [
+        "DELL-CONTROL"
+      ],
+      "value_sha256": "8dfd2dcc0efc90ce0622a085af4c7642dd8ee8ef47ba5e953e4b51a005cb082a"
+    },
+    {
+      "id": "DELL-WORKING",
+      "path": "evidence/observations.json",
+      "pointer": "/dell_deg2_control",
+      "kind": "capture",
+      "cases": [
+        "DELL-CONTROL"
+      ],
+      "value_sha256": "e3c2bf75526ef0f41b62307f35d47f0fd7d8aed06c92186e91ffa380d1662aee"
+    },
+    {
+      "id": "PEER-CONTROL",
+      "path": "evidence/i2c-read-prerequisites.json",
+      "pointer": "/same_boot_correlation",
+      "kind": "capture",
+      "cases": [
+        "ASUS-PEER"
+      ],
+      "value_sha256": "03cf4c09da8d7d6ddb2938fcd185de77c7df1b9dad6087a1b11a8e4bf0e674ae"
+    },
+    {
+      "id": "PEER-INTERPRETATION",
+      "path": "evidence/i2c-read-prerequisites.json",
+      "pointer": "/conclusion",
+      "kind": "limitation",
+      "cases": [
+        "ASUS-PEER"
+      ],
+      "value_sha256": "d80cc9b5baab581125552f37243d60dce698901d6bea5f861562f396025d5652"
+    },
+    {
+      "id": "POLICY-PAIR",
+      "path": "evidence/role-policy-experiment.json",
+      "pointer": "/actual_attachment_result",
+      "kind": "intervention",
+      "cases": [
+        "ASUS-POLICY-STOCK",
+        "ASUS-POLICY-OVERRIDE"
+      ],
+      "value_sha256": "100a5465c95eb1cf9810392525aab1d9758dd56ab73b12d4e1aef1c09d56366b"
+    },
+    {
+      "id": "POLICY-ROLLBACK",
+      "path": "evidence/role-policy-experiment.json",
+      "pointer": "/rollback_verification",
+      "kind": "intervention",
+      "cases": [
+        "ASUS-POLICY-STOCK",
+        "ASUS-POLICY-OVERRIDE"
+      ],
+      "value_sha256": "090f8ae6ddd2dcda576abb32d35847db76ced5c142ea336b88711e694c87238d"
+    },
+    {
+      "id": "POLICY-OLD-SNAPSHOT",
+      "path": "evidence/role-policy-experiment.json",
+      "pointer": "/current_state",
+      "kind": "historical",
+      "cases": [
+        "ASUS-POLICY-STOCK",
+        "ASUS-POLICY-OVERRIDE"
+      ],
+      "value_sha256": "9fcbe9e9c20bef9775ec3a7c74650be0afc7a57c178cef9673b02bac767ec6d0",
+      "warning": "A saved 12:xx test-session snapshot; current_state is a historical JSON key, not live machine inventory."
+    },
+    {
+      "id": "COLD-RESULT",
+      "path": "evidence/cold-start-result.json",
+      "pointer": "/snapshots",
+      "kind": "capture",
+      "cases": [
+        "ASUS-COLD"
+      ],
+      "value_sha256": "c54b386e13e9838f8fe49eb1aac7022b42896572cd7a0d7fa137f2f21ba05944"
+    },
+    {
+      "id": "COLD-COVERAGE",
+      "path": "evidence/cold-start-result.json",
+      "pointer": "/coverage",
+      "kind": "limitation",
+      "cases": [
+        "ASUS-COLD"
+      ],
+      "value_sha256": "1c8c3b3550eb1a8afbd0e4cb863a9cc16717fb6e9425a90c8ce512e26719aa4b"
+    },
+    {
+      "id": "RP-RESULT",
+      "path": "evidence/initial-role-result.json",
+      "pointer": "/Result",
+      "kind": "intervention",
+      "cases": [
+        "ASUS-RP-ONLY"
+      ],
+      "value_sha256": "31310b8261ab99db1c2019a29f1b4b2311ed2b5663eadb4b06580957746dcaf6"
+    },
+    {
+      "id": "EC-GETTERS",
+      "path": "evidence/ec-firmware-decision.json",
+      "pointer": "/oem_interface",
+      "kind": "code",
+      "cases": [
+        "ASUS-BIOS314"
+      ],
+      "value_sha256": "10b4b8fe755b987d45670de2907baa9030423596be9d7d6e3b03dbacd42be33c"
+    },
+    {
+      "id": "EC-RELAY",
+      "path": "evidence/ec-firmware-decision.json",
+      "pointer": "/ucsi_relay",
+      "kind": "code",
+      "cases": [
+        "ASUS-BIOS314"
+      ],
+      "value_sha256": "64f6988372d38eeacae08274dc03ed0f42f0c5709ffd44b855b5178845478402"
+    },
+    {
+      "id": "EC-LIVE-MATCH",
+      "path": "evidence/ec-firmware-decision.json",
+      "pointer": "/source/live_flash_hash_verified",
+      "kind": "limitation",
+      "cases": [
+        "ASUS-BIOS314"
+      ],
+      "value_sha256": "fcbcf165908dd18a9e49f7ff27810176db8e9f63b4352213741664245224f8aa"
+    },
+    {
+      "id": "FLAG-GATE",
+      "path": "evidence/ec-blocking-flag.json",
+      "pointer": "/outer_gate",
+      "kind": "code",
+      "cases": [
+        "ASUS-BIOS314"
+      ],
+      "value_sha256": "bc23136cac6be3a0535cf66cc0fde6f08328442c55e2a4657c25865bf782491f"
+    },
+    {
+      "id": "FLAG-WRITERS",
+      "path": "evidence/ec-blocking-flag.json",
+      "pointer": "/writers",
+      "kind": "code",
+      "cases": [
+        "ASUS-BIOS314"
+      ],
+      "value_sha256": "38633b45f90a12d881e2910d7c0161a50bdc21349d52e4101c5788204c6b9f44"
+    },
+    {
+      "id": "FLAG-UNMEASURED",
+      "path": "evidence/ec-blocking-flag.json",
+      "pointer": "/flag",
+      "kind": "limitation",
+      "cases": [
+        "ASUS-FLAG-RESEARCH"
+      ],
+      "value_sha256": "f5dc5179e42b71bfd7216341dc63c72cddded7c5e8f4f6ccee3eabdcd0a46e07"
+    },
+    {
+      "id": "FLAG-ACCESS",
+      "path": "evidence/ec-blocking-flag.json",
+      "pointer": "/live_access_checks",
+      "kind": "capture",
+      "cases": [
+        "ASUS-FLAG-RESEARCH"
+      ],
+      "value_sha256": "60b7a27a43d2c6bc8e0b1db99ee1bea75d877ae07dca54bf8bb5beafcaa50440"
+    },
+    {
+      "id": "BOS-ASUS",
+      "path": "evidence/billboard-comparison.json",
+      "pointer": "/hosts/asus/billboard/modes/0",
+      "kind": "capture",
+      "cases": [
+        "ASUS-DEEP"
+      ],
+      "value_sha256": "b9f4db61594d6ecf23577d97152db0379505307183cbe155ef3606d3ba0b463c"
+    },
+    {
+      "id": "BOS-DELL",
+      "path": "evidence/billboard-comparison.json",
+      "pointer": "/hosts/dell/billboard/modes/0",
+      "kind": "capture",
+      "cases": [
+        "DELL-DEEP"
+      ],
+      "value_sha256": "63296da8c0776fb6744a296c7de92890884f2102edf788665cdb8c4d1d8a5066"
+    },
+    {
+      "id": "BOS-LIMITS",
+      "path": "evidence/billboard-comparison.json",
+      "pointer": "/comparison",
+      "kind": "limitation",
+      "cases": [
+        "ASUS-DEEP",
+        "DELL-DEEP"
+      ],
+      "value_sha256": "d96b6f1b857c687e58bbbc1ebefc1bbced12cc1bc3847e8e2f57d3980133de8f"
+    },
+    {
+      "id": "POWER-ASUS",
+      "path": "evidence/billboard-comparison.json",
+      "pointer": "/hosts/asus/reported_contract",
+      "kind": "capture",
+      "cases": [
+        "ASUS-DEEP"
+      ],
+      "value_sha256": "2b9b077efa3835c74b336f5e44985c181a7e965325bd6646285d0b93d607e362"
+    },
+    {
+      "id": "POWER-DELL",
+      "path": "evidence/billboard-comparison.json",
+      "pointer": "/hosts/dell/reported_contract",
+      "kind": "capture",
+      "cases": [
+        "DELL-DEEP"
+      ],
+      "value_sha256": "8a70386a8b84616f25c621525ec038451a8feaa3086cfc71644723ab860047f1"
+    },
+    {
+      "id": "LATE-STALL",
+      "path": "evidence/trace-gaps-and-ec-bus.json",
+      "pointer": "/stall",
+      "kind": "capture",
+      "cases": [
+        "ASUS-DEEP"
+      ],
+      "value_sha256": "574f485cba52828983ac6af86b7b8cf206c20f30e065834485a570dadcd5c66e"
+    },
+    {
+      "id": "DECODED-GAPS",
+      "path": "evidence/trace-gaps-and-ec-bus.json",
+      "pointer": "/trace/unknown_records_decoded",
+      "kind": "capture",
+      "cases": [
+        "ASUS-DEEP"
+      ],
+      "value_sha256": "023849c38925e2af028a2eb4e1dc41afd7dc7a238195c1c2ae00438d1dae00e1"
+    },
+    {
+      "id": "OLD-GAPS",
+      "path": "evidence/asus-dell-matched-comparison.json",
+      "pointer": "/trace/unknown_records",
+      "kind": "historical",
+      "cases": [
+        "ASUS-DEEP"
+      ],
+      "value_sha256": "023849c38925e2af028a2eb4e1dc41afd7dc7a238195c1c2ae00438d1dae00e1",
+      "superseded_by": [
+        "DECODED-GAPS"
+      ],
+      "warning": "342 unknown records in an earlier decode of the same ASUS ETL; all342 later decoded. This does not update any Dell decode count."
+    },
+    {
+      "id": "OEM-IDENTITY",
+      "path": "evidence/oem-pd-diagnostics.json",
+      "pointer": "/live_runs/1",
+      "kind": "capture",
+      "cases": [
+        "ASUS-OEM"
+      ],
+      "value_sha256": "623f8ea74b33950092e34d4e1e7a5664994d7e0b186e11385f9d3736f8eed7e9"
+    },
+    {
+      "id": "OEM-CONFOUNDED",
+      "path": "evidence/oem-pd-diagnostics.json",
+      "pointer": "/live_runs/3",
+      "kind": "capture",
+      "cases": [
+        "ASUS-OEM"
+      ],
+      "value_sha256": "4ecb830bccf926a5cd7174e0ce353aba0f41d2ffaa0a55e7c1dba1892f7fa430"
+    },
+    {
+      "id": "ACCESS-INTERFACES",
+      "path": "evidence/control-reachability.json",
+      "pointer": "/findings",
+      "kind": "code",
+      "cases": [
+        "ASUS-INTERFACES"
+      ],
+      "value_sha256": "dfad59f1929aaebb5f17d2633b8342b4b6d9766357fb63b54fb44b097765a968"
+    },
+    {
+      "id": "MODE-EXIT",
+      "path": "evidence/observations.json",
+      "pointer": "/asus_current_mode_exit_experiment",
+      "kind": "intervention",
+      "cases": [
+        "ASUS-MODE-EXIT"
+      ],
+      "value_sha256": "98cf62894341a00c5e6167a4068bf3424ef17ae53ef47b6ef5dfc3c21be5e9b7"
+    },
+    {
+      "id": "AML-TRANSPORT",
+      "path": "evidence/control-reachability.json",
+      "pointer": "/findings/ucsi",
+      "kind": "code",
+      "cases": [
+        "ASUS-INTERFACES"
+      ],
+      "value_sha256": "2fce1114b0cd5c1b684fd7579bd7a6276b69fa8785869b93e2668fcb79f35d09"
+    }
+  ],
+  "claims": [
+    {
+      "id": "C01",
+      "basis": "measured",
+      "stage": "router",
+      "statement": "DEG2 enumerated a USB4 router and NVIDIA GPU on Dell; the owner confirmed display output.",
+      "sources": [
+        "DELL-WORKING"
+      ],
+      "cases": [
+        "DELL-CONTROL"
+      ],
+      "limit": "The display confirmation followed recording. This establishes that pairing; it does not certify ASUS signal margin or identical platform policy."
+    },
+    {
+      "id": "C02",
+      "basis": "measured",
+      "stage": "link",
+      "statement": "ASUS formed a reported40Gbps peer link in a boot bookended by dumps containing retained updater targets.",
+      "sources": [
+        "PEER-CONTROL"
+      ],
+      "cases": [
+        "ASUS-PEER"
+      ],
+      "limit": "Target state was not sampled inside the peer trace. A peer link does not test DEG2 compatibility or PCIe tunnelling."
+    },
+    {
+      "id": "C03",
+      "basis": "measured",
+      "stage": "attach",
+      "statement": "ASUS and Dell initially reported partner DFP. Dell reported UFP by its first PD report; ASUS corrected the role later.",
+      "sources": [
+        "ASUS-TIMELINE",
+        "DELL-TIMELINE"
+      ],
+      "cases": [
+        "ASUS-DEEP",
+        "DELL-CONTROL"
+      ],
+      "limit": "Different runs/platforms and power contracts. These are asynchronous Windows reports, not cable packets or proof that the role difference causes failure."
+    },
+    {
+      "id": "C04",
+      "basis": "measured",
+      "stage": "router",
+      "statement": "ASUS reported successful role correction while the external USB4 router remained absent at the recorded checks.",
+      "sources": [
+        "ASUS-TIMELINE",
+        "ASUS-COMPARE"
+      ],
+      "cases": [
+        "ASUS-DEEP",
+        "DELL-DEEP"
+      ],
+      "limit": "An early No result is not a terminal failure event. Missing enumeration does not identify whether entry or electrical training failed."
+    },
+    {
+      "id": "C05",
+      "basis": "measured",
+      "stage": "control",
+      "statement": "A controlled policy1 intervention suppressed the recorded Windows SET_UOR correction but did not make DEG2 enumerate; stock policy was subsequently verified restored.",
+      "sources": [
+        "POLICY-PAIR",
+        "POLICY-ROLLBACK"
+      ],
+      "cases": [
+        "ASUS-POLICY-OVERRIDE",
+        "ASUS-POLICY-STOCK"
+      ],
+      "limit": "One controlled pair. This rejects that tested intervention as sufficient, not every Windows remedy or every role-related firmware interaction."
+    },
+    {
+      "id": "C06",
+      "basis": "measured",
+      "stage": "control",
+      "statement": "The failed normal ASUS trace has10 Windows UCSI commands and10 terminal completions with no recorded CCI error/busy/unsupported.",
+      "sources": [
+        "ASUS-COMMANDS",
+        "ASUS-COMPLETIONS",
+        "ASUS-ERRORS"
+      ],
+      "cases": [
+        "ASUS-DEEP"
+      ],
+      "limit": "Command completion establishes the captured control exchanges, not USB4 entry, wire Accept, routing or link training."
+    },
+    {
+      "id": "C07",
+      "basis": "code_fact",
+      "stage": "control",
+      "statement": "In BIOS314 the OEM table6 getter returns without producing a reply; its IT8853 identity getter returns literal constants.",
+      "sources": [
+        "EC-GETTERS",
+        "EC-LIVE-MATCH"
+      ],
+      "cases": [
+        "ASUS-BIOS314"
+      ],
+      "limit": "This explains the diagnostic response timeout in that build. Live EC flash was not hash-matched; the literal identity is not an independent chip identification."
+    },
+    {
+      "id": "C08",
+      "basis": "code_fact",
+      "stage": "control",
+      "statement": "The EC flag gates the outer UCSI worker; vendor host command75 sets it and76 clears it, with other writer paths also identified.",
+      "sources": [
+        "FLAG-GATE",
+        "FLAG-WRITERS",
+        "EC-LIVE-MATCH"
+      ],
+      "cases": [
+        "ASUS-BIOS314"
+      ],
+      "limit": "No attachment-triggered setter or autonomous USB4-entry decision has been established. Commands75/76 are not UCSI opcodes."
+    },
+    {
+      "id": "C09",
+      "basis": "unknown",
+      "stage": "control",
+      "statement": "The flag value during the failed physical attachment remains unknown; the attempted application access paths returned no value.",
+      "sources": [
+        "FLAG-UNMEASURED",
+        "FLAG-ACCESS"
+      ],
+      "cases": [
+        "ASUS-FLAG-RESEARCH"
+      ],
+      "limit": "A candidate address is not a working reader. No live flag clear or physical-memory read was performed."
+    },
+    {
+      "id": "C10",
+      "basis": "inference",
+      "stage": "control",
+      "statement": "A continuously blocked UCSI worker is less consistent with the captured successful commands; a short pulse is still possible.",
+      "sources": [
+        "FLAG-GATE",
+        "EC-LIVE-MATCH",
+        "ASUS-COMMANDS",
+        "ASUS-COMPLETIONS"
+      ],
+      "cases": [
+        "ASUS-BIOS314",
+        "ASUS-DEEP"
+      ],
+      "limit": "Crosses code and capture evidence. It assumes the reviewed EC implementation applies; it does not establish actual bit values.",
+      "reason": "The original outer gate skips the worker that services those commands. Repeated completions oppose that gate staying set throughout the exchanges."
+    },
+    {
+      "id": "C11",
+      "basis": "measured",
+      "stage": "entry",
+      "statement": "The cached DEG2 USB4 status is Successful on Dell and NotAttemptedOrExited on ASUS.",
+      "sources": [
+        "BOS-ASUS",
+        "BOS-DELL"
+      ],
+      "cases": [
+        "ASUS-DEEP",
+        "DELL-DEEP"
+      ],
+      "limit": "A cached device report cannot distinguish skipped entry from later exit, or prove freshness, packet order or link-training outcome."
+    },
+    {
+      "id": "C12",
+      "basis": "unknown",
+      "stage": "entry",
+      "statement": "The actual cable discovery, Enter_USB/response history and subsequent entry/exit order have not been recovered.",
+      "sources": [
+        "BOS-LIMITS"
+      ],
+      "cases": [
+        "ASUS-DEEP",
+        "DELL-DEEP"
+      ],
+      "limit": "Additional analysis of existing summaries cannot reconstruct an event never retained."
+    },
+    {
+      "id": "C13",
+      "basis": "inference",
+      "stage": "link",
+      "statement": "The updater target-lifetime defect is not established as the sole USB4 blocker.",
+      "sources": [
+        "PEER-CONTROL",
+        "PEER-INTERPRETATION"
+      ],
+      "cases": [
+        "ASUS-PEER"
+      ],
+      "limit": "Specific effects on DEG2 remain possible. The peer control is counterevidence to a universal blocker, not proof the defect is harmless.",
+      "reason": "Working peer traffic occurred between same-boot dumps with the retained target identities present."
+    },
+    {
+      "id": "C14",
+      "basis": "measured",
+      "stage": "fallback",
+      "statement": "The xHCI Device Qualifier descriptor stall occurred after the first no-router observation; reset succeeded and enumeration continued.",
+      "sources": [
+        "LATE-STALL"
+      ],
+      "cases": [
+        "ASUS-DEEP"
+      ],
+      "limit": "This identifies a later USB fallback event. It does not explain the earlier absence or identify a PD-wire error."
+    },
+    {
+      "id": "C15",
+      "basis": "measured",
+      "stage": "attach",
+      "statement": "ASUS and Dell selected different reported PD contracts from the same advertised source profiles.",
+      "sources": [
+        "POWER-ASUS",
+        "POWER-DELL",
+        "BOS-LIMITS"
+      ],
+      "cases": [
+        "ASUS-DEEP",
+        "DELL-DEEP"
+      ],
+      "limit": "RDO values describe requested contracts, not measured power. Their causal effect is untested; forced power changes are not justified."
+    },
+    {
+      "id": "C16",
+      "basis": "measured",
+      "stage": "attach",
+      "statement": "The Rp-only trial established no recorded attachment; the preconnected-startup trial still lacked a router/GPU.",
+      "sources": [
+        "RP-RESULT",
+        "COLD-RESULT",
+        "COLD-COVERAGE"
+      ],
+      "cases": [
+        "ASUS-COLD",
+        "ASUS-RP-ONLY"
+      ],
+      "limit": "These are separate cases. Rp-only did not establish its intended changed condition; cold-start collection began after sign-in and missed initial negotiation."
+    },
+    {
+      "id": "C17",
+      "basis": "inference",
+      "stage": "control",
+      "statement": "Matching14 copied Windows images narrows binary differences but does not establish identical runtime policy or exclude Windows involvement.",
+      "sources": [
+        "ASUS-COMPARE"
+      ],
+      "cases": [
+        "ASUS-DEEP",
+        "DELL-DEEP"
+      ],
+      "limit": "Copied-image equality is not equality of every loaded stack, setting, firmware service or operating condition.",
+      "reason": "The same comparison also records unequal platform policy and ACPI support masks."
+    },
+    {
+      "id": "C18",
+      "basis": "inference",
+      "stage": "control",
+      "statement": "The live IT8853 string and the connected OEM PDO timeout cannot be promoted into independent physical-chip identification or a clean port-mapping comparison.",
+      "sources": [
+        "OEM-IDENTITY",
+        "OEM-CONFOUNDED",
+        "EC-GETTERS"
+      ],
+      "cases": [
+        "ASUS-BIOS314",
+        "ASUS-OEM"
+      ],
+      "limit": "Preserve the actual successful string read and failed request. The owner reported UGREEN insert/remove before DEG2 in that connected run.",
+      "reason": "Original EC instructions construct the string; the connected-run record explicitly marks the before/after comparison unclean."
+    },
+    {
+      "id": "C19",
+      "basis": "unknown",
+      "stage": "entry",
+      "statement": "No identified available Windows interface currently supplies the missing entry/exit history or validated routing-state observation.",
+      "sources": [
+        "ACCESS-INTERFACES",
+        "FLAG-ACCESS"
+      ],
+      "cases": [
+        "ASUS-FLAG-RESEARCH",
+        "ASUS-INTERFACES"
+      ],
+      "limit": "Existing interfaces and helpers have been identified, but their applicability/readability/side effects are not interchangeable. This is an access gap, not proof software repair is impossible."
+    },
+    {
+      "id": "C20",
+      "basis": "code_fact",
+      "stage": "control",
+      "statement": "The original EC relay copies CONTROL and MESSAGE_OUT to controller-bus channel4/address byte98 and reads CCI/MESSAGE_IN back with acknowledgement.",
+      "sources": [
+        "EC-RELAY",
+        "EC-LIVE-MATCH"
+      ],
+      "cases": [
+        "ASUS-BIOS314"
+      ],
+      "limit": "This establishes a transport path in the reviewed image. Bus success, PD acceptance and private USB4-entry policy are not supplied by this code alone."
+    },
+    {
+      "id": "C21",
+      "basis": "measured",
+      "stage": "control",
+      "statement": "The single guarded SET_NEW_CAM EXIT request received a terminal firmware rejection; no successful exit or recovered router/GPU was established.",
+      "sources": [
+        "MODE-EXIT"
+      ],
+      "cases": [
+        "ASUS-MODE-EXIT"
+      ],
+      "limit": "The error branch had no20-second passive window; immediate device state does not reveal internal mode retention. Do not repeat unchanged."
+    },
+    {
+      "id": "C22",
+      "basis": "code_fact",
+      "stage": "control",
+      "statement": "Recovered CPMUCSI AML exposes standard DSM command/status copies to and from the EC mailbox; it supplies no separate identified USB4-entry method.",
+      "sources": [
+        "AML-TRANSPORT"
+      ],
+      "cases": [
+        "ASUS-INTERFACES"
+      ],
+      "limit": "An ACPI transport method is not the full controller policy state machine. Finding a method does not qualify an application interface to invoke it."
+    }
+  ],
+  "timeline_limit": "T0 is the first recorded Windows attachment report in each run, not physical insertion. Different runs, platforms, power contracts and capture dates are explicit. These tables align software reports only; proximity does not establish wire order or causation. The earlier Dell control supplies the Dell timeline; the deep Dell dump supplies cached-state comparison.",
+  "timelines": [
+    {
+      "case": "ASUS-DEEP",
+      "source": "ASUS-TIMELINE",
+      "anchor_index": 0,
+      "time_field": "utc",
+      "event_field": "event",
+      "indexes": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11
+      ]
+    },
+    {
+      "case": "DELL-CONTROL",
+      "source": "DELL-TIMELINE",
+      "anchor_index": 0,
+      "time_field": "TimeUtc",
+      "event_field": "Observation",
+      "date": "2026-10-31",
+      "indexes": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        6,
+        8
+      ]
+    }
+  ],
+  "hypotheses": [
+    {
+      "id": "H-ENTRY",
+      "status": "open",
+      "statement": "USB4 entry is skipped or refused during discovery/policy negotiation.",
+      "support": [
+        "C11"
+      ],
+      "counterevidence": [],
+      "needed": "A fresh entry request/response or an understood controller decision record."
+    },
+    {
+      "id": "H-LINK",
+      "status": "open",
+      "statement": "Entry is attempted but routing, retimer/PHY or partner compatibility prevents a usable link.",
+      "support": [
+        "C04"
+      ],
+      "counterevidence": [
+        "C01",
+        "C02"
+      ],
+      "needed": "Entry outcome plus per-port link/routing result; successful controls limit universal faults but do not exclude pairing-specific failure."
+    },
+    {
+      "id": "H-EXIT",
+      "status": "open",
+      "statement": "USB4 entry/link starts briefly and then exits or recovers into fallback.",
+      "support": [
+        "C11"
+      ],
+      "counterevidence": [],
+      "needed": "Timestamped positive entry/link observation followed by exit/loss. Cached NotAttemptedOrExited cannot distinguish it."
+    },
+    {
+      "id": "H-ENUM",
+      "status": "open",
+      "statement": "A usable link exists at some point, but router configuration/discovery fails before Windows exposes the external router.",
+      "support": [
+        "C04"
+      ],
+      "counterevidence": [],
+      "needed": "Link-ready evidence plus router/configuration transaction outcomes. No-router observations alone do not rule this out."
+    },
+    {
+      "id": "H-ROLE-ONLY",
+      "status": "tested intervention insufficient",
+      "statement": "Suppressing Windows role correction alone restores USB4.",
+      "support": [
+        "C03",
+        "C17"
+      ],
+      "counterevidence": [
+        "C05"
+      ],
+      "needed": "New causal evidence beyond the already completed policy-only trial before reopening."
+    },
+    {
+      "id": "H-GATE",
+      "status": "secondary lead; no live value",
+      "statement": "The EC blocking bit stays set and stops host command service during failure.",
+      "support": [
+        "C08"
+      ],
+      "counterevidence": [
+        "C06",
+        "C10"
+      ],
+      "needed": "A valid live observation correlated with the failed interval; one bit would still not distinguish all four main explanations."
+    },
+    {
+      "id": "H-UPDATER",
+      "status": "defect preserved; sole-cause claim weakened",
+      "statement": "Retained updater targets universally prevent ASUS USB4.",
+      "support": [],
+      "counterevidence": [
+        "C02",
+        "C13"
+      ],
+      "needed": "Pairing-specific causal evidence before any cleanup patch is presented as a DEG2 repair."
+    }
+  ],
+  "actions": [
+    {
+      "id": "A-MAP",
+      "name": "Consolidate existing sources, cases and timelines",
+      "status": "completed in this phase",
+      "information": "A checked map of evidence, ambiguities and prior exclusions; no new handshake data claimed.",
+      "cost": "Zero installs, boots or reconnections.",
+      "distinguishes": []
+    },
+    {
+      "id": "A-CHANNEL",
+      "name": "Qualify an observation of the missing transition",
+      "status": "next offline work",
+      "information": "Find whether existing retained logs or an understood software interface can distinguish entry, link, exit or router-discovery failure.",
+      "cost": "Existing files and primary documentation first; no live requests authorized by this action.",
+      "distinguishes": [
+        "H-ENTRY",
+        "H-LINK",
+        "H-EXIT",
+        "H-ENUM"
+      ]
+    },
+    {
+      "id": "A-FLAG",
+      "name": "Build a dedicated flag-reader driver",
+      "status": "deferred; no longer default next step",
+      "information": "Answers a narrow host-service gate question; cannot reconstruct entry/exit or signal routing.",
+      "cost": "New kernel code, signing/loading and recovery burden; requires stronger benefit than present counterevidence.",
+      "distinguishes": [
+        "H-GATE"
+      ]
+    },
+    {
+      "id": "A-OBSERVER",
+      "name": "One shared read-only observer, if essential",
+      "status": "conditional; not ready for hardware",
+      "information": "Several port-owned, understood fields in one capture; only after the returned values separate named explanations.",
+      "cost": "At most one proposed temporary helper; a loading/recovery plan and a useful positive control are prerequisites, not yet satisfied.",
+      "distinguishes": [
+        "H-ENTRY",
+        "H-LINK",
+        "H-EXIT",
+        "H-ENUM"
+      ]
+    },
+    {
+      "id": "A-RECAPTURE",
+      "name": "Repeat a generic full dump or unchanged collector",
+      "status": "not selected",
+      "information": "Does not supply already-missing controller-private history without a new capture capability.",
+      "cost": "Owner time, reconnection and possible system load.",
+      "distinguishes": []
+    },
+    {
+      "id": "A-RETRY",
+      "name": "Repeat policy, mode-exit, table6 or cold-start tests",
+      "status": "not selected without a new discriminating condition",
+      "information": "Existing results already bound those exact attempts; more repetitions do not identify the missing transition.",
+      "cost": "Avoidable reconnections, boot or command side effects.",
+      "distinguishes": []
+    },
+    {
+      "id": "A-OEM",
+      "name": "Prepare a precise OEM logging/firmware question if software visibility ends",
+      "status": "contingency; no contact sent",
+      "information": "Ask for the responsible PD firmware/decision log and validated read-only diagnostics, backed by the mapped failing/working evidence.",
+      "cost": "No machine change; depends on external documentation or engineering response.",
+      "distinguishes": [
+        "H-ENTRY",
+        "H-LINK",
+        "H-EXIT",
+        "H-ENUM"
+      ]
+    }
+  ],
+  "corrections": [
+    {
+      "explanation": "The earlier ASUS summary says342 unknown records; the later analysis decoded those same342. That earlier decode-count field is superseded, not a reason to repeat decoding or claim Dell unknown records are also resolved.",
+      "sources": [
+        "OLD-GAPS",
+        "DECODED-GAPS"
+      ]
+    },
+    {
+      "explanation": "The returned IT8853 string is real, but original firmware shows it is a literal build identifier. It does not independently identify physical silicon.",
+      "sources": [
+        "OEM-IDENTITY",
+        "EC-GETTERS"
+      ]
+    },
+    {
+      "explanation": "The connected OEM PDO run includes the owner-reported UGREEN insertion/removal. Preserve it as a failed read, not a clean paired port comparison.",
+      "sources": [
+        "OEM-CONFOUNDED"
+      ]
+    },
+    {
+      "explanation": "The policy record has a historical key named current_state. It cannot establish current boot/security configuration; refresh live inventory only when a later action actually needs it.",
+      "sources": [
+        "POLICY-OLD-SNAPSHOT"
+      ]
+    },
+    {
+      "explanation": "The flagged EC worker and the normal Windows command completions belong to different evidence classes. Their relation is an inference assuming the reviewed firmware applies, not a measured flag value.",
+      "sources": [
+        "FLAG-GATE",
+        "EC-LIVE-MATCH",
+        "ASUS-COMPLETIONS"
+      ]
+    }
+  ],
+  "standards": [
+    {
+      "title": "Microsoft USB4 design requirements",
+      "url": "https://learn.microsoft.com/en-us/windows-hardware/design/component-guidelines/usb4-design-details-and-general-requirements",
+      "scope": "The Windows USB4 connection manager has no software dependency on the Type-C stack; successful UCSI requests do not certify USB4 entry/link.",
+      "id": "MS-DESIGN"
+    },
+    {
+      "title": "Microsoft USB4 connection manager",
+      "url": "https://learn.microsoft.com/en-us/windows-hardware/design/component-guidelines/usb4-intro-to-connection-manager",
+      "scope": "Router detection/configuration, tunnel setup and domain management are distinct responsibilities.",
+      "id": "MS-CM"
+    },
+    {
+      "title": "Microsoft USB4 debugging and troubleshooting",
+      "url": "https://learn.microsoft.com/en-us/windows-hardware/design/component-guidelines/usb4-debugging-and-troubleshooting",
+      "scope": "Existing trace, rundown and debugger mechanisms to audit before proposing a new observer.",
+      "id": "MS-DEBUG"
+    }
+  ],
+  "architecture": {
+    "scope": "This is the bounded architecture/control-flow map, not a complete recovered PD firmware state machine. Branches tagged traced_code come from the reviewed BIOS image, whose live-flash match remains unverified. Measured edges describe software reports/outcomes. The private controller decision and board-to-host readiness path remain explicitly unmapped. Windows UCSI command completion and Windows USB4 router discovery are separate observation paths.",
+    "nodes": [
+      {
+        "id": "ATTACH",
+        "label": "USB-C attachment",
+        "owner": "Laptop, cable and dock connection",
+        "interface": "Physical connection and control signaling",
+        "limit": "No raw physical insertion/CC packet timestamp.",
+        "decision": false
+      },
+      {
+        "id": "PD",
+        "label": "PD-controller private discovery / entry / exit logic: UNMAPPED",
+        "owner": "Expected IT8853-family controller; executing image not independently identified",
+        "interface": "Partner/cable discovery and mode-control exchange; EC bus access",
+        "limit": "Entry policy, actual request/reply history and exact running firmware unknown.",
+        "decision": false
+      },
+      {
+        "id": "LINK",
+        "label": "Board routing, retimers and PHY",
+        "owner": "ASUS board signal path plus host/dock PHYs",
+        "interface": "Mode/routing decisions and electrical link establishment",
+        "limit": "Port-specific programming ownership and failing live state unresolved.",
+        "decision": false
+      },
+      {
+        "id": "PORT",
+        "label": "Does Windows see a remote USB4 router?",
+        "owner": "Windows USB4 host/root-router stack",
+        "interface": "Host-port state checks and router/configuration discovery",
+        "limit": "No result alone does not reveal whether entry, training or configuration failed.",
+        "decision": true
+      },
+      {
+        "id": "ABSENT",
+        "label": "ASUS: no external router exposed",
+        "owner": "Observed failed enumeration endpoint",
+        "interface": "No dock router, tunnels or external GPU in recorded state",
+        "limit": "This is the failure boundary we can currently observe.",
+        "decision": false
+      },
+      {
+        "id": "ROUTER",
+        "label": "Dell: external router and tunnels",
+        "owner": "Windows USB4 connection manager",
+        "interface": "Router configuration and tunnel setup",
+        "limit": "A successful Dell platform does not identify the ASUS failing instruction.",
+        "decision": false
+      },
+      {
+        "id": "GPU",
+        "label": "GPU bound and display output",
+        "owner": "PCIe enumeration and GPU/display stack",
+        "interface": "Tunneled PCIe endpoint, NVIDIA driver and output",
+        "limit": "Output confirmation in the earlier Dell control followed trace recording.",
+        "decision": false
+      },
+      {
+        "id": "USB",
+        "label": "Separate ordinary USB / Billboard reporting",
+        "owner": "Dock USB interface and Windows USB stack",
+        "interface": "USB descriptors and cached mode outcome",
+        "limit": "Billboard also exists on the working Dell; presence alone is not failure.",
+        "decision": false
+      },
+      {
+        "id": "STATUS",
+        "label": "Windows Type-C / UCSI status and CCI",
+        "owner": "UcmUcsiCx / UcmCx and firmware reports",
+        "interface": "Reported roles, power contract, command completion",
+        "limit": "These reports are not raw PD packets or a certified USB4 link.",
+        "decision": false
+      },
+      {
+        "id": "ROLE",
+        "label": "Windows selects role correction?",
+        "owner": "Windows policy and reported partner state",
+        "interface": "Decision to issue SET_UOR",
+        "limit": "Full condition is not represented as a simple policy-byte equality.",
+        "decision": true
+      },
+      {
+        "id": "UCSI",
+        "label": "Windows UCSI command request",
+        "owner": "Windows UCSI stack",
+        "interface": "CONTROL and optional MESSAGE_OUT; SET_UOR or mode-exit example",
+        "limit": "A supported command transport does not expose arbitrary private PD policy.",
+        "decision": false
+      },
+      {
+        "id": "AML",
+        "label": "ACPI DSM send / status copies",
+        "owner": "ASUS CPMUCSI AML",
+        "interface": "Copies command/message data and reply/status via EC mailbox",
+        "limit": "This transport is not the private PD discovery/entry state machine.",
+        "decision": false
+      },
+      {
+        "id": "MAILBOX",
+        "label": "EC-shared command / status mailbox",
+        "owner": "Host-visible firmware transport and EC service",
+        "interface": "Outgoing CONTROL/MESSAGE_OUT; incoming CCI/MESSAGE_IN",
+        "limit": "Reading its backing memory live remains an access issue; not a wire history.",
+        "decision": false
+      },
+      {
+        "id": "GATE",
+        "label": "Outer EC worker allowed?",
+        "owner": "ASUS EC bank1b23c",
+        "interface": "03ad and030e.bit1 gate call to bank3bc20 group",
+        "limit": "Live flag value unmeasured; further internal readiness/IRQ gates also exist.",
+        "decision": true
+      },
+      {
+        "id": "RELAY",
+        "label": "EC bus relay and command service",
+        "owner": "EC bank3bc20/c89a and bacf/bba3/bb4f",
+        "interface": "Channel4, address byte98; normal transfer/reply/acknowledgement",
+        "limit": "A relay does not reveal how the PD controller chooses native USB4 entry.",
+        "decision": false
+      },
+      {
+        "id": "CFU",
+        "label": "Parade updater target-lifetime side path",
+        "owner": "Existing retimer update-driver software",
+        "interface": "Retained target handles after failed version read",
+        "limit": "Its physical effect on DEG2 negotiation is unproved; peer control weakens a universal blocker.",
+        "decision": false
+      },
+      {
+        "id": "NO_ROLE_CMD",
+        "label": "No Windows SET_UOR; other processing continues",
+        "owner": "Windows role-correction decision",
+        "interface": "No role command issued for this decision",
+        "limit": "Dell success and ASUS policy-trial failure are separate outcomes; no command is not a connection failure.",
+        "decision": false
+      },
+      {
+        "id": "EC_SKIPPED",
+        "label": "Skip this EC worker invocation",
+        "owner": "EC outer service gate",
+        "interface": "Return before bank3bc20 group",
+        "limit": "This is one invocation; continued suppression depends on gate state. It is not the Windows no-role-command branch.",
+        "decision": false
+      }
+    ],
+    "edges": [
+      {
+        "from": "ATTACH",
+        "to": "PD",
+        "label": "controller discovery and mode negotiation",
+        "basis": "documented",
+        "claims": [],
+        "standards": [
+          "MS-DESIGN"
+        ]
+      },
+      {
+        "from": "PD",
+        "to": "LINK",
+        "label": "entry outcome to actual routing and electrical startup",
+        "basis": "unknown",
+        "claims": [
+          "C12",
+          "C19"
+        ],
+        "standards": []
+      },
+      {
+        "from": "LINK",
+        "to": "PORT",
+        "label": "how board/controller readiness becomes host-port state",
+        "basis": "unknown",
+        "claims": [
+          "C04",
+          "C12",
+          "C19"
+        ],
+        "standards": []
+      },
+      {
+        "from": "PORT",
+        "to": "ABSENT",
+        "label": "ASUS captured No checks and absent external router",
+        "basis": "measured",
+        "claims": [
+          "C04"
+        ],
+        "standards": []
+      },
+      {
+        "from": "PORT",
+        "to": "ROUTER",
+        "label": "working Dell external-router outcome",
+        "basis": "measured",
+        "claims": [
+          "C01"
+        ],
+        "standards": []
+      },
+      {
+        "from": "ROUTER",
+        "to": "GPU",
+        "label": "Dell bound GPU and owner-confirmed output",
+        "basis": "measured",
+        "claims": [
+          "C01"
+        ],
+        "standards": []
+      },
+      {
+        "from": "ATTACH",
+        "to": "USB",
+        "label": "separate USB reporting; Billboard can coexist with USB4",
+        "basis": "measured",
+        "claims": [
+          "C11",
+          "C14"
+        ],
+        "standards": []
+      },
+      {
+        "from": "STATUS",
+        "to": "ROLE",
+        "label": "reported partner state and correction decision",
+        "basis": "measured",
+        "claims": [
+          "C03"
+        ],
+        "standards": []
+      },
+      {
+        "from": "ROLE",
+        "to": "UCSI",
+        "label": "ASUS stock chooses SET_UOR",
+        "basis": "measured",
+        "claims": [
+          "C03",
+          "C05"
+        ],
+        "standards": []
+      },
+      {
+        "from": "ROLE",
+        "to": "NO_ROLE_CMD",
+        "label": "Dell No; policy-only trial suppresses correction",
+        "basis": "measured",
+        "claims": [
+          "C03",
+          "C05"
+        ],
+        "standards": []
+      },
+      {
+        "from": "UCSI",
+        "to": "AML",
+        "label": "standard DSM transport",
+        "basis": "traced_code",
+        "claims": [
+          "C22"
+        ],
+        "standards": []
+      },
+      {
+        "from": "AML",
+        "to": "MAILBOX",
+        "label": "copy outgoing command and message",
+        "basis": "traced_code",
+        "claims": [
+          "C22"
+        ],
+        "standards": []
+      },
+      {
+        "from": "MAILBOX",
+        "to": "GATE",
+        "label": "EC service consults outer gate",
+        "basis": "traced_code",
+        "claims": [
+          "C08"
+        ],
+        "standards": []
+      },
+      {
+        "from": "GATE",
+        "to": "RELAY",
+        "label": "03ad zero and bit1 clear: call worker group",
+        "basis": "traced_code",
+        "claims": [
+          "C08",
+          "C20"
+        ],
+        "standards": []
+      },
+      {
+        "from": "GATE",
+        "to": "EC_SKIPPED",
+        "label": "03ad nonzero or bit1 set: skip worker",
+        "basis": "traced_code",
+        "claims": [
+          "C08"
+        ],
+        "standards": []
+      },
+      {
+        "from": "RELAY",
+        "to": "PD",
+        "label": "CONTROL and MESSAGE_OUT to bus address98",
+        "basis": "traced_code",
+        "claims": [
+          "C20"
+        ],
+        "standards": []
+      },
+      {
+        "from": "PD",
+        "to": "RELAY",
+        "label": "read BD interrupt and84 reply; BCFE acknowledgement",
+        "basis": "traced_code",
+        "claims": [
+          "C20"
+        ],
+        "standards": []
+      },
+      {
+        "from": "RELAY",
+        "to": "MAILBOX",
+        "label": "CCI4 and MESSAGE_IN16 copied back",
+        "basis": "traced_code",
+        "claims": [
+          "C20"
+        ],
+        "standards": []
+      },
+      {
+        "from": "MAILBOX",
+        "to": "AML",
+        "label": "status and reply readback",
+        "basis": "traced_code",
+        "claims": [
+          "C22"
+        ],
+        "standards": []
+      },
+      {
+        "from": "AML",
+        "to": "STATUS",
+        "label": "firmware status delivered to Type-C stack",
+        "basis": "traced_code",
+        "claims": [
+          "C06",
+          "C22"
+        ],
+        "standards": []
+      },
+      {
+        "from": "CFU",
+        "to": "LINK",
+        "label": "effect of updater resource state on this physical pairing",
+        "basis": "unknown",
+        "claims": [
+          "C02",
+          "C13"
+        ],
+        "standards": []
+      }
+    ],
+    "interventions": [
+      {
+        "node": "ROLE",
+        "effect": "Pre-attachment Windows role policy; suppresses SET_UOR.",
+        "decision": "Already tested; insufficient by itself. Reopen only with new causal evidence.",
+        "claims": [
+          "C05"
+        ]
+      },
+      {
+        "node": "UCSI",
+        "effect": "A standard mode-exit request through the existing stack.",
+        "decision": "One request rejected; no unchanged retry or guessed mode number.",
+        "claims": [
+          "C21"
+        ]
+      },
+      {
+        "node": "GATE",
+        "effect": "Vendor host command76 clears the outer service-blocking bit.",
+        "decision": "Unmeasured live state and no link to private entry policy; no selected write test or dedicated driver.",
+        "claims": [
+          "C08",
+          "C09",
+          "C10"
+        ]
+      },
+      {
+        "node": "PD",
+        "effect": "Private controller entry/cable-policy change.",
+        "decision": "Target firmware, command semantics and recovery unidentified; no qualified intervention.",
+        "claims": [
+          "C12",
+          "C19"
+        ]
+      },
+      {
+        "node": "LINK",
+        "effect": "Actual routing, retimer or PHY setting.",
+        "decision": "Needs port ownership and observed failing state; no arbitrary mux/reset/flash.",
+        "claims": [
+          "C02",
+          "C13",
+          "C19"
+        ]
+      },
+      {
+        "node": "PORT",
+        "effect": "Windows router-discovery/configuration behavior.",
+        "decision": "A usable-link/failed-discovery observation would make this branch a targeted investigation; none yet.",
+        "claims": [
+          "C04",
+          "C19"
+        ]
+      }
+    ]
+  }
+}

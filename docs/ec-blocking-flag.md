@@ -1,5 +1,7 @@
 # EC blocking flag: writers, read address and remaining access problem
 
+**Current priority:** the [architecture-led investigation plan](investigation-plan.md) defers a dedicated flag-reader driver. This flag remains a secondary lead; a proposed observer must first show which failed branch its returned value would distinguish. The read target and earlier access checks below remain valid findings, with no live flag value established.
+
 **1 November 2026:** the firmware read address is established, and the path that explicitly sets the flag has been followed back to a host-command receiver. **The flag has not been read on the running ASUS. No USB4 fix is demonstrated.** The saved failed-connection dump cannot supply this memory address. New ordinary-process EC/root-ACPI checks also failed before a memory read. [Structured evidence](../evidence/ec-blocking-flag.json).
 
 ## What the flag actually stops
@@ -58,7 +60,7 @@ The dump attempt also asked for AML namespace metadata without a suitable symbol
 
 Microsoft documents [method evaluation as a request made by a device driver](https://learn.microsoft.com/en-us/windows-hardware/drivers/ddi/acpiioct/ni-acpiioct-ioctl_acpi_eval_method_ex). These measured failures reject the specific ordinary-process paths tested; they do not prove that every Windows route is impossible. The reviewed AsusSAIO command path reaches PMC4, not this generic EC read; its failed table6 getter should not be retried for this purpose. The newly inventoried existing AsusWmiAcpi image is signed, version2.1.76.0, SHA-256 `0f0a7bf9631751af691458831c9ee69845af19e8d49b57ad8f75f4250a060934`; its inspection has not established a usable generic memory reader.
 
-## The next measurement, and what it would prove
+## Conditional measurement option, and what it would prove
 
 A usable live reader is **not implemented or loaded yet**. The concrete target is a narrowly scoped kernel-mediated reader for the existing EC shared-memory window, after checking the alias against known EC fields. It should expose only fixed read locations and return raw bytes plus QPC timestamps; it needs no controller command, policy write or firmware patch. Its signing/loading route and unload recovery must be settled before an attachment experiment. No new test boot is queued on the present result.
 
