@@ -1,5 +1,7 @@
 # Fresh ASUS versus Dell: matched evidence comparison
 
+**Further recovery:** both original dumps retain DEG2's BOS descriptor. USB4/DP configuration states differ, while the reported EUDO and all other BOS bytes match. The traces supply identical advertised source PDOs and different selected contracts. [Exact bytes, decoding and limits](billboard-comparison.md). No new hardware acquisition was needed.
+
 **1 November 2026: comparison completed; no working repair established.** The fresh ASUS passive trace and full native kernel dump reproduce the failure and independently confirm its current policy against the [working Dell baseline](dell-dump-recovery.md). We have enough for this software-state comparison. No repeat capture on either laptop is queued. [Structured observations and exact milestones](../evidence/asus-dell-matched-comparison.json).
 
 ## Acquisition and validation

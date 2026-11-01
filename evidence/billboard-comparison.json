@@ -1,0 +1,222 @@
+{
+  "schema": 1,
+  "date": "2026-11-01",
+  "method": "Offline USBHUB3 cached BOS extraction from existing matched kernel dumps",
+  "status": "New comparative evidence; no qualified Windows repair or hardware test",
+  "actions": {
+    "new_boots": 0,
+    "live_device_requests": 0,
+    "driver_or_firmware_changes": 0,
+    "security_or_network_changes": 0
+  },
+  "sources": [
+    {
+      "url": "https://www.usb.org/sites/default/files/USB%20Billboard%20Rev%201.2.2%2020210209.zip",
+      "tables": [
+        "3-7",
+        "3-9"
+      ],
+      "zip_sha256": "90e31953c077277ee0e1a4f36bde75e19d1fba9b6fa608b5ef6f0bc8570b85f9"
+    },
+    {
+      "url": "https://chromium.googlesource.com/chromiumos/platform/ec/+/master/include/usb_pd_vdo.h",
+      "use": "EUDO bit positions only; cable-speed code retained numerically"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/torvalds/linux/master/include/linux/usb/pd.h",
+      "use": "Fixed-supply PDO/RDO field units"
+    },
+    {
+      "url": "https://www.asus.com/laptops/for-gaming/tuf-gaming/asus-tuf-gaming-a15-2023/techspec/",
+      "use": "Separate USB4/DP and USB3.2/DP/PD port listings"
+    }
+  ],
+  "hosts": {
+    "asus": {
+      "dump_bytes": 3172020224,
+      "dump_sha256": "FA979A86E3A586CF17A9C04C41564526A1CC748B8F8182DF431EAF6A5773928C",
+      "snapshot_utc": "2026-11-01T00:53:54.969Z",
+      "offline_reader_log_sha256": "efb62c617c4c234e68ade5e8a64ffd5127422bceeebdd470c67505dbef915b71",
+      "driver_messages_sha256": "75ea73f7f2eb11ce37ea11b6bc027b15b932b18e75ff0ca03cc8ce8a8bdd3158",
+      "fixture": "fixtures/deg2-asus-bos.hex",
+      "billboard": {
+        "schema": 1,
+        "input_sha256": "4d05252f215797c2af3f59301092801068bc0a23a91574da5d7bb30697aef099",
+        "bos_bytes": 112,
+        "capability_count": 6,
+        "billboard_revision": "1.2.2",
+        "preferred_index": 0,
+        "vconn_power_raw": "0x8000",
+        "additional_failure": {
+          "raw": 0,
+          "valid_for_preferred_mode": true,
+          "insufficient_power_reported": false,
+          "no_pd_communication_reported": false
+        },
+        "modes": [
+          {
+            "index": 0,
+            "svid": "0xff00",
+            "mode": 0,
+            "configuration_code": 1,
+            "configuration": "NotAttemptedOrExited",
+            "reported_vdo": "0x2087e000",
+            "reported_eudo": {
+              "usb_mode_code": 2,
+              "cable_speed_code": 4,
+              "cable_type_code": 0,
+              "cable_current_code": 3,
+              "pcie_supported": true,
+              "dp_supported": true,
+              "tbt_supported": true,
+              "host_present": true
+            }
+          },
+          {
+            "index": 1,
+            "svid": "0x8087",
+            "mode": 0,
+            "configuration_code": 1,
+            "configuration": "NotAttemptedOrExited",
+            "reported_vdo": "0x00000001"
+          },
+          {
+            "index": 2,
+            "svid": "0xff01",
+            "mode": 0,
+            "configuration_code": 3,
+            "configuration": "Successful",
+            "reported_vdo": "0x401c0045"
+          }
+        ],
+        "limits": [
+          "Device-reported state; not raw PD packets or proof of freshness",
+          "NotAttemptedOrExited does not distinguish those two outcomes",
+          "Successful reports entry; subsequent operation can still fail",
+          "Zero failure flags do not prove adequate power or fault-free PD",
+          "Cable-speed code is not the host rate or measured throughput"
+        ]
+      },
+      "source_pdos": [
+        "0x2f81912c",
+        "0x0002d12c",
+        "0x0004b12c",
+        "0x000641e0"
+      ],
+      "source_cap_report_count": 2,
+      "reported_contract": {
+        "rdo": "0x1384b12c",
+        "source_object_position": 1,
+        "selected_voltage_mv": 5000,
+        "operating_current_ma": 3000,
+        "nominal_requested_mw": 15000,
+        "usb_communications_capable": true,
+        "capability_mismatch": false,
+        "measured_power": false
+      }
+    },
+    "dell": {
+      "dump_bytes": 2248310784,
+      "dump_sha256": "A7112995C96CF9E6F3ECBB15407AA6643AD5C252957A4994289319726ACBD789",
+      "snapshot_utc": "2026-11-01T00:20:19.337Z",
+      "offline_reader_log_sha256": "d5b7bac25818d23854820c6aed794448570a6f75cba3bbcf34cb8b0767a73597",
+      "driver_messages_sha256": "6081a1c438433e96eed6b505a430e7d7677dda72ab5897416dd00be978fa3cd5",
+      "fixture": "fixtures/deg2-dell-bos.hex",
+      "billboard": {
+        "schema": 1,
+        "input_sha256": "6c9d5b513890f517f4692638807802e07a24c411387450de2628eecd61db8f49",
+        "bos_bytes": 112,
+        "capability_count": 6,
+        "billboard_revision": "1.2.2",
+        "preferred_index": 0,
+        "vconn_power_raw": "0x8000",
+        "additional_failure": {
+          "raw": 0,
+          "valid_for_preferred_mode": false,
+          "insufficient_power_reported": null,
+          "no_pd_communication_reported": null
+        },
+        "modes": [
+          {
+            "index": 0,
+            "svid": "0xff00",
+            "mode": 0,
+            "configuration_code": 3,
+            "configuration": "Successful",
+            "reported_vdo": "0x2087e000",
+            "reported_eudo": {
+              "usb_mode_code": 2,
+              "cable_speed_code": 4,
+              "cable_type_code": 0,
+              "cable_current_code": 3,
+              "pcie_supported": true,
+              "dp_supported": true,
+              "tbt_supported": true,
+              "host_present": true
+            }
+          },
+          {
+            "index": 1,
+            "svid": "0x8087",
+            "mode": 0,
+            "configuration_code": 1,
+            "configuration": "NotAttemptedOrExited",
+            "reported_vdo": "0x00000001"
+          },
+          {
+            "index": 2,
+            "svid": "0xff01",
+            "mode": 0,
+            "configuration_code": 1,
+            "configuration": "NotAttemptedOrExited",
+            "reported_vdo": "0x401c0045"
+          }
+        ],
+        "limits": [
+          "Device-reported state; not raw PD packets or proof of freshness",
+          "NotAttemptedOrExited does not distinguish those two outcomes",
+          "Successful reports entry; subsequent operation can still fail",
+          "Zero failure flags do not prove adequate power or fault-free PD",
+          "Cable-speed code is not the host rate or measured throughput"
+        ]
+      },
+      "source_pdos": [
+        "0x2f81912c",
+        "0x0002d12c",
+        "0x0004b12c",
+        "0x000641e0"
+      ],
+      "source_cap_report_count": 1,
+      "reported_contract": {
+        "rdo": "0x438781e0",
+        "source_object_position": 4,
+        "selected_voltage_mv": 20000,
+        "operating_current_ma": 4800,
+        "nominal_requested_mw": 96000,
+        "usb_communications_capable": true,
+        "capability_mismatch": false,
+        "measured_power": false
+      }
+    }
+  },
+  "comparison": {
+    "bos_difference_offsets": [
+      40
+    ],
+    "asus_bmconfigured_first_byte": "0x35",
+    "dell_bmconfigured_first_byte": "0x17",
+    "same_reported_usb4_eudo": "0x2087e000",
+    "same_advertised_source_pdos": true,
+    "billboard_present_on_successful_dell": true,
+    "fresh_wire_enter_usb_or_accept_recovered": false,
+    "conclusions": [
+      "The device reports different USB4/DP mode states, while all other BOS bytes match.",
+      "State 1 does not distinguish never attempted from subsequently exited.",
+      "The reported EUDO does not establish message timing, freshness or receipt of Accept.",
+      "The identical cable-speed code does not itself explain the difference or justify a rate patch.",
+      "The same source profiles yield different selected contracts; causality remains untested.",
+      "ASUS does not set the two additional failure flags; zero flags do not rule out faults."
+    ],
+    "windows_intervention_status": "No qualified state-changing test; the entry/exit/mux consumer and reversible control remain unidentified."
+  }
+}

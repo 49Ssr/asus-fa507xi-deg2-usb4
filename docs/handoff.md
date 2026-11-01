@@ -1,5 +1,7 @@
 # Independent review and next tests
 
+**Latest offline comparison, 1 November:** DEG2's cached BOS is present even on working Dell. One byte distinguishes USB4-success on Dell from USB4-not-attempted/exited and DP-success on ASUS. Both report the same EUDO and source power profiles. This corrects the specificity of Windows' generic Failed label; it supplies no new hardware result or qualified Windows repair. [Exact comparison, replay tool and next boundary](billboard-comparison.md).
+
 **Preconnected startup completed, 1 November:** powered DEG2 was connected to the same ASUS USB4 port before power-on and left connected, as confirmed by the owner. Both post-sign-in snapshots still show Billboard, no external USB4 router and no RTX 4080 SUPER; display N. The 20-second trace has 471,428 events, zero loss/format errors and 14 unknown formats. This sequence did not enable USB4. Initial BIOS/PD negotiation is outside the capture. [Measured observation](cold-start-observation.md), [structured evidence](../evidence/cold-start-result.json).
 
 The [policy-only trial](role-policy-test-result.md) remains ineffective and rolled back. Earlier preparation/proposed-action notes below are historical.
