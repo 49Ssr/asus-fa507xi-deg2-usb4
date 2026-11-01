@@ -1,0 +1,226 @@
+{
+  "schema": 1,
+  "boundary": "Offline emulation, OS and I2C test doubles only",
+  "driver_sha256": "9b701e2bef6411ac2ecb01cf9819ddeedefd0975a77863726e77009d89d4296c",
+  "driver_file_changed": false,
+  "live_device_calls": 0,
+  "candidate_is_installable_patch": false,
+  "original_recreated_after_candidate": true,
+  "results": {
+    "original": {
+      "responses": [
+        {
+          "status": 0,
+          "reason": 0,
+          "started_outer_targets": 3,
+          "open_inner_targets": 3,
+          "cleanup_calls": 0
+        },
+        {
+          "status": 2,
+          "reason": 1,
+          "started_outer_targets": 3,
+          "open_inner_targets": 0,
+          "cleanup_calls": 1
+        }
+      ],
+      "events": [
+        {
+          "outer_open": "\\DosDevices\\PS88301A"
+        },
+        {
+          "outer_open": "\\DosDevices\\PS88301F"
+        },
+        {
+          "outer_open": "\\DosDevices\\PS883021"
+        },
+        {
+          "version_read": {
+            "register": 1,
+            "success": false,
+            "version": 0
+          }
+        },
+        {
+          "registry_version_test_double": 0
+        },
+        {
+          "registry_status_test_double": "Start update firmware"
+        },
+        {
+          "outer_open": "\\DosDevices\\PS88301A"
+        },
+        {
+          "outer_open": "\\DosDevices\\PS88301F"
+        },
+        {
+          "outer_open": "\\DosDevices\\PS883021"
+        },
+        {
+          "already_open": "\\DosDevices\\PS88301A"
+        },
+        {
+          "outer_close": "\\DosDevices\\PS88301A"
+        },
+        {
+          "outer_close": "\\DosDevices\\PS88301F"
+        },
+        {
+          "outer_close": "\\DosDevices\\PS883021"
+        },
+        {
+          "registry_status_test_double": "Create SPB device fail"
+        }
+      ],
+      "cleanup_injections": 0
+    },
+    "candidate_emulated_cleanup": {
+      "responses": [
+        {
+          "status": 0,
+          "reason": 0,
+          "started_outer_targets": 0,
+          "open_inner_targets": 0,
+          "cleanup_calls": 1
+        },
+        {
+          "status": 2,
+          "reason": 2,
+          "started_outer_targets": 0,
+          "open_inner_targets": 0,
+          "cleanup_calls": 2
+        }
+      ],
+      "events": [
+        {
+          "outer_open": "\\DosDevices\\PS88301A"
+        },
+        {
+          "outer_open": "\\DosDevices\\PS88301F"
+        },
+        {
+          "outer_open": "\\DosDevices\\PS883021"
+        },
+        {
+          "version_read": {
+            "register": 1,
+            "success": false,
+            "version": 0
+          }
+        },
+        {
+          "outer_close": "\\DosDevices\\PS88301A"
+        },
+        {
+          "outer_close": "\\DosDevices\\PS88301F"
+        },
+        {
+          "outer_close": "\\DosDevices\\PS883021"
+        },
+        {
+          "registry_version_test_double": 0
+        },
+        {
+          "registry_status_test_double": "Start update firmware"
+        },
+        {
+          "outer_open": "\\DosDevices\\PS88301A"
+        },
+        {
+          "outer_open": "\\DosDevices\\PS88301F"
+        },
+        {
+          "outer_open": "\\DosDevices\\PS883021"
+        },
+        {
+          "version_read": {
+            "register": 1,
+            "success": true,
+            "version": 16973826
+          }
+        },
+        {
+          "registry_version_test_double": 16973826
+        },
+        {
+          "outer_close": "\\DosDevices\\PS88301A"
+        },
+        {
+          "outer_close": "\\DosDevices\\PS88301F"
+        },
+        {
+          "outer_close": "\\DosDevices\\PS883021"
+        },
+        {
+          "registry_status_test_double": "Device firmware is updated"
+        }
+      ],
+      "cleanup_injections": 1
+    },
+    "control_read_00000000_candidate_False": {
+      "status": 2,
+      "reason": 2,
+      "started_outer_targets": 0,
+      "open_inner_targets": 0,
+      "cleanup_calls": 1
+    },
+    "control_read_00000000_candidate_True": {
+      "status": 2,
+      "reason": 2,
+      "started_outer_targets": 0,
+      "open_inner_targets": 0,
+      "cleanup_calls": 1
+    },
+    "control_read_ffffffff_candidate_False": {
+      "status": 2,
+      "reason": 2,
+      "started_outer_targets": 0,
+      "open_inner_targets": 0,
+      "cleanup_calls": 1
+    },
+    "control_read_ffffffff_candidate_True": {
+      "status": 2,
+      "reason": 2,
+      "started_outer_targets": 0,
+      "open_inner_targets": 0,
+      "cleanup_calls": 1
+    },
+    "control_read_01030002_candidate_False": {
+      "status": 2,
+      "reason": 2,
+      "started_outer_targets": 0,
+      "open_inner_targets": 0,
+      "cleanup_calls": 1
+    },
+    "control_read_01030002_candidate_True": {
+      "status": 2,
+      "reason": 2,
+      "started_outer_targets": 0,
+      "open_inner_targets": 0,
+      "cleanup_calls": 1
+    },
+    "control_read_01030004_candidate_False": {
+      "status": 1,
+      "reason": 0,
+      "started_outer_targets": 3,
+      "open_inner_targets": 3,
+      "cleanup_calls": 0
+    },
+    "control_read_01030004_candidate_True": {
+      "status": 1,
+      "reason": 0,
+      "started_outer_targets": 3,
+      "open_inner_targets": 3,
+      "cleanup_calls": 0
+    },
+    "control_cached_equal": [
+      {
+        "status": 2,
+        "reason": 2,
+        "started_outer_targets": 0,
+        "open_inner_targets": 0,
+        "cleanup_calls": 0
+      }
+    ]
+  }
+}

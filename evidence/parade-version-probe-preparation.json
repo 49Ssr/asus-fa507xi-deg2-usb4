@@ -1,0 +1,22 @@
+{
+  "PreparedUtc": "2026-11-01T14:33:29.6506263Z",
+  "Phase": "Prepared_NotExecuted",
+  "OriginalPreviewBlocked": true,
+  "LiveDeviceCalls": 0,
+  "Copied": [
+    {
+      "Name": "Test-ParadeMcuVersion.ps1",
+      "SHA256": "2F41FB3976DB487608AC7D2B5B0F0881675A1AB88ADC0BA9AE8D62E8F6F2E1EE"
+    },
+    {
+      "Name": "ParadeVersionProbe.cs",
+      "SHA256": "FDA7CD887B0362F560BAA27D6062337A757DD13AAE98AF3283202B8DBAF738E9"
+    }
+  ],
+  "PersistentSettingsChanged": false,
+  "DesktopFolder": "USB4 Retimer Version Test",
+  "OfflineCfuPackageCount": 0,
+  "ImageDetached": true,
+  "guard_tests": "Windows PowerShell 5.1 parser, seven readiness refusals, C# compile and unknown-endpoint refusal before device access",
+  "hardware_probe_executed": false
+}

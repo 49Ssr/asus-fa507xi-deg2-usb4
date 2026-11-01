@@ -1,5 +1,7 @@
 # Parade updater failure: registry, existing dump and native code
 
+**Follow-up:** [driver-byte emulation now reproduces the missing-cleanup/retry path](parade-lifecycle-test.md). A failed version read produces SKIP without cleanup; retry loses the original saved handles. The existing cleanup routine corrects this case inside the emulator. The original hardware read failure and USB4 causality remain unresolved. A guarded version-only probe is prepared separately; no live test or Windows patch has run.
+
 **The ASUS has a concrete Windows retimer-updater failure, separate from the still-unresolved DEG2 negotiation failure.** Read-only registry inspection records `Create SPB device fail` for PS8830 instance 18. The existing ASUS dump retains successful device-file opens followed by an attempt to reopen an already-open resource-hub target. No new capture, firmware command or driver change was needed to find this.
 
 ## Correcting the firmware-version coverage
