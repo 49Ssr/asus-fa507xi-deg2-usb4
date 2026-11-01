@@ -2,7 +2,7 @@
 
 **Local test signing is prepared; no driver has been loaded.** The parser tests were useful but did not establish that the complete filter was ready. This review found and corrected additional kernel-framework and workflow defects before a live load. [Signing route and controlled activation](local-test-signing.md).
 
-At 11:57 UTC, the approved copied test loader and exact certificate trust were prepared and read back after the owner's Secure Boot change. HVCI is still running on the original loader; no driver is installed. Actual test boot, baseline, kernel/HVCI load and hardware rollback remain unperformed. See the signing record above for current activation state.
+At 11:57 UTC, the approved copied test loader and exact certificate trust were prepared and read back after the owner's Secure Boot change. At 12:06 UTC, the actual owned test-loader boot and full LocalTest preflight also passed with TESTSIGNING on and HVCI running. No driver is installed. The interactive baseline has been opened; kernel/HVCI driver load and hardware rollback remain unperformed. See the signing record above for current activation state.
 
 ## What the retained dumps and traces establish
 

@@ -1,7 +1,7 @@
 {
   "schema": 1,
   "date": "2026-11-01",
-  "status": "LocalTestBootPrepared_DriverNeverLoaded_ManualBootPending",
+  "status": "ActualLocalTestBootAndPreflightVerified_BaselinePending_DriverNeverLoaded",
   "latest_hardware_result": "asus-dell-matched-comparison.json",
   "intervention": {
     "device": "ASUS FA507XI UCSI",
@@ -110,7 +110,7 @@
     "cause": "Unresolved"
   },
   "security_or_network_setting_changes": true,
-  "live_test_blocker": "Owned copied test loader and exact trust prepared and verified; awaiting manual test boot, actual security checks and same-boot stock-policy fallback baseline before installation.",
+  "live_test_blocker": "Actual owned test boot and full LocalTest preflight passed. Interactive baseline opened; require a completed fresh same-boot stock-policy fallback baseline before installation.",
   "source_files": [
     {
       "path": "experimental/role-policy/README.md",
@@ -277,8 +277,23 @@
     "driver_installed": false,
     "driver_loaded": false,
     "automatic_restart": false,
-    "actual_test_boot_verified": false,
+    "actual_test_boot_verified": true,
     "baseline_performed": false,
     "hardware_policy_changed": false
+  },
+  "actual_local_test_boot": {
+    "verified_utc": "2026-11-01T12:06:42.3773312Z",
+    "owned_loader_matches": true,
+    "secure_boot": false,
+    "test_signing": true,
+    "hvci_running": true,
+    "code_integrity_flags": "0x283603",
+    "full_preflight_passed": true,
+    "deg2_present": false,
+    "driver_installed": false,
+    "driver_loaded": false,
+    "baseline_completed": false,
+    "hardware_policy_acceptance_verified": false,
+    "usb4_fix_verified": false
   }
 }
