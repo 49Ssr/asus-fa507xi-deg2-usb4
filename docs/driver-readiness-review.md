@@ -2,6 +2,8 @@
 
 **Local test signing is prepared; no driver has been loaded.** The parser tests were useful but did not establish that the complete filter was ready. This review found and corrected additional kernel-framework and workflow defects before a live load. [Signing route and controlled activation](local-test-signing.md).
 
+At 11:57 UTC, the approved copied test loader and exact certificate trust were prepared and read back after the owner's Secure Boot change. HVCI is still running on the original loader; no driver is installed. Actual test boot, baseline, kernel/HVCI load and hardware rollback remain unperformed. See the signing record above for current activation state.
+
 ## What the retained dumps and traces establish
 
 The existing exact-symbol transcripts were rechecked, without opening another live kernel or collecting another dump. ASUS has both cached and PPM-config `UsbDeviceControllerEnabled=0`; Dell has 1 in both places. The loaded ASUS support mask is `0x0f`, compared with Dell `0x1f`. The installed ACPI client's file disassembly supplies the actual internal-IOCTL layout and its policy consumer. [Matched evidence](asus-dell-matched-comparison.md).
@@ -32,7 +34,7 @@ These were preparation defects, not hardware failures or owner mistakes. None wa
 
 ## Qualification boundary
 
-Subsequent read-only readiness check: the live device advertises the filter's required ACPI hardware ID, remains healthy on Microsoft's original binding with no filter properties, and all signed package hashes still match. BIOS/Windows remain the analysed versions. An original-state boot snapshot is now saved privately; no activation was performed. A focused static scan found one direct read and one direct write of the cached policy field, consistent with the previously analysed correction gate/configuration copy. This is not an exhaustive proof against indirect or aliased accesses.
+Earlier read-only readiness check, before the boot preparation above: the live device advertised the filter's required ACPI hardware ID, remained healthy on Microsoft's original binding with no filter properties, and all signed package hashes matched. BIOS/Windows remained the analysed versions. The original-state snapshot was saved without activation at that stage. A focused static scan found one direct read and one direct write of the cached policy field, consistent with the previously analysed correction gate/configuration copy. This is not an exhaustive proof against indirect or aliased accesses.
 
 - **4,631** shared-parser assertions pass, including the measured layout and malformed buffers.
 - **36** assertions execute the actual Driver.c callbacks in user mode with WDF, registry and lower transport doubled. They cover excluded devices, creation failure, internal/external callbacks, pass-through, cancellation/send failure, support-mask arming, short buffers, buffered input/output aliasing and fresh object state.

@@ -1,8 +1,8 @@
 # Local test signing and return to normal boot
 
-**1 November 2026: a private local test-signed copy has been created and cryptographically checked. It has never been installed or loaded.** Its temporary signing key was deleted. No Root/TrustedPublisher trust, BCD setting, Secure Boot setting or Memory Integrity setting was changed during preparation.
+**1 November 2026: a private local test-signed copy has been created and cryptographically checked. It has never been installed or loaded.** Its temporary signing key was deleted. The signing operation itself made no Root/TrustedPublisher, BCD, Secure Boot or Memory Integrity change; subsequent approved boot/trust preparation is recorded below.
 
-The owner has now explicitly approved this temporary development-test route. Original-state snapshot and full BCD export are retained privately. The next owner action is to turn Secure Boot off manually and return to the original analysed Windows entry; the new test loader is created afterward. HVCI remains required. No firmware toggle, copied entry, trust import or driver load has yet been performed.
+**Live preparation, 1 November at 11:57 UTC:** after explicit approval, the owner disabled Secure Boot and returned to the original analysed Windows loader. Elevated readback confirmed test signing still off, HVCI running (`0x3401`), unchanged BIOS/Windows, original boot manager, stock UCSI binding and DEG2 disconnected. The reviewed package signatures and catalog membership were rechecked. Prepare then created one owned copied loader with TESTSIGNING on and imported only the exact public test certificate into Root/TrustedPublisher. Readback verifies the copied entry, exact trust, original default and all other boot-manager fields. The current original loader still has test signing off; HVCI remains running. **No driver is installed or loaded.** Original-state snapshot, full BCD export and actual preparation records are retained privately. Next: manually select the named test entry; verify its actual boot/security state before a same-boot baseline. No automatic reboot occurred.
 
 The earlier runner accepted only Microsoft-signed catalogs. That was a conservative tool restriction, not the only supported development route. Microsoft documents loading locally test-signed drivers with TESTSIGNING enabled; with HVCI, the binary must itself be signed. Secure Boot normally prevents enabling that mode. [Microsoft test-signing requirements](https://learn.microsoft.com/en-us/windows-hardware/drivers/install/the-testsigning-boot-configuration-option).
 
@@ -11,10 +11,10 @@ The earlier runner accepted only Microsoft-signed catalogs. That was a conservat
 | Route | What it needs | Current position |
 | --- | --- | --- |
 | Microsoft hardware signing | Hardware Developer Program/signing access; attestation submissions require an EV certificate. | Not available through an existing local certificate here; external enrollment/access is unconfirmed. It is not a prerequisite to create this private lab package. [Signing options](https://learn.microsoft.com/en-us/windows-hardware/drivers/dashboard/driver-signing-offerings). |
-| Local test signing | Owner-approved temporary Secure Boot off, a separate loader entry with TESTSIGNING on, and trust for this exact test certificate. | Package and guarded scripts prepared. **HVCI must remain running**. Actual activation requires the owner's firmware/reboot actions and has not been performed. |
+| Local test signing | Owner-approved temporary Secure Boot off, a separate loader entry with TESTSIGNING on, and trust for this exact test certificate. | Firmware change and boot/trust preparation completed. **HVCI remains running**. Actual test boot and driver load are pending. |
 | Preproduction signing with Secure Boot on | Microsoft partner submission and explicit device provisioning. | A partner workflow, not an automatic local self-signing shortcut. [Microsoft preproduction guidance](https://learn.microsoft.com/en-us/windows-hardware/drivers/dashboard/driver-signing-offerings#preproduction-signed-drivers). |
 
-The current host reports Secure Boot on, test signing off and HVCI running; native Code Integrity flags are `0xF401`. A 2026 Windows Driver Policy audit file is present, but that alone does not establish the effective policy mode; unprivileged CiTool inspection was denied. No code-integrity policy is disabled by this toolkit. If Windows still blocks a future load, retain its Code Integrity event and stop rather than switching off another protection. [Windows Driver Policy](https://support.microsoft.com/en-us/windows/hardware/drivers/the-windows-driver-policy).
+The original pre-change snapshot reported Secure Boot on, test signing off and HVCI running (`0xF401`). The post-firmware current original loader reports Secure Boot off, test signing off and HVCI running (`0x3401`); TESTSIGNING on is so far verified only in the copied loader's BCD, not in a running test boot. A 2026 Windows Driver Policy audit file is present, but that alone does not establish the effective policy mode; unprivileged CiTool inspection was denied. No code-integrity policy is disabled by this toolkit. If Windows still blocks a future load, retain its Code Integrity event and stop rather than switching off another protection. [Windows Driver Policy](https://support.microsoft.com/en-us/windows/hardware/drivers/the-windows-driver-policy).
 
 ## What was actually signed and verified
 
@@ -24,7 +24,7 @@ The read-only [native verifier](../experimental/role-policy/Signing.Native.cs) u
 
 The official NuGet WDK's Inf2Cat has an internal-tools certificate chain that is not trusted by this host. Its exact bytes are pinned to the separately hash-verified Microsoft WDK archive. The script does not import that tool's signing root or weaken Windows trust to execute it. The actual SignTool executable has a valid Microsoft signature.
 
-## Controlled activation, not yet performed
+## Controlled activation and remaining live stages
 
 Read the [driver review](driver-readiness-review.md) and [experiment](role-policy-experiment.md). This procedure is for the exact analysed ASUS/Windows installation. A separate loader entry shares the same Windows files, registry and driver store; it is **not** a separate isolated installation. Secure Boot is a machine-wide firmware setting. The scripts preserve the original loader/default and do not toggle firmware, disable HVCI or reboot automatically.
 
@@ -41,10 +41,10 @@ Before changing Secure Boot, save work, ensure Windows Recovery is usable and ha
 
 This added baseline is necessary: a production-boot capture versus a test-signing boot would change more than the filter. Only the baseline and filter attachment within the same boot form the intended policy comparison. Neither captures physical PD packets.
 
-The owner-specific output helper binds the exact reviewed package and private paths so there is no manual hash/GUID editing. Its default is Preview. The original-state Snapshot subsequently completed with elevated read access: original loader/boot-manager and security/trust presence are saved privately. No test entry or certificate trust was added. Prepare, Baseline, Install, real Observe, real Rollback and real boot Restore remain unperformed.
+The owner-specific output helper binds the exact reviewed package and private paths so there is no manual hash/GUID editing. Its default is Preview. Snapshot and Prepare have now completed with actual elevated readback. The owner-approved preparation prompt was supplied from the retained explicit approval; no signing, machine, security or package guard was bypassed. A running test boot, Baseline, Install, real Observe, real Rollback and real boot Restore remain unperformed. Do not rerun Snapshot or Prepare; retain the owned record for the next stages and restoration.
 
 ## Source defaults and permission boundary
 
-The [repository rule](../AGENTS.md) says: “Never inject a Firmware-class package, cross-flash another model's firmware, alter Secure Boot/test-signing, or patch Windows binaries as a routine troubleshooting step.” Creating the private signature did not change those settings. Activating this development route is a separate, explicit owner decision; the prepared scripts do not assume that approval.
+The [repository rule](../AGENTS.md) says: “Never inject a Firmware-class package, cross-flash another model's firmware, alter Secure Boot/test-signing, or patch Windows binaries as a routine troubleshooting step.” Creating the private signature did not change those settings. This development route subsequently received explicit owner approval, recorded above; that approval does not extend to disabling HVCI or other protections.
 
 If Windows cannot boot after a driver load, in-Windows scripts cannot guarantee recovery. Use the saved record and Windows Recovery to identify the correct Windows volume and remove only the experiment's verified OEM package offline. Retain the original Microsoft packages. Actual Recovery, kernel loading, HVCI compatibility and physical rollback remain unqualified.

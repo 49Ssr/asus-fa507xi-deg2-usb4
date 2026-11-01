@@ -1,7 +1,7 @@
 {
   "schema": 1,
   "date": "2026-11-01",
-  "status": "LocalTestSignedNeverLoaded_ActivationPendingOwnerDecision",
+  "status": "LocalTestBootPrepared_DriverNeverLoaded_ManualBootPending",
   "latest_hardware_result": "asus-dell-matched-comparison.json",
   "intervention": {
     "device": "ASUS FA507XI UCSI",
@@ -109,8 +109,8 @@
     "active_debugger_or_build_process_on_check": false,
     "cause": "Unresolved"
   },
-  "security_or_network_setting_changes": false,
-  "live_test_blocker": "Owner approval received. Awaiting owner-performed Secure Boot disable and return to original Windows before test-loader preparation; no activation or driver load yet.",
+  "security_or_network_setting_changes": true,
+  "live_test_blocker": "Owned copied test loader and exact trust prepared and verified; awaiting manual test boot, actual security checks and same-boot stock-policy fallback baseline before installation.",
   "source_files": [
     {
       "path": "experimental/role-policy/README.md",
@@ -220,7 +220,8 @@
         "Bytes": 20864,
         "SHA256": "EB12195BCEC59201066A13F143CD350B326385B58F64D1763F50D727D879A4A3"
       }
-    ]
+    ],
+    "scope": "Historical signing operation only; subsequent boot/trust preparation is recorded separately below."
   },
   "review_corrections": [
     "SetFilter before excluded-device return",
@@ -234,7 +235,8 @@
     "test_signing": false,
     "hvci_running": true,
     "code_integrity_flags": "0xF401",
-    "effective_driver_policy_mode": "Not established by unprivileged inspection"
+    "effective_driver_policy_mode": "Not established by unprivileged inspection",
+    "scope": "Historical pre-firmware snapshot; current original-loader flags are below."
   },
   "read_only_boot_snapshot": {
     "Completed": true,
@@ -242,7 +244,8 @@
     "TestEntryCreated": false,
     "TestCertificateTrusted": false,
     "DriverLoaded": false,
-    "PrivateMachineRecordsRetained": true
+    "PrivateMachineRecordsRetained": true,
+    "scope": "Original read-only snapshot, preserved before later Prepare."
   },
   "owner_activation_approval": {
     "Approved": true,
@@ -250,6 +253,32 @@
     "Scope": "Temporary Secure Boot off; owned copied test-signing loader; exact certificate trust; controlled baseline/test/rollback",
     "HVCIMustRemainRunning": true,
     "AutomaticRestart": false,
-    "ActivationPerformed": false
+    "ActivationPerformed": true
+  },
+  "setting_change_scope": {
+    "secure_boot_disabled_by_owner": true,
+    "owned_loader_and_exact_test_certificate_trust_prepared": true,
+    "hvci_setting_changed": false,
+    "network_changed": false,
+    "driver_installed": false
+  },
+  "local_test_boot_preparation": {
+    "completed_utc": "2026-11-01T11:57:22.9900868Z",
+    "phase": "Prepared",
+    "secure_boot": false,
+    "current_original_loader_test_signing": false,
+    "hvci_running": true,
+    "code_integrity_flags": "0x3401",
+    "one_owned_test_entry_created": true,
+    "copied_entry_test_signing_read_back": true,
+    "original_default_and_other_boot_manager_fields_preserved": true,
+    "exact_root_and_publisher_trust_verified": true,
+    "reviewed_package_reverified": true,
+    "driver_installed": false,
+    "driver_loaded": false,
+    "automatic_restart": false,
+    "actual_test_boot_verified": false,
+    "baseline_performed": false,
+    "hardware_policy_changed": false
   }
 }
