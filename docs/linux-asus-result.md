@@ -38,7 +38,7 @@ No new firmware command, experimental driver, mode override or flash was used by
 
 ## Next useful evidence
 
-A matching successful Linux capture on the Dell would qualify the same observer against a working attachment and provide an OS-matched trace for comparison. That comparison is not yet collected. It is more useful than repeating this ASUS test unchanged.
+A matching successful Linux capture on Dell would provide an OS-matched trace, but that route is currently unavailable. The [successful Dell Windows capture](asus-dell-matched-comparison.md) remains the control and already contains native router-detection and device-status records. Neither another boot-menu attempt nor an unchanged Windows capture is selected.
 
 Offline work can continue against the original policy/controller implementation. A Windows repair still needs a specific failing operation and a supported intervention; this result does not supply one.
 
