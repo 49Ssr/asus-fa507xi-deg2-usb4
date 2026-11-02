@@ -1,0 +1,6 @@
+---
+global:
+  dostartx: false
+  checksum: true
+autoterminal:
+  tty1: "/bin/bash /run/archiso/bootmnt/usb4/start-capture.sh"

@@ -782,6 +782,12 @@ Scope: PUBLIC-BOOT-TOOLS. Pinned public source only. No ASUS ITE/PS8830 transpor
 
 [BOOT-TOOL-INTERFACES](../evidence/boot-tools-review.json) `/repository_interfaces`
 
+**C88 — code_fact:** The prepared observer separates external-router presence, pending PCIe authorization, transient loss and ordinary USB fallback. The pinned distribution includes USB4/UCSI/ACPI and tracing support; its SHA256 and detached signature verify.
+
+Scope: LINUX-CAPTURE-KIT. Preparation and14 offline tests only. No real Linux boot, persistence or hardware observation; no raw PD/retimer state, compatible runtime override or Windows repair is established.
+
+[LINUX-CAPTURE-PREPARATION](../evidence/linux-capture-preparation.json) `/prepared_kit`
+
 ## Separate runs and observation limits
 
 | Case | Meaning | Important limit |
@@ -813,6 +819,7 @@ Scope: PUBLIC-BOOT-TOOLS. Pinned public source only. No ASUS ITE/PS8830 transpor
 | ASUS-STORED-20261102 | ASUS BIOS314 stored UEFI settings read on 2 November 2026 | Stored configuration at one timestamp; no paired attachment, resolved Auto policy or controller-state measurement. |
 | ASUS-BILLBOARD-20261102 | ASUS-DEG2 existing fallback connection, standard USB strings read on2 November2026 | Standard device descriptors from one exact binding; no PD packets, vendor diagnostics, retimer state or repaired USB4 link. |
 | PUBLIC-BOOT-TOOLS | Pinned public EFI and USB4 diagnostic reference implementations | Source/archive inspection only; no ASUS boot, installed interface, physical measurement or compatible repair established. |
+| LINUX-CAPTURE-KIT | Prepared SystemRescue13.02 collector, offline validation only | Distribution and code checked; boot, USB persistence and ASUS/Dell hardware capture unexercised. |
 
 ## Software-report timelines
 

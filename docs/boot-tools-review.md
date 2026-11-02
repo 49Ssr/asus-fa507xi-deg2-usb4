@@ -29,3 +29,7 @@ A useful capture would start kernel USB4/UCSI logging before attachment, record 
 A custom read-only EFI application could instead inventory installed firmware protocols and export identified handoff data before Windows. That is an engineering possibility, not an implemented collector. It becomes useful when we name a specific record absent from the current evidence. Neither a replacement form browser nor an EFI image loader automatically reaches the independently running PD/retimer firmware or recovers its past traffic.
 
 [Archive inventories, immutable source pins and code locations](../evidence/boot-tools-review.json). Downloads and inspected source remain private; no executable, driver, boot entry, setting or USB-drive content was installed or changed.
+
+## Later preparation update
+
+The [Linux observation kit](linux-capture.md) is now prepared with a verified stock ISO and a separate capture overlay. Fourteen offline tests pass. It has not been booted or used on real hardware, and no USB device has been written. Earlier descriptions of a possible future collector record the state before this preparation.

@@ -1,0 +1,128 @@
+{
+  "schema": 1,
+  "date": "2026-11-02",
+  "status": "Prepared_NotBootValidated",
+  "question": "Can a later logged Linux comparison distinguish router entry from authorization or missing attachment without installing Linux?",
+  "prepared_kit": {
+    "distribution": {
+      "name": "SystemRescue13.02 amd64",
+      "release_date": "2026-08-01",
+      "official_page": "https://www.system-rescue.org/Download/",
+      "download_url": "https://fastly-cdn.system-rescue.org/releases/13.02/systemrescue-13.02-amd64.iso",
+      "bytes": 1381629952,
+      "sha256": "ad4d670b72859d887c7960142a9a9d36a3e50446694a035e254442f65d6e7572",
+      "signature_url": "https://www.system-rescue.org/releases/13.02/systemrescue-13.02-amd64.iso.asc",
+      "public_key_url": "https://www.system-rescue.org/security/signing-keys/gnupg-pubkey-fdupoux-20210704-v001.pem",
+      "verified_primary_fingerprint": "0FF11AF081E98345594812037091115F8320B897",
+      "verified_signing_subkey": "62989046EB5C7E985ECDF5DD3B0FEA9BE13CA3C9",
+      "verification": "SHA256 matches publisher; GnuPG GOODSIG/VALIDSIG and exit0 against the published key. Trust is undefined in the isolated local keyring; no OS trust-store change.",
+      "original_iso_modified": false
+    },
+    "image_contents": {
+      "kernel_package": "linux-lts6.18.41-1",
+      "python_package": "python3.14.6-1",
+      "package_list_sha256": "78103e02ad31cc86b9b887227f2a0ff2a08e21e768b958cff79b5f17efc874a2",
+      "kernel_image_sha256": "1cfaf167edea55bc0d14e05576049052bdbda7f724ae3a796dcb7658f6ad72f7",
+      "embedded_config_sha256": "34ca6c9c5dffcd18c2db43f01206e6c3213ff19bc1f93f8fc9d9d89172ce1e15",
+      "embedded_config_options": {
+        "CONFIG_TYPEC_UCSI": "m",
+        "CONFIG_UCSI_ACPI": "m",
+        "CONFIG_USB4": "m",
+        "CONFIG_DYNAMIC_DEBUG": "y",
+        "CONFIG_TRACING": "y",
+        "CONFIG_FTRACE": "y"
+      },
+      "config_extraction": "Decode the verified ISO kernel zstd frame, then the embedded IKCFG_ST gzip configuration. Local zstandard0.25.0 used for decompression only; kernel/config remain private.",
+      "limit": "Compiled-in/module capabilities in the pinned distribution; not proof of ASUS module binding, successful boot or exposed tracepoints at runtime."
+    },
+    "collector": {
+      "sources": [
+        {
+          "path": "tools/linux/capture_usb4.py",
+          "sha256": "2a7d80787079324ce2b6231437115a23af1842663406c81bc5047a1901845a61"
+        },
+        {
+          "path": "tools/linux/start-capture.sh",
+          "sha256": "fc015e26cca97b5e20c4c9fd771018d20bb160a1c906e8b0d927f2ff8deb87ff"
+        },
+        {
+          "path": "tools/linux/900-usb4-capture.yaml",
+          "sha256": "9f32e0ffa13dcc8e4112d2b52e6e4574904e05dc8f732d1a3b780ccca2c8f90e"
+        },
+        {
+          "path": "tools/linux/build_bundle.py",
+          "sha256": "f8a601c00ab4d89627e81a179f8ca87ccfe7cbf201f886210caea6b18724d0fc"
+        },
+        {
+          "path": "tools/linux/test_capture_usb4.py",
+          "sha256": "ea17fc40d5c4aa8e926b8d4f1475cfb2c0651c000de8ae9092666558604aa996"
+        }
+      ],
+      "default": "Preview only; capture requires explicit --capture inside the prepared Linux USB.",
+      "capture": [
+        "USB4 router topology, authorization and link attributes",
+        "Type-C roles/mode and cached partner identity when exposed",
+        "USB VID/PID hierarchy and PCIe device inventory",
+        "Kernel log, kernel uevents and available thunderbolt/ucsi/typec tracepoints"
+      ],
+      "persistence": "Exact prepared boot-USB marker and payload hashes, direct vfat mount and independently checked USB storage ancestry. Writes only that boot medium and RAM logging controls, restoring original boot-mount RO state.",
+      "supervision": "Own Popen logger processes, private trace instance, trace statistics, monotonic trace clock when supported,32MiB per-file limit,45-second sampling window.",
+      "classifications": [
+        "ExternalRouterPresentAuthorizationPending",
+        "ExternalRouterPresentRequiresTopologyReview",
+        "ExternalRouterObservedThenAbsent",
+        "DEG2FallbackObservedNoExternalRouter",
+        "AttachmentNotEstablished",
+        "StoppedRequiresReview"
+      ],
+      "does_not_do": [
+        "Automatic PCIe authorization",
+        "Role or USB-mode selection",
+        "Raw controller/register request",
+        "Retimer scan",
+        "Firmware update",
+        "Boot entry or security change",
+        "Internal-volume mount",
+        "Reboot",
+        "Runtime package download"
+      ],
+      "limits": [
+        "No first boot, real USB persistence or actual hardware capture yet.",
+        "No raw CC/PD transcript or applied PS8830 state.",
+        "Router presence alone does not establish native USB4 rather than TBT3-compatible mode.",
+        "New display endpoints need topology review; internal GPU is not counted as a new endpoint.",
+        "Logger/metadata availability and total runtime depend on the kernel;45seconds is the observation window."
+      ]
+    },
+    "validation": {
+      "offline_boundary_tests_passed": 14,
+      "launcher_bash_syntax": "passed",
+      "default_preview": "passed on Windows, without hardware I/O",
+      "wrong_os_capture_guard": "passed before hardware/output access",
+      "real_harmless_logger_child_termination": "passed",
+      "overlay_manifest": "Four payload files independently hash-checked; line endings normalized to LF.",
+      "hardware_qualification": false
+    },
+    "references": [
+      "https://www.system-rescue.org/manual/autoterminal_scripts_on_virtual_terminal/",
+      "https://www.system-rescue.org/manual/Configuring_SystemRescue/",
+      "https://www.system-rescue.org/Installing-SystemRescue-on-a-USB-memory-stick/",
+      "https://docs.kernel.org/admin-guide/thunderbolt.html",
+      "https://github.com/torvalds/linux/blob/69050f8d6d075dc01af7a5f2f550a8067510366f/Documentation/ABI/testing/sysfs-bus-thunderbolt",
+      "https://github.com/torvalds/linux/blob/69050f8d6d075dc01af7a5f2f550a8067510366f/Documentation/ABI/testing/sysfs-class-typec"
+    ]
+  },
+  "owner_action": "No action while remote. Before writing a USB, identify the exact device and verify its original research files are independently preserved. A local boot is a later owner-directed action.",
+  "investigation_limit": "Preparation is not a Linux result or Windows fix. Original firmware-consumer work remains open.",
+  "actions_this_preparation": {
+    "iso_downloaded_and_inspected": true,
+    "isolated_public_keyring_only": true,
+    "live_hardware_capture": 0,
+    "usb_device_writes": 0,
+    "windows_drivers_installed": 0,
+    "windows_features_changed": 0,
+    "boots": 0,
+    "network_configuration_changes": 0,
+    "deletions": 0
+  }
+}

@@ -141,6 +141,11 @@
       "id": "PUBLIC-BOOT-TOOLS",
       "label": "Pinned public EFI and USB4 diagnostic reference implementations",
       "limit": "Source/archive inspection only; no ASUS boot, installed interface, physical measurement or compatible repair established."
+    },
+    {
+      "id": "LINUX-CAPTURE-KIT",
+      "label": "Prepared SystemRescue13.02 collector, offline validation only",
+      "limit": "Distribution and code checked; boot, USB persistence and ASUS/Dell hardware capture unexercised."
     }
   ],
   "stages": [
@@ -1216,6 +1221,16 @@
         "PUBLIC-BOOT-TOOLS"
       ],
       "value_sha256": "f0eb689cc74de0784db7af8fb5950879ac9260081040c48ea498e48461ec05d4"
+    },
+    {
+      "id": "LINUX-CAPTURE-PREPARATION",
+      "path": "evidence/linux-capture-preparation.json",
+      "pointer": "/prepared_kit",
+      "kind": "code",
+      "cases": [
+        "LINUX-CAPTURE-KIT"
+      ],
+      "value_sha256": "5f5a38880d586c80f20ab6effe04bbaeac763a835f6590cc738eaad8940c206b"
     }
   ],
   "claims": [
@@ -2438,6 +2453,19 @@
         "PUBLIC-BOOT-TOOLS"
       ],
       "limit": "Pinned public source only. No ASUS ITE/PS8830 transport, pre-OS collector, executed patch or working Windows repair is qualified by these projects."
+    },
+    {
+      "id": "C88",
+      "basis": "code_fact",
+      "stage": "control",
+      "statement": "The prepared observer separates external-router presence, pending PCIe authorization, transient loss and ordinary USB fallback. The pinned distribution includes USB4/UCSI/ACPI and tracing support; its SHA256 and detached signature verify.",
+      "sources": [
+        "LINUX-CAPTURE-PREPARATION"
+      ],
+      "cases": [
+        "LINUX-CAPTURE-KIT"
+      ],
+      "limit": "Preparation and14 offline tests only. No real Linux boot, persistence or hardware observation; no raw PD/retimer state, compatible runtime override or Windows repair is established."
     }
   ],
   "timeline_limit": "T0 is the first recorded Windows attachment report in each run, not physical insertion. Different runs, platforms, power contracts and capture dates are explicit. These tables align software reports only; proximity does not establish wire order or causation. The earlier Dell control supplies the Dell timeline; the deep Dell dump supplies cached-state comparison.",
