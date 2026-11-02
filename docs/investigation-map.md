@@ -55,6 +55,7 @@ flowchart TD
     RET_MODE_B0["bit0 configuration arm; bit7 test bypassed"]
     RET_MODE_B7["bit7 configuration arm"]
     RET_MODE_SKIP["Skip these two configuration arms"]
+    RET_WINDOWS_READ["Existing Parade read paths: mode observer UNQUALIFIED"]
     ATTACH -->|"documented: controller discovery and mode negotiation"| PD
     PD -.->|"unknown: candidate mode-control path; ASUS ownership/wiring unproven"| RET_CFG
     LINK -.->|"unknown: what makes the native host-port status assert remains untraced"| PORT_REGS
@@ -99,6 +100,7 @@ flowchart TD
     RET_MODE_CODE -->|"traced_code: bit0 set, independent of stable bit7 value"| RET_MODE_B0
     RET_MODE_CODE -->|"traced_code: bit0 clear and bit7 set"| RET_MODE_B7
     RET_MODE_CODE -->|"traced_code: bit0 and bit7 clear"| RET_MODE_SKIP
+    RET_WINDOWS_READ -.->|"unknown: A passive read of the candidate mode inputs has not been qualified"| RET_MODE_CODE
 ```
 
 ### Who owns each part
@@ -142,6 +144,7 @@ flowchart TD
 | RET_MODE_B0 | Retained PS8830 code | Selected for stable masked01 or81 | Protocol interpretation is reference-based; actual ASUS input unobserved. |
 | RET_MODE_B7 | Retained PS8830 code | Selected for stable masked80 | No measured execution or repair result. |
 | RET_MODE_SKIP | Retained PS8830 code | Selected for stable masked00 | Earlier USB3/DP processing is separate; not a global no-mode claim. |
+| RET_WINDOWS_READ | Retained PRHidDrv/PRSpbDrv packages | Cached HID feature versus CFU output and fixed-resource SPB write/read | Desired firmware-to-register alias, matching endpoint and read effects remain unknown. |
 
 ### Branch evidence
 
@@ -191,6 +194,7 @@ flowchart TD
 | RET_MODE_CODE → RET_MODE_B0 | bit0 set, independent of stable bit7 value | traced_code | C60 |
 | RET_MODE_CODE → RET_MODE_B7 | bit0 clear and bit7 set | traced_code | C60 |
 | RET_MODE_CODE → RET_MODE_SKIP | bit0 and bit7 clear | traced_code | C60 |
+| RET_WINDOWS_READ → RET_MODE_CODE | A passive read of the candidate mode inputs has not been qualified | unknown | C61 |
 
 ### Candidate intervention locations
 
@@ -606,6 +610,12 @@ Scope: PS8830-CFU-REFERENCE. A code decision table, not a measured wrong-mode co
 
 [RETIMER-MODE-PRIORITY](../evidence/ps8830-mode-interrupt-path.json) `/mode_priority`
 
+**C61 — code_fact:** The retained Parade packages bind08/18 identities to the HID driver and companions to SPB. Reviewed HID feature replies are cached; output20/25 paths serve firmware delivery. The generic SPB write/read route uses a saved resource-hub connection rather than selecting a slave from the register byte.
+
+Scope: PARADE-DRIVER-REFERENCE. This does not qualify the candidate mode-byte or branch-marker read, establish a physical alias, or prove every alternative interface absent. No live read, endpoint switch or update command was attempted.
+
+[PARADE-MODE-READ-CONTRACT](../evidence/parade-mode-read-contract.json) `/transport_code`
+
 ## Separate runs and observation limits
 
 | Case | Meaning | Important limit |
@@ -631,6 +641,7 @@ Scope: PS8830-CFU-REFERENCE. A code decision table, not a measured wrong-mode co
 | WINDOWS-USB4HRD | Pinned Windows USB4HostRouter native receive and topology implementation | Static code and matched PDB/TMF, not a new physical negotiation trace. |
 | LINUX-PD-REFERENCE | Pinned upstream Linux USB-PD field definitions | Reference field layout, not a measured ASUS PD reply or vendor register/control specification. |
 | PS8830-CFU-REFERENCE | Retained installed-package PS8830 image; software artifact reference | Reconstructed offered image, not an independent readback of either physical retimer or measured active configuration. |
+| PARADE-DRIVER-REFERENCE | Retained original Parade HID/SPB driver binaries and INF packages | Static software artifacts. Binding declarations and code do not measure the live mode, endpoint response or physical firmware alias. |
 
 ## Software-report timelines
 

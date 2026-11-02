@@ -111,6 +111,11 @@
       "id": "PS8830-CFU-REFERENCE",
       "label": "Retained installed-package PS8830 image; software artifact reference",
       "limit": "Reconstructed offered image, not an independent readback of either physical retimer or measured active configuration."
+    },
+    {
+      "id": "PARADE-DRIVER-REFERENCE",
+      "label": "Retained original Parade HID/SPB driver binaries and INF packages",
+      "limit": "Static software artifacts. Binding declarations and code do not measure the live mode, endpoint response or physical firmware alias."
     }
   ],
   "stages": [
@@ -184,7 +189,8 @@
         "C57",
         "C58",
         "C59",
-        "C60"
+        "C60",
+        "C61"
       ]
     },
     {
@@ -903,6 +909,16 @@
         "PS8830-CFU-REFERENCE"
       ],
       "value_sha256": "f9938dd1c2f595c4ad07af700a03529d4c4f5198dec8042c103117b121158632"
+    },
+    {
+      "id": "PARADE-MODE-READ-CONTRACT",
+      "path": "evidence/parade-mode-read-contract.json",
+      "pointer": "/transport_code",
+      "kind": "code",
+      "cases": [
+        "PARADE-DRIVER-REFERENCE"
+      ],
+      "value_sha256": "841f2ec730c7468545e20b1846cdbf6d77bdcf3417217571624e55dec3a332d6"
     }
   ],
   "claims": [
@@ -1755,6 +1771,19 @@
         "PS8830-CFU-REFERENCE"
       ],
       "limit": "A code decision table, not a measured wrong-mode condition. Neither81 nor any arm is observed during the ASUS failure; an input change or marker read is not yet a qualified Windows test."
+    },
+    {
+      "id": "C61",
+      "basis": "code_fact",
+      "stage": "link",
+      "statement": "The retained Parade packages bind08/18 identities to the HID driver and companions to SPB. Reviewed HID feature replies are cached; output20/25 paths serve firmware delivery. The generic SPB write/read route uses a saved resource-hub connection rather than selecting a slave from the register byte.",
+      "sources": [
+        "PARADE-MODE-READ-CONTRACT"
+      ],
+      "cases": [
+        "PARADE-DRIVER-REFERENCE"
+      ],
+      "limit": "This does not qualify the candidate mode-byte or branch-marker read, establish a physical alias, or prove every alternative interface absent. No live read, endpoint switch or update command was attempted."
     }
   ],
   "timeline_limit": "T0 is the first recorded Windows attachment report in each run, not physical insertion. Different runs, platforms, power contracts and capture dates are explicit. These tables align software reports only; proximity does not establish wire order or causation. The earlier Dell control supplies the Dell timeline; the deep Dell dump supplies cached-state comparison.",
@@ -2309,6 +2338,14 @@
         "interface": "Selected for stable masked00",
         "limit": "Earlier USB3/DP processing is separate; not a global no-mode claim.",
         "decision": false
+      },
+      {
+        "id": "RET_WINDOWS_READ",
+        "label": "Existing Parade read paths: mode observer UNQUALIFIED",
+        "owner": "Retained PRHidDrv/PRSpbDrv packages",
+        "interface": "Cached HID feature versus CFU output and fixed-resource SPB write/read",
+        "limit": "Desired firmware-to-register alias, matching endpoint and read effects remain unknown.",
+        "decision": false
       }
     ],
     "edges": [
@@ -2769,6 +2806,16 @@
         "basis": "traced_code",
         "claims": [
           "C60"
+        ],
+        "standards": []
+      },
+      {
+        "from": "RET_WINDOWS_READ",
+        "to": "RET_MODE_CODE",
+        "label": "A passive read of the candidate mode inputs has not been qualified",
+        "basis": "unknown",
+        "claims": [
+          "C61"
         ],
         "standards": []
       }

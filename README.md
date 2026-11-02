@@ -1,6 +1,6 @@
 # ASUS FA507XI / Minisforum DEG2 USB4 investigation
 
-**Retimer code finding:** the candidate mode flags are processed in an interrupt handler. Bit0 takes precedence over bit7: stable masked81 takes the bit0 arm, while80 takes bit7. [Original-code decision table](evidence/ps8830-mode-interrupt-path.json). No such input was measured during the ASUS failure, so this is a diagnostic distinction rather than an identified wrong-mode fault.
+**Current access gap:** the firmware mode decision is traced, but the existing Windows paths do not yet provide a qualified read of its inputs. HID status is cached, firmware-output reports can alter update state, and SPB reads use fixed endpoints. [Code and remaining requirements](evidence/parade-mode-read-contract.json). No hardware test is queued; the wrong-mode hypothesis remains unmeasured.
 
 **D8/D9 branch bounded:** its caller and selector flags are mapped, but no USB4-entry meaning is established. A partial pair failure can leave the old software latch without a compensating request, so that latch is not a validated rollback mechanism. [Decision table and original-code scope](evidence/ec-vendor-request-selection.json). This repair lead is deferred; no hardware test is queued.
 

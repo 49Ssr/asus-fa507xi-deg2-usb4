@@ -1,0 +1,173 @@
+{
+  "schema": 1,
+  "date": "2026-11-02",
+  "interval": 13,
+  "transport_code": {
+    "artifact_scope": "Retained original Parade driver copies and INF files; no live calls, installation or current controller state read.",
+    "drivers": {
+      "PRHidDrv": {
+        "sha256": "9b701e2bef6411ac2ecb01cf9819ddeedefd0975a77863726e77009d89d4296c",
+        "inf_sha256": "3e578abc9737caaeb15eb5b724bf2633db3ef4f3e5749de056565b11940d538a",
+        "inf_hardware_ids": [
+          "PS883008",
+          "PS883010",
+          "PS883018",
+          "PS883020",
+          "PS883028",
+          "PS883030"
+        ],
+        "spans": [
+          {
+            "rva_start_hex": "1000",
+            "rva_end_exclusive_hex": "119f",
+            "sha256": "ade79eb7129345b0d497df9374f8776d4de785da487f48fd05eb424dc36f79f6"
+          },
+          {
+            "rva_start_hex": "1406",
+            "rva_end_exclusive_hex": "1421",
+            "sha256": "de5b6b4f2f52d4ddf60921dd880af51d5bc764c348a67110a1a9ce6a90fc98c5"
+          },
+          {
+            "rva_start_hex": "14ac",
+            "rva_end_exclusive_hex": "14d8",
+            "sha256": "c335ff0ce51c146d91c98ba0921b6fbb8c6f4dbb33844a623f83d81e2cf18757"
+          },
+          {
+            "rva_start_hex": "1624",
+            "rva_end_exclusive_hex": "1651",
+            "sha256": "e892a90d6b11f8b252f825311d223d2819ace28f269e4c75af27fe9a9b18b4ea"
+          },
+          {
+            "rva_start_hex": "18c0",
+            "rva_end_exclusive_hex": "192f",
+            "sha256": "a7aeacc3a42bb06256d91b2ca5286dc1c30998e7f1019d1ba89fae4e4359cd77"
+          }
+        ]
+      },
+      "PRSpbDrv": {
+        "sha256": "a366fafb3fe15f466d6ce0f302dcc5430b9964a6339ceaf10182ad0b94f8925c",
+        "inf_sha256": "23a5b503d8ada0ef2521a3069a46c7774f8c4bc516e0c293a4b65f4436ce829b",
+        "inf_hardware_ids": [
+          "PS88300A",
+          "PS88300F",
+          "PS883011",
+          "PS883012",
+          "PS883017",
+          "PS883019",
+          "PS88301A",
+          "PS88301F",
+          "PS883021",
+          "PS883022",
+          "PS883027",
+          "PS883029",
+          "PS88302A",
+          "PS88302F",
+          "PS883031",
+          "PS883032",
+          "PS883037",
+          "PS883039"
+        ],
+        "spans": [
+          {
+            "rva_start_hex": "21a1",
+            "rva_end_exclusive_hex": "21d1",
+            "sha256": "a6ccb18dbc7f759b3c8c5ceb4748295eaaabc7a7ecf1914586bcace762b59bce"
+          },
+          {
+            "rva_start_hex": "226d",
+            "rva_end_exclusive_hex": "2278",
+            "sha256": "f6fa865a82d858923786ea8dab1b6560943a449fac1c2a904cc87bb9667ff28e"
+          },
+          {
+            "rva_start_hex": "3ff9",
+            "rva_end_exclusive_hex": "4049",
+            "sha256": "5eef52bec8eef5fbc76abd01d7f4744678c78d52ad0eaf0c696a57e6c7df43dc"
+          },
+          {
+            "rva_start_hex": "4f37",
+            "rva_end_exclusive_hex": "4fd9",
+            "sha256": "ea26b4a45ed21a63cbbff259e5b9baaa71a560e4f6ac01a7762ca19850b5d118"
+          },
+          {
+            "rva_start_hex": "507d",
+            "rva_end_exclusive_hex": "50cb",
+            "sha256": "51c045fcfc757bef27fee0fe4204af305d21d274de2b5bd384a5b06b208fce23"
+          }
+        ]
+      }
+    },
+    "inf_routing": {
+      "HID_family_ids_present": [
+        "PS883008",
+        "PS883018"
+      ],
+      "SPB_family_ids_present": [
+        "PS88300A",
+        "PS88300F",
+        "PS883011",
+        "PS88301A",
+        "PS88301F",
+        "PS883021"
+      ],
+      "meaning": "The retained INF files assign the08/18 identities to PRHidDrv and the listed companion identities to PRSpbDrv. These are package bindings, not current hardware-state measurements."
+    },
+    "hid_get_feature": {
+      "entry_rva_hex": "1000",
+      "accepted_report_hex": "20",
+      "minimum_bytes": 61,
+      "operation": "Builds the response from driver-context version/status fields and completes the VHF operation. The reviewed body does not request a live connection-mode or branch-marker read.",
+      "existing_result": "This cached-reply property was already known; it is reused here to qualify the newly identified mode-observation question."
+    },
+    "hid_output": {
+      "entry_rva_hex": "12b0",
+      "reports_tested_hex": [
+        "20",
+        "25"
+      ],
+      "report25": "Offer processing: may initialize SPB targets, compare firmware metadata and prepare update state. It is not a newly identified generic register-read report.",
+      "report20": "Payload handling can call firmware programming2d88, then firmware dump2cc0 for readback/verification. A name containing dump does not qualify passive runtime RAM/status access.",
+      "limit": "Only these original callback branches were reviewed; this is not an exhaustive proof that no other installed interface can expose status."
+    },
+    "spb_read_route": {
+      "dispatch_rva_hex": "21a1",
+      "external_ioctl_hex": "04001c10",
+      "read_call_rva_hex": "2273",
+      "read_helper_rva_hex": "4d58",
+      "initialisation_helper_rva_hex": "3f68",
+      "operation": "The initialization helper builds a RESOURCE_HUB path from a saved connection ID. The read helper constructs a write/read transfer sequence and submits it through the saved request/target. Caller buffers supply transfer data and lengths; this reviewed path does not select a new slave address from the register byte.",
+      "lower_sequence_ioctl_hex": "00041808",
+      "limit": "The fixed connection still needs the correct target, power/access prerequisites and register/page semantics. A read of register2 on the version endpoint is not independently qualified as the firmware mode byte2."
+    },
+    "mode_observer_status": "No reviewed existing path is qualified to read the candidate connection bytes, interrupt gate or internal branch marker while preserving the failed attachment state.",
+    "missing": [
+      "A proven mapping from the desired firmware byte to an accessible bus register/page.",
+      "A matching endpoint and resource ownership path for that register.",
+      "Read side effects and power/reset requirements, including whether the interface remains available during the failed pairing."
+    ],
+    "already_failed_read": "The earlier version read failed without returned data. No retry, changed endpoint, HID output, reset or driver rebind was performed."
+  },
+  "windows_reference": {
+    "url": "https://learn.microsoft.com/en-us/windows-hardware/drivers/spb/connection-ids-for-spb-connected-peripheral-devices",
+    "page_date": "2021-12-14",
+    "checked_date": "2026-11-02",
+    "summary": "Windows assigns a connection ID to ACPI-supplied bus/controller/address/clock settings. A peripheral driver opens that connection through the resource hub. Ordinary user applications cannot open an SPB logical connection directly.",
+    "scope": "Windows architecture reference, not a test of these devices or proof of the firmware register alias."
+  },
+  "useful_path_audit": {
+    "read_route": "Current code qualification does not produce a passive mode observer. Reusing a named SPB read alone is insufficient because its target is fixed and the desired alias is unknown.",
+    "reference_lookup": "Two targeted primary-source searches returned the existing Infineon Host SDK guide but no qualified PS8830 implementation source. No exhaustive source-availability claim follows.",
+    "remaining_specific_path": "Inspect the already identified official ASUS service-guide board pages for a readable board revision and actual component/package labels around the USB-C path; compare variants explicitly. Then follow a concrete manufacturer source-distribution link only if it exposes the PS8830 interface implementation. Do not repeat unnamed-register or EC scans.",
+    "stop_rule": "After this finite source/board qualification, if no new observable or interface becomes identifiable, disable recurring work and report the missing controller-state observation rather than consuming the remaining allowance."
+  },
+  "actions": {
+    "new_hardware_requests": 0,
+    "driver_installs": 0,
+    "test_boots": 0,
+    "firmware_writes": 0,
+    "files_deleted": 0
+  },
+  "quality": {
+    "first_hash_literal_error": "An incorrectly transcribed expected hash stopped the private script before any public output or model mutation. The original failed script is preserved; the corrected expected hash matches the pinned original binary.",
+    "context_fragments": "Mid-instruction context starts were excluded; claims use exact RVA/file mappings and checked byte spans."
+  }
+}
