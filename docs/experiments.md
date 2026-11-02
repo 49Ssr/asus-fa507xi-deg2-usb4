@@ -14,7 +14,7 @@ This is the current summary. Completed, inconclusive and prepared tests are sepa
 | Powered DEG2 connected before ASUS startup | No router/GPU in post-startup capture | This startup attempt did not repair the pairing; initial negotiation was outside the trace. [Record](cold-start-observation.md) |
 | Stored USB4/TBT3 settings read | Both enabled; RT0 Auto, RT1 Disabled | These stored values alone do not identify the failed applied state. [Record](../evidence/firmware-settings-read.json) |
 | Standard Billboard descriptors/strings | Read successfully; generic help/status metadata | No qualified vendor log or raw PD record recovered. [Record](../evidence/billboard-strings-result.json) |
-| Linux comparison | Prepared; software/startup checks completed; hardware not yet run | Next owner-directed observation. [Guide](linux-capture.md) |
+| Linux attachment on ASUS | Booted and saved to USB; 10 Gbps USB hub present, no external router/new PCIe device observed | Reproduces the failure outside Windows with OS PCIe control granted. Entry/retimer/training state remains unresolved. [Result](linux-asus-result.md) |
 
 ## Not selected for repetition
 

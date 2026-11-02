@@ -16,7 +16,7 @@ The ASUS FA507XI/DEG2 failure is unresolved; no Windows repair is demonstrated. 
 
 Windows role correction succeeds and ordinary USB enumeration follows. Dell's different role ordering is a correlation, not a proven cause. Final router absence does not prove a link never existed. Separate wire observations, code facts, software reports and hypotheses.
 
-The Linux kit is an observer, not a repair or a raw PD recorder. Current source/kit revisions and checks are recorded in evidence. Actual USB persistence and ASUS/Dell hardware capture remain untested. PCIe authorization pending is different from failed router detection; internal GPU inventory is not external-GPU success.
+The Linux kit is an observer, not a repair or a raw PD recorder. Current source/kit revisions and checks are recorded in evidence. The first ASUS Linux capture saved to USB and reproduced fallback with no observed external router or new PCIe device. A matching Dell Linux capture remains uncollected. See docs/linux-asus-result.md; do not repeat ASUS unchanged. PCIe authorization pending is different from failed router detection; internal GPU inventory is not external-GPU success.
 
 ## Owner constraints
 

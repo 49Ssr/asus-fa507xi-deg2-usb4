@@ -104,5 +104,7 @@
     "bios_or_security_changes": 0,
     "network_configuration_changes": 0
   },
-  "failed_attempts": "The initial GnuPG/VM setup errors, one fixture assertion, shorter VM observations and serial timeout remain private. They are not hardware-failure evidence."
+  "failed_attempts": "The initial GnuPG/VM setup errors, one fixture assertion, shorter VM observations and serial timeout remain private. They are not hardware-failure evidence.",
+  "later_hardware_result": "evidence/linux-asus-result.json",
+  "historical_scope": "Preparation/audit observations retain their original scope. The later hardware result records the completed ASUS boot and USB persistence separately."
 }

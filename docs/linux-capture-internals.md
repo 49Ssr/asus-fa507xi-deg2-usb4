@@ -32,7 +32,7 @@ The collector does not authorize a router, switch a data/power role, force a mod
 
 The audit covers offline boundary tests and complete-flow simulations using fixture observations and temporary files. They include pending authorization, no host router, early attachment, interrupted preconnected history, logger-start failure, mount restoration, output manifests and source-record freshness. A harmless real child process verifies logger termination.
 
-A headless QEMU UEFI guest booted the live environment, started the console launcher and reached the unsupported-model guard. The VM had no network, host-disk access, hardware passthrough or emulated USB4 controller. This checks the startup mechanism and guard; it does not test USB persistence or ASUS negotiation. Those remain unexercised.
+A headless QEMU UEFI guest booted the live environment, started the console launcher and reached the unsupported-model guard. The VM had no network, host-disk access, hardware passthrough or emulated USB4 controller. That VM trial checks startup and scope rejection only. The later [physical ASUS run](linux-asus-result.md) separately verified boot-USB saving and observed USB fallback; it did not expose the missing PD/retimer decision. A matching Dell Linux run remains uncollected.
 
 Source hashes, test results and the VM receipt are recorded in [the audit](../evidence/linux-kit-audit.json). The older preparation record remains intact as history.
 

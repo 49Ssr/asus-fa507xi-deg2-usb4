@@ -1,0 +1,263 @@
+{
+  "schema": 1,
+  "date": "2026-11-02",
+  "case": "ASUS-LINUX-01",
+  "observations": {
+    "laptop_model": "ASUS FA507XI",
+    "systemrescue": "13.02",
+    "kernel": "6.18.41-1-lts",
+    "collector_sha256": "fdeed551c605c84f05a660e5f80dad1d34c1626375b4428de5066734ab94244a",
+    "manifest_entries_verified": 11,
+    "files_copied_and_verified": 12,
+    "originals_changed": false,
+    "attachment_timing": "connect_at_prompt",
+    "sample_count": 45,
+    "sample_span_seconds": 45.000246158,
+    "snapshot_read_errors": 0,
+    "replayed_result_matches": true,
+    "result": "DEG2FallbackObservedNoExternalRouter",
+    "external_router_observed_in_samples": false,
+    "new_pci_devices": 0,
+    "host_router_present_before_and_after": true,
+    "host_domain_security": "user",
+    "iommu_dma_protection": "1",
+    "os_control_granted": [
+      "USB3",
+      "DisplayPort",
+      "PCIe",
+      "XDomain"
+    ],
+    "firmware_connector_path": "\\_SB_.UBTC.CR01",
+    "usb_controller_path": "\\_SB_.PCI0.GP19.XHC3",
+    "final_host_data_role": "host",
+    "final_host_power_role": "sink",
+    "ucsi_connector_events": [
+      {
+        "seconds_since_boot": 82.921329,
+        "change_hex": "4000",
+        "opmode": 5,
+        "connected": true,
+        "sourcing": false,
+        "partner_flags": 1,
+        "partner_type": 1
+      },
+      {
+        "seconds_since_boot": 83.018129,
+        "change_hex": "0244",
+        "opmode": 3,
+        "connected": true,
+        "sourcing": false,
+        "partner_flags": 1,
+        "partner_type": 1
+      },
+      {
+        "seconds_since_boot": 83.211345,
+        "change_hex": "0900",
+        "opmode": 3,
+        "connected": true,
+        "sourcing": false,
+        "partner_flags": 2,
+        "partner_type": 2
+      }
+    ],
+    "usb_devices": [
+      {
+        "vid": "1d5c",
+        "pid": "5801",
+        "product": "USB2.0 Hub",
+        "reported_mbps": "480",
+        "first_sample_seconds_after_prompt": 7.76629
+      },
+      {
+        "vid": "0bda",
+        "pid": "5420",
+        "product": "4-Port USB 2.0 Hub",
+        "reported_mbps": "480",
+        "first_sample_seconds_after_prompt": 7.76629
+      },
+      {
+        "vid": "041f",
+        "pid": "d002",
+        "product": "DEG2",
+        "reported_mbps": "12",
+        "first_sample_seconds_after_prompt": 7.76629
+      },
+      {
+        "vid": "8087",
+        "pid": "5787",
+        "product": "USB3 HUB",
+        "reported_mbps": "10000",
+        "first_sample_seconds_after_prompt": 7.76629
+      },
+      {
+        "vid": "0bda",
+        "pid": "0420",
+        "product": "4-Port USB 3.0 Hub",
+        "reported_mbps": "10000",
+        "first_sample_seconds_after_prompt": 7.76629
+      },
+      {
+        "vid": "0bda",
+        "pid": "8156",
+        "product": "USB 10/100/1G/2.5G LAN",
+        "reported_mbps": "5000",
+        "first_sample_seconds_after_prompt": 8.940747
+      },
+      {
+        "vid": "152d",
+        "pid": "0583",
+        "product": "USB to PCIE Bridge",
+        "reported_mbps": "10000",
+        "first_sample_seconds_after_prompt": 8.940747
+      }
+    ],
+    "registered_partner_altmode": {
+      "svid": "ff01",
+      "mode": 1,
+      "vdo": "001c0045",
+      "active_state": null
+    },
+    "trace_statistics": {
+      "overrun": 0,
+      "commit overrun": 0,
+      "dropped events": 0,
+      "read events": 72
+    },
+    "trace_scope": "Thunderbolt host configuration traffic and UCSI connector reports; not a raw PD-wire record.",
+    "router_detected_bit13_sampled": false,
+    "stock_kernel_tx_error_packets": [
+      "type=TB_CFG_PKG_ERROR, size=3, domain=0, route=0, error=0x7, port=6, plug=0x2, data=[0x00000000, 0x00000000, 0x80000607]",
+      "type=TB_CFG_PKG_ERROR, size=3, domain=0, route=0, error=0x7, port=7, plug=0x2, data=[0x00000000, 0x00000000, 0x80000707]"
+    ],
+    "secondary_storage_symptom": "The JMicron USB-storage bridge reports not-ready/capacity errors. No causal link to missing USB4 entry is established."
+  },
+  "source_decode": {
+    "linux_tag": "v6.18.41",
+    "resolved_commit": "2fe596715f840d053aed5cee5455f701bdcd2b50",
+    "sources": [
+      {
+        "path": "drivers/usb/typec/ucsi/ucsi.h",
+        "commit": "2fe596715f840d053aed5cee5455f701bdcd2b50",
+        "url": "https://github.com/gregkh/linux/blob/2fe596715f840d053aed5cee5455f701bdcd2b50/drivers/usb/typec/ucsi/ucsi.h",
+        "sha256": "dabac175703106f4043989fb72ef4f47b2d53c82f294482d75c3d516b17e0f8a"
+      },
+      {
+        "path": "drivers/thunderbolt/tb_msgs.h",
+        "commit": "2fe596715f840d053aed5cee5455f701bdcd2b50",
+        "url": "https://github.com/gregkh/linux/blob/2fe596715f840d053aed5cee5455f701bdcd2b50/drivers/thunderbolt/tb_msgs.h",
+        "sha256": "553b546d7945f268c08659863813e897bf12e7ebd89b6da9fb9805fcc067b602"
+      },
+      {
+        "path": "drivers/thunderbolt/ctl.c",
+        "commit": "2fe596715f840d053aed5cee5455f701bdcd2b50",
+        "url": "https://github.com/gregkh/linux/blob/2fe596715f840d053aed5cee5455f701bdcd2b50/drivers/thunderbolt/ctl.c",
+        "sha256": "29c40395f79f0f155a8c1d94d2e3d0f2af4073102308e712c349e2bf99ca179b"
+      },
+      {
+        "path": "drivers/thunderbolt/tb.c",
+        "commit": "2fe596715f840d053aed5cee5455f701bdcd2b50",
+        "url": "https://github.com/gregkh/linux/blob/2fe596715f840d053aed5cee5455f701bdcd2b50/drivers/thunderbolt/tb.c",
+        "sha256": "2e36868d5a2d1cc3bfea7a161584688d69ee235ed41aff1c19f517d3a1df9422"
+      },
+      {
+        "path": "drivers/thunderbolt/tb_regs.h",
+        "commit": "2fe596715f840d053aed5cee5455f701bdcd2b50",
+        "url": "https://github.com/gregkh/linux/blob/2fe596715f840d053aed5cee5455f701bdcd2b50/drivers/thunderbolt/tb_regs.h",
+        "sha256": "eb8d6553f45fe68b4f7d4dfc6608c13c432193b920764e9ef083253beebb0c9e"
+      },
+      {
+        "path": "drivers/thunderbolt/usb4.c",
+        "commit": "2fe596715f840d053aed5cee5455f701bdcd2b50",
+        "url": "https://github.com/gregkh/linux/blob/2fe596715f840d053aed5cee5455f701bdcd2b50/drivers/thunderbolt/usb4.c",
+        "sha256": "a1404fef0de504bb2f3c53aa74f7b584d9d6ca5840596bf0caffc977769f395c"
+      },
+      {
+        "path": "drivers/thunderbolt/switch.c",
+        "commit": "2fe596715f840d053aed5cee5455f701bdcd2b50",
+        "url": "https://github.com/gregkh/linux/blob/2fe596715f840d053aed5cee5455f701bdcd2b50/drivers/thunderbolt/switch.c",
+        "sha256": "0c74a1a74968f884d829590a208e0f0e8cc3765dbdfc124f9f794736ee9e94d5"
+      }
+    ],
+    "ack_decode": {
+      "value": 7,
+      "enum": "TB_CFG_ERROR_ACK_PLUG_EVENT",
+      "function": "tb_cfg_ack_plug",
+      "meaning": "Host acknowledgement of plug/unplug notifications, carried in the ERROR packet class. These transmitted frames are not firmware rejection replies."
+    },
+    "ucsi_decode": {
+      "partner_type_1": "DFP",
+      "partner_type_2": "UFP",
+      "opmode_3": "USB Power Delivery",
+      "opmode_5": "Type-C 3.0 A"
+    },
+    "limits": "Definitions identify reported status and acknowledgement semantics. They do not prove an Enter_USB packet, retimer setting, native link training state or a successful repair."
+  },
+  "raw_files": [
+    {
+      "name": "before.private.json",
+      "bytes": 23477,
+      "sha256": "b54d9f1070e5a9da993bbb4a9c91b0a5f1f02c47410daa45a320160a0100eb7c"
+    },
+    {
+      "name": "initial.private.json",
+      "bytes": 23477,
+      "sha256": "125bac3b0255db6645021387b34a01350d46d128f3f4b7e597033ff5a8bfefc7"
+    },
+    {
+      "name": "kernel.private.log",
+      "bytes": 101470,
+      "sha256": "bb4f4d812c76f0a3867952532541afcc1ccd70f0cfc908255ff8ef33178bf963"
+    },
+    {
+      "name": "logging.private.json",
+      "bytes": 335,
+      "sha256": "f3c35f70c93e61e5eab56c8a885bb9b4e03d6e55cad9db59d3fd852ab10ddd32"
+    },
+    {
+      "name": "manifest.private.json",
+      "bytes": 1028,
+      "sha256": "7d772011a62dd21acffde5639a6b4e5a0a30215839b158da04c12792bbbdf829"
+    },
+    {
+      "name": "phase.private.json",
+      "bytes": 141,
+      "sha256": "79252943e6b6a68eecfc0d3a39b85a86559c9a0f9d576cab805927ac7552fbad"
+    },
+    {
+      "name": "result.private.json",
+      "bytes": 726,
+      "sha256": "0f143b7ea216abf840f31bd5c4c4b86c5ece0eb4b8c4b0a17d335e51e36b44a4"
+    },
+    {
+      "name": "run.private.json",
+      "bytes": 342,
+      "sha256": "187e390743d894b1236ec5ac6ddf2a194820f45a4f17428e5bcc8c8418564211"
+    },
+    {
+      "name": "samples.private.jsonl",
+      "bytes": 1054874,
+      "sha256": "e88b0d8a8be389824fa5b19eca65d18d9cb37174f1d543fa47a7bc42eb071801"
+    },
+    {
+      "name": "trace-stats.private.json",
+      "bytes": 2491,
+      "sha256": "789bf9c4ec3523078afe2102b1eeeaf787c75698d40736f06c9767f9c682f8df"
+    },
+    {
+      "name": "trace.private.log",
+      "bytes": 14823,
+      "sha256": "77a794a8af9367d2eb1976639443dc8d9c7a21a0fd7150c3fbad374d0c3c7aa8"
+    },
+    {
+      "name": "uevents.private.log",
+      "bytes": 26373,
+      "sha256": "83e5cba500ffb694b70823167d0f528457996229a4dba7716f73fcd028fa00e2"
+    }
+  ],
+  "interpretation": {
+    "supported": "The USB-only failure reproduces under another OS with OS PCIe control granted and a host router present. A cause confined to the installed Windows or GPU driver is insufficient.",
+    "unknown": "Omitted or rejected entry request, routing/retimer configuration, failed training and a sub-sample transient link remain unseparated.",
+    "authorization_limit": "The domain security mode is user, but no external router was exposed to authorize. Blind authorization is not a demonstrated repair.",
+    "next": "Analyze a matching working Linux Dell capture if collected; otherwise follow the exact controller/policy implementation. No unchanged ASUS repeat or guessed register write is selected."
+  }
+}

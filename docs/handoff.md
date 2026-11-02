@@ -4,7 +4,7 @@ The current objective is to identify the first failed USB4 transition on the RT0
 
 1. Read [current findings](status.md) and [the connection explanation](connection.md).
 2. Use [experiment results](experiments.md) to avoid repeating completed or invalid comparisons.
-3. For the selected later observation, use only [the current Linux guide](linux-capture.md).
+3. Read the [completed ASUS Linux result](linux-asus-result.md). A matching Dell Linux capture is uncollected; no unchanged ASUS repeat is selected. Use [the current Linux guide](linux-capture.md) for any owner-directed control.
 4. For offline work, follow the original RT0/PBS policy consumer or a source-matched controller log interface. [Windows repair research](windows-repair-route.md) describes the missing records.
 
 ## State to preserve

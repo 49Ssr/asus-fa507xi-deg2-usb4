@@ -13,7 +13,7 @@ Read [the capture guide](../docs/linux-capture.md) before preparing media. The s
 | [start-capture.sh](linux/start-capture.sh), [console configuration](linux/900-usb4-capture.yaml) | Start the collector on the live console |
 | [test_capture_usb4.py](linux/test_capture_usb4.py) | Offline boundary and capture-flow checks; no real device/mount operations |
 
-Startup/model rejection has been checked in a VM. Actual boot-USB saving and ASUS capture still need hardware validation. The collector does not authorize PCIe devices, change roles/modes, scan retimers, flash firmware or reboot.
+Startup/model rejection was checked in a VM. The later [ASUS hardware run](../docs/linux-asus-result.md) booted and saved its capture to USB, reproducing USB fallback without an observed external router. A matching Dell Linux capture remains uncollected. The collector does not authorize PCIe devices, change roles/modes, scan retimers, flash firmware or reboot.
 
 ## Windows readers already used
 

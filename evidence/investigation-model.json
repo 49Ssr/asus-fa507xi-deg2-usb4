@@ -151,6 +151,11 @@
       "id": "LINUX-VM-STARTUP",
       "label": "Isolated live Linux VM startup",
       "limit": "Virtual DVD, no host disks, network, passthrough or USB4 emulation; startup and model guard only."
+    },
+    {
+      "id": "ASUS-LINUX-01",
+      "label": "Fresh ASUS DEG2 attachment under SystemRescue 13.02 / Linux 6.18.41",
+      "limit": "One owner-directed attachment; software reports and enabled tracepoints, not a raw PD or applied retimer measurement."
     }
   ],
   "stages": [
@@ -1256,6 +1261,26 @@
         "LINUX-VM-STARTUP"
       ],
       "value_sha256": "e2f1775199bd382e8b70add22842014a8e30f74126440b3e38c01c9853a7fc39"
+    },
+    {
+      "id": "LINUX-ASUS-OBSERVATION",
+      "path": "evidence/linux-asus-result.json",
+      "pointer": "/observations",
+      "kind": "capture",
+      "cases": [
+        "ASUS-LINUX-01"
+      ],
+      "value_sha256": "96a086eb3d26ae37ba6d7c30753ff9fa78049ba79f01c38367054a3af9a8a2ee"
+    },
+    {
+      "id": "LINUX-ASUS-DECODE",
+      "path": "evidence/linux-asus-result.json",
+      "pointer": "/source_decode",
+      "kind": "code",
+      "cases": [
+        "ASUS-LINUX-01"
+      ],
+      "value_sha256": "6ac685c2493d9514207cdd6ae0787db46eecfe75a77e379673f6dcbde5767fa1"
     }
   ],
   "claims": [
@@ -2517,6 +2542,32 @@
         "LINUX-VM-STARTUP"
       ],
       "limit": "No real USB storage or USB4 controller was exercised. Later logger cleanup and formatting changes were checked offline, not re-booted. This is startup evidence, not an ASUS/Dell hardware result."
+    },
+    {
+      "id": "C91",
+      "basis": "measured",
+      "stage": "control",
+      "statement": "The first ASUS Linux attachment booted and saved its capture to USB. The host router was present and OS PCIe control was granted; the reported role changed and DEG2 USB functions appeared, including a 10 Gbps hub. No external router or new PCIe device appeared in 45 samples spanning 45.000246 seconds; trace statistics report no drops/overruns.",
+      "sources": [
+        "LINUX-ASUS-OBSERVATION"
+      ],
+      "cases": [
+        "ASUS-LINUX-01"
+      ],
+      "limit": "One attachment. No physical entry packet, applied PS8830 state or RouterDetected bit-13 read was captured; a shorter unreported transient link is not excluded."
+    },
+    {
+      "id": "C92",
+      "basis": "code_fact",
+      "stage": "control",
+      "statement": "In Linux v6.18.41, TB_CFG_ERROR_ACK_PLUG_EVENT has value 7 and tb_cfg_ack_plug sends it in an ERROR-class packet. The two transmitted code-7 frames in the attachment trace are host notification acknowledgements, not firmware rejection replies.",
+      "sources": [
+        "LINUX-ASUS-DECODE"
+      ],
+      "cases": [
+        "ASUS-LINUX-01"
+      ],
+      "limit": "Acknowledgement and connector-report definitions do not establish USB4 entry, remote-router discovery, applied retimer state or a repair."
     }
   ],
   "timeline_limit": "T0 is the first recorded Windows attachment report in each run, not physical insertion. Different runs, platforms, power contracts and capture dates are explicit. These tables align software reports only; proximity does not establish wire order or causation. The earlier Dell control supplies the Dell timeline; the deep Dell dump supplies cached-state comparison.",

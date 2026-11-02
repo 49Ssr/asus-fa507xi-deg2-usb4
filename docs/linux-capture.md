@@ -2,11 +2,11 @@
 
 This test asks whether ASUS can discover DEG2's external USB4/Thunderbolt router under Linux. It records PCIe devices too, while keeping pending authorization separate from a failed connection. It does not install Linux or apply a fix.
 
-**Ready:** the original SystemRescue 13.02 image has a verified checksum and signature. The console launcher and model guard have been checked in a virtual machine. **Still untested:** saving to a physical boot USB and capturing the real ASUS connection.
+**Tested on ASUS, 2 November 2026:** the kit booted and saved a fresh attachment to the USB. It observed ordinary USB fallback with no external router or new PCIe device. [Result and limits](linux-asus-result.md). A matching Dell Linux capture remains uncollected. The original SystemRescue 13.02 image has a verified checksum and signature.
 
 ## Before preparing the USB
 
-The private `local/LinuxCaptureBundle` folder contains the ISO, `USB-OVERLAY` and this guide as `START-HERE.md`. No physical USB has been written.
+The private `local/LinuxCaptureBundle` folder contains the ISO, `USB-OVERLAY` and this guide as `START-HERE.md`. The owner's prepared stick has completed one ASUS capture. The steps below describe how to prepare equivalent media; preserve existing results before rewriting it.
 
 The earlier 8 GB stick may still contain research returns. Identify that exact drive and preserve its files independently before using a writer. Do not erase evidence to prepare this test. The Windows session must remain running while the owner is remote.
 

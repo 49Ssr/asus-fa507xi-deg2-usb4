@@ -800,6 +800,18 @@ Scope: LINUX-VM-STARTUP. No real USB storage or USB4 controller was exercised. L
 
 [LINUX-VM-STARTUP](../evidence/linux-kit-audit.json) `/vm_startup`
 
+**C91 — measured:** The first ASUS Linux attachment booted and saved its capture to USB. The host router was present and OS PCIe control was granted; the reported role changed and DEG2 USB functions appeared, including a 10 Gbps hub. No external router or new PCIe device appeared in 45 samples spanning 45.000246 seconds; trace statistics report no drops/overruns.
+
+Scope: ASUS-LINUX-01. One attachment. No physical entry packet, applied PS8830 state or RouterDetected bit-13 read was captured; a shorter unreported transient link is not excluded.
+
+[LINUX-ASUS-OBSERVATION](../evidence/linux-asus-result.json) `/observations`
+
+**C92 — code_fact:** In Linux v6.18.41, TB_CFG_ERROR_ACK_PLUG_EVENT has value 7 and tb_cfg_ack_plug sends it in an ERROR-class packet. The two transmitted code-7 frames in the attachment trace are host notification acknowledgements, not firmware rejection replies.
+
+Scope: ASUS-LINUX-01. Acknowledgement and connector-report definitions do not establish USB4 entry, remote-router discovery, applied retimer state or a repair.
+
+[LINUX-ASUS-DECODE](../evidence/linux-asus-result.json) `/source_decode`
+
 ## Separate runs and observation limits
 
 | Case | Meaning | Important limit |
@@ -833,6 +845,7 @@ Scope: LINUX-VM-STARTUP. No real USB storage or USB4 controller was exercised. L
 | PUBLIC-BOOT-TOOLS | Pinned public EFI and USB4 diagnostic reference implementations | Source/archive inspection only; no ASUS boot, installed interface, physical measurement or compatible repair established. |
 | LINUX-CAPTURE-KIT | Prepared SystemRescue13.02 collector, offline validation only | Distribution and code checked; boot, USB persistence and ASUS/Dell hardware capture unexercised. |
 | LINUX-VM-STARTUP | Isolated live Linux VM startup | Virtual DVD, no host disks, network, passthrough or USB4 emulation; startup and model guard only. |
+| ASUS-LINUX-01 | Fresh ASUS DEG2 attachment under SystemRescue 13.02 / Linux 6.18.41 | One owner-directed attachment; software reports and enabled tracepoints, not a raw PD or applied retimer measurement. |
 
 ## Software-report timelines
 

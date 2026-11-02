@@ -4,9 +4,9 @@
 
 ## 1. Compare another OS with the existing hardware
 
-Use the prepared [Linux observation](linux-capture.md) when the owner has physical access. The question is whether an external router appears, with PCIe authorization and endpoint detection reported separately.
+The [first ASUS Linux run](linux-asus-result.md) reproduced USB fallback with no observed external router or new PCIe device. USB saving worked, the host router was present and OS PCIe control was granted. No unchanged ASUS repeat is selected.
 
-Success would establish a working pairing in that session and narrow the software/firmware interaction. Failure would leave entry, routing and training unresolved. Different boot and power history remain a confound. The observer does not force USB4 mode or write firmware.
+If the owner collects a working Dell Linux run using the [same observer](linux-capture.md), compare attachment order and router discovery against that control. A Dell Linux result is not yet available. The ASUS failure leaves entry, routing and training unresolved; it does not establish a failed chip.
 
 ## 2. Trace the applied ASUS policy
 

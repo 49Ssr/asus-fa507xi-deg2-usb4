@@ -6,7 +6,7 @@ Updated 2 November 2026. [Current findings](status.md) are the public summary; [
 
 The RT0 mapping and USB enumeration order are established. The first failed PD/retimer/link operation remains unobserved. Follow the original RT0/PBS policy consumer or an identified controller diagnostic implementation.
 
-The Linux observation kit has been prepared and audited. Its startup was checked in a virtual machine; real USB persistence and ASUS attachment remain untested. Use [its current guide](linux-capture.md), not an earlier proposed boot sequence.
+The [first ASUS Linux capture](linux-asus-result.md) booted, saved to USB and reproduced fallback. No external router or new PCIe device appeared; the host router was present and ACPI granted OS PCIe control. The trace's transmitted ERROR 0x7 packets are normal plug-event acknowledgements. A matching Dell Linux capture remains uncollected; do not repeat ASUS unchanged. Continue from this result or the original policy/controller implementation.
 
 ## Operating constraints
 

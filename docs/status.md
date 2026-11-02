@@ -11,9 +11,10 @@ The observed failure occurs before Windows discovers DEG2's external USB4 router
 | DEG2 + RTX 4080 SUPER + supplied cable on Dell Latitude 5540 | External router, GPU and display work | The assembled dock can operate on another host |
 | Same dock on ASUS FA507XI | Ordinary USB works; external router/GPU absent | The failure is reproducible in this pairing |
 | Separate Windows installation on ASUS | Same failure | Weakens an explanation confined to the original Windows installation |
+| SystemRescue 13.02 / Linux 6.18.41 on ASUS | 10 Gbps USB hub appears; no external router or new PCIe device observed | Reproduces the failure outside Windows; OS PCIe control was granted |
 | ASUS–Dell host-to-host connection through the tested ASUS port/cable | Negotiated Gen 3, two lanes, 40 Gbps | The ASUS path can establish a USB4 peer link; eGPU PCIe tunnelling remains a separate question |
 
-Sources: [matched ASUS/Dell comparison](asus-dell-matched-comparison.md), [Dell control](dell-control.md), [separate Windows installation](fresh-windows.md), [peer connection](peer-test.md).
+Sources: [matched ASUS/Dell comparison](asus-dell-matched-comparison.md), [Dell control](dell-control.md), [separate Windows installation](fresh-windows.md), [peer connection](peer-test.md), [Linux attachment](linux-asus-result.md).
 
 ## The role change succeeds; USB4 detection still fails
 
@@ -55,10 +56,12 @@ We need to distinguish:
 
 The captures have not exposed the decisive controller record. A hidden menu, enabled setting, successful UCSI command or final missing router does not answer those questions on its own. No source-qualified Windows operation that repairs the missing transition has been found. [Windows repair research](windows-repair-route.md).
 
-## The next comparison
+## Linux reproduced the failure
 
-The prepared [Linux kit](linux-capture.md) asks whether another OS can discover an external router and PCIe endpoint with the existing hardware. It keeps pending PCIe authorization separate from entry failure and records transient routers. Its real USB persistence and ASUS capture are not yet tested.
+The [first ASUS Linux attachment](linux-asus-result.md) saved successfully to the boot USB. The host router was present and ACPI granted OS control of PCIe tunnelling. The reported data role changed correctly, DEG2's 10 Gbps USB hub appeared, and no external router or new PCIe device appeared in 45 recorded samples. The trace reports no dropped events or buffer overruns.
 
-Linux success would narrow the OS/firmware interaction, with boot and power history still a confound. Linux failure would leave the PD/retimer ambiguity open. The kit does not force a mode, authorize devices, scan retimers or change firmware.
+The local host packets marked ERROR 0x7 are normal plug-event acknowledgements, not dock rejection replies. The trace does not provide the physical USB4-entry exchange or a new RouterDetected bit-13 sample. Firmware/controller/cable interaction remains a direction to investigate; no specific failed chip or repair is established.
+
+A matching successful Dell Linux capture would provide an OS-matched comparison. It is not yet collected. No unchanged ASUS repeat is selected. The [kit](linux-capture.md) remains an observer and does not force a mode, authorize devices, scan retimers or change firmware.
 
 No vendor-confirmed root cause or applicable fix is recorded. [All documentation](README.md) · [Research handoff](handoff.md)

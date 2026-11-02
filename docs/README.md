@@ -15,6 +15,7 @@ Start with [current findings](status.md). The detailed notes preserve the source
 ## Recorded comparisons
 
 - [Hardware and comparison baseline](hardware.md)
+- [ASUS Linux result: USB fallback reproduced](linux-asus-result.md)
 - [Fresh ASUS versus Dell: matched evidence comparison](asus-dell-matched-comparison.md)
 - [Fresh ASUS comparison against the recovered Dell](asus-local-comparison.md)
 - [Portable Intel Dell-DEG2 control](dell-control.md)
