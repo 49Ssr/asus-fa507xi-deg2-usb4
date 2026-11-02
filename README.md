@@ -1,6 +1,6 @@
 # ASUS FA507XI / Minisforum DEG2 USB4 investigation
 
-**Retimer code finding:** the saved firmware has separate configuration branches matching the reference Thunderbolt/USB4 field positions, plus orientation-dependent lane controls. [Original code and reference comparison](evidence/ps8830-mode-input-branches.json). This is an inferred mode-input relationship; the ASUS writer and values during failure remain unknown. The earlier timer is conditional and has other bit writers.
+**Retimer code finding:** the candidate mode flags are processed in an interrupt handler. Bit0 takes precedence over bit7: stable masked81 takes the bit0 arm, while80 takes bit7. [Original-code decision table](evidence/ps8830-mode-interrupt-path.json). No such input was measured during the ASUS failure, so this is a diagnostic distinction rather than an identified wrong-mode fault.
 
 **D8/D9 branch bounded:** its caller and selector flags are mapped, but no USB4-entry meaning is established. A partial pair failure can leave the old software latch without a compensating request, so that latch is not a validated rollback mechanism. [Decision table and original-code scope](evidence/ec-vendor-request-selection.json). This repair lead is deferred; no hardware test is queued.
 

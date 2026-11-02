@@ -182,7 +182,9 @@
         "C55",
         "C56",
         "C57",
-        "C58"
+        "C58",
+        "C59",
+        "C60"
       ]
     },
     {
@@ -881,6 +883,26 @@
         "PS8830-REFERENCE"
       ],
       "value_sha256": "3bc22d740b966ea8daacf8c5991310961c322321899af7b594656da88c7d4eaa"
+    },
+    {
+      "id": "RETIMER-MODE-IRQ",
+      "path": "evidence/ps8830-mode-interrupt-path.json",
+      "pointer": "/irq_flow",
+      "kind": "code",
+      "cases": [
+        "PS8830-CFU-REFERENCE"
+      ],
+      "value_sha256": "b5fcb743b55b40e4487ceb5a8ab4a201862f6558057209def3ca53f664af35b0"
+    },
+    {
+      "id": "RETIMER-MODE-PRIORITY",
+      "path": "evidence/ps8830-mode-interrupt-path.json",
+      "pointer": "/mode_priority",
+      "kind": "code",
+      "cases": [
+        "PS8830-CFU-REFERENCE"
+      ],
+      "value_sha256": "f9938dd1c2f595c4ad07af700a03529d4c4f5198dec8042c103117b121158632"
     }
   ],
   "claims": [
@@ -1707,6 +1729,32 @@
       ],
       "limit": "Inference from matching fields and code behavior. It does not establish the ASUS writer, host-I2C alias, physical port, failing mode value or a Windows override.",
       "reason": "Six independently defined field positions match the original reads and branching behavior, including orientation-dependent lane selection; an unmeasured host alias remains a separate gap."
+    },
+    {
+      "id": "C59",
+      "basis": "code_fact",
+      "stage": "link",
+      "statement": "The reviewed mode-configuration block is within a vector-selected PS8830 interrupt handler. A paired-byte bit0 predicate gates connection-byte processing, followed by a paired-byte write and register restoration/RETI.",
+      "sources": [
+        "RETIMER-MODE-IRQ"
+      ],
+      "cases": [
+        "PS8830-CFU-REFERENCE"
+      ],
+      "limit": "Original code and a syntactic call-fallthrough path only. Gate hardware semantics, helper completion, actual interrupt execution and the ASUS input writer remain unknown."
+    },
+    {
+      "id": "C60",
+      "basis": "code_fact",
+      "stage": "link",
+      "statement": "Within that gated block, candidate byte2 bit0 takes precedence over bit7: with stable inputs00 skips these two arms,01 selects bit0,80 selects bit7, and81 selects bit0 without reaching the bit7 test.",
+      "sources": [
+        "RETIMER-MODE-PRIORITY"
+      ],
+      "cases": [
+        "PS8830-CFU-REFERENCE"
+      ],
+      "limit": "A code decision table, not a measured wrong-mode condition. Neither81 nor any arm is observed during the ASUS failure; an input change or marker read is not yet a qualified Windows test."
     }
   ],
   "timeline_limit": "T0 is the first recorded Windows attachment report in each run, not physical insertion. Different runs, platforms, power contracts and capture dates are explicit. These tables align software reports only; proximity does not establish wire order or causation. The earlier Dell control supplies the Dell timeline; the deep Dell dump supplies cached-state comparison.",
@@ -2229,6 +2277,38 @@
         "interface": "Separate bit0/bit7 configuration branches and orientation-dependent control masks",
         "limit": "Matches reference fields by inference; host alias and failing-state values unknown.",
         "decision": true
+      },
+      {
+        "id": "RET_MODE_IRQ",
+        "label": "Retimer interrupt: paired-byte gate selected?",
+        "owner": "Retained PS8830 image",
+        "interface": "Vector -> register save -> paired-byte bit0 predicate -> mode reads -> RETI",
+        "limit": "Hardware event names and ASUS live gate are unknown.",
+        "decision": true
+      },
+      {
+        "id": "RET_MODE_B0",
+        "label": "bit0 configuration arm; bit7 test bypassed",
+        "owner": "Retained PS8830 code",
+        "interface": "Selected for stable masked01 or81",
+        "limit": "Protocol interpretation is reference-based; actual ASUS input unobserved.",
+        "decision": false
+      },
+      {
+        "id": "RET_MODE_B7",
+        "label": "bit7 configuration arm",
+        "owner": "Retained PS8830 code",
+        "interface": "Selected for stable masked80",
+        "limit": "No measured execution or repair result.",
+        "decision": false
+      },
+      {
+        "id": "RET_MODE_SKIP",
+        "label": "Skip these two configuration arms",
+        "owner": "Retained PS8830 code",
+        "interface": "Selected for stable masked00",
+        "limit": "Earlier USB3/DP processing is separate; not a global no-mode claim.",
+        "decision": false
       }
     ],
     "edges": [
@@ -2649,6 +2729,46 @@
         "claims": [
           "C57",
           "C58"
+        ],
+        "standards": []
+      },
+      {
+        "from": "RET_MODE_IRQ",
+        "to": "RET_MODE_CODE",
+        "label": "Selected gate enters candidate mode-byte processing",
+        "basis": "traced_code",
+        "claims": [
+          "C59"
+        ],
+        "standards": []
+      },
+      {
+        "from": "RET_MODE_CODE",
+        "to": "RET_MODE_B0",
+        "label": "bit0 set, independent of stable bit7 value",
+        "basis": "traced_code",
+        "claims": [
+          "C60"
+        ],
+        "standards": []
+      },
+      {
+        "from": "RET_MODE_CODE",
+        "to": "RET_MODE_B7",
+        "label": "bit0 clear and bit7 set",
+        "basis": "traced_code",
+        "claims": [
+          "C60"
+        ],
+        "standards": []
+      },
+      {
+        "from": "RET_MODE_CODE",
+        "to": "RET_MODE_SKIP",
+        "label": "bit0 and bit7 clear",
+        "basis": "traced_code",
+        "claims": [
+          "C60"
         ],
         "standards": []
       }

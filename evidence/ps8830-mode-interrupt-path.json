@@ -1,0 +1,150 @@
+{
+  "schema": 1,
+  "date": "2026-11-02",
+  "interval": 12,
+  "irq_flow": {
+    "image_sha256": "a6cf7221832bc4d5f1a62a5a99013f1d448ff19f0646c5fea2828e13aa38456e",
+    "artifact_scope": "Retained installed-package image, not a physical flash read or failing-attachment execution trace.",
+    "vector": {
+      "image_offset_hex": "0003",
+      "chain_image_offsets_hex": [
+        "3003",
+        "301e"
+      ],
+      "return_image_offset_hex": "4773",
+      "operation": "Vector branches into a register-save body; matching register restoration ends with RETI."
+    },
+    "mode_gate": {
+      "image_offset_hex": "42c5",
+      "predicate": "(complement of one internal byte) AND its paired internal byte AND01 must be nonzero. Hardware names/acknowledgement semantics are not independently established.",
+      "false_destination_image_offset_hex": "471f",
+      "true_path": "An internal count is loaded with200 and decremented in a busy loop, then connection/configuration bytes are read. This is not a measured200ms delay.",
+      "end_store_image_offset_hex": "4719",
+      "end_store": "Writes01 to the paired byte before later event checks and interrupt return.",
+      "initialisation_image_offset_hex": "c415",
+      "initialisation": "Writesfe to the complemented member of this pair. This is code data, not a measured live gate or permission to clear it."
+    },
+    "cfg_check": {
+      "decoder": "Existing radare2,8051 raw image",
+      "byte_coverage_image_hex": [
+        "301e",
+        "4774"
+      ],
+      "all_instruction_bytes_verified": true,
+      "syntactic_path_from_entry_to_gate": true,
+      "call_fallthrough_assumption": "The entry-to-gate graph follows calls as fall-through. It is not proof helpers return, peripherals respond or this path executes on ASUS."
+    },
+    "literal_input_inventory": [
+      {
+        "internal_byte": 0,
+        "literal_dptr_sites": 31,
+        "first_operation": "MOVX read at every literal site"
+      },
+      {
+        "internal_byte": 1,
+        "literal_dptr_sites": 6,
+        "first_operation": "MOVX read at every literal site"
+      },
+      {
+        "internal_byte": 2,
+        "literal_dptr_sites": 33,
+        "first_operation": "MOVX read at every literal site"
+      }
+    ],
+    "inventory_limit": "A literal site beginning with a read does not exclude later, indirect, host or hardware writes. This is not a complete input-writer inventory.",
+    "spans": [
+      {
+        "image_start_hex": "301e",
+        "image_end_exclusive_hex": "304a",
+        "sha256": "c85209fc745dd0772403bd48e32f0d00c7a5210fc52226cc25f7cb8a8004a6c2"
+      },
+      {
+        "image_start_hex": "420d",
+        "image_end_exclusive_hex": "42c5",
+        "sha256": "5583fd5b60dbf57f186093556b4b5438ca066574fe87b1f6de9656f389fbe495"
+      },
+      {
+        "image_start_hex": "42c5",
+        "image_end_exclusive_hex": "4308",
+        "sha256": "0f237f47f779064c575e320999967a148b4c506d6c2071b19b3d0b1ecb7b7757"
+      },
+      {
+        "image_start_hex": "4719",
+        "image_end_exclusive_hex": "4774",
+        "sha256": "4a11735a62058adceac81397d56722b5f988e7e99f4e5270cd2e21446b013213"
+      },
+      {
+        "image_start_hex": "c415",
+        "image_end_exclusive_hex": "c420",
+        "sha256": "efe4b3d980acecedbc7f709a2638af21871f73b6f231fef5e618210882de84ef"
+      }
+    ]
+  },
+  "mode_priority": {
+    "image_sha256": "a6cf7221832bc4d5f1a62a5a99013f1d448ff19f0646c5fea2828e13aa38456e",
+    "scope": "Branch selection in the reviewed interrupt block, assuming the candidate input byte remains stable across its reads and the outer gate is selected.",
+    "first_test_image_offset_hex": "43f1",
+    "first_true_arm_image_offset_hex": "43fb",
+    "first_arm_exit_image_offsets_hex": [
+      "4550",
+      "4578"
+    ],
+    "join_image_offset_hex": "46b3",
+    "second_test_image_offset_hex": "457b",
+    "second_true_arm_image_offset_hex": "4585",
+    "skip_image_offset_hex": "4719",
+    "truth_table": [
+      {
+        "bit0": 0,
+        "bit7": 0,
+        "masked_value_hex": "00",
+        "selected_arm": "Skip these two configuration blocks; other earlier USB/DP processing is separate."
+      },
+      {
+        "bit0": 1,
+        "bit7": 0,
+        "masked_value_hex": "01",
+        "selected_arm": "bit0 configuration arm"
+      },
+      {
+        "bit0": 0,
+        "bit7": 1,
+        "masked_value_hex": "80",
+        "selected_arm": "bit7 configuration arm"
+      },
+      {
+        "bit0": 1,
+        "bit7": 1,
+        "masked_value_hex": "81",
+        "selected_arm": "bit0 configuration arm; bit7 test is bypassed."
+      }
+    ],
+    "verification": "All decoded paths in the bit0 true arm reach the shared join without the bit7 test; no call or indirect branch occurs in this reviewed arm.",
+    "branch_markers": "The bit0 and bit7 arms OR different bits into one internal bookkeeping byte, alongside separate USB/DP branch markers. Lifetime, reset behavior and external readability are not qualified.",
+    "protocol_names": "Prior claim C58 supports Thunderbolt/USB4 interpretation by reference-field matching. This table itself is the original code fact; it is not a measured ASUS mode or a protocol requirement.",
+    "limits": "No evidence that ASUS supplied81, that the wrong arm ran, or that changing the input would repair the link. Inputs may change between reads. No live observer, write interface or rollback is qualified.",
+    "spans": [
+      {
+        "image_start_hex": "43f1",
+        "image_end_exclusive_hex": "4402",
+        "sha256": "66e6ea427c638e61c1380d24fc9de32f6e85ba764313949783054aade24e4d0d"
+      },
+      {
+        "image_start_hex": "454d",
+        "image_end_exclusive_hex": "458c",
+        "sha256": "7dc182e676c43cec7864e500a83321e962a0362a717f6ad2935f0bb581093ddf"
+      }
+    ]
+  },
+  "quality": {
+    "decoder_schema_correction": "First parser assumed offset; actual field is addr. The failed attempt is preserved privately and excluded from results.",
+    "mid_instruction_range_fragments": "Private context reads include partial starts. Claims use checked instruction entries and byte spans."
+  },
+  "actions": {
+    "new_hardware_requests": 0,
+    "driver_installs": 0,
+    "test_boots": 0,
+    "firmware_writes": 0,
+    "files_deleted": 0
+  }
+}

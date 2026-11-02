@@ -51,6 +51,10 @@ flowchart TD
     RET_PARAM_TABLE["Retained retimer training words feed counters"]
     RET_TIMER_FLOW["Retimer counters and timed control-bit callback"]
     RET_MODE_CODE{"Retimer mode-shaped input branches; live values UNKNOWN"}
+    RET_MODE_IRQ{"Retimer interrupt: paired-byte gate selected?"}
+    RET_MODE_B0["bit0 configuration arm; bit7 test bypassed"]
+    RET_MODE_B7["bit7 configuration arm"]
+    RET_MODE_SKIP["Skip these two configuration arms"]
     ATTACH -->|"documented: controller discovery and mode negotiation"| PD
     PD -.->|"unknown: candidate mode-control path; ASUS ownership/wiring unproven"| RET_CFG
     LINK -.->|"unknown: what makes the native host-port status assert remains untraced"| PORT_REGS
@@ -91,6 +95,10 @@ flowchart TD
     RET_TIMER_FLOW -.->|"unknown: Execution and effect during the failed ASUS connection remain unobserved"| LINK
     RET_CFG -.->|"unknown: ASUS writer and host-to-internal-byte mapping remain unverified"| RET_MODE_CODE
     RET_MODE_CODE -.->|"unknown: Configuration code found; execution and physical result during DEG2 failure remain unknown"| LINK
+    RET_MODE_IRQ -->|"traced_code: Selected gate enters candidate mode-byte processing"| RET_MODE_CODE
+    RET_MODE_CODE -->|"traced_code: bit0 set, independent of stable bit7 value"| RET_MODE_B0
+    RET_MODE_CODE -->|"traced_code: bit0 clear and bit7 set"| RET_MODE_B7
+    RET_MODE_CODE -->|"traced_code: bit0 and bit7 clear"| RET_MODE_SKIP
 ```
 
 ### Who owns each part
@@ -130,6 +138,10 @@ flowchart TD
 | RET_PARAM_TABLE | Offered PS8830 image; timer consumers traced | Indexed code-word loads, counter expiry queue and callback dispatch | Static code path, not measured active state or a Windows control interface. |
 | RET_TIMER_FLOW | Retained PS8830 firmware code | Word divided by5 -> counter -> interrupt -> queue -> callback | One conditional set/clear path traced; electrical meaning, live branch and host access unknown. |
 | RET_MODE_CODE | Retained PS8830 image; ASUS writer unverified | Separate bit0/bit7 configuration branches and orientation-dependent control masks | Matches reference fields by inference; host alias and failing-state values unknown. |
+| RET_MODE_IRQ | Retained PS8830 image | Vector -> register save -> paired-byte bit0 predicate -> mode reads -> RETI | Hardware event names and ASUS live gate are unknown. |
+| RET_MODE_B0 | Retained PS8830 code | Selected for stable masked01 or81 | Protocol interpretation is reference-based; actual ASUS input unobserved. |
+| RET_MODE_B7 | Retained PS8830 code | Selected for stable masked80 | No measured execution or repair result. |
+| RET_MODE_SKIP | Retained PS8830 code | Selected for stable masked00 | Earlier USB3/DP processing is separate; not a global no-mode claim. |
 
 ### Branch evidence
 
@@ -175,6 +187,10 @@ flowchart TD
 | RET_TIMER_FLOW → LINK | Execution and effect during the failed ASUS connection remain unobserved | unknown | C54, C55 |
 | RET_CFG → RET_MODE_CODE | ASUS writer and host-to-internal-byte mapping remain unverified | unknown | C57, C58 |
 | RET_MODE_CODE → LINK | Configuration code found; execution and physical result during DEG2 failure remain unknown | unknown | C57, C58 |
+| RET_MODE_IRQ → RET_MODE_CODE | Selected gate enters candidate mode-byte processing | traced_code | C59 |
+| RET_MODE_CODE → RET_MODE_B0 | bit0 set, independent of stable bit7 value | traced_code | C60 |
+| RET_MODE_CODE → RET_MODE_B7 | bit0 clear and bit7 set | traced_code | C60 |
+| RET_MODE_CODE → RET_MODE_SKIP | bit0 and bit7 clear | traced_code | C60 |
 
 ### Candidate intervention locations
 
@@ -577,6 +593,18 @@ Scope: PS8830-CFU-REFERENCE, PS8830-REFERENCE. Inference from matching fields an
 Reason: Six independently defined field positions match the original reads and branching behavior, including orientation-dependent lane selection; an unmeasured host alias remains a separate gap.
 
 [RETIMER-MODE-CODE](../evidence/ps8830-mode-input-branches.json) `/mode_code`, [RETIMER-MODE-DEFINITIONS](../evidence/ps8830-mode-input-branches.json) `/upstream_definitions`
+
+**C59 — code_fact:** The reviewed mode-configuration block is within a vector-selected PS8830 interrupt handler. A paired-byte bit0 predicate gates connection-byte processing, followed by a paired-byte write and register restoration/RETI.
+
+Scope: PS8830-CFU-REFERENCE. Original code and a syntactic call-fallthrough path only. Gate hardware semantics, helper completion, actual interrupt execution and the ASUS input writer remain unknown.
+
+[RETIMER-MODE-IRQ](../evidence/ps8830-mode-interrupt-path.json) `/irq_flow`
+
+**C60 — code_fact:** Within that gated block, candidate byte2 bit0 takes precedence over bit7: with stable inputs00 skips these two arms,01 selects bit0,80 selects bit7, and81 selects bit0 without reaching the bit7 test.
+
+Scope: PS8830-CFU-REFERENCE. A code decision table, not a measured wrong-mode condition. Neither81 nor any arm is observed during the ASUS failure; an input change or marker read is not yet a qualified Windows test.
+
+[RETIMER-MODE-PRIORITY](../evidence/ps8830-mode-interrupt-path.json) `/mode_priority`
 
 ## Separate runs and observation limits
 
