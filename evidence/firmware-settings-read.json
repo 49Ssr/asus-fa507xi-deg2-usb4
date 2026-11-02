@@ -1,0 +1,110 @@
+{
+  "schema": 1,
+  "date": "2026-11-02",
+  "observed": {
+    "captured_utc": "2026-11-02T09:38:15.3240834Z",
+    "bios": "FA507XI.314",
+    "scope": "Current stored UEFI configuration, not resolved Auto policy, PD packets, retimer registers or physical link state.",
+    "variables": [
+      {
+        "name": "AMD_PBS_SETUP",
+        "length": 1280,
+        "attributes": 7,
+        "win32_error": 0,
+        "fields": [
+          {
+            "name": "PD USB4 Control",
+            "offset_hex": "0x9c",
+            "value": 1,
+            "meaning": "Enabled"
+          },
+          {
+            "name": "PD Thunderbolt3 Alt Mode",
+            "offset_hex": "0x4d",
+            "value": 0,
+            "meaning": "Enabled"
+          },
+          {
+            "name": "UCSI Support",
+            "offset_hex": "0x14",
+            "value": 1,
+            "meaning": "Enabled"
+          },
+          {
+            "name": "UCSI tunnel location",
+            "offset_hex": "0x15",
+            "value": 1,
+            "meaning": "MMIO"
+          },
+          {
+            "name": "USB4 ACPI dependency",
+            "offset_hex": "0x465",
+            "value": 0,
+            "meaning": "Disabled"
+          }
+        ]
+      },
+      {
+        "name": "AmdSetupPHX",
+        "length": 1663,
+        "attributes": 7,
+        "win32_error": 0,
+        "fields": [
+          {
+            "name": "USB4 pre-CM",
+            "offset_hex": "0x1a7",
+            "value": 15,
+            "meaning": "Auto"
+          },
+          {
+            "name": "RT0 Router",
+            "offset_hex": "0x1a8",
+            "value": 15,
+            "meaning": "Auto"
+          },
+          {
+            "name": "RT0 PCIe Tunnel",
+            "offset_hex": "0x1a9",
+            "value": 15,
+            "meaning": "Auto"
+          },
+          {
+            "name": "RT1 Router",
+            "offset_hex": "0x1aa",
+            "value": 0,
+            "meaning": "Disabled"
+          },
+          {
+            "name": "RT1 PCIe Tunnel",
+            "offset_hex": "0x1ab",
+            "value": 15,
+            "meaning": "Auto"
+          }
+        ]
+      }
+    ]
+  },
+  "acquisition": {
+    "reader": "tools/Read-USB4FirmwareSettings.ps1",
+    "reader_sha256": "ea8629ac320f9ad0be0e40285baa141ef16b4408199dde807b7bae423c5c0de1",
+    "authorization": "Owner explicitly requested the UAC prompt and approved the administrator read.",
+    "requests": "Two fixed GetFirmwareEnvironmentVariableExW calls; no variable setter, device command, driver install, reboot or cable change.",
+    "validation": "Both returned lengths and attributes checked; all ten decoded fields independently compared with retained raw bytes. Raw variables and full results remain private.",
+    "layout_source": "evidence/firmware-settings-and-capture-paths.json#bios_settings"
+  },
+  "interpretation": {
+    "supported": "PD USB4 control and PD Thunderbolt3 Alt Mode are enabled in stored configuration. The seven previously recorded image defaults match these captured fields.",
+    "rt1_scope": "RT1 Router is stored as Disabled, matching its recorded image default. Router-index-to-port mapping is unverified; RT1 does not name the Parade retimer.",
+    "limits": [
+      "Enabled stored fields do not prove that the controller received or followed them.",
+      "Auto is not a measured Enabled policy.",
+      "This read did not measure a failed attachment or identify the reason RouterDetected stays clear.",
+      "No setting change or repair is justified by RT1 alone."
+    ]
+  },
+  "next": [
+    "Trace the actual PBS9c consumer and resolved CBS router policy.",
+    "Map RT0/RT1 firmware instances to actual host routers before proposing a change.",
+    "Continue qualifying a controller-state capture route; do not repeat this successful settings read without a new reason."
+  ]
+}

@@ -6,14 +6,14 @@
 
 The retained, hash-verified FA507XI BIOS314 contains AMD PBS and CBS HII forms. IFRExtractor1.6.1 was obtained from its author's release and its published SHA256 checked. Ten question records were independently compared with their original module bytes. [Source pins and field map](../evidence/firmware-settings-and-capture-paths.json).
 
-| Setting | Image-defined choices/default | What remains unknown |
+| Setting | Image-defined choices/default | Stored read / remaining uncertainty |
 | --- | --- | --- |
-| PD USB4 Control | Disabled0 / Enabled1; default1 | Current value and exact ASUS consumer |
-| USB4 pre-CM | Disabled0 / Enabled1 / Auto15; default15 | Current value and resolved Auto policy |
-| RT0 Router / PCIe Tunnel | Disabled0 / Enabled1 / Auto15; default15 | Current values and physical mapping |
-| RT1 Router | Disabled0 default / Enabled1 / Auto15 | Whether fitted hardware uses this instance |
-| RT1 PCIe Tunnel | Disabled0 / Enabled1 / Auto15; default15 | Current value and consumer |
-| PD Thunderbolt3 Alt Mode | Enabled0 default / Disabled1 | Current value and whether this pairing uses that path |
+| PD USB4 Control | Disabled0 / Enabled1; default1 | Captured Enabled1; actual ASUS consumer remains unknown |
+| USB4 pre-CM | Disabled0 / Enabled1 / Auto15; default15 | Captured Auto15; resolved policy remains unknown |
+| RT0 Router / PCIe Tunnel | Disabled0 / Enabled1 / Auto15; default15 | Both captured Auto15; physical mapping remains unknown |
+| RT1 Router | Disabled0 default / Enabled1 / Auto15 | Captured Disabled0, matching image default; fitted-instance mapping unknown |
+| RT1 PCIe Tunnel | Disabled0 / Enabled1 / Auto15; default15 | Captured Auto15; consumer remains unknown |
+| PD Thunderbolt3 Alt Mode | Enabled0 default / Disabled1 | Captured Enabled0; use during this pairing remains unknown |
 
 These are real settings in this image, not proof that a setting is wrong, writable on this machine, or sufficient to fix it. RT means the menu's router instance; it does not identify a Parade retimer or a USB-C connector. A working ASUS–Dell peer link does not establish PCIe tunnelling, but the saved ASUS runtime already reports native capabilities granted. A later tunnel restriction alone is not an explanation of the missing external-router detection.
 
@@ -21,7 +21,7 @@ The [UMAF README](https://github.com/DavidS95/Smokeless_UMAF/blob/c003b126cab6e2
 
 ## Original code behind the variable
 
-[The original PBS accessor](../evidence/pbs-runtime-variable-path.json) now confirms the exact0x500-byte read and a missing-variable path that constructs defaults and persists them with attributes7. Under the [UEFI runtime rules](https://uefi.org/specs/UEFI/2.11/08_Services_Runtime_Services.html#variable-services), those attributes include runtime visibility. This supports the prepared Windows GET as a specific access route; current attributes and acceptance still need the actual read.
+[The original PBS accessor](../evidence/pbs-runtime-variable-path.json) now confirms the exact0x500-byte read and a missing-variable path that constructs defaults and persists them with attributes7. Under the [UEFI runtime rules](https://uefi.org/specs/UEFI/2.11/08_Services_Runtime_Services.html#variable-services), those attributes include runtime visibility. This supports the prepared Windows GET as a specific access route; the owner-approved read now returned both variables with attributes7 and exact expected sizes.
 
 The initializer writes1 to PD USB4 control through a two-byte store beginning at9b. A search for literal9c byte stores alone would miss it. The question47 callback has no special controller arm in the reviewed handler; changing a visible setting is not evidence of an immediate PD transaction. The later setup-to-platform policy consumer is still being traced. Image defaults are not current values.
 
@@ -31,7 +31,7 @@ The initializer writes1 to PD USB4 control through a two-byte store beginning at
 
 When convenient, right-click [READ-FIRMWARE-SETTINGS.cmd](../tools/READ-FIRMWARE-SETTINGS.cmd) and choose **Run as administrator**. The window stays open. No attachment/disconnection is needed. Raw values stay under private local/FirmwareSettings. Enhanced-authenticated payloads are retained without decoding because they can contain metadata. Only exact expected plain layouts are decoded; errors, unexpected sizes and unknown values remain explicit. Firmware may make these variables unavailable to Windows. A failed GET is not a disabled setting.
 
-PowerShell5.1 parsing, embedded C# compilation, default Preview and original-byte field verification passed. Five offline result cases also preserve unavailable values, unknown encodings, wrong sizes and enhanced-authentication metadata without guessing settings. **Read mode has not been run:** this session's token is not elevated. The prepared reader captures stored configuration, not retimer execution or PD packets. If runtime access is unavailable, a UEFI variable export/view without saving settings is the alternative to investigate before any UMAF edit.
+PowerShell5.1 parsing, embedded C# compilation, default Preview and original-byte field verification passed. Five offline result cases also preserve unavailable values, unknown encodings, wrong sizes and enhanced-authentication metadata without guessing settings. **Read mode completed on 2 November at 09:38 UTC after the owner requested the UAC prompt.** Both variables returned exact expected sizes; all ten fields were independently compared with retained raw bytes. The prepared reader captures stored configuration, not retimer execution or PD packets. If runtime access is unavailable, a UEFI variable export/view without saving settings is the alternative to investigate before any UMAF edit.
 
 ## What an actual PD/retimer capture requires
 
@@ -77,11 +77,25 @@ The firmware has a real USB4 ACPI dependency setting at PBS465 and a software-SM
 
 Offline inspection of the original failed ASUS dump recovered **M046=0x0c and DDEP=0x55**. The selected legacy dependency branch needs M046<0x0b and DDEP==1, so it is inactive at that snapshot. That is concrete evidence against changing this particular toggle as the fix. It does not reveal current NVRAM, PD negotiation or every other dependency. [Code, dump provenance and limits](../evidence/usb4-dependency-handshake.json).
 
-## Current stored policy is still missing
+## Stored policy recovered from Windows
 
-The selected original Quanta DXE routine can persist the separate PD Thunderbolt3 field4d. Its full side effects and Windows transport are unqualified, so it is not a prepared intervention. [Original code and limits](../evidence/tbt-policy-setter-scope.json).
+The owner-approved read at **2 November 2026, 09:38:15 UTC** recovered both exact BIOS314 variable layouts with attributes7 and no Win32 errors. The ten selected fields were independently checked against the original returned bytes. [Sanitized observation and limits](../evidence/firmware-settings-read.json).
 
-The already prepared [read-only launcher](../tools/READ-FIRMWARE-SETTINGS.cmd), run by the owner as Administrator when available, captures stored PD USB4/TBT3, dependency and CBS values without a new driver or boot. DEG2 need not be connected. The agent has not run it. A runtime-access failure remains unknown rather than a disabled policy; even a successful read would not establish the controller's actual negotiation state.
+| Setting | Stored value |
+| --- | --- |
+| PD USB4 Control | Enabled1 |
+| PD Thunderbolt3 Alt Mode | Enabled0 |
+| UCSI Support / tunnel location | Enabled1 / MMIO1 |
+| USB4 ACPI dependency | Disabled0 |
+| USB4 pre-CM | Auto15 |
+| RT0 Router / PCIe Tunnel | Auto15 / Auto15 |
+| RT1 Router / PCIe Tunnel | Disabled0 / Auto15 |
+
+The seven fields with previously recorded image defaults match those defaults. A disabled stored PD USB4 or TBT3 toggle is therefore not the explanation in this snapshot. Enabled values do not prove that firmware consumed them correctly. Auto remains unresolved. RT1's stored Disabled value does not identify the tested port or a retimer, and does not justify a toggle test before that mapping is established.
+
+The selected original Quanta DXE routine can persist the separate PD Thunderbolt3 field4d. Its full effects and Windows transport remain unqualified. No setter was invoked. [Original code and limits](../evidence/tbt-policy-setter-scope.json). Raw variables remain private. No driver, reboot, connection change or firmware-setting write was needed for this read.
+
+Scheduled research is paused at the owner's request. Interactive work must account for remote access without BIOS or cable access.
 
 ## Would the Infineon SDK help?
 
@@ -95,4 +109,4 @@ The DHgate page could not be retrieved with the web reader; its pasted broad buy
 
 A newly located [Phoenix/JHL9480 developer report](https://lore-kernel.gnuweeb.org/linux-usb/TYCPR01MB1092795BE7AB51121BBAB292496862@TYCPR01MB10927.jpnprd01.prod.outlook.com/) is relevant to power handling, but its dock router is detected before the downstream PCIe hierarchy fails. The ASUS–DEG2 record lacks that first detection. Keep it as a stage-specific comparison, not a demonstrated Windows fix or justification for global power changes.
 
-Next offline work: follow the exact PBS PD USB4-control field into its consumer; qualify the Windows variable read's runtime availability/recovery behavior; identify the dock diagnostic implementation or an existing retimer status interface. SDK access can proceed alongside this work. No new driver or blind boot is queued.
+Next offline work: follow the exact PBS PD USB4-control field into its consumer; resolve the CBS router mapping and Auto policy; identify the dock diagnostic implementation or an existing retimer status interface. SDK access can proceed alongside this work. No new driver or blind boot is queued.

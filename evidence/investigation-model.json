@@ -126,6 +126,11 @@
       "id": "INFINEON-GRIFFIN-REFERENCE",
       "label": "Public Infineon PMG app-common reference resolved from Griffin Creek dependency",
       "limit": "Reference source only, not DEG2 firmware identity, enabled diagnostics or an ASUS observation."
+    },
+    {
+      "id": "ASUS-STORED-20261102",
+      "label": "ASUS BIOS314 stored UEFI settings read on 2 November 2026",
+      "limit": "Stored configuration at one timestamp; no paired attachment, resolved Auto policy or controller-state measurement."
     }
   ],
   "stages": [
@@ -1071,6 +1076,16 @@
         "ASUS-BIOS314"
       ],
       "value_sha256": "037ab63eccc49c60f10ed14ba5d18da10a8b0e05c228b7f3a0274952859e0659"
+    },
+    {
+      "id": "ASUS-STORED-UEFI",
+      "path": "evidence/firmware-settings-read.json",
+      "pointer": "/observed",
+      "kind": "capture",
+      "cases": [
+        "ASUS-STORED-20261102"
+      ],
+      "value_sha256": "7d77574538fd2649aae3448b18faed7967518cddfc4a27ed4bae8947557fb8d4"
     }
   ],
   "claims": [
@@ -2127,6 +2142,19 @@
         "ASUS-BIOS314"
       ],
       "limit": "Static selected fragment only. Current value, full routine effects, a qualified Windows caller, PD-controller consumption and the separate9c consumer remain unknown. No setter test is prepared."
+    },
+    {
+      "id": "C76",
+      "basis": "measured",
+      "stage": "entry",
+      "statement": "The owner-approved Windows read recovered stored PD USB4 Control=1 Enabled and PD Thunderbolt3 Alt Mode=0 Enabled. USB4 pre-CM, RT0 router and both PCIe tunnel fields are Auto15; RT1 router is Disabled0.",
+      "sources": [
+        "ASUS-STORED-UEFI"
+      ],
+      "cases": [
+        "ASUS-STORED-20261102"
+      ],
+      "limit": "Exact BIOS314 variable layouts and raw fields verified. Stored values are not resolved policy or PD/retimer execution. RT1 mapping is unknown and its value matches the recorded image default; no fix is established."
     }
   ],
   "timeline_limit": "T0 is the first recorded Windows attachment report in each run, not physical insertion. Different runs, platforms, power contracts and capture dates are explicit. These tables align software reports only; proximity does not establish wire order or causation. The earlier Dell control supplies the Dell timeline; the deep Dell dump supplies cached-state comparison.",

@@ -706,6 +706,12 @@ Scope: ASUS-BIOS314. Static selected fragment only. Current value, full routine 
 
 [TBT-POLICY-SETTER-CODE](../evidence/tbt-policy-setter-scope.json) `/policy_code`
 
+**C76 — measured:** The owner-approved Windows read recovered stored PD USB4 Control=1 Enabled and PD Thunderbolt3 Alt Mode=0 Enabled. USB4 pre-CM, RT0 router and both PCIe tunnel fields are Auto15; RT1 router is Disabled0.
+
+Scope: ASUS-STORED-20261102. Exact BIOS314 variable layouts and raw fields verified. Stored values are not resolved policy or PD/retimer execution. RT1 mapping is unknown and its value matches the recorded image default; no fix is established.
+
+[ASUS-STORED-UEFI](../evidence/firmware-settings-read.json) `/observed`
+
 ## Separate runs and observation limits
 
 | Case | Meaning | Important limit |
@@ -734,6 +740,7 @@ Scope: ASUS-BIOS314. Static selected fragment only. Current value, full routine 
 | PARADE-DRIVER-REFERENCE | Retained original Parade HID/SPB driver binaries and INF packages | Static software artifacts. Binding declarations and code do not measure the live mode, endpoint response or physical firmware alias. |
 | PUBLIC-BOARD-SOURCE-REFERENCE | Official FA507X service guide and Infineon source-distribution lookup | Reference illustrations and source availability, not fitted-board identity, actual source implementation or failed hardware state. |
 | INFINEON-GRIFFIN-REFERENCE | Public Infineon PMG app-common reference resolved from Griffin Creek dependency | Reference source only, not DEG2 firmware identity, enabled diagnostics or an ASUS observation. |
+| ASUS-STORED-20261102 | ASUS BIOS314 stored UEFI settings read on 2 November 2026 | Stored configuration at one timestamp; no paired attachment, resolved Auto policy or controller-state measurement. |
 
 ## Software-report timelines
 

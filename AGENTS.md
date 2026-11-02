@@ -1,5 +1,10 @@
 # Research and maintenance rules
 
+**2 November, 09:38 UTC — owner-approved stored-settings read completed.** Both named variables returned their exact BIOS314 sizes with attributes7. Raw bytes confirm PD USB4 Control=1 (Enabled), PD Thunderbolt3 Alt Mode=0 (Enabled), UCSI=1/MMIO, dependency=0; pre-CM/RT0 router/both PCIe tunnels=Auto15, RT1 router=Disabled0. The seven recorded image defaults match. [Sanitized measurement](evidence/firmware-settings-read.json). Stored settings are separate from resolved Auto policy and physical negotiation. RT1 is not mapped to the tested port or retimer; do not change it on this observation alone. Preserve original private results; do not repeat the read without a new reason.
+
+The owner paused scheduled research and is remoting in from work. The automation was read back PAUSED. BIOS access and cable changes are unavailable. This specific administrator read was explicitly requested and completed; no setting write, driver, reboot or cable change occurred. Continue tracing the actual9c consumer and RT0/RT1 platform mapping. Earlier unexecuted-read/ACTIVE entries below are historical.
+
+
 
 **Interval22:** a selected Quanta DXE protocol function writes the PD Thunderbolt3 Alt Mode field4d under selector0x0e. The input-byte route and protocol slot were checked against original bytes. This is separate from USB4-control9c, and the routine has further operations whose effects/Windows transport are unqualified. [Code scope](evidence/tbt-policy-setter-scope.json). No setter is prepared or invoked.
 
