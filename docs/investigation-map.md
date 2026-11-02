@@ -662,6 +662,12 @@ Reason: Exact endpoint type/address/size/interval and vendor class fields agree,
 
 [BB-VENDOR-ENDPOINT-SHAPE](../evidence/billboard-capture-contract.json) `/endpoint_comparison`, [BB-PUBLIC-BRIDGE-ROUTE](../evidence/billboard-capture-contract.json) `/reference_route`
 
+**C69 — code_fact:** The inspected Infineon reference USB handler has a compile-time conditional512-byte flash-log response. Its log stores fault counters and compact failure records, while selected attach/trace events are filtered from flash.
+
+Scope: INFINEON-GRIFFIN-REFERENCE. Reference implementation only. No identified DEG2 firmware build/command compatibility, enabled logging, complete getter side effects or captured negotiation state. No vendor command was sent.
+
+[INFINEON-FLASH-LOG-ROUTE](../evidence/infineon-log-route-and-reader.json) `/reference_code`
+
 ## Separate runs and observation limits
 
 | Case | Meaning | Important limit |
@@ -689,6 +695,7 @@ Reason: Exact endpoint type/address/size/interval and vendor class fields agree,
 | PS8830-CFU-REFERENCE | Retained installed-package PS8830 image; software artifact reference | Reconstructed offered image, not an independent readback of either physical retimer or measured active configuration. |
 | PARADE-DRIVER-REFERENCE | Retained original Parade HID/SPB driver binaries and INF packages | Static software artifacts. Binding declarations and code do not measure the live mode, endpoint response or physical firmware alias. |
 | PUBLIC-BOARD-SOURCE-REFERENCE | Official FA507X service guide and Infineon source-distribution lookup | Reference illustrations and source availability, not fitted-board identity, actual source implementation or failed hardware state. |
+| INFINEON-GRIFFIN-REFERENCE | Public Infineon PMG app-common reference resolved from Griffin Creek dependency | Reference source only, not DEG2 firmware identity, enabled diagnostics or an ASUS observation. |
 
 ## Software-report timelines
 

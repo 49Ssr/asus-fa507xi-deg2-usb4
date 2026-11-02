@@ -121,6 +121,11 @@
       "id": "PUBLIC-BOARD-SOURCE-REFERENCE",
       "label": "Official FA507X service guide and Infineon source-distribution lookup",
       "limit": "Reference illustrations and source availability, not fitted-board identity, actual source implementation or failed hardware state."
+    },
+    {
+      "id": "INFINEON-GRIFFIN-REFERENCE",
+      "label": "Public Infineon PMG app-common reference resolved from Griffin Creek dependency",
+      "limit": "Reference source only, not DEG2 firmware identity, enabled diagnostics or an ASUS observation."
     }
   ],
   "stages": [
@@ -1005,6 +1010,16 @@
         "ASUS-DEEP"
       ],
       "value_sha256": "2466fe24f3707f4e7e9726bd845ab5547a28341a92efce535e58d8480bee272e"
+    },
+    {
+      "id": "INFINEON-FLASH-LOG-ROUTE",
+      "path": "evidence/infineon-log-route-and-reader.json",
+      "pointer": "/reference_code",
+      "kind": "code",
+      "cases": [
+        "INFINEON-GRIFFIN-REFERENCE"
+      ],
+      "value_sha256": "8570554ae6e567edb4686327c0d1468f0f75db36dc5a5d24d4c74f6a7edbfa01"
     }
   ],
   "claims": [
@@ -1966,6 +1981,19 @@
       ],
       "reason": "Exact endpoint type/address/size/interval and vendor class fields agree, so the public command handler is a specific comparison candidate despite different VID defaults.",
       "limit": "Transport shape is not firmware/controller identification or a compatible command protocol. No vendor request is qualified or executed."
+    },
+    {
+      "id": "C69",
+      "basis": "code_fact",
+      "stage": "entry",
+      "statement": "The inspected Infineon reference USB handler has a compile-time conditional512-byte flash-log response. Its log stores fault counters and compact failure records, while selected attach/trace events are filtered from flash.",
+      "sources": [
+        "INFINEON-FLASH-LOG-ROUTE"
+      ],
+      "cases": [
+        "INFINEON-GRIFFIN-REFERENCE"
+      ],
+      "limit": "Reference implementation only. No identified DEG2 firmware build/command compatibility, enabled logging, complete getter side effects or captured negotiation state. No vendor command was sent."
     }
   ],
   "timeline_limit": "T0 is the first recorded Windows attachment report in each run, not physical insertion. Different runs, platforms, power contracts and capture dates are explicit. These tables align software reports only; proximity does not establish wire order or causation. The earlier Dell control supplies the Dell timeline; the deep Dell dump supplies cached-state comparison.",

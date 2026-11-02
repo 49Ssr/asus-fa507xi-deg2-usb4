@@ -1,0 +1,51 @@
+{
+  "schema": 1,
+  "date": "2026-11-02",
+  "interval": 18,
+  "reference_code": {
+    "repository": "Infineon/pmg-app-common",
+    "commit": "9ed74f798cae23aa6744f206ee381f3593590554",
+    "dependency": "Resolved latest-v1.X tag advertised by the pinned Griffin Creek example. Current master3.0 was inspected separately, then the example-compatible1.0 source was checked.",
+    "sources": [
+      "https://github.com/Infineon/pmg-app-common/blob/9ed74f798cae23aa6744f206ee381f3593590554/cy_app_usb.c",
+      "https://github.com/Infineon/pmg-app-common/blob/9ed74f798cae23aa6744f206ee381f3593590554/cy_app_dmc_vendor.h",
+      "https://github.com/Infineon/pmg-app-common/blob/9ed74f798cae23aa6744f206ee381f3593590554/cy_app_flash_log.h",
+      "https://github.com/Infineon/pmg-app-common/blob/9ed74f798cae23aa6744f206ee381f3593590554/cy_app_debug.c",
+      "https://github.com/Infineon/pmg-app-common/blob/9ed74f798cae23aa6744f206ee381f3593590554/cy_app_bb_internal.c"
+    ],
+    "request_definition": "Reference DMC enum defines flash-log retrieval0xde; the fallback USB handler conditionally copies0x200 bytes from the flash-log getter into EP0 output after the application handler declines the request.",
+    "scope": "Requires CY_APP_FLASH_LOG_ENABLE and a non-null getter result. Getter implementation is in a library; no claim that its complete side effects are known. No DEG2 request is justified or sent.",
+    "contents": "Reference log contains common/DMC/PD fault counters and compact failure records, not a full CC-wire transcript. Debug code filters attach/trace categories from flash and stores one extra data byte for retained events; UART logging is a separate build feature.",
+    "bos": "Reference internal Billboard copies alternate-mode status and current software-held EUDO into BOS. These are device-reported state, not a recording of the Enter_USB exchange.",
+    "applicability": "No proof DEG2 uses this implementation, build feature, getter or request table. Matching endpoints and configurable VID/PID are only reasons to compare the implementation."
+  },
+  "prepared_reader": {
+    "entry": "tools/Read-DEG2BillboardStrings.ps1",
+    "native": "tools/analysis/BillboardHubReader.cs",
+    "default": "Preview",
+    "status": "Prepared_NotHardwareTested",
+    "binding": "One present041f:d002 revision8200 PnP instance, exact1d5c:5801 revision0101 parent. PnP Address is only a port candidate; hub driver-key equality must confirm ownership before descriptor GET. Live identity/BOS checked before strings and identity/key/address checked afterward.",
+    "requests": "Only standard BOS header/body and strings0/7/8/9/10, plus cached hub driver-key/connection metadata. No vendor request, flash, reset, policy or driver operation.",
+    "error_handling": "Dedicated hidden child process,45-second parent timeout, only owned helper terminated on timeout, no retry. Each request is saved privately before I/O and raw reply/status before validation, retaining failed/partial attempts.",
+    "limits": [
+      "Read capture path has not executed; only default Preview, compilation and early rejection guards were tested.",
+      "Port candidate semantics, hub access permissions and real transfer return lengths remain untested on hardware. A failed binding stops; no scan or guessed port fallback.",
+      "Standard descriptor reads are real device I/O when the owner later chooses Read; this interval performed none.",
+      "Address/key consistency does not establish uninterrupted attachment history.",
+      "Information strings cannot themselves supply PD packets or repair a failed USB4 link."
+    ]
+  },
+  "qualification": {
+    "powershell": "5.1 parse and both C# sources compile",
+    "preview": "Default Preview passed without native calls",
+    "early_guards": "Invalid supplied Read path and out-of-storage Worker path rejected before I/O",
+    "codec": "18 offline checks remain passing against both retained BOS fixtures"
+  },
+  "next": [
+    "Review the complete prepared reader and its supervisor/binding guards before any owner-run capture. Do not launch it while owner sleeps.",
+    "Continue exact PBS9c consumer through original platform-policy transfer; do not replace the missing consumer with this dock reference.",
+    "Use future strings/identity or actual firmware implementation to qualify the reference command table before any vendor GET."
+  ],
+  "hardware_requests": 0,
+  "deletions": 0
+}
