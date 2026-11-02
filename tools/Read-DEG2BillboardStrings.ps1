@@ -8,6 +8,16 @@ $ErrorActionPreference='Stop'
 Set-StrictMode -Version Latest
 $repo=Split-Path $PSScriptRoot -Parent
 $privateRoot=[IO.Path]::GetFullPath((Join-Path $repo 'local/BillboardStrings'))
+function Wait-DEG2DescriptorWorker {
+    param([System.Diagnostics.Process]$Process,[ValidateRange(1,45000)][int]$TimeoutMilliseconds=45000)
+    if($Process.WaitForExit($TimeoutMilliseconds)) { return $true }
+    # Use the retained process object, avoiding a second lookup by a reusable PID.
+    try { $Process.Kill() } catch [System.InvalidOperationException] {
+        if(-not $Process.HasExited) { throw }
+    }
+    $Process.WaitForExit(5000) | Out-Null
+    return $false
+}
 if($Mode -eq 'Preview') {
     [pscustomobject]@{
         Status='Prepared_NotHardwareTested'; Device='041F:D002 revision8200'; Parent='1D5C:5801 revision0101'
@@ -29,10 +39,8 @@ if($Mode -eq 'Read') {
     $encoded=[Convert]::ToBase64String([Text.Encoding]::Unicode.GetBytes($command))
     $exe=Join-Path $env:SystemRoot 'System32/WindowsPowerShell/v1.0/powershell.exe'
     $worker=Start-Process -FilePath $exe -ArgumentList @('-NoProfile','-ExecutionPolicy','Bypass','-EncodedCommand',$encoded) -WindowStyle Hidden -PassThru -RedirectStandardOutput (Join-Path $run 'worker.stdout.private.txt') -RedirectStandardError (Join-Path $run 'worker.stderr.private.txt')
-    if(-not $worker.WaitForExit(45000)) {
+    if(-not (Wait-DEG2DescriptorWorker -Process $worker)) {
         # Only this newly started helper is terminated. Windows closes its hub handle.
-        Stop-Process -Id $worker.Id -Force -ErrorAction SilentlyContinue
-        $worker.WaitForExit(5000) | Out-Null
         @{Status='TimedOut_OutcomeUnknown';WorkerPid=$worker.Id;NoRetry=$true} | ConvertTo-Json | Set-Content -LiteralPath (Join-Path $run 'supervisor.private.json') -Encoding UTF8
         Write-Output "Stopped: descriptor worker timed out. Do not retry; evidence: $run"
         return

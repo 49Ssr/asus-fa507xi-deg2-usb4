@@ -1020,6 +1020,16 @@
         "INFINEON-GRIFFIN-REFERENCE"
       ],
       "value_sha256": "8570554ae6e567edb4686327c0d1468f0f75db36dc5a5d24d4c74f6a7edbfa01"
+    },
+    {
+      "id": "PBS-PEI-FIELD-ROUTE",
+      "path": "evidence/pbs-pei-field-routing.json",
+      "pointer": "/pei_route",
+      "kind": "code",
+      "cases": [
+        "ASUS-BIOS314"
+      ],
+      "value_sha256": "68c90c8ff4b4a7a6ebba27b4f458c9c5bfbb0d46994248864cbeadf9a693c9ee"
     }
   ],
   "claims": [
@@ -1994,6 +2004,19 @@
         "INFINEON-GRIFFIN-REFERENCE"
       ],
       "limit": "Reference implementation only. No identified DEG2 firmware build/command compatibility, enabled logging, complete getter side effects or captured negotiation state. No vendor command was sent."
+    },
+    {
+      "id": "C70",
+      "basis": "code_fact",
+      "stage": "entry",
+      "statement": "The checked AmdCpmOemInitPeim caller obtains a0x500-byte PBS buffer and reads field3ba, passing its value with token10b to an indirect configuration method. This is not the PD USB4-control9c field.",
+      "sources": [
+        "PBS-PEI-FIELD-ROUTE"
+      ],
+      "cases": [
+        "ASUS-BIOS314"
+      ],
+      "limit": "Exact selected caller and byte-checked spans only. Method/token semantics, full9c consumer, live values and controller execution remain unresolved. Zero original callback-table words do not establish an empty runtime table."
     }
   ],
   "timeline_limit": "T0 is the first recorded Windows attachment report in each run, not physical insertion. Different runs, platforms, power contracts and capture dates are explicit. These tables align software reports only; proximity does not establish wire order or causation. The earlier Dell control supplies the Dell timeline; the deep Dell dump supplies cached-state comparison.",

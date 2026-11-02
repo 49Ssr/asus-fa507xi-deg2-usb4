@@ -1,0 +1,62 @@
+{
+  "schema": 1,
+  "date": "2026-11-02",
+  "interval": 19,
+  "pei_route": {
+    "module": "FA507XI BIOS314 AmdCpmOemInitPeim",
+    "sha256": "53460dafff07321ac2caab3d21f0f7e131f8cc31122c33b97f0277b87bd3f061",
+    "format": "IA32 TE",
+    "rva_to_file_delta_hex": "180",
+    "validated_spans": [
+      {
+        "rva_start_hex": "0x3a2",
+        "rva_end_exclusive_hex": "0x434",
+        "sha256": "379b0bc02f03d19008e20d8d32067a2b64573982d8716f808733d3bb0311a487"
+      },
+      {
+        "rva_start_hex": "0x8d1",
+        "rva_end_exclusive_hex": "0x9e5",
+        "sha256": "eb0be11a37435bf32c40b554d2b00ddfd67f6721b64ca0987db5282b75db07b2"
+      }
+    ],
+    "reader_rva_hex": "8d1",
+    "pbs_name_rva_hex": "7194",
+    "name_reference_rva_hex": "95e",
+    "buffer_bytes_hex": "500",
+    "selected_caller": {
+      "start_rva_hex": "3a2",
+      "reader_call_rva_hex": "3cb",
+      "buffer_base": "ebp-510",
+      "load_rva_hex": "3d8",
+      "load_address": "ebp-156",
+      "pbs_field_hex": "3ba",
+      "indirect_call_rva_hex": "3f2",
+      "method_byte_offset_hex": "50",
+      "configuration_token_hex": "10b"
+    },
+    "meaning": "This checked caller routes PBS field3ba into an indirect configuration method. It is not the PD USB4-control9c field. The method identity/token meaning still require definition matching.",
+    "callback_table": {
+      "rva_hex": "722c",
+      "first_two_original_words": [
+        0,
+        0
+      ],
+      "limit": "Original image data only. No claim that a runtime writer cannot populate the table."
+    },
+    "limit": "Original bytes and static argument/field accounting only. No current settings, complete9c consumer, controller request or physical negotiation state."
+  },
+  "reader_review": {
+    "entry": "tools/Read-DEG2BillboardStrings.ps1",
+    "change": "Timeout termination uses the retained Process object rather than a new lookup by reusable PID.",
+    "test": "tools/analysis/Test-BillboardWorker.ps1",
+    "qualification": "Real harmless child processes exercised both successful exit and timeout termination under Windows PowerShell5.1. Both children exited. No USB method was invoked.",
+    "remaining": "Native port binding, hub permissions, descriptor transfers and abrupt termination during pending hub I/O remain untested. Do not treat harmless-process supervision as hardware capture validation."
+  },
+  "next": [
+    "Match the selected PEI indirect-method GUID and configuration token against primary definitions; trace policy transfer rather than repeating literal9c scans.",
+    "Follow any actual setup/PCD/HOB path to the controller; the full PD USB4-control consumer is still unresolved.",
+    "Owner may later use the prepared standard-string collector after review. No launch, elevation or device request while asleep."
+  ],
+  "hardware_requests": 0,
+  "deletions": 0
+}

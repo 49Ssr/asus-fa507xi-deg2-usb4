@@ -668,6 +668,12 @@ Scope: INFINEON-GRIFFIN-REFERENCE. Reference implementation only. No identified 
 
 [INFINEON-FLASH-LOG-ROUTE](../evidence/infineon-log-route-and-reader.json) `/reference_code`
 
+**C70 — code_fact:** The checked AmdCpmOemInitPeim caller obtains a0x500-byte PBS buffer and reads field3ba, passing its value with token10b to an indirect configuration method. This is not the PD USB4-control9c field.
+
+Scope: ASUS-BIOS314. Exact selected caller and byte-checked spans only. Method/token semantics, full9c consumer, live values and controller execution remain unresolved. Zero original callback-table words do not establish an empty runtime table.
+
+[PBS-PEI-FIELD-ROUTE](../evidence/pbs-pei-field-routing.json) `/pei_route`
+
 ## Separate runs and observation limits
 
 | Case | Meaning | Important limit |

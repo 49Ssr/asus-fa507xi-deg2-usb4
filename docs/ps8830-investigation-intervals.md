@@ -24,6 +24,11 @@ Historical heartbeat before interval14 deletion: `trace-asus-ps8830-configuratio
 
 ## Current interval
 
+**Interval19:** original AmdCpmOemInitPeim has another checked PBS reader/caller. Its selected load is field3ba and routes through configuration token10b, not PD-control9c. The indirect method/token need primary-definition matching. Zero original callback-table entries are not a runtime observation. [Byte anchors and limits](../evidence/pbs-pei-field-routing.json).
+
+The descriptor worker supervisor now terminates through its retained Process object, avoiding PID reuse. Harmless real child processes verified both normal exit and timeout termination; no USB function ran. The hardware path remains untested. Next follow the selected configuration-method definition and actual policy transfer, without treating this unrelated field as a USB4 fix. A clock discontinuity occurred during this run; no continuous overnight-work duration is claimed. No hardware request, elevation, driver, boot, setting change or deletion occurred.
+
+
 **Interval18:** public Infineon app-common has a real, conditional flash-log response; the example-compatible v1 dependency was resolved and checked, not assumed from current master. Its compact fault log is not a full PD packet transcript, and DEG2 command compatibility is unproven. [Source and limitations](../evidence/infineon-log-route-and-reader.json).
 
 The standard-string reader is now prepared at `tools/Read-DEG2BillboardStrings.ps1`, default Preview. It binds the exact present Billboard and parent, independently checks the hub port's driver key, then permits only standard descriptors. A hidden worker has a45-second supervisor limit; requests/replies/errors remain private and there is no retry. PS5.1 parsing, both C# compilations, Preview and pre-I/O rejection guards passed. The capture path has NOT run, so port binding, permissions and hardware return lengths are untested. Next review the complete reader before any owner use; no launch while the owner sleeps. Return to the original PBS9c policy consumer independently. No hardware request/change/deletion occurred.
