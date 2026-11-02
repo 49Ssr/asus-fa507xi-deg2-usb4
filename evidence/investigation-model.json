@@ -116,6 +116,11 @@
       "id": "PARADE-DRIVER-REFERENCE",
       "label": "Retained original Parade HID/SPB driver binaries and INF packages",
       "limit": "Static software artifacts. Binding declarations and code do not measure the live mode, endpoint response or physical firmware alias."
+    },
+    {
+      "id": "PUBLIC-BOARD-SOURCE-REFERENCE",
+      "label": "Official FA507X service guide and Infineon source-distribution lookup",
+      "limit": "Reference illustrations and source availability, not fitted-board identity, actual source implementation or failed hardware state."
     }
   ],
   "stages": [
@@ -919,6 +924,16 @@
         "PARADE-DRIVER-REFERENCE"
       ],
       "value_sha256": "841f2ec730c7468545e20b1846cdbf6d77bdcf3417217571624e55dec3a332d6"
+    },
+    {
+      "id": "BOARD-SDK-SOURCE-SCOPE",
+      "path": "evidence/board-and-sdk-access-review.json",
+      "pointer": "/source_qualification",
+      "kind": "documentation",
+      "cases": [
+        "PUBLIC-BOARD-SOURCE-REFERENCE"
+      ],
+      "value_sha256": "729ff9a659c6b0d285fd1ae825d5b394394eb733c1a2e4339b8c4aa1d91a460c"
     }
   ],
   "claims": [
@@ -2017,6 +2032,12 @@
         "FLAG-GATE",
         "EC-LIVE-MATCH",
         "ASUS-COMPLETIONS"
+      ]
+    },
+    {
+      "explanation": "The official service-guide example PCB marking is not the fitted ASUS motherboard identity or a control-wiring schematic. The Infineon catalog link is not recovered source: the attempted version3.7 download returned401. Neither source closes the failed-connection mode-state gap.",
+      "sources": [
+        "BOARD-SDK-SOURCE-SCOPE"
       ]
     }
   ],

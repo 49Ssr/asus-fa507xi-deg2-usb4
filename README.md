@@ -1,5 +1,7 @@
 # ASUS FA507XI / Minisforum DEG2 USB4 investigation
 
+**Current status, 2 November:** recurring offline research has stopped with the cause unresolved and no working Windows repair. The service-guide board photo does not establish fitted-board wiring; the concrete Infineon SDK download requires authentication. The missing evidence is the controller's actual attachment-time mode/negotiation state and an identified way to read it. [Source review and resume conditions](evidence/board-and-sdk-access-review.json). No new hardware test is queued. Earlier next-task notes below are historical.
+
 **Current access gap:** the firmware mode decision is traced, but the existing Windows paths do not yet provide a qualified read of its inputs. HID status is cached, firmware-output reports can alter update state, and SPB reads use fixed endpoints. [Code and remaining requirements](evidence/parade-mode-read-contract.json). No hardware test is queued; the wrong-mode hypothesis remains unmeasured.
 
 **D8/D9 branch bounded:** its caller and selector flags are mapped, but no USB4-entry meaning is established. A partial pair failure can leave the old software latch without a compensating request, so that latch is not a validated rollback mechanism. [Decision table and original-code scope](evidence/ec-vendor-request-selection.json). This repair lead is deferred; no hardware test is queued.

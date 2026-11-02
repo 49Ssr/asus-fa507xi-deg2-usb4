@@ -642,6 +642,7 @@ Scope: PARADE-DRIVER-REFERENCE. This does not qualify the candidate mode-byte or
 | LINUX-PD-REFERENCE | Pinned upstream Linux USB-PD field definitions | Reference field layout, not a measured ASUS PD reply or vendor register/control specification. |
 | PS8830-CFU-REFERENCE | Retained installed-package PS8830 image; software artifact reference | Reconstructed offered image, not an independent readback of either physical retimer or measured active configuration. |
 | PARADE-DRIVER-REFERENCE | Retained original Parade HID/SPB driver binaries and INF packages | Static software artifacts. Binding declarations and code do not measure the live mode, endpoint response or physical firmware alias. |
+| PUBLIC-BOARD-SOURCE-REFERENCE | Official FA507X service guide and Infineon source-distribution lookup | Reference illustrations and source availability, not fitted-board identity, actual source implementation or failed hardware state. |
 
 ## Software-report timelines
 
@@ -747,6 +748,7 @@ Needed: Pairing-specific causal evidence before any cleanup patch is presented a
 - The connected OEM PDO run includes the owner-reported UGREEN insertion/removal. Preserve it as a failed read, not a clean paired port comparison. Sources: [OEM-CONFOUNDED](../evidence/oem-pd-diagnostics.json) `/live_runs/3`.
 - The policy record has a historical key named current_state. It cannot establish current boot/security configuration; refresh live inventory only when a later action actually needs it. Sources: [POLICY-OLD-SNAPSHOT](../evidence/role-policy-experiment.json) `/current_state`.
 - The flagged EC worker and the normal Windows command completions belong to different evidence classes. Their relation is an inference assuming the reviewed firmware applies, not a measured flag value. Sources: [FLAG-GATE](../evidence/ec-blocking-flag.json) `/outer_gate`, [EC-LIVE-MATCH](../evidence/ec-firmware-decision.json) `/source/live_flash_hash_verified`, [ASUS-COMPLETIONS](../evidence/asus-dell-matched-comparison.json) `/trace/terminal_command_completions`.
+- The official service-guide example PCB marking is not the fitted ASUS motherboard identity or a control-wiring schematic. The Infineon catalog link is not recovered source: the attempted version3.7 download returned401. Neither source closes the failed-connection mode-state gap. Sources: [BOARD-SDK-SOURCE-SCOPE](../evidence/board-and-sdk-access-review.json) `/source_qualification`.
 
 ## Documentation used for architecture
 

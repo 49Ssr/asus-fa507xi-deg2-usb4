@@ -1,0 +1,72 @@
+{
+  "schema": 1,
+  "date": "2026-11-02",
+  "interval": 14,
+  "source_qualification": {
+    "asus_service_guide": {
+      "url": "https://dlcdnets.asus.com/pub/ASUS/GamingNB/FA507XI/2023_FA507X_Service_guide_V1.3_20231128--NR-R2R.pdf?model=TUF507XV",
+      "support_listing": "https://www.asus.com/us/supportonly/fa507xi/helpdesk_service_guide/",
+      "sha256": "cd506451caec5de1d6828c11e0643f42d1693a3fcdd4698756571e700d1bd58b",
+      "bytes": 6133147,
+      "pages": 32,
+      "inspected_printed_pages": [
+        21,
+        22,
+        23
+      ],
+      "example_photo_marking": {
+        "pcb": "DA0NJSMBAD0 REV:D",
+        "model": "NJS"
+      },
+      "scope": "FA507X series service illustrations, not an electrical schematic or a photograph of the owner's fitted board. The guide states that parts and examples can vary.",
+      "result": "The photo marking does not verify the proposed fitted motherboard part number, PS8830/IT8853 chip markings, USB-C port mapping, bus ownership or attachment-time mode writer."
+    },
+    "infineon_sdk": {
+      "guide_url": "https://www.infineon.com/row/public/documents/30/316/infineon-ez-pd-ccgx-host-sdk-user-guide-productqualificationreport-en.pdf",
+      "guide_revision": "002-24327 Rev H, 2023-03-15",
+      "guide_pages": [
+        10,
+        11,
+        12,
+        38
+      ],
+      "guide_scope": "AMD Phoenix CCG6 reference project and APU/retimer support; not ASUS ITE implementation.",
+      "product_url": "https://softwaretools.infineon.com/tools/com.ifx.tb.tool.ezpdhostsdk",
+      "public_catalog_url": "https://softwaretools.infineon.com/api/v2/tools?featureId=com.ifx.tb.tool.ezpdhostsdk&downloadUrls=true&links=true&dependencies=false",
+      "catalog_http_status": 200,
+      "catalog_result": "Official catalog exposes versioned SDK package links. This does not establish the package contents or ASUS applicability.",
+      "download_version_attempted": "3.7.0",
+      "download_http_status": 401,
+      "download_result": "Authentication required; no package acquired, installed or executed. No alternative authentication or access-control bypass attempted.",
+      "source_lookup_limit": "Targeted primary-source searches did not recover a PS8830 implementation. This is not proof that public source or another interface is absent."
+    }
+  },
+  "remaining_gap": {
+    "known": "Native Windows samples RouterDetected clear for the ASUS failure. Retained retimer code has distinct candidate mode branches, but their failed-connection input values and execution are unmeasured.",
+    "missing": [
+      "Actual PD entry/cable-discovery history during failed attachment",
+      "ASUS ownership and writes for retimer mode/orientation",
+      "A read path with identified endpoint, register alias and side effects for the candidate mode inputs or branch markers"
+    ],
+    "not_requested": "No further general kernel dump, driver install, blind boot, updater retry or guessed register write.",
+    "resume_conditions": [
+      "A controller programming/register specification or source that identifies the ASUS interface",
+      "A safely obtainable attachment-time controller-state or wire capture that distinguishes the remaining branches",
+      "A fitted-board schematic or adequately resolved board evidence that establishes the control wiring"
+    ]
+  },
+  "disposition": {
+    "research_result": "Root cause unresolved; no working Windows repair demonstrated.",
+    "recurring_work": "Stop after publishing: the saved offline candidate queue and finite public board/source task yielded no new observable or usable interface. This is a present evidence/access limit, not a claim of impossibility.",
+    "hardware_requests": 0,
+    "hardware_changes": 0,
+    "deletions": 0,
+    "evidence_preservation": "Original captures, source downloads, failed attempts and private analysis retained."
+  },
+  "quality_notes": [
+    "Bare official PDF URL failed; indexed query URL downloaded and hash-verified. Web find refetches timed out and were not used for absence claims.",
+    "Default and bundled Python lack fitz; existing pypdf, Pillow and Poppler were used instead. No package installation.",
+    "Native embedded board images were inspected as well as rendered pages; unreadable component markings were not promoted to identities.",
+    "Catalog canDownload is metadata; the observed download response is 401. No source-content claim follows from the catalog."
+  ]
+}

@@ -1,5 +1,7 @@
 # Investigation goal and working method
 
+**Current status, 2 November:** recurring offline research has stopped with the cause unresolved and no working Windows repair. The service-guide board photo does not establish fitted-board wiring; the concrete Infineon SDK download requires authentication. The missing evidence is the controller's actual attachment-time mode/negotiation state and an identified way to read it. [Source review and resume conditions](../evidence/board-and-sdk-access-review.json). No new hardware test is queued. Earlier next-task notes below are historical.
+
 **1 November 2026. This is the current investigation plan.** It replaces the earlier automatic progression from finding an EC flag to building a dedicated flag-reader driver. All earlier captures, code and discoveries remain evidence. No new driver, test boot or connection experiment is queued by this plan.
 
 **Current goal:** locate the first failed branch in the ASUS-DEG2 control/message flow, identify its owning component and an observable that distinguishes it, then select one reversible intervention with a predicted outcome.
