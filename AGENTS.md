@@ -1,6 +1,11 @@
 # Research and maintenance rules
 
 
+**Interval22:** a selected Quanta DXE protocol function writes the PD Thunderbolt3 Alt Mode field4d under selector0x0e. The input-byte route and protocol slot were checked against original bytes. This is separate from USB4-control9c, and the routine has further operations whose effects/Windows transport are unqualified. [Code scope](evidence/tbt-policy-setter-scope.json). No setter is prepared or invoked.
+
+The existing two-variable read is the useful owner action now: `tools/READ-FIRMWARE-SETTINGS.cmd` as Administrator, when available. It reads stored9c/4d/465 and CBS settings; no reboot or DEG2 connection is needed. It remains unexecuted and may report runtime unavailability. Do not auto-launch it. Inspect any new private FirmwareSettings result, then continue actual policy-consumer work. SDK access can proceed independently. No hardware request/change/deletion occurred.
+
+
 **Interval21:** traced a real firmware/Windows USB4 dependency-policy hook: SMM modifies PBS465, and native-USB4 platform _OSC can clear its ACPI dependency state. It is a different setting from PD-control9c, and the SMI writes configuration rather than reading diagnostics. [Original code and AML](evidence/usb4-dependency-handshake.json).
 
 The existing ASUS dump supplies useful state: offline namespace lookup recovered M046=0x0c, DDEP=0x55 and DIMS=0xa7, without evaluating methods. The selected legacy NHI dependency branch requires DDEP==1 and M046<0x0b; both are false in that snapshot. This excludes that specific branch as the proposed setting fix, not every platform dependency or the USB4 failure. Stored465/current state and the9c consumer remain unknown. Next follow actual9c policy transfer and pair saved handoff evidence where available; no _OSC/SMI execution. No live request/change/deletion occurred.

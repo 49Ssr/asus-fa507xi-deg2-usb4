@@ -77,6 +77,12 @@ The firmware has a real USB4 ACPI dependency setting at PBS465 and a software-SM
 
 Offline inspection of the original failed ASUS dump recovered **M046=0x0c and DDEP=0x55**. The selected legacy dependency branch needs M046<0x0b and DDEP==1, so it is inactive at that snapshot. That is concrete evidence against changing this particular toggle as the fix. It does not reveal current NVRAM, PD negotiation or every other dependency. [Code, dump provenance and limits](../evidence/usb4-dependency-handshake.json).
 
+## Current stored policy is still missing
+
+The selected original Quanta DXE routine can persist the separate PD Thunderbolt3 field4d. Its full side effects and Windows transport are unqualified, so it is not a prepared intervention. [Original code and limits](../evidence/tbt-policy-setter-scope.json).
+
+The already prepared [read-only launcher](../tools/READ-FIRMWARE-SETTINGS.cmd), run by the owner as Administrator when available, captures stored PD USB4/TBT3, dependency and CBS values without a new driver or boot. DEG2 need not be connected. The agent has not run it. A runtime-access failure remains unknown rather than a disabled policy; even a successful read would not establish the controller's actual negotiation state.
+
 ## Would the Infineon SDK help?
 
 **Yes, as reference code and register/interface definitions. It is worth downloading; it is not a ready-made ASUS capture utility.** The [Host SDK guide](https://www.infineon.com/row/public/documents/30/316/infineon-ez-pd-ccgx-host-sdk-user-guide-productqualificationreport-en.pdf), pages10–11/38, describes AMD Phoenix reference firmware, APU/retimer interfaces and PS8830 selection. The public [hardware code](https://github.com/Infineon/pdaltmode/blob/fec544408cffffbfe459042262b5cd233a686722/cy_pdaltmode_hw.c) references AMD-specific headers and an APU mode-update function; the [retimer wrapper documentation source](https://github.com/Infineon/pdaltmode/blob/fec544408cffffbfe459042262b5cd233a686722/docs/xml/cy__pdaltmode__retimer__wrapper_8c.xml) calls AMD retimer initialisation. Those AMD implementations are not among the files in the inspected public tree.

@@ -700,6 +700,12 @@ Reason: The branch requires DDEP==1 and M046<0x0b; captured0x55 and0x0c fail bot
 
 [USB4-DEP-FIRMWARE](../evidence/usb4-dependency-handshake.json) `/firmware_code`, [USB4-DEP-SAVED-STATE](../evidence/usb4-dependency-handshake.json) `/saved_namespace`
 
+**C75 — code_fact:** The selected Quanta DXE protocol function has a selector0x0e branch that copies its input byte to PBS4d, the image-defined PD Thunderbolt3 Alt Mode field, before persisting the variable.
+
+Scope: ASUS-BIOS314. Static selected fragment only. Current value, full routine effects, a qualified Windows caller, PD-controller consumption and the separate9c consumer remain unknown. No setter test is prepared.
+
+[TBT-POLICY-SETTER-CODE](../evidence/tbt-policy-setter-scope.json) `/policy_code`
+
 ## Separate runs and observation limits
 
 | Case | Meaning | Important limit |

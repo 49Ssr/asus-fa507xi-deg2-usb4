@@ -1,0 +1,63 @@
+{
+  "schema": 1,
+  "date": "2026-11-02",
+  "interval": 22,
+  "policy_code": {
+    "module": "459-QuantaDxeWrapperPkg",
+    "sha256": "98518fac63c75188b8c9f47b5872adb5484bc405008af618ce7c782038b42f3c",
+    "spans": [
+      {
+        "rva_start_hex": "0xe18",
+        "rva_end_exclusive_hex": "0xebf",
+        "sha256": "599e3de7ebe45da00b733093fba8dafd361ce51872feb3fb7e7696906538438e"
+      },
+      {
+        "rva_start_hex": "0x748",
+        "rva_end_exclusive_hex": "0x756",
+        "sha256": "d7c0a1c8f39e041bfec2a201105052208fddf3b50cf9f9e9c9a537c3f3ea66e8"
+      },
+      {
+        "rva_start_hex": "0x66c",
+        "rva_end_exclusive_hex": "0x6f4",
+        "sha256": "56db7ab14bb7828c3ee0caef737b000dc316fbc50dfbba52df65ff8d6bc62c3d"
+      }
+    ],
+    "registration": {
+      "protocol_guid": "3ddaef04-53c3-4f37-bc84-a7cce3b2c823",
+      "table_rva_hex": "2360",
+      "function_rva_hex": "e18",
+      "slot_hex": "c0",
+      "subsystem": 11
+    },
+    "selected_conditions": {
+      "first_argument_low_byte": [
+        0,
+        2
+      ],
+      "second_argument_low_word_hex": "e",
+      "payload": "Third argument low byte is written to PBS4d before the selected SetVariable call."
+    },
+    "field": "Original HII identifies PBS4d as PD Thunderbolt3 Alt Mode, with0 enabled and1 disabled. It is distinct from PD USB4-control9c.",
+    "limits": [
+      "Selected original DXE code fragment, not a live invocation or current setting.",
+      "The larger routine continues into additional firmware operations. Its complete effects, safe runtime transport and a Windows caller are not qualified.",
+      "Do not invoke a firmware protocol pointer or guess an SMI/EC command from this static registration.",
+      "This setter does not establish how or when the PD controller consumes the variable."
+    ]
+  },
+  "prepared_read": {
+    "launcher": "tools/READ-FIRMWARE-SETTINGS.cmd",
+    "script": "tools/Read-USB4FirmwareSettings.ps1",
+    "scope": "Two fixed GetFirmwareEnvironmentVariableExW calls and ten decoded image-defined fields; no variable setter, driver or boot.",
+    "purpose": "Recover current stored9c/4d/465 and CBS values before choosing a settings-based experiment.",
+    "owner_action": "When available, owner runs the launcher as Administrator. No DEG2 reconnection or reboot is needed for this variable read. Agent does not launch it during offline intervals.",
+    "status": "Capture path remains unexecuted; stored settings may be unavailable at runtime. No current values or fix claimed."
+  },
+  "next": [
+    "Inspect any owner-generated private FirmwareSettings result without rerunning the reader.",
+    "Follow the actual consumer of9c and the identified4d policy interface; qualify a Windows caller and full effects before any setter test.",
+    "Continue offline source work while SDK access or owner reads are pending."
+  ],
+  "hardware_requests": 0,
+  "deletions": 0
+}

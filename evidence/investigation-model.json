@@ -1061,6 +1061,16 @@
         "ASUS-DEEP"
       ],
       "value_sha256": "b91992b5707da5abc8f92106eba1755931e3b097b29a44b30a4de3c418ec5013"
+    },
+    {
+      "id": "TBT-POLICY-SETTER-CODE",
+      "path": "evidence/tbt-policy-setter-scope.json",
+      "pointer": "/policy_code",
+      "kind": "code",
+      "cases": [
+        "ASUS-BIOS314"
+      ],
+      "value_sha256": "037ab63eccc49c60f10ed14ba5d18da10a8b0e05c228b7f3a0274952859e0659"
     }
   ],
   "claims": [
@@ -2104,6 +2114,19 @@
       ],
       "reason": "The branch requires DDEP==1 and M046<0x0b; captured0x55 and0x0c fail both necessary conditions.",
       "limit": "One explicitly reviewed dependency branch at a saved snapshot. No whole-platform exclusion, current-state conclusion or diagnosis of the PD failure."
+    },
+    {
+      "id": "C75",
+      "basis": "code_fact",
+      "stage": "entry",
+      "statement": "The selected Quanta DXE protocol function has a selector0x0e branch that copies its input byte to PBS4d, the image-defined PD Thunderbolt3 Alt Mode field, before persisting the variable.",
+      "sources": [
+        "TBT-POLICY-SETTER-CODE"
+      ],
+      "cases": [
+        "ASUS-BIOS314"
+      ],
+      "limit": "Static selected fragment only. Current value, full routine effects, a qualified Windows caller, PD-controller consumption and the separate9c consumer remain unknown. No setter test is prepared."
     }
   ],
   "timeline_limit": "T0 is the first recorded Windows attachment report in each run, not physical insertion. Different runs, platforms, power contracts and capture dates are explicit. These tables align software reports only; proximity does not establish wire order or causation. The earlier Dell control supplies the Dell timeline; the deep Dell dump supplies cached-state comparison.",
