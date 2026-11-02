@@ -674,6 +674,12 @@ Scope: ASUS-BIOS314. Exact selected caller and byte-checked spans only. Method/t
 
 [PBS-PEI-FIELD-ROUTE](../evidence/pbs-pei-field-routing.json) `/pei_route`
 
+**C71 — code_fact:** The selected PEI method matches native PCD SetBool for build-local token10b. Original HII identifies its PBS3ba input as PCIe DXIO timing control; PBS3bb/3bf name the associated PCIe polling overrides. The previously classified PBS3c3 field is WWAN support.
+
+Scope: ASUS-BIOS314. These identified settings are distinct from PD USB4-control9c. Static source/byte linkage does not supply current values, Auto resolution, physical effects or the missing9c consumer.
+
+[PBS-PCD-HII-IDENTITIES](../evidence/pbs-pcd-and-hii-identities.json) `/pcd_route`
+
 ## Separate runs and observation limits
 
 | Case | Meaning | Important limit |

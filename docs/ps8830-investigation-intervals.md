@@ -24,6 +24,11 @@ Historical heartbeat before interval14 deletion: `trace-asus-ps8830-configuratio
 
 ## Current interval
 
+**Interval20:** the selected PEI method is native PCD `SetBool`, token10b. Original HII names its input as PCIe DXIO timing control; the associated32-bit fields are PCIe receiver-detection/L0 polling overrides. The earlier3c3 field is WWAN support, and1f is CLK_REQ6 clock power management. [Primary definitions, checked question bytes and route](../evidence/pbs-pcd-and-hii-identities.json). None identifies the distinct PD-control9c consumer.
+
+Three original PEI database copies are byte-identical. Their name table is absent and their734 local entries contain no HII-backed tokens; this is a scoped database result, not whole-image or runtime absence. Token10b has the expected Boolean type. Next follow the already located OEM SMM PBS reader at176b with bufferRBP-80 and its actual consumers. No live values, controller request or repair were established. No hardware request/change/deletion occurred.
+
+
 **Interval19:** original AmdCpmOemInitPeim has another checked PBS reader/caller. Its selected load is field3ba and routes through configuration token10b, not PD-control9c. The indirect method/token need primary-definition matching. Zero original callback-table entries are not a runtime observation. [Byte anchors and limits](../evidence/pbs-pei-field-routing.json).
 
 The descriptor worker supervisor now terminates through its retained Process object, avoiding PID reuse. Harmless real child processes verified both normal exit and timeout termination; no USB function ran. The hardware path remains untested. Next follow the selected configuration-method definition and actual policy transfer, without treating this unrelated field as a USB4 fix. A clock discontinuity occurred during this run; no continuous overnight-work duration is claimed. No hardware request, elevation, driver, boot, setting change or deletion occurred.

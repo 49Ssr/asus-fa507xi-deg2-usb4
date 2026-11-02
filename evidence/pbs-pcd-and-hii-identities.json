@@ -1,0 +1,87 @@
+{
+  "schema": 1,
+  "date": "2026-11-02",
+  "interval": 20,
+  "pcd_route": {
+    "source_commit": "496fd85f26d40871c97c5835bf5ed849b6eb8a70",
+    "ppi_source": "https://github.com/tianocore/edk2/blob/496fd85f26d40871c97c5835bf5ed849b6eb8a70/MdePkg/Include/Ppi/Pcd.h",
+    "database_source": "https://github.com/tianocore/edk2/blob/496fd85f26d40871c97c5835bf5ed849b6eb8a70/MdeModulePkg/Include/Guid/PcdDataBaseSignatureGuid.h",
+    "service_source": "https://github.com/tianocore/edk2/blob/496fd85f26d40871c97c5835bf5ed849b6eb8a70/MdeModulePkg/Universal/PCD/Pei/Service.c",
+    "original_ppi_guid": "06e81c58-4ad7-44bc-8390-f10265f72480",
+    "ia32_method_offset_hex": "50",
+    "method": "PCD_PPI.SetBool, slot20 at four bytes per pointer",
+    "argument": "Build-local token10b from the previously checked original call",
+    "database": {
+      "sha256": "480a54e6f9ffb0f4c37ee98f6daf5c4f7f9230df3be1571c7e7b9c33885cd92b",
+      "bytes": 6184,
+      "identical_retained_copies": 3,
+      "signature": "3c7d193c-682c-4c14-a68f-552dea4f437e",
+      "build_version": 7,
+      "local_token_count": 734,
+      "dynamic_ex_count": 40,
+      "name_table_offset": 0,
+      "hii_token_count": 0,
+      "token_10b": {
+        "table_file_offset_hex": "0x668",
+        "word_hex": "0x1101bc1",
+        "datum": "BOOLEAN",
+        "storage": "Offset1bc1 lies beyond initialized6184 bytes but within declared978-byte uninitialized extension. This is not a live value."
+      },
+      "scope": "Only these three byte-identical PEI raw sections. No claim about other databases, runtime data or the active firmware volume selection."
+    },
+    "hii_fields": [
+      {
+        "variable_offset_hex": "0x3ba",
+        "opcode_file_offset_hex": "0x8697",
+        "opcode_hex": "0591330334031d000100ba031010000f00",
+        "prompt": "Pcie Dxio Timing ControlEnable"
+      },
+      {
+        "variable_offset_hex": "0x3bb",
+        "opcode_file_offset_hex": "0x86cb",
+        "opcode_hex": "079a350336031e000100bb03102200000000ffffffff00000000",
+        "prompt": "PCIE Link Receiver Detection Polling"
+      },
+      {
+        "variable_offset_hex": "0x3bf",
+        "opcode_file_offset_hex": "0x86fe",
+        "opcode_hex": "079a370338031f000100bf03102200000000ffffffff00000000",
+        "prompt": "PCIE Link L0 Polling"
+      },
+      {
+        "variable_offset_hex": "0x3c3",
+        "opcode_file_offset_hex": "0x8725",
+        "opcode_hex": "059139033a0320000100c3031410000100",
+        "prompt": "WWAN device support"
+      },
+      {
+        "variable_offset_hex": "0x1f",
+        "opcode_file_offset_hex": "0x8d30",
+        "opcode_hex": "0591be00be00450001001f001410000100",
+        "prompt": "Clock PM: CLK_REQ6"
+      }
+    ],
+    "selected_case_table": [
+      {
+        "pbs_3ba": 0,
+        "route": "SetBool10b(0); skip the two selected timing overrides"
+      },
+      {
+        "pbs_3ba": 1,
+        "route": "SetBool10b(1); Set32 tokens104/103 from PBS3bb/3bf"
+      },
+      {
+        "pbs_3ba": 15,
+        "route": "Auto: skip these explicit overrides"
+      }
+    ],
+    "interpretation": "This selected path is PCIe DXIO timing configuration. PBS3c3 is a WWAN option, and PBS1f is CLK_REQ6 clock power management. These labels do not identify the distinct PD USB4-control9c consumer.",
+    "limit": "Source-definition and original-byte linkage only. Native token numbers are build-specific. No current value, resolved Auto policy, controller request, physical wiring or repair was established."
+  },
+  "next": [
+    "Follow the already located original OEM SMM PBS reader at176b, whose input buffer is RBP-80; trace its actual consumers before another general scan.",
+    "Keep the full9c consumer unresolved until a concrete value-transfer path is found. Do not use PCIe timing, WWAN or clock-request labels as substitute PD controls."
+  ],
+  "hardware_requests": 0,
+  "deletions": 0
+}

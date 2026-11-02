@@ -1030,6 +1030,16 @@
         "ASUS-BIOS314"
       ],
       "value_sha256": "68c90c8ff4b4a7a6ebba27b4f458c9c5bfbb0d46994248864cbeadf9a693c9ee"
+    },
+    {
+      "id": "PBS-PCD-HII-IDENTITIES",
+      "path": "evidence/pbs-pcd-and-hii-identities.json",
+      "pointer": "/pcd_route",
+      "kind": "code",
+      "cases": [
+        "ASUS-BIOS314"
+      ],
+      "value_sha256": "661373b9c7c8de2699b05e0df96646a41f82997fa5ede5e70f9f7364f550e104"
     }
   ],
   "claims": [
@@ -2017,6 +2027,19 @@
         "ASUS-BIOS314"
       ],
       "limit": "Exact selected caller and byte-checked spans only. Method/token semantics, full9c consumer, live values and controller execution remain unresolved. Zero original callback-table words do not establish an empty runtime table."
+    },
+    {
+      "id": "C71",
+      "basis": "code_fact",
+      "stage": "entry",
+      "statement": "The selected PEI method matches native PCD SetBool for build-local token10b. Original HII identifies its PBS3ba input as PCIe DXIO timing control; PBS3bb/3bf name the associated PCIe polling overrides. The previously classified PBS3c3 field is WWAN support.",
+      "sources": [
+        "PBS-PCD-HII-IDENTITIES"
+      ],
+      "cases": [
+        "ASUS-BIOS314"
+      ],
+      "limit": "These identified settings are distinct from PD USB4-control9c. Static source/byte linkage does not supply current values, Auto resolution, physical effects or the missing9c consumer."
     }
   ],
   "timeline_limit": "T0 is the first recorded Windows attachment report in each run, not physical insertion. Different runs, platforms, power contracts and capture dates are explicit. These tables align software reports only; proximity does not establish wire order or causation. The earlier Dell control supplies the Dell timeline; the deep Dell dump supplies cached-state comparison.",
