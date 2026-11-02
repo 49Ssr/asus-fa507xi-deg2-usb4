@@ -10,8 +10,8 @@ The retained, hash-verified FA507XI BIOS314 contains AMD PBS and CBS HII forms. 
 | --- | --- | --- |
 | PD USB4 Control | Disabled0 / Enabled1; default1 | Captured Enabled1; actual ASUS consumer remains unknown |
 | USB4 pre-CM | Disabled0 / Enabled1 / Auto15; default15 | Captured Auto15; resolved policy remains unknown |
-| RT0 Router / PCIe Tunnel | Disabled0 / Enabled1 / Auto15; default15 | Both captured Auto15; physical mapping remains unknown |
-| RT1 Router | Disabled0 default / Enabled1 / Auto15 | Captured Disabled0, matching image default; fitted-instance mapping unknown |
+| RT0 Router / PCIe Tunnel | Disabled0 / Enabled1 / Auto15; default15 | Both captured Auto15; host instance maps to NHI0, high-speed lane state remains unknown |
+| RT1 Router | Disabled0 default / Enabled1 / Auto15 | Captured Disabled0; maps to NHI1/function6, separate from the failed RT0 path |
 | RT1 PCIe Tunnel | Disabled0 / Enabled1 / Auto15; default15 | Captured Auto15; consumer remains unknown |
 | PD Thunderbolt3 Alt Mode | Enabled0 default / Disabled1 | Captured Enabled0; use during this pairing remains unknown |
 
@@ -96,6 +96,18 @@ The seven fields with previously recorded image defaults match those defaults. A
 The selected original Quanta DXE routine can persist the separate PD Thunderbolt3 field4d. Its full effects and Windows transport remain unqualified. No setter was invoked. [Original code and limits](../evidence/tbt-policy-setter-scope.json). Raw variables remain private. No driver, reboot, connection change or firmware-setting write was needed for this read.
 
 Scheduled research is paused at the owner's request. Interactive work must account for remote access without BIOS or cable access.
+
+## RT1 is the other host-router instance
+
+[The original firmware and saved capture now map RT1](rt1-router-mapping.md) to NHI1/function6 and RT0 to NHI0/function5. DEG2 fallback is under XHC3, the NHI0/RT0 companion. The setting feeds a genuine second-router boot policy, but its disabled state is unsupported as the repair for the captured first-router failure. No Windows reapply path or setting test is established.
+
+## Standard USB information read succeeded
+
+The exact current DEG2/parent binding was captured on2 November at10:03 UTC through the existing Windows hub driver. No elevation, reconnect or new driver was needed. All seven standard descriptor GETs and four hub metadata reads succeeded.
+
+String7 is the Minisforum homepage,8 is generic Thunderbolt assistance text, and9/10 are literal null strings. These are device-provided information, not negotiation errors. The first reported mode-capability VDO is now0 versus2087e000 in the earlier ASUS fixture; status byte35 is unchanged. Reference Infineon code can populate this field from software-held EUDO, but DEG2 applicability and the cause of the different word remain unverified. It is not an observed PD exchange. [Sanitized results, source hashes and scope](../evidence/billboard-strings-result.json).
+
+Earlier statements above that the standard reader had not run describe preparation history. It is now exercised on this one exact binding; other hardware and native-I/O timeout behavior remain unqualified. Do not repeat the read unchanged or issue guessed vendor requests.
 
 ## Would the Infineon SDK help?
 

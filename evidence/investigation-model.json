@@ -131,6 +131,11 @@
       "id": "ASUS-STORED-20261102",
       "label": "ASUS BIOS314 stored UEFI settings read on 2 November 2026",
       "limit": "Stored configuration at one timestamp; no paired attachment, resolved Auto policy or controller-state measurement."
+    },
+    {
+      "id": "ASUS-BILLBOARD-20261102",
+      "label": "ASUS-DEG2 existing fallback connection, standard USB strings read on2 November2026",
+      "limit": "Standard device descriptors from one exact binding; no PD packets, vendor diagnostics, retimer state or repaired USB4 link."
     }
   ],
   "stages": [
@@ -1086,6 +1091,36 @@
         "ASUS-STORED-20261102"
       ],
       "value_sha256": "7d77574538fd2649aae3448b18faed7967518cddfc4a27ed4bae8947557fb8d4"
+    },
+    {
+      "id": "RT1-FIRMWARE-MAPPING",
+      "path": "evidence/rt1-router-mapping.json",
+      "pointer": "/firmware_code",
+      "kind": "code",
+      "cases": [
+        "ASUS-BIOS314"
+      ],
+      "value_sha256": "3c532049aa2a8348e91c9d62107ea115635c251462e43838faf546b16d6b226a"
+    },
+    {
+      "id": "RT1-SAVED-CAPTURE",
+      "path": "evidence/rt1-router-mapping.json",
+      "pointer": "/saved_capture",
+      "kind": "capture",
+      "cases": [
+        "ASUS-DEEP"
+      ],
+      "value_sha256": "34be64f0a51edea4f02b6f9a79b268e1c6576d253bd29449ce6f5346df73ca5b"
+    },
+    {
+      "id": "BILLBOARD-STANDARD-STRINGS",
+      "path": "evidence/billboard-strings-result.json",
+      "pointer": "/observed",
+      "kind": "capture",
+      "cases": [
+        "ASUS-BILLBOARD-20261102"
+      ],
+      "value_sha256": "2e6eac6bba7d2dfb152d9c42deb66a698e9ce7b2d81daaca6d3d07ddfb91e099"
     }
   ],
   "claims": [
@@ -2155,6 +2190,63 @@
         "ASUS-STORED-20261102"
       ],
       "limit": "Exact BIOS314 variable layouts and raw fields verified. Stored values are not resolved policy or PD/retimer execution. RT1 mapping is unknown and its value matches the recorded image default; no fix is established."
+    },
+    {
+      "id": "C77",
+      "basis": "code_fact",
+      "stage": "entry",
+      "statement": "Original BIOS314 CBS code routes RT1-enable field1aa to native PCD token2a3 and a separate FCH router-enable byte. The original USB4 connection table identifies RT0 with GP19 child function5/NHI0 and RT1 with function6/NHI1.",
+      "sources": [
+        "RT1-FIRMWARE-MAPPING"
+      ],
+      "cases": [
+        "ASUS-BIOS314"
+      ],
+      "limit": "Original-byte-verified boot code and saved ACPI table definitions. Runtime execution, final platform overrides and physical lane state were not sampled."
+    },
+    {
+      "id": "C78",
+      "basis": "measured",
+      "stage": "router",
+      "statement": "The saved failed ASUS capture has one enumerated1022:1668 USB4 host at NHI0/PCI function5. DEG2 USB2 fallback is under XHC3/PCI function3; the retained dump summary also lists the1668 host and no external DEG2 router.",
+      "sources": [
+        "RT1-SAVED-CAPTURE"
+      ],
+      "cases": [
+        "ASUS-DEEP"
+      ],
+      "limit": "Saved inventory/dump observations. USB2 fallback is not a physical high-speed lane or PD packet measurement."
+    },
+    {
+      "id": "C79",
+      "basis": "inference",
+      "stage": "entry",
+      "statement": "RT1 Disabled targets the second host-router instance. The saved DEG2 failure follows the RT0/NHI0 companion path, so enabling RT1 is not supported as its repair by the current evidence.",
+      "sources": [
+        "RT1-FIRMWARE-MAPPING",
+        "RT1-SAVED-CAPTURE",
+        "ASUS-STORED-UEFI"
+      ],
+      "cases": [
+        "ASUS-BIOS314",
+        "ASUS-DEEP",
+        "ASUS-STORED-20261102"
+      ],
+      "reason": "Original firmware labels function5 RT0 and function6 RT1; saved host/fallback routes identify NHI0/XHC3. The separate current settings read finds RT1 Disabled0, matching the image default.",
+      "limit": "The settings read and failed capture occurred at different times. Other platform overrides, board routing and the actual failed negotiation remain unresolved; this is not a complete root-cause exclusion or a demonstrated Windows fix."
+    },
+    {
+      "id": "C80",
+      "basis": "measured",
+      "stage": "fallback",
+      "statement": "The standard Windows hub descriptor read succeeds on the present exact DEG2 fallback binding. Strings7/8 return the Minisforum homepage and generic Thunderbolt help;9/10 contain literal null text. Mode-capability word0 is now0 versus2087e000 in the retained ASUS fixture; status byte35 is unchanged.",
+      "sources": [
+        "BILLBOARD-STANDARD-STRINGS"
+      ],
+      "cases": [
+        "ASUS-BILLBOARD-20261102"
+      ],
+      "limit": "Information and reported mode metadata only. They do not identify a diagnostic protocol, PD traffic, actual negotiated mode or cause. Different capture times and unverified DEG2 implementation prevent interpreting the changed word as a traced firmware decision."
     }
   ],
   "timeline_limit": "T0 is the first recorded Windows attachment report in each run, not physical insertion. Different runs, platforms, power contracts and capture dates are explicit. These tables align software reports only; proximity does not establish wire order or causation. The earlier Dell control supplies the Dell timeline; the deep Dell dump supplies cached-state comparison.",

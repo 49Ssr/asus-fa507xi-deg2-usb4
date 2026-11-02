@@ -712,6 +712,32 @@ Scope: ASUS-STORED-20261102. Exact BIOS314 variable layouts and raw fields verif
 
 [ASUS-STORED-UEFI](../evidence/firmware-settings-read.json) `/observed`
 
+**C77 — code_fact:** Original BIOS314 CBS code routes RT1-enable field1aa to native PCD token2a3 and a separate FCH router-enable byte. The original USB4 connection table identifies RT0 with GP19 child function5/NHI0 and RT1 with function6/NHI1.
+
+Scope: ASUS-BIOS314. Original-byte-verified boot code and saved ACPI table definitions. Runtime execution, final platform overrides and physical lane state were not sampled.
+
+[RT1-FIRMWARE-MAPPING](../evidence/rt1-router-mapping.json) `/firmware_code`
+
+**C78 — measured:** The saved failed ASUS capture has one enumerated1022:1668 USB4 host at NHI0/PCI function5. DEG2 USB2 fallback is under XHC3/PCI function3; the retained dump summary also lists the1668 host and no external DEG2 router.
+
+Scope: ASUS-DEEP. Saved inventory/dump observations. USB2 fallback is not a physical high-speed lane or PD packet measurement.
+
+[RT1-SAVED-CAPTURE](../evidence/rt1-router-mapping.json) `/saved_capture`
+
+**C79 — inference:** RT1 Disabled targets the second host-router instance. The saved DEG2 failure follows the RT0/NHI0 companion path, so enabling RT1 is not supported as its repair by the current evidence.
+
+Scope: ASUS-BIOS314, ASUS-DEEP, ASUS-STORED-20261102. The settings read and failed capture occurred at different times. Other platform overrides, board routing and the actual failed negotiation remain unresolved; this is not a complete root-cause exclusion or a demonstrated Windows fix.
+
+Reason: Original firmware labels function5 RT0 and function6 RT1; saved host/fallback routes identify NHI0/XHC3. The separate current settings read finds RT1 Disabled0, matching the image default.
+
+[RT1-FIRMWARE-MAPPING](../evidence/rt1-router-mapping.json) `/firmware_code`, [RT1-SAVED-CAPTURE](../evidence/rt1-router-mapping.json) `/saved_capture`, [ASUS-STORED-UEFI](../evidence/firmware-settings-read.json) `/observed`
+
+**C80 — measured:** The standard Windows hub descriptor read succeeds on the present exact DEG2 fallback binding. Strings7/8 return the Minisforum homepage and generic Thunderbolt help;9/10 contain literal null text. Mode-capability word0 is now0 versus2087e000 in the retained ASUS fixture; status byte35 is unchanged.
+
+Scope: ASUS-BILLBOARD-20261102. Information and reported mode metadata only. They do not identify a diagnostic protocol, PD traffic, actual negotiated mode or cause. Different capture times and unverified DEG2 implementation prevent interpreting the changed word as a traced firmware decision.
+
+[BILLBOARD-STANDARD-STRINGS](../evidence/billboard-strings-result.json) `/observed`
+
 ## Separate runs and observation limits
 
 | Case | Meaning | Important limit |
@@ -741,6 +767,7 @@ Scope: ASUS-STORED-20261102. Exact BIOS314 variable layouts and raw fields verif
 | PUBLIC-BOARD-SOURCE-REFERENCE | Official FA507X service guide and Infineon source-distribution lookup | Reference illustrations and source availability, not fitted-board identity, actual source implementation or failed hardware state. |
 | INFINEON-GRIFFIN-REFERENCE | Public Infineon PMG app-common reference resolved from Griffin Creek dependency | Reference source only, not DEG2 firmware identity, enabled diagnostics or an ASUS observation. |
 | ASUS-STORED-20261102 | ASUS BIOS314 stored UEFI settings read on 2 November 2026 | Stored configuration at one timestamp; no paired attachment, resolved Auto policy or controller-state measurement. |
+| ASUS-BILLBOARD-20261102 | ASUS-DEG2 existing fallback connection, standard USB strings read on2 November2026 | Standard device descriptors from one exact binding; no PD packets, vendor diagnostics, retimer state or repaired USB4 link. |
 
 ## Software-report timelines
 

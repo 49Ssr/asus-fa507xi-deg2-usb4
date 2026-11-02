@@ -1,0 +1,214 @@
+{
+  "schema": 1,
+  "date": "2026-11-02",
+  "question": "What does RT1 control, and does its captured Disabled setting explain the DEG2 failure?",
+  "firmware_code": {
+    "scope": "Original BIOS314 code and retained hash/checksum-verified ACPI tables; no firmware routine was invoked.",
+    "modules": [
+      {
+        "module": "35-CbsBasePeiPHX-42b1914a.bin",
+        "sha256": "42b1914aa87ca406434e23adb46f501425de0bd28ff2623af92133939d8fb82b"
+      },
+      {
+        "module": "19-FchTacomaPei-db8401f8.bin",
+        "sha256": "db8401f89094396a789f5c354e8050b1d80a563b3f8941c34e48a3ce9c21ed0d"
+      },
+      {
+        "module": "50-AmdUsb4Dxe-e89bf3a8.bin",
+        "sha256": "e89bf3a8d965e122d5541715ff29dd42f53a687db292cf36513c22ffb6176bfa"
+      }
+    ],
+    "checked_spans": [
+      {
+        "module": "35-CbsBasePeiPHX-42b1914a.bin",
+        "file_offset_start": "0x15d4",
+        "file_offset_end_exclusive": "0x167f",
+        "rva_start": "0x1754",
+        "rva_end_exclusive": "0x17ff",
+        "sha256": "54400bec92d148fddcfa05c0290fef5190b9e129511062a445b6e6db685150fc"
+      },
+      {
+        "module": "35-CbsBasePeiPHX-42b1914a.bin",
+        "file_offset_start": "0xf8f",
+        "file_offset_end_exclusive": "0xfab",
+        "rva_start": "0x110f",
+        "rva_end_exclusive": "0x112b",
+        "sha256": "b2aef01baf1987f9022ef7f94817685f6a3e7741c7904b49cef5cc473b786b3e"
+      },
+      {
+        "module": "35-CbsBasePeiPHX-42b1914a.bin",
+        "file_offset_start": "0x26b",
+        "file_offset_end_exclusive": "0x315",
+        "rva_start": "0x3eb",
+        "rva_end_exclusive": "0x495",
+        "sha256": "eff3922adf72f2a550286927946cb7f1e70bafac7f5798eb24a8a4ca2db2d7d7"
+      },
+      {
+        "module": "35-CbsBasePeiPHX-42b1914a.bin",
+        "file_offset_start": "0x586",
+        "file_offset_end_exclusive": "0x61c",
+        "rva_start": "0x706",
+        "rva_end_exclusive": "0x79c",
+        "sha256": "3102bf610262830ffe71864bf28abee54af6bd852855d6032862330466ac461f"
+      },
+      {
+        "module": "19-FchTacomaPei-db8401f8.bin",
+        "file_offset_start": "0xeed",
+        "file_offset_end_exclusive": "0xf15",
+        "rva_start": "0x106d",
+        "rva_end_exclusive": "0x1095",
+        "sha256": "2cd11b4bfdaa1f1b043190d28731bfa493b8a5c82f816611b687b952ced0e5dc"
+      },
+      {
+        "module": "19-FchTacomaPei-db8401f8.bin",
+        "file_offset_start": "0x3bf2",
+        "file_offset_end_exclusive": "0x3d50",
+        "rva_start": "0x3d72",
+        "rva_end_exclusive": "0x3ed0",
+        "sha256": "e73158be6238bf9b64c16387c1a7e7ef7e81463ef3a6bd6938e251e686fa3014"
+      },
+      {
+        "module": "50-AmdUsb4Dxe-e89bf3a8.bin",
+        "file_offset_start": "0x3030",
+        "file_offset_end_exclusive": "0x31ce",
+        "rva_start": "0x3030",
+        "rva_end_exclusive": "0x31ce",
+        "sha256": "b587315e97678a6bb7bfef81701e2b766bc1c902ac9fbab3904164a90492c27a"
+      },
+      {
+        "module": "19-FchTacomaPei-db8401f8.bin",
+        "file_offset_start": "0x162b",
+        "file_offset_end_exclusive": "0x1647",
+        "rva_start": "0x17ab",
+        "rva_end_exclusive": "0x17c7",
+        "sha256": "e46cb1a2e91b830de778458c32623379c17ad3f9fbc5ab189a033359ee5d0568"
+      }
+    ],
+    "validation": {
+      "original_instructions_byte_matched": 405,
+      "te_stripped_header_delta_hex": "0x180",
+      "entry_decode": "CBS caller decoded separately at its function entry after rejecting a linear decode that crossed preceding table data."
+    },
+    "cbs_transfer": {
+      "variable": "AmdSetupPHX",
+      "variable_guid": "3A997502-647A-4C82-998E-52EF9486A247",
+      "native_pcd_ppi_guid": "06e81c58-4ad7-44bc-8390-f10265f72480",
+      "ia32_getbool_slot_hex": "0x18",
+      "ia32_setbool_slot_hex": "0x50",
+      "rule": "When a router-enable byte is not Auto15, copy it through native SetBool. Apply its PCIe-tunnel override only when the router-enable byte equals1 and tunnel byte is not Auto15.",
+      "fields": [
+        {
+          "field": "RT0 Router",
+          "cbs_offset_hex": "0x1a8",
+          "pcd_token_hex": "0x29a"
+        },
+        {
+          "field": "RT0 PCIe Tunnel",
+          "cbs_offset_hex": "0x1a9",
+          "pcd_token_hex": "0x29d"
+        },
+        {
+          "field": "RT1 Router",
+          "cbs_offset_hex": "0x1aa",
+          "pcd_token_hex": "0x2a3"
+        },
+        {
+          "field": "RT1 PCIe Tunnel",
+          "cbs_offset_hex": "0x1ab",
+          "pcd_token_hex": "0x2a6"
+        }
+      ],
+      "input_scope": "Caller obtains a CBS configuration block through retained HOB or variable/default fallback. The exact post-override values in a historical boot were not read."
+    },
+    "fch_consumer": {
+      "rt0": "GetBool token29a is copied to FCH configuration byte1b7.",
+      "rt1": "GetBool token2a3 is copied to distinct FCH configuration byte1d7.",
+      "entry_message": "If the corresponding presence condition is true, nonzero enable byte adds RT0 bit16 or RT1 bit17 to the initialization message. Zero takes a separate indexed disable path. This was inspected as code, not executed or sampled live.",
+      "limit": "Other platform prerequisites, writers and physical link decisions remain unmeasured.",
+      "native_ppi_guid_verified": true
+    },
+    "host_mapping": {
+      "routine": "AmdUsb4HostConnectionInfo",
+      "routine_rva_hex": "0x3030",
+      "table_rva_hex": "0x13f40",
+      "entry_size": 11,
+      "entries_hex": [
+        "0043000000000000000500",
+        "0043000000000000000600"
+      ],
+      "labels": {
+        "rt0_string_rva_hex": "0x14e60",
+        "rt1_string_rva_hex": "0x14e88"
+      },
+      "routing": "Original code labels the upstream8.3/child function5 entry RT0 and the corresponding function6 entry RT1.",
+      "acpi_tables": [
+        {
+          "file": "12-SSDT-INTGPP03.bin",
+          "sha256": "920a31bb1454bb8e8354731e6957ba2421cd474a0863ebf3b6f5f8e3a0ce79a0",
+          "checksum_valid": true
+        },
+        {
+          "file": "22-DSDT-Notebook.bin",
+          "sha256": "f57e3bb75b6a15725ff295ed451161d33f3b238bb6cfda683a45286851f1938a",
+          "checksum_valid": true
+        }
+      ],
+      "acpi_addresses": {
+        "NHI0": "GP19, device0 function5",
+        "NHI1": "GP19, device0 function6"
+      },
+      "companion_associations": {
+        "XHC3.RHUB.PRT2": "NHI0, usb4-port-number1",
+        "XHC4.RHUB.PRT2": "NHI1, usb4-port-number1"
+      }
+    },
+    "primary_definitions": [
+      {
+        "url": "https://github.com/tianocore/edk2/blob/496fd85f26d40871c97c5835bf5ed849b6eb8a70/MdePkg/Include/Ppi/Pcd.h",
+        "sha256": "6e938d2676478b86b5a2255ac42c9f8dc8e614e63f3ca417a279e4a2b5e0bb5e",
+        "scope": "Native PCD PPI GUID and function order; token numbers are ASUS build-specific."
+      }
+    ]
+  },
+  "saved_capture": {
+    "case": "ASUS-DEEP",
+    "inventory_utc": "2026-11-01T00:54:28.0862094Z",
+    "inventory": {
+      "host_router_count_in_captured_inventory": 1,
+      "host_pci_vendor_hex": "1022",
+      "host_pci_product_hex": "1668",
+      "host_service": "Usb4HostRouter",
+      "host_pci_path": "PCIROOT(0)#PCI(0803)#PCI(0005)",
+      "host_acpi_path": "_SB.PCI0.GP19.NHI0",
+      "deg2_fallback_controller": "_SB.PCI0.GP19.XHC3",
+      "deg2_fallback_upstream_pci_path": "PCIROOT(0)#PCI(0803)#PCI(0003)",
+      "xhci4_present": true
+    },
+    "dump_summary": "The retained offline USB4KD topology lists one host router1022:1668 with its root router and no external DEG2 router.",
+    "limits": [
+      "The inventory and dump are saved observations, not current attachment state.",
+      "USB2 fallback routing plus ACPI companion association supports the tested-port mapping; it does not measure the high-speed lane switch or physical link.",
+      "An NHI1 ACPI object alone does not prove a present or wired second USB4 connector."
+    ]
+  },
+  "conclusion": {
+    "supported": "RT1 is the second integrated USB4 host-router instance NHI1/function6. The captured DEG2 fallback branch and active host belong to XHC3/NHI0/RT0. It does not name the PS8830 retimer.",
+    "disabled_setting": "Current stored RT1=0 is a real early-boot override, not a meaningless menu label. It applies to the second instance; the saved failed first-instance path provides no evidence that enabling RT1 repairs DEG2.",
+    "windows_fix": "No Windows repair established. No qualified runtime setter/reapply path follows from the PEI PCD code. Changing a stored variable alone is not proof of immediate controller reconfiguration.",
+    "still_missing": "Actual RT0 PD-entry/mux/link state and the consumer of PBS9c, plus complete platform overrides."
+  },
+  "next": [
+    "Follow the RT0 board-policy and PD/retimer entry decision using the original firmware and saved captures.",
+    "Qualify an implemented status/log interface before issuing any controller request.",
+    "Keep scheduled runs paused; no BIOS, cable, reboot or network changes while the owner is remote."
+  ],
+  "actions_this_research": {
+    "rt1_mapping": "Original files only; no hardware request for mapping.",
+    "subsequent_standard_usb_read": "See evidence/billboard-strings-result.json:7 standard descriptor GETs plus4 hub metadata reads.",
+    "setting_writes": 0,
+    "driver_installs": 0,
+    "restarts": 0,
+    "network_changes": 0,
+    "deletions": 0
+  }
+}

@@ -1,0 +1,172 @@
+{
+  "schema": 1,
+  "date": "2026-11-02",
+  "observed": {
+    "captured_start_utc": "2026-11-02T10:03:35.9529319Z",
+    "captured_end_utc": "2026-11-02T10:03:38.2142914Z",
+    "target": {
+      "vid_hex": "041f",
+      "pid_hex": "d002",
+      "revision_hex": "8200",
+      "parent_vid_hex": "1d5c",
+      "parent_pid_hex": "5801",
+      "parent_revision_hex": "0101"
+    },
+    "binding": "Exact current parent interface, port driver-key, connected non-hub identity and USB address consistency verified before/after. Private instance and hub paths omitted.",
+    "bos_bytes": 112,
+    "bos_comparison": {
+      "fixture": "evidence/fixtures/deg2-asus-bos.hex",
+      "exact_match": false,
+      "changed_offsets": [
+        {
+          "offset": 93,
+          "saved": 224,
+          "current": 0
+        },
+        {
+          "offset": 94,
+          "saved": 135,
+          "current": 0
+        },
+        {
+          "offset": 95,
+          "saved": 32,
+          "current": 0
+        }
+      ],
+      "billboard_status_byte_hex": "0x35",
+      "mode_capability_words": [
+        {
+          "mode_index": 0,
+          "current_vdo_hex": "0x0",
+          "saved_vdo_hex": "0x2087e000"
+        },
+        {
+          "mode_index": 1,
+          "current_vdo_hex": "0x1",
+          "saved_vdo_hex": "0x1"
+        },
+        {
+          "mode_index": 2,
+          "current_vdo_hex": "0x401c0045",
+          "saved_vdo_hex": "0x401c0045"
+        }
+      ]
+    },
+    "strings": [
+      {
+        "index": 7,
+        "language_hex": "0x409",
+        "text": "https://www.minisforum.com/"
+      },
+      {
+        "index": 8,
+        "language_hex": "0x409",
+        "text": "Thunderbolt Device. For further assistance see http://thunderbolttechnology.net/tbt-alt-mode/"
+      },
+      {
+        "index": 9,
+        "language_hex": "0x409",
+        "text": "null"
+      },
+      {
+        "index": 10,
+        "language_hex": "0x409",
+        "text": "null"
+      }
+    ],
+    "reads": {
+      "standard_descriptor_gets": 7,
+      "hub_metadata_gets": 4,
+      "all_native_calls_succeeded": true
+    },
+    "scope": "One present ASUS-DEG2 fallback connection using existing Windows hub driver; no vendor request or controller-state capture."
+  },
+  "qualification": {
+    "transport_script": "tools/Read-DEG2BillboardStrings.ps1",
+    "source_sha256": {
+      "tools/Read-DEG2BillboardStrings.ps1": "3908f4df4554e8f953acf3dfed7fae739c761d77e35a3c1d007692c8f578cedc",
+      "tools/analysis/BillboardDescriptorProtocol.cs": "82a7e27ae1a13f40f9ce3c4713feaf231d101dfcf1af269344176e015cafdce7",
+      "tools/analysis/BillboardHubReader.cs": "800684634af7fefb49ce8090748084c7eaae43f977bd3f651a0fcc5b3dedcdbf"
+    },
+    "review": "Complete supervisor, binding, codec and transport reviewed before this first capture. Existing offline checks were retained, not substituted for hardware results.",
+    "native_status": [
+      {
+        "sequence": 1,
+        "ioctl_hex": "0x00220420",
+        "returned": 98
+      },
+      {
+        "sequence": 2,
+        "ioctl_hex": "0x00220448",
+        "returned": 57
+      },
+      {
+        "sequence": 3,
+        "ioctl_hex": "0x00220410",
+        "returned": 17
+      },
+      {
+        "sequence": 4,
+        "ioctl_hex": "0x00220410",
+        "returned": 124
+      },
+      {
+        "sequence": 5,
+        "ioctl_hex": "0x00220410",
+        "returned": 16
+      },
+      {
+        "sequence": 6,
+        "ioctl_hex": "0x00220410",
+        "returned": 68
+      },
+      {
+        "sequence": 7,
+        "ioctl_hex": "0x00220410",
+        "returned": 200
+      },
+      {
+        "sequence": 8,
+        "ioctl_hex": "0x00220410",
+        "returned": 22
+      },
+      {
+        "sequence": 9,
+        "ioctl_hex": "0x00220410",
+        "returned": 22
+      },
+      {
+        "sequence": 10,
+        "ioctl_hex": "0x00220420",
+        "returned": 98
+      },
+      {
+        "sequence": 11,
+        "ioctl_hex": "0x00220448",
+        "returned": 57
+      }
+    ],
+    "independent_checks": "Raw replies independently matched the decoded UTF16 strings, indices and exact returned sizes; BOS capability records and all differing bytes were checked separately.",
+    "limits": [
+      "One successful exact binding does not qualify another device, vendor commands, PD logging or a Windows repair.",
+      "The generic Thunderbolt text does not establish which wire protocol was negotiated.",
+      "Literal null text is an advertised string value, not a diagnosed negotiation error.",
+      "No USB transfer was deliberately left pending, so native-I/O timeout cancellation remains unexercised."
+    ]
+  },
+  "interpretation": {
+    "strings": "Vendor homepage, generic assistance and placeholders do not identify an implemented diagnostic protocol.",
+    "reported_vdo": "The first advertised mode-capability VDO is now0, compared with2087e000 in the saved ASUS fixture. The status byte is still35. This is reported metadata at different times, not a PD packet transcript or proof of the reason negotiation failed.",
+    "reference_scope": "Pinned Infineon reference cy_app_bb_internal.c copies software-held EUDO into BOS when USB4 support is enabled. DEG2 implementation and cause of this changed word remain unverified.",
+    "reference_url": "https://github.com/Infineon/pmg-app-common/blob/9ed74f798cae23aa6744f206ee381f3593590554/cy_app_bb_internal.c"
+  },
+  "changes": {
+    "drivers": 0,
+    "settings": 0,
+    "reboots": 0,
+    "cable_changes": 0,
+    "network_changes": 0,
+    "ec_i2c_vendor_commands": 0
+  }
+}
