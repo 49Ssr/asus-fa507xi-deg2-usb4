@@ -45,6 +45,14 @@ PowerShell5.1 parsing, embedded C# compilation, default Preview and original-byt
 
 The two laptops and Ethernet link do not themselves expose the CC-wire signal as a software packet capture. A software capture with the present hardware depends on finding an implemented controller log/state interface. If none exists, an external PD analyser is the wire-level route; no purchase is requested by this plan. The objective remains to qualify the software route first.
 
+## A specific standard USB read to qualify next
+
+Both original DEG2 BOS payloads advertise an additional-information URL at **string index7**, and USB4/TBT/DP descriptions at8/9/10. The retained analysis has the indices, not their text. Under Billboard1.2.2 section2.5 these are device/mode information and possible help links, not promised debug logs. They might identify a vendor or support interface; generic marketing text would leave the protocol unknown.
+
+Microsoft's pinned [USBView code](https://github.com/microsoft/Windows-driver-samples/blob/f4c1ff842b6a0001152f44cb61788b216a1c7627/usb/usbview/enum.c) provides a user-mode standard-string GET through the existing USB hub driver. Its inspected enumeration code does not contain a Billboard-specific string collection path. The next collector can therefore use that documented transport for the advertised indices after freshly binding the exact device and supported language. It needs no new kernel driver or test boot. **The narrow collector is not yet implemented or executed.** No undocumented vendor request is justified by the indices.
+
+[Payload pins, request requirements and scope](../evidence/pbs-caller-and-billboard-string-route.json). The same review follows the selected AmdNbioPei PBS reader: its identified stack-relative load is PBS3c3, not PD-control9c. That caller is not evidence that the hidden toggle programs the retimer. The full setup-to-controller consumer remains open.
+
 ## Would the Infineon SDK help?
 
 **Yes, as reference code and register/interface definitions. It is worth downloading; it is not a ready-made ASUS capture utility.** The [Host SDK guide](https://www.infineon.com/row/public/documents/30/316/infineon-ez-pd-ccgx-host-sdk-user-guide-productqualificationreport-en.pdf), pages10–11/38, describes AMD Phoenix reference firmware, APU/retimer interfaces and PS8830 selection. The public [hardware code](https://github.com/Infineon/pdaltmode/blob/fec544408cffffbfe459042262b5cd233a686722/cy_pdaltmode_hw.c) references AMD-specific headers and an APU mode-update function; the [retimer wrapper documentation source](https://github.com/Infineon/pdaltmode/blob/fec544408cffffbfe459042262b5cd233a686722/docs/xml/cy__pdaltmode__retimer__wrapper_8c.xml) calls AMD retimer initialisation. Those AMD implementations are not among the files in the inspected public tree.

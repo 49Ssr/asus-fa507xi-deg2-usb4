@@ -954,6 +954,27 @@
         "ASUS-BIOS314"
       ],
       "value_sha256": "48a5a001d5302803dd04814da083f9b3b74c4fc4b75b445098c7e4c039dfce04"
+    },
+    {
+      "id": "PBS-NBIO-CALLER",
+      "path": "evidence/pbs-caller-and-billboard-string-route.json",
+      "pointer": "/pbs_caller",
+      "kind": "code",
+      "cases": [
+        "ASUS-BIOS314"
+      ],
+      "value_sha256": "3272c24b137287a2793fdf96530bc01acd6f10775e9a5113e99d725dbafda2c2"
+    },
+    {
+      "id": "BB-ADVERTISED-STRINGS",
+      "path": "evidence/pbs-caller-and-billboard-string-route.json",
+      "pointer": "/descriptor_capture",
+      "kind": "capture",
+      "cases": [
+        "ASUS-DEEP",
+        "DELL-CONTROL"
+      ],
+      "value_sha256": "dfc62f6d3afa677b6246ccd1e0db83af81a0f05184a24d5113eecb812ebf26cc"
     }
   ],
   "claims": [
@@ -1845,6 +1866,33 @@
         "ASUS-BIOS314"
       ],
       "limit": "Static paths only; no observed current value/attributes, successful Windows GET, complete downstream consumer or retimer-mode execution. Attributes7 support a runtime read candidate but do not prove platform acceptance."
+    },
+    {
+      "id": "C64",
+      "basis": "code_fact",
+      "stage": "entry",
+      "statement": "The selected AmdNbioPei PBS reader caller has a source-buffer load at stack3f3, corresponding to PBS3c3 after stack accounting. This is not the PD USB4-control9c field.",
+      "sources": [
+        "PBS-NBIO-CALLER"
+      ],
+      "cases": [
+        "ASUS-BIOS314"
+      ],
+      "limit": "Classification of one exact load and its reader/caller only. No claim that other indirect consumers are absent; full9c policy transfer remains unresolved."
+    },
+    {
+      "id": "C65",
+      "basis": "measured",
+      "stage": "entry",
+      "statement": "Both retained DEG2 BOS payloads advertise additional-information URL string index7 and USB4/TBT/DP description indices8/9/10. Those string texts were not recovered by the reviewed captures.",
+      "sources": [
+        "BB-ADVERTISED-STRINGS"
+      ],
+      "cases": [
+        "ASUS-DEEP",
+        "DELL-CONTROL"
+      ],
+      "limit": "Advertised standard descriptor indices, not diagnostic-log commands or evidence that the URL identifies the chip. No new USB GET or vendor request was sent."
     }
   ],
   "timeline_limit": "T0 is the first recorded Windows attachment report in each run, not physical insertion. Different runs, platforms, power contracts and capture dates are explicit. These tables align software reports only; proximity does not establish wire order or causation. The earlier Dell control supplies the Dell timeline; the deep Dell dump supplies cached-state comparison.",

@@ -628,6 +628,18 @@ Scope: ASUS-BIOS314. Static paths only; no observed current value/attributes, su
 
 [PBS-RUNTIME-ACCESSOR](../evidence/pbs-runtime-variable-path.json) `/variable_code`
 
+**C64 — code_fact:** The selected AmdNbioPei PBS reader caller has a source-buffer load at stack3f3, corresponding to PBS3c3 after stack accounting. This is not the PD USB4-control9c field.
+
+Scope: ASUS-BIOS314. Classification of one exact load and its reader/caller only. No claim that other indirect consumers are absent; full9c policy transfer remains unresolved.
+
+[PBS-NBIO-CALLER](../evidence/pbs-caller-and-billboard-string-route.json) `/pbs_caller`
+
+**C65 — measured:** Both retained DEG2 BOS payloads advertise additional-information URL string index7 and USB4/TBT/DP description indices8/9/10. Those string texts were not recovered by the reviewed captures.
+
+Scope: ASUS-DEEP, DELL-CONTROL. Advertised standard descriptor indices, not diagnostic-log commands or evidence that the URL identifies the chip. No new USB GET or vendor request was sent.
+
+[BB-ADVERTISED-STRINGS](../evidence/pbs-caller-and-billboard-string-route.json) `/descriptor_capture`
+
 ## Separate runs and observation limits
 
 | Case | Meaning | Important limit |

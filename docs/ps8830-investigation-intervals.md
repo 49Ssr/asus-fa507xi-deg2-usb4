@@ -24,6 +24,11 @@ Historical heartbeat before interval14 deletion: `trace-asus-ps8830-configuratio
 
 ## Current interval
 
+**Interval16:** the selected NBIO PBS-reader caller reads field3c3 at the checked stack-relative location, not PD-control9c. No complete9c consumer was recovered. A separate existing-capture lead is specific: both DEG2 BOS payloads advertise URL string7 and mode descriptions8/9/10, whose text is absent from the reviewed results. Microsoft's pinned USBView provides a standard hub-driver string GET; its enumeration code has no Billboard-specific string path. [Original code, payload pins and read requirements](../evidence/pbs-caller-and-billboard-string-route.json).
+
+**Next:** prepare a narrow standard-string reader from that reviewed Microsoft route, with fresh exact-device/port/language binding, strict returned type/length/UTF16 checks and private output. No vendor command, new driver or boot. This is protocol identification, not a PD packet recorder; generic help text may yield no debug interface. Continue actual PD-control consumer research independently. No device request, elevation, hardware change or deletion occurred.
+
+
 **Interval15:** the original PBS accessor confirms the0x500-byte variable and a default-persistence branch using attributes7, including UEFI runtime access. Its initializer writes PD USB4-control1 through a word store at9b; literal9c searches were insufficient. Question47 has no special direct-controller branch in the reviewed form callback. [Exact code, source pins and limits](../evidence/pbs-runtime-variable-path.json). Windows GET remains prepared/unexecuted; a metadata guard now prevents enhanced-authenticated data from being decoded as plain settings.
 
 The complete PD-control consumer remains unlocated. Next: follow the known PBS-reader callers and setup/HOB/PCD transfer in retained AmdNbioPei rather than extending name-only or literal-offset absence claims. PEI is IA32 TE with0x180 stripped-header correction and per-image preferred base; validate raw bytes. Existing original names/GUIDs are triage, not proof of every consumer. Long-path disassembler failures and the corrected hash-identical short copies are retained. No hardware request, boot, setting change or deletion occurred.

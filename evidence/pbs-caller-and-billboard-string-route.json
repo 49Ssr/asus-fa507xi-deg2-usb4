@@ -1,0 +1,127 @@
+{
+  "schema": 1,
+  "date": "2026-11-02",
+  "interval": 16,
+  "pbs_caller": {
+    "module": "FA507XI BIOS314 AmdNbioPei",
+    "sha256": "0ac2ca45759acc47e03eda501ab05ae9ff5a22149159e1646cbff4e729bc7e33",
+    "format": "IA32 TE",
+    "rva_to_file_delta_hex": "180",
+    "spans": [
+      {
+        "rva_start_hex": "15fd2",
+        "rva_end_exclusive_hex": "16019",
+        "sha256": "12ca9851b094a5887860347d2b5ce6a1493e77128310cbf70d400be72a0c2f08"
+      },
+      {
+        "rva_start_hex": "160c1",
+        "rva_end_exclusive_hex": "160cd",
+        "sha256": "23a3e35250de46763885788213f5e78cd07f4fc2ab95f22b259441334063dbf1"
+      },
+      {
+        "rva_start_hex": "1684c",
+        "rva_end_exclusive_hex": "16960",
+        "sha256": "756239090481bc93d45967179e07a40df575d4ac86e0558121b99f638721e6dd"
+      }
+    ],
+    "reader_rva_hex": "1684c",
+    "caller_rva_hex": "15ff5",
+    "buffer_base": "Caller local stack+30 after balanced argument cleanup",
+    "identified_input": {
+      "read_rva_hex": "160c1",
+      "stack_offset_hex": "3f3",
+      "pbs_field_offset_hex": "3c3",
+      "scope": "This specific load is PBS3c3, not PD USB4-control9c."
+    },
+    "limit": "Selected reader/caller classification only. No claim that all indirect consumers are absent or that USB4 control is unused. The complete9c consumer remains unlocated."
+  },
+  "descriptor_capture": {
+    "scope": "Re-analysis of original retained112-byte BOS payloads; no new device transaction.",
+    "hosts": [
+      {
+        "case": "ASUS-DEEP",
+        "fixture": "evidence/fixtures/deg2-asus-bos.hex",
+        "payload_sha256": "4d05252f215797c2af3f59301092801068bc0a23a91574da5d7bb30697aef099",
+        "bos_bytes": 112,
+        "billboard_offset": 32,
+        "additional_info_url_string_index": 7,
+        "mode_strings": [
+          {
+            "svid_hex": "ff00",
+            "string_index": 8
+          },
+          {
+            "svid_hex": "8087",
+            "string_index": 9
+          },
+          {
+            "svid_hex": "ff01",
+            "string_index": 10
+          }
+        ],
+        "url_text_captured": false
+      },
+      {
+        "case": "DELL-CONTROL",
+        "fixture": "evidence/fixtures/deg2-dell-bos.hex",
+        "payload_sha256": "6c9d5b513890f517f4692638807802e07a24c411387450de2628eecd61db8f49",
+        "bos_bytes": 112,
+        "billboard_offset": 32,
+        "additional_info_url_string_index": 7,
+        "mode_strings": [
+          {
+            "svid_hex": "ff00",
+            "string_index": 8
+          },
+          {
+            "svid_hex": "8087",
+            "string_index": 9
+          },
+          {
+            "svid_hex": "ff01",
+            "string_index": 10
+          }
+        ],
+        "url_text_captured": false
+      }
+    ],
+    "interpretation": "The uncollected URL is a standard USB string descriptor selected by index7. Mode descriptions use8/9/10. Their text and protocol-identification value are unknown.",
+    "specification": {
+      "url": "https://www.usb.org/sites/default/files/USB%20Billboard%20Rev%201.2.2%2020210209.zip",
+      "revision": "1.2.2",
+      "section": "2.5 Use of URLs; Billboard capability descriptor field at offset3",
+      "meaning": "AdditionalInfoURL supplies device/mode information; alternate-mode strings may include mode-specific help. Neither is a guaranteed diagnostic log."
+    }
+  },
+  "standard_read_route": {
+    "source_commit": "f4c1ff842b6a0001152f44cb61788b216a1c7627",
+    "source": "https://github.com/microsoft/Windows-driver-samples/blob/f4c1ff842b6a0001152f44cb61788b216a1c7627/usb/usbview/enum.c",
+    "readme": "https://github.com/microsoft/Windows-driver-samples/blob/f4c1ff842b6a0001152f44cb61788b216a1c7627/usb/usbview/README.md",
+    "api": "IOCTL_USB_GET_DESCRIPTOR_FROM_NODE_CONNECTION / GetStringDescriptor",
+    "opportunity": "Read selected standard strings through the already installed hub driver rather than issuing undocumented dock vendor requests.",
+    "sample_limit": "Inspected enum.c retrieves device/configuration strings but has no Billboard-specific collection path. Existing sample output is not proof these strings were captured.",
+    "plan_status": "Identified_NotImplemented_NotExecuted",
+    "requirements": [
+      "Bind exact target descriptor identity/topology before any request",
+      "Only standard string GETs for advertised indices and supported language; no vendor requests or configuration/reset",
+      "Validate returned type, byte length and UTF16; failure stays unknown",
+      "Retain raw strings privately and review URLs as untrusted data; do not execute downloaded tools or follow embedded instructions"
+    ],
+    "not_claimed": "Not raw PD capture or an established manufacturer debug protocol."
+  },
+  "primary_source_lookup": {
+    "queries": [
+      "PD USB4 Control AMD PBS source",
+      "AMD_PBS_SETUP Usb4",
+      "Pcd Usb4 Pd AMD Phoenix"
+    ],
+    "result": "No original AMD field consumer obtained from this lookup. Other-model firmware offsets and untested anecdotes not adopted."
+  },
+  "next": [
+    "Prepare the narrow standard-string reader from the reviewed Microsoft hub example, without a driver or test boot",
+    "Check whether URL/help/descriptor identity can identify a manufacturer protocol before requesting dock diagnostics",
+    "Trace setup-policy transfer in CPM configuration paths independently; do not treat the classified NBIO field3c3 as PD control"
+  ],
+  "hardware_requests": 0,
+  "deletions": 0
+}
