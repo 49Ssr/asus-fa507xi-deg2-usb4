@@ -844,6 +844,24 @@ Reason: Data reset preserves roles and can return to USB4 discovery; the actual 
 
 [RESET-CANDIDATE](../evidence/ucsi-reset-review.json) `/hypothesis`, [RESET-ASUS-INTERFACE](../evidence/ucsi-reset-review.json) `/asus_saved_interface`
 
+**C98 — code_fact:** The inspected ASUS EC mailbox initializer writes fixed UCSI0100 without a controller-bus version read. Original-instruction execution confirms that initialization and unchanged forwarding of both connector-reset bit23 encodings.
+
+Scope: RESET-COMMAND-PATH. RAM/peripheral fixtures only. Actual boot execution, later writers, the retained Windows ffff value and receiving PD reset semantics are not established by this result.
+
+[RESET-ASUS-CODE](../evidence/data-reset-command-path.json) `/asus`
+
+**C99 — code_fact:** The SDK AMD primary build enables USB4/UCSI2.0 and contains a guarded connector-reset branch selecting internal SEND_DATA_RESET. Separate application events handle mode/mux/timer follow-up. Older UCSI branches perform different reset operations.
+
+Scope: RESET-COMMAND-PATH. Infineon reference, not identified receiving ASUS firmware. Internal DPM14, UCSI03 and PD wire type0e are separate number domains; none is an established DEG2 USB vendor request.
+
+[RESET-SDK-CODE](../evidence/data-reset-command-path.json) `/sdk`
+
+**C100 — code_fact:** The inspected Windows UcsiControl Send path supports legacy48-byte and extended528-byte IOCTL forms. Linux debugfs provides a fixed standard-command console through its existing UCSI transport rather than enumerating private PD operations.
+
+Scope: RESET-COMMAND-PATH. No current Windows interface readiness or live Data_Reset was tested. Booting a command console alone does not reveal receiving-controller semantics or produce a PD packet trace.
+
+[RESET-WINDOWS-CODE](../evidence/data-reset-command-path.json) `/windows`, [RESET-BOOT-CODE](../evidence/data-reset-command-path.json) `/boot_interfaces`
+
 ## Separate runs and observation limits
 
 | Case | Meaning | Important limit |
@@ -880,6 +898,7 @@ Reason: Data reset preserves roles and can return to USB4 discovery; the actual 
 | ASUS-LINUX-01 | Fresh ASUS DEG2 attachment under SystemRescue 13.02 / Linux 6.18.41 | One owner-directed attachment; software reports and enabled tracepoints, not a raw PD or applied retimer measurement. |
 | INFINEON-SDK39 | EZ-PD Host SDK 3.9.0 reference code and offline object analysis | Infineon controller reference only; no ASUS or DEG2 hardware execution, live state or Windows repair is established. |
 | UCSI-RESET-REVIEW | UCSI reset version semantics and saved ASUS interface review | Offline sources and retained software fields only. No actual controller reset implementation, live command or repair is established. |
+| RESET-COMMAND-PATH | ASUS original reset forwarding and SDK reset-handler trace | Offline original-code execution and reference source review. Receiving ASUS PD firmware, physical reset and working Windows repair remain unverified. |
 
 ## Software-report timelines
 

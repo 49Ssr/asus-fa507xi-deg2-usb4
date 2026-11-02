@@ -285,6 +285,40 @@ static void test_relay(void) {
     }
     printf("{\"scope\":\"Original bank3 relay instructions; 1ff4 PD bus is a RAM double; no controller, timing or live-flash qualification\",\"outgoingCases\":%u,\"interruptCases\":%u,\"ackCases\":%u,\"passed\":%u}\n",outgoing,incoming,ack,outgoing+incoming+ack);
 }
+static void test_reset_path(void) {
+    /* Execute the real mailbox initializer and relay, not a PD reset handler.
+     * 0500 is the pointer passed by the inspected bank2 caller. It is XDATA
+     * in this offline CPU model, not a userspace physical-memory address. */
+    static const unsigned char seeds[]={0,0x5a,0xff};
+    for(unsigned s=0;s<sizeof(seeds);s++) {
+        init(seeds[s]); relay_mode=1; service_mode=engine_mode=0; bus_calls=0;
+        cpu.mLowerData[6]=5; cpu.mLowerData[7]=0;
+        execute(0xc85d);
+        require(!bus_calls && !unexpected_accesses);
+        require(xram[0x500]==0 && xram[0x501]==1);
+        for(unsigned i=2;i<0x30;i++) require(!xram[0x500+i]);
+        require(xram[0x580]==5 && !xram[0x581]);
+    }
+    printf("{\"scope\":\"Original ASUS initializer and outgoing relay; RAM peripherals only, no PD controller\",\"initializerVersionHex\":\"0100\",\"versionReadFromPdBus\":false,\"initializerSeeds\":3,\"frames\":[");
+    for(unsigned data_bit=0;data_bit<2;data_bit++) {
+        init(0); relay_mode=1; service_mode=engine_mode=0;
+        cpu.mLowerData[6]=5; cpu.mLowerData[7]=0;
+        execute(0xc85d);
+        bus_calls=0; bus_result=1; bus_fail_call=0;
+        xram[0x585]=3; /* C89A's consumed command opcode. */
+        xram[0x50a]=(unsigned char)(1 | (data_bit?0x80:0));
+        execute(0xbacf);
+        require(bus_calls==1 && bus_write_length==25 && !bus_read_length && !unexpected_accesses);
+        require(bus_write[0]==0x98 && bus_write[1]==3 && !bus_write[2]);
+        require(bus_write[3]==(data_bit?0x81:1));
+        for(unsigned i=4;i<25;i++) require(!bus_write[i]);
+        require(!xram[0x585] && cpu.mLowerData[7]==1);
+        printf("%s{\"bit23\":%u,\"busFrameHex\":\"",data_bit?",":"",data_bit);
+        for(unsigned i=0;i<25;i++) printf("%02x",bus_write[i]);
+        printf("\",\"controllerAcceptance\":null}");
+    }
+    printf("],\"hardwareRequests\":0}\n");
+}
 static void request(unsigned char command, const unsigned char *params, unsigned count, unsigned char seed) {
     init(seed); input(1,0xff); input(1,command);
     for(unsigned i=0;i<count;i++) input(0,params[i]);
@@ -301,13 +335,13 @@ static void emit(const char *kind, unsigned table, unsigned field, unsigned sele
 int main(int argc, char **argv) {
     static const unsigned char pin[32]={0x10,0x37,0x21,0x57,0x8b,0x66,0xda,0xed,0x81,0xdc,0xf7,0xa0,0xbe,0xd0,0x67,0x09,0xc0,0x72,0xf9,0xda,0x1d,0xc7,0x5a,0x6d,0x78,0x87,0x32,0x1e,0x6e,0x32,0xb0,0x60};
     unsigned char digest[32], params[3]; unsigned cases=0;
-    if(argc!=2 && !(argc==3 && (!strcmp(argv[2],"--relay") || !strcmp(argv[2],"--service") || !strcmp(argv[2],"--engine")))) { fprintf(stderr,"Usage: Test-EcPmcFirmware private-EC-image.bin [--relay|--service|--engine]\n"); return 2; }
+    if(argc!=2 && !(argc==3 && (!strcmp(argv[2],"--relay") || !strcmp(argv[2],"--service") || !strcmp(argv[2],"--engine") || !strcmp(argv[2],"--reset-path")))) { fprintf(stderr,"Usage: Test-EcPmcFirmware private-EC-image.bin [--relay|--service|--engine|--reset-path]\n"); return 2; }
     FILE *f=NULL; if(fopen_s(&f,argv[1],"rb") || !f) return 2;
     size_t length=fread(rom,1,sizeof(rom),f); int extra=fgetc(f); fclose(f);
     if(length!=sizeof(rom) || extra!=EOF || BCryptHash(BCRYPT_SHA256_ALG_HANDLE,NULL,0,rom,sizeof(rom),digest,sizeof(digest))<0 || memcmp(pin,digest,32)) {
         fprintf(stderr,"Firmware input pin mismatch\n"); return 2;
     }
-    if(argc==3) { if(!strcmp(argv[2],"--relay")) test_relay(); else if(!strcmp(argv[2],"--service")) test_service(); else test_engine(); return 0; }
+    if(argc==3) { if(!strcmp(argv[2],"--relay")) test_relay(); else if(!strcmp(argv[2],"--service")) test_service(); else if(!strcmp(argv[2],"--reset-path")) test_reset_path(); else test_engine(); return 0; }
     printf("{\"scope\":\"Original PMC4 service/dispatch/getters and switch helper; all peripherals are RAM doubles; no hardware/timing/live-flash qualification\",\"cases\":[\n");
     for(unsigned seed_index=0;seed_index<3;seed_index++) {
         unsigned seed=(unsigned char[]){0,0x5a,0xff}[seed_index];

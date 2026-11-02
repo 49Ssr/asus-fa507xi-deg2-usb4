@@ -166,6 +166,11 @@
       "id": "UCSI-RESET-REVIEW",
       "label": "UCSI reset version semantics and saved ASUS interface review",
       "limit": "Offline sources and retained software fields only. No actual controller reset implementation, live command or repair is established."
+    },
+    {
+      "id": "RESET-COMMAND-PATH",
+      "label": "ASUS original reset forwarding and SDK reset-handler trace",
+      "limit": "Offline original-code execution and reference source review. Receiving ASUS PD firmware, physical reset and working Windows repair remain unverified."
     }
   ],
   "stages": [
@@ -1341,6 +1346,46 @@
         "UCSI-RESET-REVIEW"
       ],
       "value_sha256": "5f04b57de1ad649325853793df753bffa08d0056148019ddb6c184a30d91741d"
+    },
+    {
+      "id": "RESET-ASUS-CODE",
+      "path": "evidence/data-reset-command-path.json",
+      "pointer": "/asus",
+      "kind": "code",
+      "cases": [
+        "RESET-COMMAND-PATH"
+      ],
+      "value_sha256": "340d4a9e46c618562fdbe2fc7ece6c13c90b945d9c123f0022c9f808435e1935"
+    },
+    {
+      "id": "RESET-SDK-CODE",
+      "path": "evidence/data-reset-command-path.json",
+      "pointer": "/sdk",
+      "kind": "code",
+      "cases": [
+        "RESET-COMMAND-PATH"
+      ],
+      "value_sha256": "89196dcf426152d87bdf44cabdadb83e23d64348aa96064ac9000df22cb6eab1"
+    },
+    {
+      "id": "RESET-BOOT-CODE",
+      "path": "evidence/data-reset-command-path.json",
+      "pointer": "/boot_interfaces",
+      "kind": "code",
+      "cases": [
+        "RESET-COMMAND-PATH"
+      ],
+      "value_sha256": "7eff58c7241d02248b293329527ba2d460de326b441f715512bff90f65a1c304"
+    },
+    {
+      "id": "RESET-WINDOWS-CODE",
+      "path": "evidence/data-reset-command-path.json",
+      "pointer": "/windows",
+      "kind": "code",
+      "cases": [
+        "RESET-COMMAND-PATH"
+      ],
+      "value_sha256": "971d8983b9c41c6925c9b5f968c31ba0ca43f511ef15f1e4559a12d227bb367c"
     }
   ],
   "claims": [
@@ -2695,6 +2740,46 @@
       ],
       "reason": "Data reset preserves roles and can return to USB4 discovery; the actual entry failure and controller reset support remain unknown.",
       "limit": "No causal proof, executable repair runner, live request or GPU success. Do not replace data reset with a differently defined connector/hard reset."
+    },
+    {
+      "id": "C98",
+      "basis": "code_fact",
+      "stage": "control",
+      "statement": "The inspected ASUS EC mailbox initializer writes fixed UCSI0100 without a controller-bus version read. Original-instruction execution confirms that initialization and unchanged forwarding of both connector-reset bit23 encodings.",
+      "sources": [
+        "RESET-ASUS-CODE"
+      ],
+      "cases": [
+        "RESET-COMMAND-PATH"
+      ],
+      "limit": "RAM/peripheral fixtures only. Actual boot execution, later writers, the retained Windows ffff value and receiving PD reset semantics are not established by this result."
+    },
+    {
+      "id": "C99",
+      "basis": "code_fact",
+      "stage": "control",
+      "statement": "The SDK AMD primary build enables USB4/UCSI2.0 and contains a guarded connector-reset branch selecting internal SEND_DATA_RESET. Separate application events handle mode/mux/timer follow-up. Older UCSI branches perform different reset operations.",
+      "sources": [
+        "RESET-SDK-CODE"
+      ],
+      "cases": [
+        "RESET-COMMAND-PATH"
+      ],
+      "limit": "Infineon reference, not identified receiving ASUS firmware. Internal DPM14, UCSI03 and PD wire type0e are separate number domains; none is an established DEG2 USB vendor request."
+    },
+    {
+      "id": "C100",
+      "basis": "code_fact",
+      "stage": "control",
+      "statement": "The inspected Windows UcsiControl Send path supports legacy48-byte and extended528-byte IOCTL forms. Linux debugfs provides a fixed standard-command console through its existing UCSI transport rather than enumerating private PD operations.",
+      "sources": [
+        "RESET-WINDOWS-CODE",
+        "RESET-BOOT-CODE"
+      ],
+      "cases": [
+        "RESET-COMMAND-PATH"
+      ],
+      "limit": "No current Windows interface readiness or live Data_Reset was tested. Booting a command console alone does not reveal receiving-controller semantics or produce a PD packet trace."
     }
   ],
   "timeline_limit": "T0 is the first recorded Windows attachment report in each run, not physical insertion. Different runs, platforms, power contracts and capture dates are explicit. These tables align software reports only; proximity does not establish wire order or causation. The earlier Dell control supplies the Dell timeline; the deep Dell dump supplies cached-state comparison.",

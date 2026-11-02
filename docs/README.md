@@ -30,6 +30,7 @@ Start with [current findings](status.md). The detailed notes preserve the source
 ## Controller and firmware research
 
 - [Data reset after role correction: repair hypothesis and missing ASUS command](ucsi-data-reset.md)
+- [ASUS command path, fixed mailbox version and SDK reset handler](data-reset-command-path.md)
 
 - [Infineon SDK 3.9.0: recovered AMD/PS8830 reference implementation](infineon-sdk-review.md)
 

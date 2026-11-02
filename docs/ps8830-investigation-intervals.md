@@ -16,6 +16,10 @@ EZ-PD Host SDK 3.9.0 is extracted privately. [Review and source pins](infineon-s
 
 The [reset review](ucsi-data-reset.md) identifies a distinct hypothesis: retry USB4 discovery after successful role correction while preserving the corrected role. UCSI reset encodings change by version; ASUS retained version ffff and compatibility-layout handling do not establish a data-reset implementation. No reset was issued. Trace the actual receiving-controller handler/transport; do not substitute a hard reset or build an unrestricted command sender. The SDK-to-ASUS status mapping remains open independently.
 
+## Command-path result
+
+[Original-code trace](data-reset-command-path.md): the ASUS initializer writes a fixed UCSI0100 version without a PD-bus read, and the outgoing relay preserves the reset bit. The SDK primary build contains a UCSI2.0 data-reset handler and subsequent mux/timer handling. These do not identify the receiving ASUS PD firmware. The Windows transport is known; actual Data_Reset interpretation and current interface readiness are not. Linux debugfs reaches the same ACPI path and does not enumerate private controller operations. No new boot or live request is selected. Next identify the receiving handler/documentation or a supported physical-controller version read.
+
 ## Operating constraints
 
 Scheduling remains paused. Physical boots/cables are owner-directed, and no unattended remote restart is authorized. No live EC/I2C/vendor command, driver change, mode override or flash is selected. Preserve original artifacts, failed attempts and private recovery records.

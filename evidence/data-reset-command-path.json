@@ -1,0 +1,205 @@
+{
+  "schema": 1,
+  "date": "2026-11-02",
+  "status": "AsusRelayAndReferenceResetHandlerTraced_ActualPdHandlerUnidentified",
+  "asus": {
+    "firmware_record": "evidence/ec-firmware-decision.json",
+    "ec_sha256": "103721578b66daed81dcf7a0bed06709c072f9da1dc75a6d7887321e6e32b060",
+    "initializer": {
+      "bank2_caller_tail_pc": "c5d1",
+      "common_trampoline_pc": "3230",
+      "selected_bank": 3,
+      "entry_pc": "c85d",
+      "state_clear_pc": "c822",
+      "mailbox_bytes": 48,
+      "written_version_hex": "0100",
+      "reads_pd_controller_version": false,
+      "execution_observed_on_hardware": false,
+      "other_version_writers_excluded": false
+    },
+    "relay": {
+      "bank": 3,
+      "outgoing_pc": "bacf",
+      "controller_channel": 4,
+      "controller_address_byte_hex": "98",
+      "control_register_hex": "98",
+      "bit23_preserved": true,
+      "receiving_controller_reset_handler_identified": false
+    },
+    "offline_execution": {
+      "scope": "Original ASUS initializer and outgoing relay; RAM peripherals only, no PD controller",
+      "initializerVersionHex": "0100",
+      "versionReadFromPdBus": false,
+      "initializerSeeds": 3,
+      "frames": [
+        {
+          "bit23": 0,
+          "busFrameHex": "98030001000000000000000000000000000000000000000000",
+          "controllerAcceptance": null
+        },
+        {
+          "bit23": 1,
+          "busFrameHex": "98030081000000000000000000000000000000000000000000",
+          "controllerAcceptance": null
+        }
+      ],
+      "hardwareRequests": 0
+    },
+    "regression": "Existing PMC, relay, service and engine scenarios passed; unbound/truncated firmware input was rejected.",
+    "test_source": "tools/analysis/Test-EcPmcFirmware.c",
+    "test_source_sha256": "6ca7621907d6c2133e0c3f5810de3666fd69a73c1bbdd2681e784ab9a0902b06",
+    "acpi": {
+      "table": "CPMUCSI",
+      "sha256": "5245ab44793308f094a431b82a798eba072eb4554cbeabd7e3929c0a13b4503e",
+      "write_method": "_DSM function1",
+      "control_copy": "All eight CONTROL bytes copied to EC-facing mailbox, opcode last",
+      "read_method": "_DSM function2 / M318",
+      "version_copied_in_reviewed_read_method": false
+    },
+    "limit": "Original firmware instructions with simulated RAM/peripherals. No actual boot, PD response, packet, current version or repair is established."
+  },
+  "sdk": {
+    "package_record": "evidence/infineon-sdk-review.json",
+    "files": [
+      {
+        "path": "mtb_shared/ccgx-host-common/release-v2.0.0/ucsi/cy_ucsi.c",
+        "sha256": "444fc6983207e6a6f236f89ae112e4c2306e3696ad301b8c26f078fa3fbbb91f",
+        "reviewed_lines": [
+          618,
+          675,
+          1688,
+          1772
+        ]
+      },
+      {
+        "path": "mtb_shared/ccgx-host-common/release-v2.0.0/ucsi/cy_ucsi_internal.h",
+        "sha256": "7d69a8c07e7fe92cf61a3871f4456d824b02794f9b352874ca5b44cc2dc809a2",
+        "reviewed_lines": [
+          333,
+          340
+        ]
+      },
+      {
+        "path": "mtb_shared/ccgx-host-common/release-v2.0.0/app/app.c",
+        "sha256": "1a44aa4651040cf3590fbad6a5ab551bd88f06a3ab33d8c6561c2b709038a989",
+        "reviewed_lines": [
+          3534,
+          3646
+        ]
+      },
+      {
+        "path": "mtb_shared/pdstack/5.0.0.3138/cy_pdstack_common_default.h",
+        "sha256": "d80da0572897537cdd38470e032857ac881278c47a1366cf104789654954c906",
+        "reviewed_lines": [
+          1220,
+          1242
+        ]
+      },
+      {
+        "path": "mtb_shared/mtb-pdl-cat2/release-v2.19.0/drivers/include/cy_usbpd_defines.h",
+        "sha256": "aa41f7d03bdaa861d0bc34fb9adcee786988166f5b523f8a36dc8f7cbd83548c",
+        "reviewed_lines": [
+          888,
+          889
+        ]
+      },
+      {
+        "path": "CCGxCFPDualAppAMD/makefiles/prim_fw.mk",
+        "sha256": "ffd77a75275af721cbf98806b4935a09213fa8598429f6844c291b4265eb09c7",
+        "reviewed_lines": [
+          76,
+          79,
+          179,
+          182,
+          197,
+          200
+        ]
+      },
+      {
+        "path": "CCGxCFPDualAppAMD/makefiles/sec_fw.mk",
+        "sha256": "3951fd12c0e066301362b77832b7a02235e2093ba803275d753620073e4f769d",
+        "reviewed_lines": [
+          76,
+          79,
+          190,
+          193
+        ]
+      }
+    ],
+    "primary_build": {
+      "ucsi_enable": 1,
+      "ucsi_rev_2_0": 1,
+      "usb4_enable": 1
+    },
+    "backup_build": {
+      "ucsi_enable": 0,
+      "ucsi_rev_2_0": 0,
+      "usb4_enable": 0
+    },
+    "reset_handler": "Cy_Ucsi_HandleCommands",
+    "guards": [
+      "valid connector",
+      "existing PD contract",
+      "CCG_UCSI_REV_2_0_ENABLE",
+      "CY_PD_USB4_SUPPORT_ENABLE"
+    ],
+    "branches": {
+      "2.0_data_reset": "Select internal SEND_DATA_RESET and invoke Cy_Ucsi_SendDpmCmd",
+      "1.1": "Type-C error recovery",
+      "1.0": "Select soft/hard reset"
+    },
+    "number_domains": {
+      "ucsi_connector_reset_opcode_hex": "03",
+      "internal_dpm_data_reset_hex": "14",
+      "pd_wire_data_reset_control_type_hex": "0e"
+    },
+    "application_followup": [
+      "APP_EVT_DATA_RESET_ACCEPTED resets alternate modes and handles mux/timer state",
+      "APP_EVT_DATA_RESET_CPLT handles USB data-path restoration and discovery-related state"
+    ],
+    "asus_executes_sdk_code": null,
+    "receiving_asus_pd_image_identified": false
+  },
+  "windows": {
+    "tool_sha256": "22ac51ef4503e4ff3344b7c33ffb7509f43d26f5f4942a2c382dd91f4fb7b9a7",
+    "send_ioctl_call_rva": "c180",
+    "legacy_ioctl_hex": "12131018",
+    "legacy_request_bytes": 48,
+    "extended_ioctl_hex": "1213101c",
+    "extended_request_bytes": 528,
+    "current_interface_readiness_checked": false,
+    "hardware_send_performed": false,
+    "limit": "Offline Send-path inspection and prior completed firmware-request evidence; no new driver dispatch execution or actual Data_Reset support is established."
+  },
+  "boot_interfaces": {
+    "linux_commit": "2fe596715f840d053aed5cee5455f701bdcd2b50",
+    "files": [
+      {
+        "path": "drivers/usb/typec/ucsi/debugfs.c",
+        "sha256": "f8b3078aac9d2efe1f17c56576240f806e61cfa1f8c591262c5b55269c87735f"
+      },
+      {
+        "path": "drivers/usb/typec/ucsi/ucsi_acpi.c",
+        "sha256": "77b69ffb0210fb1514820d5febae637bc4f7a41e72d550aa7c35a3377a662964"
+      }
+    ],
+    "console": "debugfs command/response, conditional on kernel configuration",
+    "capability_enumeration": "Fixed standard-command dispatcher, not a discovery protocol for all controller operations",
+    "acpi_route": "Uses the same firmware _DSM; version read copies the ACPI region",
+    "direct_ite_version_read": {
+      "source": "https://lists.openwall.net/linux-kernel/2026/08/07/804",
+      "register_hex": "80",
+      "bytes": 2,
+      "qualified_as_windows_ec_command": false
+    },
+    "new_boot_selected": false
+  },
+  "actions": {
+    "live_requests": 0,
+    "new_driver_installs": 0,
+    "new_boots": 0,
+    "persistent_changes": 0,
+    "gpu_repair_demonstrated": false
+  },
+  "next": "Identify the receiving-controller reset handler or matching documentation, or a supported physical controller version read. Use the existing Windows route only after reset semantics are established."
+}

@@ -2,6 +2,8 @@
 
 2 November 2026. **A plausible repair candidate, not an executable ASUS test or a demonstrated fix.** No reset was sent and no new driver or boot was prepared.
 
+**Command-path follow-up:** [The ASUS EC initializes a fixed 1.0 mailbox version and preserves the reset bit](data-reset-command-path.md). The SDK supplies a real 2.0 reset handler. The actual receiving ASUS PD firmware remains unidentified; no live reset has been sent.
+
 ## The change we actually want
 
 ASUS already completes the USB data-role correction and enumerates DEG2's USB hub. The proposed change is to restart USB4 discovery **after** that correction while preserving the resulting roles. This tests whether the controller failed to reconsider USB4 after the role changed. The existing traces do not prove that this is the cause.
