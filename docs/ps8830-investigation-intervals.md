@@ -12,6 +12,10 @@ The [first ASUS Linux capture](linux-asus-result.md) booted, saved to USB and re
 
 EZ-PD Host SDK 3.9.0 is extracted privately. [Review and source pins](infineon-sdk-review.md). The package contains the missing AMD headers and ELF implementations. The 80-byte APU status reader sends index 80 and reads three bytes in its selected configuration; seven emulator cases verified its guard and bit-6 result. No ASUS status was acquired. Next compare that APU transaction and the separate interrupt reader with the original ASUS controller-facing code. Do not conflate the reference HPI tunnel with DEG2 WinUSB or ASUS EC access.
 
+## Data-reset candidate
+
+The [reset review](ucsi-data-reset.md) identifies a distinct hypothesis: retry USB4 discovery after successful role correction while preserving the corrected role. UCSI reset encodings change by version; ASUS retained version ffff and compatibility-layout handling do not establish a data-reset implementation. No reset was issued. Trace the actual receiving-controller handler/transport; do not substitute a hard reset or build an unrestricted command sender. The SDK-to-ASUS status mapping remains open independently.
+
 ## Operating constraints
 
 Scheduling remains paused. Physical boots/cables are owner-directed, and no unattended remote restart is authorized. No live EC/I2C/vendor command, driver change, mode override or flash is selected. Preserve original artifacts, failed attempts and private recovery records.

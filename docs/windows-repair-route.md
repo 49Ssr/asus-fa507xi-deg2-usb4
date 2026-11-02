@@ -6,6 +6,10 @@ The repair is uncertain because the first failed RT0 transition is unobserved. T
 
 The [saved attachment sequence](rt0-attachment-order.md) now ties connector1 to RT0 and places successful DEG2 SuperSpeed-hub enumeration after the Windows role correction. This narrows the failure beyond a permanently wrong USB host/device role; actual USB4 entry and retimer/training state remain missing.
 
+## A specific reset hypothesis
+
+[USB-PD Data_Reset](ucsi-data-reset.md) could restart USB4 discovery after ASUS has corrected the data role, without undoing that role. This is not the older connector reset. The saved ASUS version is anomalous and a compatible data-reset command is unproven; no executable repair or hardware test is prepared. Follow the actual controller command handler before sending anything.
+
 ## The records that choose the repair
 
 | What actually happened | Record needed | What a repair would need to change |

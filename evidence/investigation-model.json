@@ -161,6 +161,11 @@
       "id": "INFINEON-SDK39",
       "label": "EZ-PD Host SDK 3.9.0 reference code and offline object analysis",
       "limit": "Infineon controller reference only; no ASUS or DEG2 hardware execution, live state or Windows repair is established."
+    },
+    {
+      "id": "UCSI-RESET-REVIEW",
+      "label": "UCSI reset version semantics and saved ASUS interface review",
+      "limit": "Offline sources and retained software fields only. No actual controller reset implementation, live command or repair is established."
     }
   ],
   "stages": [
@@ -1306,6 +1311,36 @@
         "INFINEON-SDK39"
       ],
       "value_sha256": "abbd6536f6c5ef545ee82c526eb4f38d64f4d334cbe1ce894e076dc85319481f"
+    },
+    {
+      "id": "RESET-VERSION-CODE",
+      "path": "evidence/ucsi-reset-review.json",
+      "pointer": "/code",
+      "kind": "code",
+      "cases": [
+        "UCSI-RESET-REVIEW"
+      ],
+      "value_sha256": "21e42ddc27e65176487dc601ae98ef26ef001fef77d9395328afbff83e8926ae"
+    },
+    {
+      "id": "RESET-CANDIDATE",
+      "path": "evidence/ucsi-reset-review.json",
+      "pointer": "/hypothesis",
+      "kind": "document",
+      "cases": [
+        "UCSI-RESET-REVIEW"
+      ],
+      "value_sha256": "15283e105a52babf6a55392a12f0a730352e176f0c4d354b1eb38ccdb038751d"
+    },
+    {
+      "id": "RESET-ASUS-INTERFACE",
+      "path": "evidence/ucsi-reset-review.json",
+      "pointer": "/asus_saved_interface",
+      "kind": "capture",
+      "cases": [
+        "UCSI-RESET-REVIEW"
+      ],
+      "value_sha256": "5f04b57de1ad649325853793df753bffa08d0056148019ddb6c184a30d91741d"
     }
   ],
   "claims": [
@@ -2632,6 +2667,34 @@
         "INFINEON-SDK39"
       ],
       "limit": "Build-conditional reference code only. HPI is not established as DEG2 WinUSB or ASUS EC transport, and the permissive Boolean behavior is not evidence of an ASUS failure."
+    },
+    {
+      "id": "C96",
+      "basis": "code_fact",
+      "stage": "control",
+      "statement": "The pinned Linux UCSI reset implementation uses bit23 for hard reset on1.0, leaves it clear on1.1/1.2, and uses it for data reset on2.0+. The same reset word cannot be interpreted independently of the controller protocol version.",
+      "sources": [
+        "RESET-VERSION-CODE"
+      ],
+      "cases": [
+        "UCSI-RESET-REVIEW"
+      ],
+      "limit": "Reference implementation, not ASUS receiving-controller code. No reset was sent."
+    },
+    {
+      "id": "C97",
+      "basis": "inference",
+      "stage": "control",
+      "statement": "A data reset after successful data-role correction is a distinct USB4-entry repair hypothesis, but no applicable ASUS command is established by the retained ffff version fields or Windows compatibility layout.",
+      "sources": [
+        "RESET-CANDIDATE",
+        "RESET-ASUS-INTERFACE"
+      ],
+      "cases": [
+        "UCSI-RESET-REVIEW"
+      ],
+      "reason": "Data reset preserves roles and can return to USB4 discovery; the actual entry failure and controller reset support remain unknown.",
+      "limit": "No causal proof, executable repair runner, live request or GPU success. Do not replace data reset with a differently defined connector/hard reset."
     }
   ],
   "timeline_limit": "T0 is the first recorded Windows attachment report in each run, not physical insertion. Different runs, platforms, power contracts and capture dates are explicit. These tables align software reports only; proximity does not establish wire order or causation. The earlier Dell control supplies the Dell timeline; the deep Dell dump supplies cached-state comparison.",

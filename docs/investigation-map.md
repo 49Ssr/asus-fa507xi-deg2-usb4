@@ -830,6 +830,20 @@ Scope: INFINEON-SDK39. Build-conditional reference code only. HPI is not establi
 
 [SDK39-AMD-REFERENCE](../evidence/infineon-sdk-review.json) `/reference_read_path`
 
+**C96 — code_fact:** The pinned Linux UCSI reset implementation uses bit23 for hard reset on1.0, leaves it clear on1.1/1.2, and uses it for data reset on2.0+. The same reset word cannot be interpreted independently of the controller protocol version.
+
+Scope: UCSI-RESET-REVIEW. Reference implementation, not ASUS receiving-controller code. No reset was sent.
+
+[RESET-VERSION-CODE](../evidence/ucsi-reset-review.json) `/code`
+
+**C97 — inference:** A data reset after successful data-role correction is a distinct USB4-entry repair hypothesis, but no applicable ASUS command is established by the retained ffff version fields or Windows compatibility layout.
+
+Scope: UCSI-RESET-REVIEW. No causal proof, executable repair runner, live request or GPU success. Do not replace data reset with a differently defined connector/hard reset.
+
+Reason: Data reset preserves roles and can return to USB4 discovery; the actual entry failure and controller reset support remain unknown.
+
+[RESET-CANDIDATE](../evidence/ucsi-reset-review.json) `/hypothesis`, [RESET-ASUS-INTERFACE](../evidence/ucsi-reset-review.json) `/asus_saved_interface`
+
 ## Separate runs and observation limits
 
 | Case | Meaning | Important limit |
@@ -865,6 +879,7 @@ Scope: INFINEON-SDK39. Build-conditional reference code only. HPI is not establi
 | LINUX-VM-STARTUP | Isolated live Linux VM startup | Virtual DVD, no host disks, network, passthrough or USB4 emulation; startup and model guard only. |
 | ASUS-LINUX-01 | Fresh ASUS DEG2 attachment under SystemRescue 13.02 / Linux 6.18.41 | One owner-directed attachment; software reports and enabled tracepoints, not a raw PD or applied retimer measurement. |
 | INFINEON-SDK39 | EZ-PD Host SDK 3.9.0 reference code and offline object analysis | Infineon controller reference only; no ASUS or DEG2 hardware execution, live state or Windows repair is established. |
+| UCSI-RESET-REVIEW | UCSI reset version semantics and saved ASUS interface review | Offline sources and retained software fields only. No actual controller reset implementation, live command or repair is established. |
 
 ## Software-report timelines
 

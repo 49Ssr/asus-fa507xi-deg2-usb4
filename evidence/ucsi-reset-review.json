@@ -1,0 +1,94 @@
+{
+  "schema": 1,
+  "date": "2026-11-02",
+  "status": "DataResetHypothesis_NoAsusCommandSelected",
+  "code": {
+    "project": "gregkh/linux",
+    "commit": "2fe596715f840d053aed5cee5455f701bdcd2b50",
+    "path": "drivers/usb/typec/ucsi/ucsi.c",
+    "sha256": "77aaae5d65395e47c3baf4f1034d2986cae2ef639c4f6efb0337ad9ebbfc3337",
+    "function": "ucsi_reset_connector",
+    "lines": [
+      1357,
+      1379
+    ],
+    "bit23": {
+      "1.0": {
+        "clear": "soft reset",
+        "set": "hard reset"
+      },
+      "1.1-1.2": {
+        "clear": "only defined encoding; bit reserved",
+        "set": "reserved"
+      },
+      "2.0+": {
+        "clear": "hard reset",
+        "set": "data reset"
+      }
+    },
+    "scope": "Version-dependent reference implementation; not the original ASUS receiving-controller reset handler."
+  },
+  "asus_saved_interface": {
+    "source_record": "evidence/firmware-entry-followup.json",
+    "pointer": "/ucsi_version",
+    "retained_fields": {
+      "asus_class_cache": "0xffff",
+      "asus_retained_client_field": "0xffff",
+      "dell_class_cache": "0x0100",
+      "asus_reported_version_opt_in": false,
+      "mapped_resource_bytes": 4096,
+      "physical_version_bytes_directly_read": false,
+      "new_version_override_tested": false
+    },
+    "windows_documented_layout": "1.2 compatibility when reported version >=2.0 and opt-in false",
+    "physical_protocol_version_verified": false,
+    "data_reset_implementation_verified": false
+  },
+  "standards": [
+    {
+      "title": "USB Type-C Cable and Connector Specification 2.4",
+      "url": "https://e2e.ti.com/cfs-file/__key/communityserver-discussions-components-files/196/USB-Type_2D00_C-Spec-R2.4-_2D00_-October-2024.pdf",
+      "section": "5.4.4.2",
+      "fact": "Data_Reset preserves power contract/data roles, exits alternate modes and returns to USB4 discovery/entry."
+    },
+    {
+      "title": "USB-PD 3.0 version 2.0 with ECNs",
+      "url": "https://e2e.ti.com/cfs-file/__key/communityserver-discussions-components-files/138/USB_5F00_PD_5F00_R3_5F00_0-V2.0-20190829-_2B00_-ECNs-2020_2D00_02_2D00_07.pdf",
+      "sections": [
+        "6.3.14",
+        "6.8.3"
+      ],
+      "fact": "Data reset preserves roles/contract; hard reset reverts a swapped data role to the role associated with Rp/Rd."
+    },
+    {
+      "title": "UCSI 1.22",
+      "url": "https://www.intel.com.br/content/dam/www/public/us/en/documents/technical-specifications/usb-type-c-ucsi-spec.pdf",
+      "section": "4.5.3 / Table 4-5",
+      "fact": "Connector reset produces a disconnect/connect sequence; bit23 is reserved."
+    },
+    {
+      "title": "Microsoft UCSI driver and examples",
+      "url": "https://learn.microsoft.com/en-us/windows-hardware/drivers/usbcon/ucsi",
+      "fact": "Documents version opt-in and older soft/hard-labelled examples; examples do not identify ASUS controller semantics."
+    }
+  ],
+  "hypothesis": {
+    "condition": "USB host role established but USB4 entry not reconsidered",
+    "candidate": "One USB-PD Data_Reset after role correction",
+    "established_cause": false,
+    "expected_observables": [
+      "corrected role persists",
+      "external USB4 router appears or remains absent",
+      "RTX GPU device/display result"
+    ],
+    "missing": "A verified data-reset command and transport for the actual ASUS or DEG2 implementation."
+  },
+  "actions": {
+    "hardware_requests": 0,
+    "drivers_installed": 0,
+    "reset_sent": false,
+    "boot_prepared": false,
+    "executable_repair_runner_prepared": false
+  },
+  "next": "Trace the actual receiving-controller reset handler or matching documented interface; do not send reserved bits or substitute a hard reset."
+}

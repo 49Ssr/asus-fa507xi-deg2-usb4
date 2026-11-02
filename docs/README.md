@@ -29,6 +29,8 @@ Start with [current findings](status.md). The detailed notes preserve the source
 
 ## Controller and firmware research
 
+- [Data reset after role correction: repair hypothesis and missing ASUS command](ucsi-data-reset.md)
+
 - [Infineon SDK 3.9.0: recovered AMD/PS8830 reference implementation](infineon-sdk-review.md)
 
 - [Finding a Windows repair: the missing decision](windows-repair-route.md)
