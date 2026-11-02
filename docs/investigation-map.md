@@ -640,6 +640,28 @@ Scope: ASUS-DEEP, DELL-CONTROL. Advertised standard descriptor indices, not diag
 
 [BB-ADVERTISED-STRINGS](../evidence/pbs-caller-and-billboard-string-route.json) `/descriptor_capture`
 
+**C66 — measured:** The retained ASUS USB2 tree places the041f:d002 DEG2 Billboard on downstream port4 of the1d5c:5801 hub. They are separate device identities.
+
+Scope: ASUS-DEEP. Snapshot topology only; port4 is a hub port, not a numbered ASUS physical connector. Neither identity alone proves a PD controller model or diagnostic protocol.
+
+[BB-PARENT-TOPOLOGY](../evidence/billboard-capture-contract.json) `/retained_topology`
+
+**C67 — inference:** The parent hub is consistent with the FL5801 family, whose manufacturer documents customizable Billboard and PD-bridge functions. This is a specific source/interface lead, not an established DEG2 PD log route.
+
+Scope: ASUS-DEEP. No physical marking, enabled bridge, matching vendor protocol or live PD state was recovered. The inspected reference and updater code do not justify DEG2 vendor requests.
+
+Reason: The retained parent-hub identity and the manufacturer feature description align; public reference code distinguishes hub UUID access from the separate vendor USB transport.
+
+[BB-PARENT-TOPOLOGY](../evidence/billboard-capture-contract.json) `/retained_topology`, [BB-PUBLIC-BRIDGE-ROUTE](../evidence/billboard-capture-contract.json) `/reference_route`
+
+**C68 — inference:** The retained DEG2 vendor interface has the same bulk OUT01 and interrupt IN82 endpoint descriptors as the inspected public Infineon Griffin Creek vendor transport. The reference also replaces its default VID/PID from configuration.
+
+Scope: ASUS-DEEP. Transport shape is not firmware/controller identification or a compatible command protocol. No vendor request is qualified or executed.
+
+Reason: Exact endpoint type/address/size/interval and vendor class fields agree, so the public command handler is a specific comparison candidate despite different VID defaults.
+
+[BB-VENDOR-ENDPOINT-SHAPE](../evidence/billboard-capture-contract.json) `/endpoint_comparison`, [BB-PUBLIC-BRIDGE-ROUTE](../evidence/billboard-capture-contract.json) `/reference_route`
+
 ## Separate runs and observation limits
 
 | Case | Meaning | Important limit |

@@ -1,0 +1,99 @@
+{
+  "schema": 1,
+  "date": "2026-11-02",
+  "interval": 17,
+  "retained_topology": {
+    "case": "ASUS-DEEP",
+    "log_sha256": "1fb6f7d3f2105491be766fc183a6290633fdaa04f10418974e99a6b199557a45",
+    "billboard": {
+      "vid": "041f",
+      "pid": "d002",
+      "bcdDevice": "8200",
+      "product": "DEG2",
+      "speed": "FullSpeed",
+      "parent_port": 4
+    },
+    "parent_hub": {
+      "vid": "1d5c",
+      "pid": "5801",
+      "bcdDevice": "0101",
+      "upstream_root_port": 1
+    },
+    "binding": "Retained USB3 tree device-info/hub-info references cross-match the enumerated device/hub lists. Pointer values remain private. Port4 is the downstream USB2 hub port, not ASUS physical connector4.",
+    "limit": "Snapshot topology, not a fresh device binding or physical chip marking."
+  },
+  "reference_route": {
+    "parade_url": "https://www.paradetech.com/products/fl5801-tbt4-usb4-port-controller/",
+    "parade_scope": "FL5801 is a USB2 hub with customizable Billboard and PD-bridge functions. This does not establish that DEG2 enables a readable PD bridge.",
+    "infineon_commit": "e9104d5768c9b042244c7c705198be8926228d01",
+    "infineon_sources": [
+      "https://github.com/Infineon/mtb-example-pmg1s3-griffin-creek-dock/blob/e9104d5768c9b042244c7c705198be8926228d01/src/fl5801.c",
+      "https://github.com/Infineon/mtb-example-pmg1s3-griffin-creek-dock/blob/e9104d5768c9b042244c7c705198be8926228d01/src/usb_descr.c",
+      "https://github.com/Infineon/mtb-example-pmg1s3-griffin-creek-dock/blob/e9104d5768c9b042244c7c705198be8926228d01/deps/pmg-app-common.mtb",
+      "https://github.com/Infineon/mtb-example-pmg1s3-griffin-creek-dock/blob/e9104d5768c9b042244c7c705198be8926228d01/deps/usbdev.mtb"
+    ],
+    "infineon_code": "The inspected FL5801 helper reads a16-byte UUID over the reference-board I2C master. It is not a host USB PD-log reader. USB descriptors default to VID04b4 but initialization overwrites VID/PID from the configuration table. Its vendor transport uses bulk OUT01 and interrupt IN82, both64 bytes. No DEG2 command compatibility follows.",
+    "fwupd_commit": "bb7a85ec64dfd661e9062f52145734d162973aaa",
+    "fwupd_sources": [
+      "https://github.com/fwupd/fwupd/blob/bb7a85ec64dfd661e9062f52145734d162973aaa/plugins/fresco-pd/fresco-pd.quirk",
+      "https://github.com/fwupd/fwupd/blob/bb7a85ec64dfd661e9062f52145734d162973aaa/plugins/ccgx-dmc/ccgx-dmc.quirk",
+      "https://github.com/fwupd/fwupd/blob/bb7a85ec64dfd661e9062f52145734d162973aaa/plugins/parade-usbhub/parade-usbhub.quirk"
+    ],
+    "fwupd_scope": "Fresco-PD selects7102/7112, not5801. CCGX-DMC identifies1d5c:5801 as a parent hub for an HP dock, with a separate DMC device. No041f:d002 match in the inspected quirk files. Similar manufacturer names do not qualify those update/read protocols for DEG2.",
+    "sdk_access": "This Griffin Creek reference source is public without SDK login. It is a different dock platform, not the missing ASUS AMD host implementation. Host SDK login may still add the AMD/PS8830 source identified earlier."
+  },
+  "windows_contract": {
+    "source_commit": "64ed9177fb76eb244fc9051c74b8a93fdfe20873",
+    "headers": [
+      "https://github.com/microsoft/win32metadata/blob/64ed9177fb76eb244fc9051c74b8a93fdfe20873/generation/WinSDK/RecompiledIdlHeaders/shared/usbioctl.h",
+      "https://github.com/microsoft/win32metadata/blob/64ed9177fb76eb244fc9051c74b8a93fdfe20873/generation/WinSDK/RecompiledIdlHeaders/shared/usbiodef.h"
+    ],
+    "packing": 1,
+    "descriptor_request_header_bytes": 12,
+    "connection_information_ex_header_bytes": 35,
+    "device_address_offset": 25,
+    "connection_status_offset": 31,
+    "descriptor_ioctl": "0x220410",
+    "connection_information_ex_ioctl": "0x220448",
+    "limit": "A guessed naturally aligned36-byte header/status32 would parse the wrong bytes. No such device request was executed. These values follow the packed official header."
+  },
+  "prepared_codec": {
+    "path": "tools/analysis/BillboardDescriptorProtocol.cs",
+    "sha256": "82a7e27ae1a13f40f9ce3c4713feaf231d101dfcf1af269344176e015cafdce7",
+    "test": "tools/analysis/Test-BillboardDescriptorProtocol.ps1",
+    "qualification": "Windows PowerShell5.1 C# compilation and18 offline checks passed; both original BOS inputs accepted. Wrong identity/hub/port/status, changed indices, malformed lengths/LANGIDs and UTF16 are rejected.",
+    "status": "Pure byte codec only. No PInvoke, enumeration, hub handle or DeviceIoControl implementation. Complete collector not implemented or executed.",
+    "future_binding": "Fresh exact Billboard instance -> parent hub interface and downstream port; compare live descriptor identity and fresh BOS before selecting advertised strings. Validate supported language and retain results privately. Address consistency before/after is not proof against every intervening reconnect.",
+    "no_retry_or_vendor": "Only standard descriptor requests are planned; no vendor reset/flash/probe requests justified."
+  },
+  "next": [
+    "Complete the native standard-descriptor reader around the tested codec with exact current PnP-to-hub binding and cancellation/error handling; preparation only while owner sleeps.",
+    "Compare the public PMG app-common Billboard command handler against the retained vendor interface and available standard strings. Endpoint-shape agreement alone never authorizes vendor commands.",
+    "Continue original PBS9c consumer tracing separately."
+  ],
+  "hardware_requests": 0,
+  "deletions": 0,
+  "endpoint_comparison": {
+    "case": "ASUS-DEEP",
+    "configuration_hex": "09022000010104e0320904000002ff0000020705010240000007058203400001",
+    "configuration_sha256": "881dadc22fce7db6325ef491fd9d7ff44ec1a37ad4c10df2a11e22fefaa49f60",
+    "length": 32,
+    "interfaces": 1,
+    "interface_class": "ff",
+    "out": {
+      "address": "01",
+      "type": "bulk",
+      "max_packet": 64,
+      "interval": 0
+    },
+    "in": {
+      "address": "82",
+      "type": "interrupt",
+      "max_packet": 64,
+      "interval": 1
+    },
+    "source": "Original cached configuration bytes in retained private USB interface analysis;32-byte total length and descriptor boundaries checked.",
+    "reference": "Infineon Griffin Creek src/usb_descr.c lines88-121 at pinned commit",
+    "result": "The two endpoint descriptors and vendor class/subclass/protocol match the reference shape. This is a candidate transport match only; payload commands, device implementation and firmware identity remain unqualified."
+  }
+}

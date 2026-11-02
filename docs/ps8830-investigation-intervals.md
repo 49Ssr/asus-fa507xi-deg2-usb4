@@ -24,6 +24,11 @@ Historical heartbeat before interval14 deletion: `trace-asus-ps8830-configuratio
 
 ## Current interval
 
+**Interval17:** existing ASUS topology separates041f:d002 Billboard from its1d5c:5801 parent hub. Parade describes FL5801 Billboard/PD-bridge customization, but enabled DEG2 access is unproven. Public Infineon Griffin Creek source is available without login; its inspected FL5801 helper is an I2C UUID read, not a host PD logger. Retained vendor endpoints OUT01 bulk/IN82 interrupt (64B) match the public reference shape; configurable VID/PID also prevents a default-ID-only exclusion. Command semantics remain unqualified. Inspected fwupd device matches do not qualify its vendor requests for DEG2. [Evidence](../evidence/billboard-capture-contract.json).
+
+The standard read's pure C# codec now compiles under PS5.1 and passes18 offline checks. Official packed connection-info layout uses35-byte header, address25/status31; no live I/O ran. Complete reader still needs exact fresh PnP-to-parent-hub binding, native timeout/cancellation and private output. Next implement that wrapper without running it, and compare the public PMG Billboard command handler only when protocol identity can be matched. PBS9c consumer remains unresolved. No elevation, device request, driver, boot, setting change or deletion occurred.
+
+
 **Interval16:** the selected NBIO PBS-reader caller reads field3c3 at the checked stack-relative location, not PD-control9c. No complete9c consumer was recovered. A separate existing-capture lead is specific: both DEG2 BOS payloads advertise URL string7 and mode descriptions8/9/10, whose text is absent from the reviewed results. Microsoft's pinned USBView provides a standard hub-driver string GET; its enumeration code has no Billboard-specific string path. [Original code, payload pins and read requirements](../evidence/pbs-caller-and-billboard-string-route.json).
 
 **Next:** prepare a narrow standard-string reader from that reviewed Microsoft route, with fresh exact-device/port/language binding, strict returned type/length/UTF16 checks and private output. No vendor command, new driver or boot. This is protocol identification, not a PD packet recorder; generic help text may yield no debug interface. Continue actual PD-control consumer research independently. No device request, elevation, hardware change or deletion occurred.

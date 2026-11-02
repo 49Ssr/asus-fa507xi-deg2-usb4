@@ -975,6 +975,36 @@
         "DELL-CONTROL"
       ],
       "value_sha256": "dfc62f6d3afa677b6246ccd1e0db83af81a0f05184a24d5113eecb812ebf26cc"
+    },
+    {
+      "id": "BB-PARENT-TOPOLOGY",
+      "path": "evidence/billboard-capture-contract.json",
+      "pointer": "/retained_topology",
+      "kind": "capture",
+      "cases": [
+        "ASUS-DEEP"
+      ],
+      "value_sha256": "8abea73ca2d178409c2d61b2db52bc12f2d4b70528ffdae3d9fa81791574ee83"
+    },
+    {
+      "id": "BB-PUBLIC-BRIDGE-ROUTE",
+      "path": "evidence/billboard-capture-contract.json",
+      "pointer": "/reference_route",
+      "kind": "code",
+      "cases": [
+        "ASUS-DEEP"
+      ],
+      "value_sha256": "2d79de211dddd9d10f6e8c6f2b8b902b9d3768fede2066e03259bff21c9bd539"
+    },
+    {
+      "id": "BB-VENDOR-ENDPOINT-SHAPE",
+      "path": "evidence/billboard-capture-contract.json",
+      "pointer": "/endpoint_comparison",
+      "kind": "capture",
+      "cases": [
+        "ASUS-DEEP"
+      ],
+      "value_sha256": "2466fe24f3707f4e7e9726bd845ab5547a28341a92efce535e58d8480bee272e"
     }
   ],
   "claims": [
@@ -1893,6 +1923,49 @@
         "DELL-CONTROL"
       ],
       "limit": "Advertised standard descriptor indices, not diagnostic-log commands or evidence that the URL identifies the chip. No new USB GET or vendor request was sent."
+    },
+    {
+      "id": "C66",
+      "basis": "measured",
+      "stage": "entry",
+      "statement": "The retained ASUS USB2 tree places the041f:d002 DEG2 Billboard on downstream port4 of the1d5c:5801 hub. They are separate device identities.",
+      "sources": [
+        "BB-PARENT-TOPOLOGY"
+      ],
+      "cases": [
+        "ASUS-DEEP"
+      ],
+      "limit": "Snapshot topology only; port4 is a hub port, not a numbered ASUS physical connector. Neither identity alone proves a PD controller model or diagnostic protocol."
+    },
+    {
+      "id": "C67",
+      "basis": "inference",
+      "stage": "entry",
+      "statement": "The parent hub is consistent with the FL5801 family, whose manufacturer documents customizable Billboard and PD-bridge functions. This is a specific source/interface lead, not an established DEG2 PD log route.",
+      "sources": [
+        "BB-PARENT-TOPOLOGY",
+        "BB-PUBLIC-BRIDGE-ROUTE"
+      ],
+      "cases": [
+        "ASUS-DEEP"
+      ],
+      "reason": "The retained parent-hub identity and the manufacturer feature description align; public reference code distinguishes hub UUID access from the separate vendor USB transport.",
+      "limit": "No physical marking, enabled bridge, matching vendor protocol or live PD state was recovered. The inspected reference and updater code do not justify DEG2 vendor requests."
+    },
+    {
+      "id": "C68",
+      "basis": "inference",
+      "stage": "entry",
+      "statement": "The retained DEG2 vendor interface has the same bulk OUT01 and interrupt IN82 endpoint descriptors as the inspected public Infineon Griffin Creek vendor transport. The reference also replaces its default VID/PID from configuration.",
+      "sources": [
+        "BB-VENDOR-ENDPOINT-SHAPE",
+        "BB-PUBLIC-BRIDGE-ROUTE"
+      ],
+      "cases": [
+        "ASUS-DEEP"
+      ],
+      "reason": "Exact endpoint type/address/size/interval and vendor class fields agree, so the public command handler is a specific comparison candidate despite different VID defaults.",
+      "limit": "Transport shape is not firmware/controller identification or a compatible command protocol. No vendor request is qualified or executed."
     }
   ],
   "timeline_limit": "T0 is the first recorded Windows attachment report in each run, not physical insertion. Different runs, platforms, power contracts and capture dates are explicit. These tables align software reports only; proximity does not establish wire order or causation. The earlier Dell control supplies the Dell timeline; the deep Dell dump supplies cached-state comparison.",
