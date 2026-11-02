@@ -1,5 +1,12 @@
 # Research and maintenance rules
 
+**Windows repair route review, 2 November:** the immediate target is the first failed RT0 decision and an identified runtime operation that can affect it. [The records needed and current interfaces](docs/windows-repair-route.md), [new evidence](evidence/windows-repair-route-review.json). Current DEG2 registry GUID matches the Infineon descriptor but is also an independent USB SDK example; it does not identify a command ABI. The conditional application-first DMC handler remains unqualified for DEG2. No vendor command was sent.
+
+The inspected reference BOS can retain a template word; saved EUDO is copied only under build/runtime conditions. Its data-status function saves EUDO before calling the mux setter. Do not turn the observed zero/nonzero difference into a packet or retimer-success claim. Full original Quanta settere18..10f5 has five variable-write sites, network/Setup targets and a fixed-MMIO-byte bit4 update. It is not an established port-only Windows reapply path and was not invoked. All155 selected instructions were checked against original bytes.
+
+Continue exact RT0/PBS9c consumer and matching controller diagnostic implementation. Use a new read only when it can distinguish entry-not-sent, rejection, accepted-entry/link failure or later loss. Preserve prior unfinished frontiers and original evidence. Automation remains PAUSED; remote constraints still prohibit BIOS/cable/restart/network changes. This review added only read-only OS registry metadata and passive source research, with no new device request, setting, driver, boot or deletion.
+
+
 
 A separate standard USB information capture succeeded on the already connected DEG2 at10:03 UTC. It recovered strings7–10: the Minisforum homepage, generic Thunderbolt help and literal null placeholders. No diagnostic protocol or PD log was revealed. The first reported mode VDO is now0 versus2087e000 in the earlier ASUS fixture, while status byte35 is unchanged; the meaning/cause of this time-dependent metadata difference is unresolved. [Capture and limits](evidence/billboard-strings-result.json). This was7 standard descriptor GETs and4 hub metadata reads, with no new driver, setting, cable, boot, network or EC/I2C/vendor operation. Preserve the working transport; do not repeat it unchanged, infer packet history or guess vendor commands. Native-I/O timeout cancellation remains unexercised.
 

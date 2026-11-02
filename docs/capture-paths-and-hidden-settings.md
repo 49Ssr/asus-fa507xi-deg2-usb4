@@ -109,6 +109,10 @@ String7 is the Minisforum homepage,8 is generic Thunderbolt assistance text, and
 
 Earlier statements above that the standard reader had not run describe preparation history. It is now exercised on this one exact binding; other hardware and native-I/O timeout behavior remain unqualified. Do not repeat the read unchanged or issue guessed vendor requests.
 
+## Choosing an intervention requires a different observation
+
+[The Windows repair route](windows-repair-route.md) now separates the missing entry request/response, applied retimer/training state and later-loss history from the interfaces already exercised. Current registry GUID matching is not a firmware/command fingerprint. Reference BOS data can come from a template or saved EUDO written before mux completion. The complete selected BIOS setter also writes network/Setup data and MMIO, so it is not a qualified port-only reapply operation. These are reasons to qualify a specific diagnostic implementation, not a conclusion that Windows repair is impossible.
+
 ## Would the Infineon SDK help?
 
 **Yes, as reference code and register/interface definitions. It is worth downloading; it is not a ready-made ASUS capture utility.** The [Host SDK guide](https://www.infineon.com/row/public/documents/30/316/infineon-ez-pd-ccgx-host-sdk-user-guide-productqualificationreport-en.pdf), pages10–11/38, describes AMD Phoenix reference firmware, APU/retimer interfaces and PS8830 selection. The public [hardware code](https://github.com/Infineon/pdaltmode/blob/fec544408cffffbfe459042262b5cd233a686722/cy_pdaltmode_hw.c) references AMD-specific headers and an APU mode-update function; the [retimer wrapper documentation source](https://github.com/Infineon/pdaltmode/blob/fec544408cffffbfe459042262b5cd233a686722/docs/xml/cy__pdaltmode__retimer__wrapper_8c.xml) calls AMD retimer initialisation. Those AMD implementations are not among the files in the inspected public tree.

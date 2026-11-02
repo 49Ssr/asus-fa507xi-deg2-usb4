@@ -1,0 +1,196 @@
+{
+  "schema": 1,
+  "date": "2026-11-02",
+  "goal": "Identify the first failed RT0 transition, then a specific Windows-accessible operation that addresses it and can be restored.",
+  "interface_registry": {
+    "captured_utc": "2026-11-02T10:17:12.2673493Z",
+    "source": "Read-only Windows Enum device-parameters query for the unique present041f:d002 Billboard; no USB request.",
+    "device_interface_guid": "8fe6d4d7-49dd-41e7-9486-49afc6bfe470",
+    "revision_id": 33280,
+    "vendor_revision": 0,
+    "limit": "Existing OS registry metadata; no firmware-build identity or vendor-command compatibility established."
+  },
+  "interface_reference": {
+    "sources": [
+      {
+        "url": "https://github.com/Infineon/mtb-example-pmg1s3-griffin-creek-dock/blob/e9104d5768c9b042244c7c705198be8926228d01/src/usb_descr.c",
+        "sha256": "13148d41733ad66e649e294e8428c23cef923e3a4120830fb150ad30034048bc",
+        "checked_lines": [
+          {
+            "line_start": 240,
+            "line_end": 275,
+            "sha256": "e50a7431f0a09743e4bb94ca3ddddb862621a03148476f3902fee44338e47d02"
+          }
+        ]
+      },
+      {
+        "url": "https://github.com/Infineon/mtb-example-pmg1s3-griffin-creek-dock/blob/e9104d5768c9b042244c7c705198be8926228d01/main.c",
+        "sha256": "3d2f0e7475e81b2c916f4e5af229aa7e16c43569436b6392c0ad3a3d5dfd8997",
+        "checked_lines": [
+          {
+            "line_start": 402,
+            "line_end": 410,
+            "sha256": "d7894c8a0ff27802037723ff08fe80f44e3afe75d82826720758852b9faf315c"
+          },
+          {
+            "line_start": 695,
+            "line_end": 704,
+            "sha256": "ecc8eef91f686b007ffb07cba505f343521f103e5f8147575561237ebf760a33"
+          }
+        ]
+      },
+      {
+        "url": "https://github.com/Bridgetek/ft9xx-sdk/blob/03f74eac84645178fdde7f2e5ca9acdcb7bd9dcd/Source/include/ft900_usb.h",
+        "sha256": "c0409daf7140b9056958692a234fe2086c061d2bcc58d871c351dfb65f06d512",
+        "checked_lines": [
+          {
+            "line_start": 692,
+            "line_end": 700,
+            "sha256": "8ca411a61b80dfb12d7d65f054a51a54b5a8826365c438dc2920bbf1c41b1eee"
+          }
+        ]
+      },
+      {
+        "url": "https://github.com/Infineon/pmg-app-common/blob/9ed74f798cae23aa6744f206ee381f3593590554/cy_app_usb.c",
+        "sha256": "311cad87d7cd3f6c5f76ddfb999cb75b5b0f823eacfbe1713b517086d347d796",
+        "checked_lines": [
+          {
+            "line_start": 412,
+            "line_end": 442,
+            "sha256": "2d92eaf7679f65591943d2613309d0138ef536b6b713bf57372543bc7c9fbe62"
+          }
+        ]
+      }
+    ],
+    "guid": "8fe6d4d7-49dd-41e7-9486-49afc6bfe470",
+    "matching_reference": "The Griffin Creek extended-properties descriptor publishes this exact GUID.",
+    "counterexample": "Independent Bridgetek USB SDK header uses the same GUID as an extended-property example. It is not a unique Infineon protocol or silicon identifier.",
+    "application_dispatch": "Griffin Creek main.c registers vendor_req_handler. That calls Cy_App_Dmc_VendorRequestHandler only under CY_APP_DMC_PHASE1_UPDATE_ENABLE. The complete selected command-handler implementation and DEG2 build options remain unqualified.",
+    "fallback_dispatch": "The app-common wrapper calls the application handler first; optional flash-log handling is a later conditional fallback. A header enum does not prove the actual handler runs.",
+    "status_content": "The already pinned D6/D7 header describes dock/component image status, versions and identity. Those payloads are not themselves a PD packet transcript or a retimer training register read.",
+    "result": "WinUSB transport exists, but this fingerprint does not qualify a D6/D7/DE request for DEG2. No vendor request was issued."
+  },
+  "descriptor_reference": {
+    "sources": [
+      {
+        "url": "https://github.com/Infineon/pmg-app-common/blob/9ed74f798cae23aa6744f206ee381f3593590554/cy_app_bb_internal.c",
+        "sha256": "c2925a94361a8d02f5a6463d86981ed9932b02c3f224cb6f658106a33a5d8eca",
+        "checked_lines": [
+          {
+            "line_start": 64,
+            "line_end": 88,
+            "sha256": "a2b477df8e84586b495b58b0a7552720735168bbcf60b9605647e79ec58c20af"
+          }
+        ]
+      },
+      {
+        "url": "https://github.com/Infineon/pdaltmode/blob/fec544408cffffbfe459042262b5cd233a686722/cy_pdaltmode_usb4.c",
+        "sha256": "739b77018df231b6e58757f9a83926e4785c243583f92025f752757ed1e10b07",
+        "checked_lines": [
+          {
+            "line_start": 279,
+            "line_end": 315,
+            "sha256": "0c2507c8217c2ca8019429fc54668b9b76c798ea82360fca4894d3a9e37d2016"
+          }
+        ]
+      }
+    ],
+    "template_rule": "bb_update_bos_descriptor copies a configured BOS template first when that configuration is present.",
+    "overwrite_rule": "It overwrites the mode word with software-held EUDO only when BILLBOARD_1_2_2_SUPPORT is built and usb4Supp is true.",
+    "ordering_rule": "Cy_PdAltMode_Usb4_UpdateDataStatus stores altModeAppStatus.eudo before calling HW_SetMux and returning the mux result.",
+    "consequences": [
+      "A nonzero template/reported word is not proof of a captured Enter_USB packet.",
+      "Even a copied saved EUDO does not certify successful mux programming.",
+      "Zero versus nonzero across saved captures cannot by itself distinguish no request, rejection, reset or a later failed route."
+    ],
+    "applicability": "Reference implementation only. DEG2 source/build identity and writer of its observed word are not proven."
+  },
+  "bios_setter": {
+    "module": "459-QuantaDxeWrapperPkg",
+    "module_sha256": "98518fac63c75188b8c9f47b5872adb5484bc405008af618ce7c782038b42f3c",
+    "function_rva_hex": "0xe18",
+    "span": {
+      "rva_start": "0xe18",
+      "rva_end_exclusive": "0x10f5",
+      "span_sha256": "a3ea6375637590a4a3929f6d8380034f26ecdfb2ceb78b6bdaba5f23c5782f38",
+      "instructions_verified": 155
+    },
+    "selected_usb_field": "Selector0x0e writes PBS4d, the separate PD Thunderbolt3 Alt Mode setting. It is not the still-unlocated PBS9c consumer.",
+    "set_variable_call_rvas": [
+      "0xebc",
+      "0xffb",
+      "0x1020",
+      "0x1044",
+      "0x10df"
+    ],
+    "variable_targets": [
+      "AMD_PBS_SETUP",
+      "NetworkStackVar",
+      "Setup",
+      "AsusSetupItemVariable"
+    ],
+    "other_effect": "The same routine also updates bit4 of one fixed MMIO byte and writes two separate Setup buffers. No meaning is assigned to that MMIO byte here.",
+    "failure_order": "The PBS SetVariable occurs before later reads and writes, with early returns on some later failed reads; this is not an atomic USB4-only operation with an established rollback.",
+    "availability": "Registered boot-service firmware protocol function. No qualified Windows runtime caller or port-only reapply path has been established.",
+    "result": "Do not use this broad settings routine as the next USB4 test. It was not invoked."
+  },
+  "required_observations": [
+    {
+      "question": "Was Enter_USB sent, and what response came back?",
+      "current": "Unknown; UCSI completions and Billboard data do not supply the exchange.",
+      "why": "Separates host-entry policy from partner rejection."
+    },
+    {
+      "question": "After accepted entry, what mode/orientation did the retimer apply and what did link training report?",
+      "current": "Unknown during the failed pairing.",
+      "why": "Separates accepted PD negotiation from board signal-path failure."
+    },
+    {
+      "question": "Did an external router become detectable before a later exit or loss?",
+      "current": "Saved native RouterDetected samples are clear; complete prior wire/link history is not known.",
+      "why": "Separates initial physical failure from later Windows discovery or power handling."
+    }
+  ],
+  "windows_routes": [
+    {
+      "route": "Stored settings",
+      "status": "Read works; relevant USB4/TBT3 fields already enabled; RT1 is the other router.",
+      "remaining": "Trace actual PBS9c/RT0 consumer, not another toggle read."
+    },
+    {
+      "route": "Standard DEG2 descriptors",
+      "status": "One exact Windows read succeeds. Information and reported metadata only.",
+      "remaining": "No unchanged repeat supplies the missing PD response or applied mux state."
+    },
+    {
+      "route": "DEG2 diagnostic transport",
+      "status": "WinUSB/descriptor/GUID evidence exists, but command ABI and enabled diagnostic contents remain unqualified.",
+      "remaining": "Obtain matching firmware/implementation or a documented versioned diagnostic interface."
+    },
+    {
+      "route": "Existing ASUS controller/retimer interface",
+      "status": "Previously reviewed OEM PDO getter is stubbed; HID status is cached; original register/transport map remains required.",
+      "remaining": "Find an implemented state/log read or identified existing-driver route before a new request."
+    }
+  ],
+  "next": [
+    "Follow the original RT0/PBS9c policy dataflow and controller-facing dispatch.",
+    "Qualify exact DEG2 firmware/diagnostic implementation; GUID reuse and generic status enums are insufficient.",
+    "Preserve the three missing observations as the criteria for choosing a new capture; no generic dump, blind boot or repeated role experiment."
+  ],
+  "other_source_access": {
+    "support_url": "https://support.minisforum.com/pages/product-info",
+    "result": "Followed the support root meta-refresh and inspected the exact DEG2 HTML card. It exposes a user manual and installation video, but no firmware download link in that card. No whole-site firmware-availability claim is made.",
+    "downloaded_or_executed_updater": false
+  },
+  "actions": {
+    "read_only_os_registry_metadata": true,
+    "new_usb_requests": 0,
+    "ec_i2c_vendor_requests": 0,
+    "setting_writes": 0,
+    "new_drivers": 0,
+    "restarts": 0,
+    "network_or_cable_changes": 0,
+    "deletions": 0
+  }
+}

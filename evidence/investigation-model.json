@@ -1121,6 +1121,46 @@
         "ASUS-BILLBOARD-20261102"
       ],
       "value_sha256": "2e6eac6bba7d2dfb152d9c42deb66a698e9ce7b2d81daaca6d3d07ddfb91e099"
+    },
+    {
+      "id": "WINDOWS-BILLBOARD-REGISTRY",
+      "path": "evidence/windows-repair-route-review.json",
+      "pointer": "/interface_registry",
+      "kind": "capture",
+      "cases": [
+        "ASUS-BILLBOARD-20261102"
+      ],
+      "value_sha256": "bd7a8760b931970dddf5146ceea4b11d2c433ed939536c442b0fc7a94de14087"
+    },
+    {
+      "id": "WINDOWS-INTERFACE-REFERENCE",
+      "path": "evidence/windows-repair-route-review.json",
+      "pointer": "/interface_reference",
+      "kind": "code",
+      "cases": [
+        "INFINEON-GRIFFIN-REFERENCE"
+      ],
+      "value_sha256": "5b7532f0bfff6cbb232a6550f105fb8eaba7b019675127aab2783be1e936b73c"
+    },
+    {
+      "id": "BILLBOARD-EUDO-SEMANTICS",
+      "path": "evidence/windows-repair-route-review.json",
+      "pointer": "/descriptor_reference",
+      "kind": "code",
+      "cases": [
+        "INFINEON-GRIFFIN-REFERENCE"
+      ],
+      "value_sha256": "dd061d354bf5c2e94980040e896fd342a13ed15ebdc591faa4be95ba0222f462"
+    },
+    {
+      "id": "BIOS-SETTER-FULL-SCOPE",
+      "path": "evidence/windows-repair-route-review.json",
+      "pointer": "/bios_setter",
+      "kind": "code",
+      "cases": [
+        "ASUS-BIOS314"
+      ],
+      "value_sha256": "4e8fb3551096cbef5a21ced7c060522c1b47d207d6a9a7f55ebdf75d11c66aa1"
     }
   ],
   "claims": [
@@ -2247,6 +2287,48 @@
         "ASUS-BILLBOARD-20261102"
       ],
       "limit": "Information and reported mode metadata only. They do not identify a diagnostic protocol, PD traffic, actual negotiated mode or cause. Different capture times and unverified DEG2 implementation prevent interpreting the changed word as a traced firmware decision."
+    },
+    {
+      "id": "C81",
+      "basis": "inference",
+      "stage": "entry",
+      "statement": "The current DEG2 Windows interface GUID matches the Griffin Creek reference, but the same GUID is an example in an independent USB SDK. That match does not establish the DEG2 command ABI, enabled DMC handler or diagnostic payloads.",
+      "sources": [
+        "WINDOWS-BILLBOARD-REGISTRY",
+        "WINDOWS-INTERFACE-REFERENCE"
+      ],
+      "cases": [
+        "ASUS-BILLBOARD-20261102",
+        "INFINEON-GRIFFIN-REFERENCE"
+      ],
+      "reason": "A reused interface GUID and conditional application-first vendor dispatch do not uniquely identify the firmware implementation.",
+      "limit": "Registry read and primary reference code only. No vendor request or protocol probe was sent."
+    },
+    {
+      "id": "C82",
+      "basis": "code_fact",
+      "stage": "entry",
+      "statement": "The inspected Infineon reference builds BOS from a configured template and conditionally copies saved EUDO. Its USB4 data-status function saves EUDO before calling the mux setter and returning that result.",
+      "sources": [
+        "BILLBOARD-EUDO-SEMANTICS"
+      ],
+      "cases": [
+        "INFINEON-GRIFFIN-REFERENCE"
+      ],
+      "limit": "Reference code, not established DEG2 implementation. Reported mode data cannot alone certify a PD exchange or successful retimer routing."
+    },
+    {
+      "id": "C83",
+      "basis": "code_fact",
+      "stage": "entry",
+      "statement": "The complete selected Quanta BIOS setter contains five SetVariable call sites targeting PBS, NetworkStackVar, Setup and AsusSetupItemVariable, plus a fixed-MMIO-byte bit4 update. It is not a port-only live USB4 operation.",
+      "sources": [
+        "BIOS-SETTER-FULL-SCOPE"
+      ],
+      "cases": [
+        "ASUS-BIOS314"
+      ],
+      "limit": "Original155-instruction span byte-verified. No invocation, atomic rollback, runtime Windows caller or exact MMIO-field meaning is established."
     }
   ],
   "timeline_limit": "T0 is the first recorded Windows attachment report in each run, not physical insertion. Different runs, platforms, power contracts and capture dates are explicit. These tables align software reports only; proximity does not establish wire order or causation. The earlier Dell control supplies the Dell timeline; the deep Dell dump supplies cached-state comparison.",

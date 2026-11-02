@@ -738,6 +738,26 @@ Scope: ASUS-BILLBOARD-20261102. Information and reported mode metadata only. The
 
 [BILLBOARD-STANDARD-STRINGS](../evidence/billboard-strings-result.json) `/observed`
 
+**C81 — inference:** The current DEG2 Windows interface GUID matches the Griffin Creek reference, but the same GUID is an example in an independent USB SDK. That match does not establish the DEG2 command ABI, enabled DMC handler or diagnostic payloads.
+
+Scope: ASUS-BILLBOARD-20261102, INFINEON-GRIFFIN-REFERENCE. Registry read and primary reference code only. No vendor request or protocol probe was sent.
+
+Reason: A reused interface GUID and conditional application-first vendor dispatch do not uniquely identify the firmware implementation.
+
+[WINDOWS-BILLBOARD-REGISTRY](../evidence/windows-repair-route-review.json) `/interface_registry`, [WINDOWS-INTERFACE-REFERENCE](../evidence/windows-repair-route-review.json) `/interface_reference`
+
+**C82 — code_fact:** The inspected Infineon reference builds BOS from a configured template and conditionally copies saved EUDO. Its USB4 data-status function saves EUDO before calling the mux setter and returning that result.
+
+Scope: INFINEON-GRIFFIN-REFERENCE. Reference code, not established DEG2 implementation. Reported mode data cannot alone certify a PD exchange or successful retimer routing.
+
+[BILLBOARD-EUDO-SEMANTICS](../evidence/windows-repair-route-review.json) `/descriptor_reference`
+
+**C83 — code_fact:** The complete selected Quanta BIOS setter contains five SetVariable call sites targeting PBS, NetworkStackVar, Setup and AsusSetupItemVariable, plus a fixed-MMIO-byte bit4 update. It is not a port-only live USB4 operation.
+
+Scope: ASUS-BIOS314. Original155-instruction span byte-verified. No invocation, atomic rollback, runtime Windows caller or exact MMIO-field meaning is established.
+
+[BIOS-SETTER-FULL-SCOPE](../evidence/windows-repair-route-review.json) `/bios_setter`
+
 ## Separate runs and observation limits
 
 | Case | Meaning | Important limit |
