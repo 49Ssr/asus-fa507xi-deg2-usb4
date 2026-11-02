@@ -1,266 +1,39 @@
-# Independent review and next tests
+# Research handoff
 
-**Investigation reopened, 2 November:** the exact BIOS314 HII contains PD USB4 control, pre-CM and separate router/PCIe-tunnel settings. A Windows-only stored-variable reader is prepared (Read mode not executed); it does not capture PD packets. SDK reference inspection and controller-log access remain useful work. [Settings, capture routes and next work](capture-paths-and-hidden-settings.md). No blind test boot or setting change is queued.
+The current objective is to identify the first failed USB4 transition on the RT0 path and an operation that could repair it. The cause is unresolved.
 
+1. Read [current findings](status.md) and [the connection explanation](connection.md).
+2. Use [experiment results](experiments.md) to avoid repeating completed or invalid comparisons.
+3. For the selected later observation, use only [the current Linux guide](linux-capture.md).
+4. For offline work, follow the original RT0/PBS policy consumer or a source-matched controller log interface. [Windows repair research](windows-repair-route.md) describes the missing records.
 
-**Earlier interval14 status, superseded above:** recurring offline research stopped with the cause unresolved and no working Windows repair. The service-guide board photo does not establish fitted-board wiring; the concrete Infineon SDK download requires authentication. The missing evidence is the controller's actual attachment-time mode/negotiation state and an identified way to read it. [Source review and resume conditions](../evidence/board-and-sdk-access-review.json). No new hardware test is queued. Earlier next-task notes below are historical.
+## State to preserve
 
-**Current access gap:** the firmware mode decision is traced, but the existing Windows paths do not yet provide a qualified read of its inputs. HID status is cached, firmware-output reports can alter update state, and SPB reads use fixed endpoints. [Code and remaining requirements](../evidence/parade-mode-read-contract.json). No hardware test is queued; the wrong-mode hypothesis remains unmeasured.
+- Connector 1/XHC3/NHI0/RT0 is confirmed for the captured failure. RT1 is the other instance.
+- Stored PD USB4 and TBT3 settings are enabled. Auto still needs its applied consumer/state.
+- Windows role correction completes; USB4 router detection still fails. Dell's earlier role sequence is a correlation, not a proven cause.
+- The old filter is removed; stock policy was verified. Do not treat historical test-signing instructions as an active installation request.
+- Original dumps, traces, firmware, failed attempts and recovery receipts remain private. Never publish them wholesale or delete them as cleanup.
+- Scheduling is paused. Physical boots, cables and firmware access are owner-directed. Do not restart an unattended remote Windows session.
 
-**D8/D9 branch bounded:** its caller and selector flags are mapped, but no USB4-entry meaning is established. A partial pair failure can leave the old software latch without a compensating request, so that latch is not a validated rollback mechanism. [Decision table and original-code scope](../evidence/ec-vendor-request-selection.json). This repair lead is deferred; no hardware test is queued.
+## Earlier procedures
 
-**PD candidate separated:** the selected helper serves the known UCSI reply plus status/power reads; its four-byte parser matches USB-PD voltage/current fields. It is not an identified retimer-entry command. Nearby D8/D9 requests have a traced gate and latch, but their USB4 meaning and safe inverse remain unknown. [Code and reference comparison](../evidence/ec-pd-readers-and-vendor-gates.json). No hardware test is queued.
+The former handoff accumulated completed and superseded “next owner action” instructions. It is preserved at [the pre-cleanup revision](https://github.com/49Ssr/asus-fa507xi-deg2-usb4/blob/52e6e26890adf49c2846a0acc478089659808843/docs/handoff.md). It is not the current procedure.
 
-**EC configuration candidate mapped:** the address42/channel1 path writes a staged peripheral setup and three cached control bytes, updating its saved copies only after successful transport. The receiving chip and USB4 signal meanings remain unidentified, so this does not qualify a retimer write test. [Exact code scope and transaction table](../evidence/ec-address42-control-path.json). Next work checks a separate candidate on the known PD transport.
+<a id="deg2-cable-and-peripheral-comparisons"></a>
+[Earlier deg2 cable and peripheral comparisons](https://github.com/49Ssr/asus-fa507xi-deg2-usb4/blob/52e6e26890adf49c2846a0acc478089659808843/docs/handoff.md#deg2-cable-and-peripheral-comparisons)
 
-**Host notification boundary:** ASUS does receive and forward four internal-display PLUG packets, but none is logged for the failed USB4 adapter2. Dell records its corresponding root-port event after RD Yes. This weakens a wholly dead host-notification explanation; it does not prove a missing physical handshake or justify an interception driver. [Paired records and limits](../evidence/usb4-host-notification-boundary.json). This lead is deferred; next work returns to an existing EC mode-control candidate.
+<a id="n5-existing-hardware-partner-handoff-proposed"></a>
+[Earlier n5 existing hardware partner handoff proposed](https://github.com/49Ssr/asus-fa507xi-deg2-usb4/blob/52e6e26890adf49c2846a0acc478089659808843/docs/handoff.md#n5-existing-hardware-partner-handoff-proposed)
 
-**Wake-status lead narrowed:** USB-IF defines bit16 as read-only and cleared on sleep entry; a blind flag-clear test is unsupported. Both saved ASUS passes successfully arm software connect notifications but retain cached unplugged. Physical packet delivery and the actual retimer-mode writer remain unresolved. [Source pins and exact scope](../evidence/usb4-wake-status-and-notifications.json). No hardware change.
+<a id="next-owner-action-inspect-the-asus-mode-tables"></a>
+[Earlier next owner action inspect the asus mode tables](https://github.com/49Ssr/asus-fa507xi-deg2-usb4/blob/52e6e26890adf49c2846a0acc478089659808843/docs/handoff.md#next-owner-action-inspect-the-asus-mode-tables)
 
-**PS8830 interval3:** [recorded control ordering](../evidence/windows-port-configuration-order.json) separates RD detection, CL0 polling and PortConfigured. Dell's acknowledged configured-bit write is later; ASUS's retained writes are wake programming after its initial No. No early-bit/reset remedy is justified. The same ASUS logical adapter2 works in the historical peer rundown. The graph now preserves the distinction from final operational-router presence. [Next bounded task](ps8830-investigation-intervals.md): native wake/connect notification ownership and acknowledgement semantics, with no live request.
+<a id="next-owner-action-one-current-mode-exit"></a>
+[Earlier next owner action one current mode exit](https://github.com/49Ssr/asus-fa507xi-deg2-usb4/blob/52e6e26890adf49c2846a0acc478089659808843/docs/handoff.md#next-owner-action-one-current-mode-exit)
 
-**PS8830 interval2:** the [retained pre-OS paths](../evidence/asus-preos-control-scope.json) narrow a naming trap: BIOS LinkConfigure means USB4 adapter configuration, not a recovered PD/retimer mode writer. The actual ASUS owner remains unlocated. [Checkpoint and next task](ps8830-investigation-intervals.md): correlate saved Windows port-enable/configuration branches and exact reads/writes before RouterDetected; no new hardware/reset/boot trial. Preserve TE/image-base/zero-file scan corrections and their scope.
+<a id="next-owner-action-read-retained-error-status-once"></a>
+[Earlier next owner action read retained error status once](https://github.com/49Ssr/asus-fa507xi-deg2-usb4/blob/52e6e26890adf49c2846a0acc478089659808843/docs/handoff.md#next-owner-action-read-retained-error-status-once)
 
-**PS8830 interval1:** [checkpoint and next task](ps8830-investigation-intervals.md). Saved ASUS ACPI methods expose endpoint resources but do not implement normal mode selection. Pinned Intel fields further decode wake/cable/bonding state without diagnosing a cause. TI/Infineon AMD references give a PD-to-APU and retimer coordination path to trace in retained firmware. Actual ASUS writer remains unknown. Owner now authorizes recurring offline intervals until the usage reserve reaches10%; check limits every interval. No live requests or boots.
 
-**Latest handoff:** the owner chose an offline runner, not recurring work. [Run it and read the new branch comparison](offline-investigation.md); the [truth table](investigation-truth-table.md) keeps ever-reached milestones separate from final absence. Saved raw reads now explain the sampled Windows decisions: both hosts initially take Plugged No; Dell's next native RouterDetected bit13 is set and ASUS's is clear. This is a concrete input/branch difference, not a demonstrated cause or fix. The PS8830 reference adds mode/orientation programming paths without proving ASUS wiring or link readiness. Next offline work follows the owner/code feeding retimer configuration and native port status. No live test, driver or boot is selected. Project cleanup recycled35 redundant files (1.53GB decimal), all recovery items verified; originals remain and the bin was not emptied. Private recovery paths stay local.
-
-**Current handoff:** follow the [architecture/control-flow map](investigation-map.md) and [investigation plan](investigation-plan.md) before selecting another probe. The owner explicitly wants a branch/stack understanding of the complete message flow, with minimal installs and tests. The map separates known Windows/AML/EC relay branches from the unobserved PD entry/routing/link path and ties possible intervention locations to measured evidence. The flag-reader driver is deferred; no hardware action is queued. Next offline work is a specific discriminating observation at the missing branch, with an acquisition/positive-control/recovery decision. Earlier next-step proposals below are historical where they conflict with this plan.
-
-**Latest flag work:** standard RD_EC offset0e maps to XDATA030e through original bank1e421/f081. PMC3 common0a71 ->30eb ->bank3b947 case75 sets bit1; case76 clears it. Outer bank1b23c skips bank3bc20 (including UCSI servicec89a) when bit1 is set. Successful UCSI exchanges oppose a continuous stuck-gate theory; a pulse remains unmeasured. Retained221b can restore the whole byte, but the identified save writes only bit6; generic host writes also matter, so ownership is not exhaustive. DSDT ERAMfedd8300 supplies candidatefedd830e; live alias is NOT validated. Existing dump physical read failed. EC PDO open Win321/no request; root enum and EX constant_STA Win3250/zero bytes, handles closed. No RMEM invocation, EC command, live physical read, driver install or boot change. Six new original-instruction groups pass with RAM peripherals; worker is doubled. No usable live reader/test boot is queued. [Exact findings and next reader requirements](ec-blocking-flag.md).
-
-**Latest completed work:** all342 previously unread ASUS trace payloads now have decoded fields. They cover USB endpoint transitions/setup/cleanup and a USB4 timing-policy no-change branch, not the missing USB-C entry exchange. One endpoint stall was traced to a Device Qualifier descriptor request; Windows reset the endpoint and continued enumeration after the USB4 dock was already absent. Ten original EC bus-engine scenarios now run past the former bus-call stub, including gates and error/timeout paths with modeled peripherals. No live gate read or Windows repair is established. [Exact results, scope and board-number check](trace-gaps-and-ec-bus.md).
-
-**Latest EC result:** recovered BIOS314 EC code supplies a silent table6 return, capability17 and literal `IT8853`. The OEM timeout is explained in this build; identity is EC-build metadata rather than an independent chip read. A separate UCSI relay preserves commands/data to the controller bus boundary;2,375 offline original-instruction cases pass with RAM peripherals. Physical PD acceptance and mux/training remain outside the model. No new boot, live request or qualified Windows fix. Do not repeat the failed telemetry/policy trials. [Exact input, routines, reproduction and next boundary](ec-firmware-decision.md).
-
-**Latest IT8853 result:** four retained message19 records recovered by trace-only replay identify the EC response-ready wait after command/parameter transmission. No original timestamps/arguments: linkage to the two previous PDO requests remains an inference. Correct replay requires flags40000000 exactly; the first wrong-flag/duplicate-logger capture is preserved separately. Both owned sessions stopped with provider logging disabled afterward. Twenty new original-code cases pass. Saved standard UCSI GET_PDOS already supplies the source profiles; the OEM field failure does not establish a dead PD controller. BIOS314's IT8987-labelled region is a mostlyblank placeholder, not recovered EC code. No new PDO request, boot or qualified USB4 fix. [Full evidence and next boundary](it8853-transport.md).
-
-**Latest live OEM work:** capability17 and firmware-reported IT8853 verified through pinned running AsusSAIO. Disconnected PDO1 firstbyte returned drivertransport0102/1568ms; connected-only samefield0102/661ms with DEG2 PnP verified. API/capability controls passed both. Owner reports UGREEN insert/remove before final DEG2/CONNECTED; keep this confound, no clean paired inference. No valid PDO; all four handles/tasks cleaned; no further live probe queued. Forty-one original-code cases pass. No qualified Windows fix. [Results and prerequisites](oem-pd-diagnostics.md).
-
-**Firmware-access continuation:** 23 cached AML tables recovered and verified from the existing ASUS dump. NHI0's read helper exists; direct ordinary-process static-object and namespace-enumeration requests returned unsupported function, with handles closed. DEG2's WinUSB endpoints are mapped; its PD-log protocol is not identified. No new boot or persistent change. [What is reachable, what was tested and what remains](control-reachability.md).
-
-**Latest offline comparison, 1 November:** DEG2's cached BOS is present even on working Dell. One byte distinguishes USB4-success on Dell from USB4-not-attempted/exited and DP-success on ASUS. Both report the same EUDO and source power profiles. This corrects the specificity of Windows' generic Failed label; it supplies no new hardware result or qualified Windows repair. [Exact comparison, replay tool and next boundary](billboard-comparison.md).
-
-**Preconnected startup completed, 1 November:** powered DEG2 was connected to the same ASUS USB4 port before power-on and left connected, as confirmed by the owner. Both post-sign-in snapshots still show Billboard, no external USB4 router and no RTX 4080 SUPER; display N. The 20-second trace has 471,428 events, zero loss/format errors and 14 unknown formats. This sequence did not enable USB4. Initial BIOS/PD negotiation is outside the capture. [Measured observation](cold-start-observation.md), [structured evidence](../evidence/cold-start-result.json).
-
-The [policy-only trial](role-policy-test-result.md) remains ineffective and rolled back. Earlier preparation/proposed-action notes below are historical.
-
-**Signing/readiness review completed, 1 November:** a private [local test-signed package and reversible test-boot route](local-test-signing.md) are prepared; the signing key was deleted and production security is unchanged. The [driver review](driver-readiness-review.md) fixed filter initialization, registry typing, callback annotations and two workflow defects. Checks: 4,631 parser, 36 actual-callback/doubled-DDI, 64 workflow and 41 signing/boot; static analysis has zero project results. **No driver has been loaded.** Explicit owner approval and manual firmware/reboot steps are still required; HVCI must remain running. A same-test-boot fallback baseline is required before installation. Native USB4 entry and the original failure remain unresolved.
-
-**Pre-attachment experiment prepared, 1 November:** [role-policy source, controlled test and rollback](role-policy-experiment.md). The unsigned KMDF filter supplies the documented disable-correction policy at UCSI startup; it has **not been installed or loaded**. Native core: 4,631 assertions; PS5.1 workflow: 57 checks with device operations mocked. The real Microsoft client must confirm policy acceptance before a single attachment is allowed. Windows-accepted signing is unresolved; Secure Boot, firmware, drivers and ICS were not changed. This is a causal test, not a verified USB4 fix.
-
-**31 October 2026: unresolved.** This page is the entry point for a second opinion, including Claude. The goal is to identify the shortest discriminating test or a verified applicable fix. No root cause has been established.
-
-## Evidence to read first
-
-1. [Findings](findings.md), including the `_OSC`, Billboard and USB4-version caveats.
-2. [Separate full-Windows result](fresh-windows.md), including its missing drivers and partial WPP decoding.
-   [Live kernel snapshot](kernel-snapshot.md) adds offline USB4KD topology, direct PCIe policy and retained recorder results.
-3. [Experiment ledger](experiments.md), [exact hardware](hardware.md), [structured observations](../evidence/observations.json) and [trace excerpts](../evidence/trace-excerpts.txt).
-4. [Research](research.md) and [private policy audit](policy-audit.md) before proposing a registry or firmware change.
-
-## Current state
-
-- ASUS FA507XI, Ryzen 9 7940HS, internal RTX 4070 Laptop; BIOS 314. Its documented USB4 port is 40 Gbps; the laptop is not being described as TB4-certified.
-- DEG2 / JHL9480, Gigabyte RTX 4080 SUPER WINDFORCE V2, Cooler Master 1000 W PSU, original supplied DEG2 cable. Identical assembly works on the Intel Dell: external TBGAA router, firmware 62.62, 40/40 Gbps, NVIDIA driver and HDMI output.
-- Original Windows: 25H2 26200.9818, USB4 driver 10.0.26100.9818. Original Parade SPB 1.0.8 / HID 1.0.11 restored. Related-model trial packages removed. Private v2 override absent; Secure Boot retained and test-signing disabled.
-- Separate native-boot Windows: 26200.8037, USB4 driver 10.0.26100.7920. Required host/root/UCSI/I2C/Parade devices healthy before and after connection; no external router or new GPU. The shared firmware and selected OEM drivers remain common variables.
-- ASUS host/root initialize and firmware grants USB `_OSC` controls `0xf`; only ordinary USB hub/Billboard fallback appears. This is earlier than the missing NVIDIA adapter, PCIe authorization of an enumerated external router, or GPU workload performance.
-- Offline USB4KD inspection completed on the 04:27 live kernel snapshot: one host/root, zero external routers, zero tunnels, cached `PcieTunnelsDisabledInBios = 0`; fallback devices still Started. Both logical UCM connectors report local DFP data roles. No root cause or repair emerged; the snapshot is not a PD wire capture.
-- Expanded inspection recovered all 12 available WPP buffers and decoded three USB4 histories plus both UCSI rings. Register reads succeed but USB4 plugged/router-detected checks return No. The BIOS's UCSI and EC shared-memory pages are absent from the dump; that gap cannot be repaired by another decoder. [Detailed result](kernel-snapshot.md#expanded-recorder-state-machine-and-acpi-inspection).
-- All four plug orientations, EC reset, graphics mode changes, OS file repair, scoped controller reinstall and retimer restarts were ineffective. The v2 override was ignored and is an invalid negative test of its intended path.
-- No second suitable cable or known-working separate USB4 peripheral is available at last report. The spare UGREEN cable was reported unsuitable. The existing UGREEN 3121 is a 10 Gbps USB-C hub; its USB/Ethernet/display operation would not validate USB4/PCIe.
-- The owner prefers Windows diagnosis using the hardware already available. There is no spare suitable cable or USB4 hub; do not make obtaining another hub the required next step. A detailed ASUS report has already been sent. No verified applicable FA507XI PD/USB-C or DEG2 firmware image was found in the inspected sources.
-- Support update, 31 October: the owner reports that an ASUS US support agent promised handover through an escalated ticket to the relevant ASUS department. Completed internal handover, engineering review, a diagnosed cause and an applicable firmware release remain unconfirmed. Case and agent identifiers remain private.
-- N0 is complete: the ASUS-Dell direct USB4 peer link shows P2P adapters Up on both machines with the supplied DEG2 cable. A completed 13:37 rundown confirms a reported 40 Gbps physical link, Gen 3 with two bonded lanes, both Up. The P2P virtual NIC's 20 Gbps value is not the physical-rate observation. Payload transfer and GPU PCIe tunnelling remain untested. [Evidence, register fields and limits](peer-test.md).
-
-## Current action
-
-**Fresh ASUS acquisition completed and analysed, 1 November:** [matched comparison](asus-dell-matched-comparison.md). All 35 capture files and 3.17 GB native dump verify. Current policy is 0 versus Dell 1; all 14 Windows images match. ASUS completes normal role correction, but no external router is detected before/after it. This failure reports USB flag 1 rather than the earlier alternate-mode-only flag 2. Stop generic recapture; inspect an applicable firmware native-USB4 entry mechanism from existing evidence. No supported Windows repair or new state-changing test is prepared.
-
-**Dell acquisition recovered; no repeat owner capture required.** The [33-file return and separate full dump](dell-dump-recovery.md) verify. Offline inspection recovers the working Dell's cached device-controller policy **1**, compared with ASUS **0**, and UCSI `_DSM` function 4 support (`0x1f` versus `0x0f`). Raw firmware-field values remain unavailable. A collector freshness cutoff recorded after the instructions could reject a valid dump; automatic/Browse selection, retries and saved-run completion now pass **183 PS5.1 assertions**. Continue analysis against this recovered baseline. The fresh normal-fallback ASUS comparison is now complete as linked above; no supported Windows fix or firmware patch target is established.
-
-**Latest result:** the [initial CC-role experiment](initial-role-test.md#measured-result-2303-2304-utc) ran once at 23:03-23:04 UTC. Rp-only was accepted, but no attachment/PD or router/GPU was reported; default DRP restoration completed, with no recovery pending. The trace contains 238,588 events, zero reported loss/format errors and 118 unknown records. Do not repeat it unchanged. The [role-order comparison and correction-flag audit](negotiation-followup.md) remain valid; the intended source/DFP connection was not established, so the role-correction hypothesis remains unresolved. No next state-changing test is prepared.
-
-**Continuation:** the commands under the historical "Next owner action" headings below have completed. Those headings retain their existing links; they are not instructions to repeat them. Start with the [continuation record](continuation.md) and [protocol/source review](research.md#continuation-review-31-october-2026). A future offline comparison/report tool is [proposed separately](tool-scope.md). The initial-role experiment above has also completed.
-
-The deeper ASUS comparison completed on 31 October, 20:08:08-20:10:47 UTC; peer negotiation worked, both DEG2 attempts failed. The [direct Dell control](dell-control.md#measured-result) subsequently succeeded at 21:25-21:27 UTC: native USB4 at a reported 40 Gbps, external router, NVIDIA-bound GPU and display output. All 14 copied Windows images match current ASUS files. Dell performs no OS `SET_UOR` correction, whereas both ASUS DEG2 failures send one successfully before alternate-mode-only reporting. Later mode entries and role-policy origin were inspected. A guarded mode exit was rejected; the subsequent single error read returned invalid command parameters. Neither that result nor the audited URS override supplies an applicable Windows fix. The remaining cable comparison is unperformed because no second qualified cable is available. Firmware-specific negotiation evidence or an exact-model vendor correction is still needed for a justified custom fix.
-
-### Next owner action: inspect the ASUS mode tables
-
-**Completed at 21:58:02-21:58:09 UTC:** 37/37 GET requests completed, with no transport failure, busy result or expired budget. The powered DEG2 remained connected; no external router or new GPU appeared. This fills the earlier index-0-only gap.
-
-| ASUS connector 1 observation | Exact result / interpretation |
-| --- | --- |
-| Partner mode 0 | `01 ff 45 00 1c 00`: SVID `0xff01`, VDO `0x001c0045`; repeated replies agree |
-| Partner mode 1 | Empty; no later Intel SVID appears before the returned list terminates |
-| Local mode table | Reported count 1; index 0 is OEM SVID `0x0b05`, VDO zero; index 1 empty |
-| Current / supported modes | Current index `1`; supported bitmap `0000`. The current index lacks a readable local entry under the UCSI 1.22 interpretation. |
-| Advertised optional features | `0xbd`: alternate-mode details and alternate-mode override support both set |
-| Error status | Zero before and after |
-| Network / interface | Diagnostic DWORD unchanged. Adapters, DHCP/interface settings, DNS, default routes and ICS match; one link-local IPv4 address appeared on unused DEG2 Ethernet. No network setting was written. |
-
-These are PPM reports, not raw PD discovery or proof of physical mux selection. The inconsistent mode table and reported UCSI version `ff.f.f` still require interpretation. The absence of Intel SVID in this returned list does not prove native USB4 is unavailable. A previous comparison transcribed the ASUS VDO as `0x00001c45`; the six retained bytes establish `0x001c0045` instead.
-
-The GET engine is shared with the successful Dell implementation. Its 43 query/workflow checks and the existing 60 toolkit checks pass in Windows PowerShell 5.1 with system/native calls mocked. ASUS host/preparation/native-tool guard bodies remain unchanged; the successful private Dell bundle remains frozen.
-
-### Next owner action: one current-mode exit
-
-**Executed at 22:12; firmware rejected the request. Do not repeat it to retrieve an error.** Seven preflight/recheck GETs completed with the expected connector, current-mode, capability and DEG2 partner PDOs. One `SET_NEW_CAM` EXIT targeted connector 1/current index 1 with zero mode-specific data: CONTROL `00000000:0101000F`.
-
-| Recorded event | Result |
-| --- | --- |
-| Class driver dispatch | 22:12:39.537447 UTC; exact requested CONTROL value reached the PPM |
-| Firmware completion | 22:12:39.563377; CCI `0xc0000000`, Error=1, CommandCompleted=1, Busy=0, NotSupported=0 |
-| Windows command result / ACK | `STATUS_UNSUCCESSFUL`; acknowledgement completed at 22:12:39.583531 |
-| Trace | 13,500,416 bytes; 22,678 events, zero reported lost events, zero format errors/unknown records; 171 UcmUcsiCx lines |
-| Device/network snapshots | All six inventoried device fields match; no new router/GPU. Adapters, IP, DHCP/interface, DNS, default routes and ICS match. |
-| Post-error actions | No further firmware request, restart, registry/firmware-image write or automatic mode entry |
-
-The native CLI's process exit code is zero and its transport says completed successfully; the CCI error and decoded class trace establish rejection. This is neither a timeout nor proof of a particular rejected parameter. The current index's missing local entry remains a plausible reason, not a decoded error cause. A successful exit and repaired link were not observed.
-
-The error branch stops tracing immediately after the error/ACK; it did not run the successful-command branch's 20-second observation or subsequent current-mode GET. Matching immediate device inventories do not prove the internal mode stayed unchanged. The private ETL SHA-256 is `3D40218599CC89D6CD51F2329B20667B50F4C5E144AA2F8C670DF4918BFFBC0A`.
-
-### Next owner action: read retained error status once
-
-**Completed at 22:21:59 UTC:** one `GET_ERROR_STATUS` (`00000000:00000013`) completed with CCI `0x80001000`, Error=0 and 16 returned bytes: `04 00` followed by fourteen zero bytes. Bit 2 is set: **invalid command parameters**. No capability/status query preceded it, no SET/reset was sent, and the existing model/interface/native-tool guards remained in force. Raw reply JSON SHA-256: `8E848B1C31B13704EECD5EF7E82327B91E6E342A46350D500FD00F592E54DE50`.
-
-[UCSI 1.22 section 4.5.18 and table 4-47](https://www.intel.com/content/dam/www/public/us/en/documents/technical-specifications/usb-type-c-ucsi-spec.pdf) define that bit and permit error clearing after acknowledgement. This post-ACK read is consistent with the earlier rejected exit, but there is no continuous trace over the intervening nine minutes to prove exclusive attribution. It does not identify which parameter was rejected. The EXIT field positions match table 4-32; validity of the requested mode and mode-specific value remains a separate question. Current index 1 has no readable local entry, so guessing another index is not justified. This error concerns a diagnostic intervention; it does not establish the cause of the original USB4 failure. Do not repeat the EXIT or error read without a new discriminating reason.
-
-The combined mode-exit/error-reader suite passes 125 mocked PS5.1 checks, including single-GET ordering, zero/multiple error flags, short responses and transport failure. The query/workflow and toolkit suites remain separate; mocked validation is not a hardware repair.
-
-The remaining Windows role-switch lead was inspected offline in the matching UcmCx image: `UpdateUrsState` returns an error when `GetIoTargetForConnectorId` finds no URS target, before its normal host/function decision path. Both working Dell and failed ASUS traces report that target unavailable. The private override name `TestOverrideLoadUsbHostForPartnerUfpNoUsbData` therefore does not establish an applicable repair for this path. No value was written. [Consumer audit and scope](policy-audit.md#role-switch-override-applicability).
-
-ASUS's [exact FA507XI listing](https://www.asus.com/us/supportonly/fa507xi/helpdesk_bios/), rechecked on 31 October, still lists BIOS 314 dated 9 October 2024 as its newest BIOS. No newer exact-model PD/USB-C update was verified. The vendor questions are now specific: explain the inconsistent current/local mode reports, identify the rejected EXIT field, and provide PD/USB4 mode-entry evidence or an applicable firmware correction. A Windows patch needs an identified software mechanism before implementation.
-
-Microsoft's [sample ACPI client](https://github.com/microsoft/Windows-driver-samples/blob/main/usb/UcmUcsiAcpiSample/UcmUcsiAcpiSample/Acpi.cpp) maps firmware role-correction policy/device-controller status into `UsbDeviceControllerEnabled`. The existing ASUS dump has that configuration and the OPM's cached value false. This explains why the correction policy is enabled; it does not establish that suppressing a necessary host-role change would repair the link. No supported registry replacement for this policy has been established.
-
-### N5: existing-hardware partner handoff, proposed
-
-**Executed, unresolved.** The earlier attempt stopped before trace creation because the peer adapter was not Up. The revised [collector](../tools/Capture-USB4PartnerSwap.ps1) and [shared library](../tools/Usb4Capture.Common.ps1) subsequently completed all three phases. Their instrumentation is described below the measured result.
-
-| Measurement | Observed result |
-| --- | --- |
-| ETL interval and retained size | 20:08:08.754-20:10:47.787 UTC; 159.033 seconds; 590,479,360 bytes, below the cap |
-| Trace decoding | 3,097,071 events; zero reported lost events/buffers; zero formatting errors; 726 unknown records remain |
-| Decoded driver messages | 4,735 UcmUcsiCx; 62 UcmCx; 5,285 USB4 host; 3,048 USB4 device-router lines |
-| Live recorder snapshots | All three debugger transcripts reached their start/end markers; ACPI client WDF logs supplement its unavailable WPP log header |
-| Firmware GET batches | 28 per phase, 84 total; every native request returned a completed response with CCI ErrorIndicator zero |
-| Working peer | Reconnected; peer adapter Up and interdomain tunnel created |
-| DEG2 handoff and fresh attachment | No external router/new display adapter before or after active queries |
-| Existing Internet sharing | Upstream/downstream ICS bindings preserved. Expected device change was P2P removal and appearance of unshared DEG2 Ethernet. |
-
-Both failed attachments have the same recorded order. For the handoff, firmware reports the connector at 20:09:25.659, PD state succeeds, then `SET_UOR(Dfp)` completes at 20:09:25.903. At 20:09:25.955 a connector-status reply reports partner UFP with `PartnerFlags:0x2[AltMode]`; Windows reports operating modes `0x40 -> 0x20`. The fresh attachment repeats this order at 20:10:24.108, .360 and .421. These reports precede our active query batches. No USB4 router follows. This identifies a useful comparison boundary; the mode change is not established as the cause or a confirmed DisplayPort-only mux selection.
-
-The trace contains 108 UCSI command sends: 107 successful completion indications and one error completion, with all 108 ACK completions accounted for. The error is `SET_UOR` during the **working peer** connection, not either failed DEG2 attachment. No UCSI timeout was observed. The first peer GET_ERROR_STATUS returns `0x0010` (CC communication error); both DEG2 batches return zero. This weighs against a command-mailbox stall as the recorded failure mechanism, while not excluding a lost unsolicited firmware notification.
-
-There are also firmware-interface consistency questions. Connector 1 reports supported CAM mask `0000`, current CAM `01`, and total PPM mode count one; its repeated partner-mode replies are stable. Cable speed bytes `0002` are the same in working-peer and DEG2 phases and decode implausibly under the published UCSI speed field. The CLI displays UCSI version `ff.f.f`. These values need validation against firmware/tool interpretation and further mode-list offsets. They do not establish a slow cable, the identity of mode 1, or an actionable register patch. [UCSI specification, tables 4-24, 4-29, 4-31 and 4-39](https://www.intel.com/content/dam/www/public/us/en/documents/technical-specifications/usb-type-c-ucsi-spec.pdf).
-
-The procedure did not preserve every power-state condition: the root router FDO exits D0 at 20:09:19.619 after peer removal, before DEG2 attachment. Parent host and child-router state must be distinguished. This is not a controlled proof that holding the whole domain awake does or does not help.
-
-ETL SHA-256: `9DD59171EF0D8164652EDE617D7CC5813D1E36A62F986A83F9D42C44AEDBA114`. Raw trace, per-phase firmware replies, snapshots and networking inventories remain private. The public observations record counts and conclusions, not a full independently decodable trace.
-
-### Instrumentation and recorded procedure
-
-| Layer | Requested evidence | Limits to check during analysis |
-| --- | --- | --- |
-| Windows bus trace | 27 USB4/UCM/UCSI, USB-stack, SPB, ACPI, power and PnP/PCI providers; USB transfer/header/payload flags included | Requested providers can emit no events. FullDataBusTrace includes at most 4 KiB from a supported transfer, not arbitrary firmware traffic. Check actual provider coverage, event loss and time bounds. |
-| Driver flight recorders | All available buffers for five USB4/UCM/UCSI modules, WDF logs and USB4 topology, collected through signed LiveKD/KD after each passive observation | Finite circular histories; formatter availability differs by module. Transcript completion does not establish successful decoding of every buffer. |
-| Supported firmware interface | Up to 28 GET requests per phase: error status first, capabilities, connector/cable/CAM status, local/partner PDOs and repeated partner alternate-mode reads | Queries actively exercise the firmware. They follow the passive window and its recorder snapshot, with separate timestamps and a second PnP inventory. Unsupported commands or raw CLI exit codes require interpretation. |
-
-The earlier USB keyword mask `0xF861B` omitted transfer headers and payload. A policy-manager WPP GUID present in the matching UCM symbols was also missing from the request list; it is not currently registered, so adding it is not evidence it will emit. Five additional matching PDBs were verified and processed for available formatting. USBHUB3 private WPP formats may remain unavailable.
-
-**Comparison sequence:** verify the ASUS-Dell peer link, start ETW, disconnect/reconnect only the Dell end to capture a fresh working peer negotiation, then leave the ASUS end attached and move the Dell end into powered DEG2 upstream. If no new display adapter or DEG2 router appears, record a second DEG2 attachment by disconnecting/reconnecting the ASUS end. ETW remains active across these transitions. Green prompts mark requested insertion times; actual physical timing must be correlated with events. A newly appearing router/display adapter stops the comparison from deliberately disconnecting that potentially useful connection.
-
-The already-awake peer domain is a hypothesis to test, not an established idle-power cause. Peer negotiation is a successful physical-link control, not a test of GPU PCIe tunnelling. The second DEG2 attachment also changes connection history and is not a full hardware cold reset.
-
-**Preparation:** Microsoft documents `TestInterfaceEnabled` for the existing UCSI driver. Read-only examination of this machine's matching `UcmUcsiCx.sys` confirms that its enable function reads the per-device DWORD without the private USB4 test-signing gate. `PrepareUcsi` is restricted to the FA507XI, exact healthy UCSI instance and audited driver hash. It saves the original DWORD state and private Ethernet/IP/DNS/route/ICS configuration before changing that single value, then restarts only the UCSI device. A USB-C link can reconnect during that restart. Network configuration is not edited.
-
-On the owner's already-prepared checkout, from Administrator Windows PowerShell:
-
-```powershell
-$test = Join-Path $PWD 'tools\Capture-USB4PartnerSwap.ps1'
-powershell.exe -NoProfile -ExecutionPolicy Bypass -File $test -Mode PrepareUcsi
-```
-
-After preparation succeeds, connect ASUS directly to Dell with the supplied cable, keep both awake and DEG2 powered, then follow the collector's prompts:
-
-```powershell
-powershell.exe -NoProfile -ExecutionPolicy Bypass -File $test -Mode Capture -Scenario Compare
-```
-
-After examination, restore the exact original setting and restart the same UCSI device:
-
-```powershell
-powershell.exe -NoProfile -ExecutionPolicy Bypass -File $test -Mode UndoUcsi
-```
-
-The collector defaults to Preview. It uses a unique sequential ETL capped at 1 GiB, closes only its own session, and records file-cap risk. Each recorder call is limited to 60 seconds; firmware probes have a 60-second phase budget and five-second command limits. Native child processes use an owned job. Kernel-helper unloading is not independently verified. Raw results remain private in `local/`. No firmware flash, driver-package installation, boot-security change or private USB4 policy override is performed.
-
-**Tool provenance:** UcsiControl 10.0.26572.1000 was extracted without executing/installing Microsoft's MUTT 3.0.1 MSI. The native EXE is unsigned; it is a user-mode program from the official package, pinned by SHA-256 `22AC51EF4503E4FF3344B7C33FFB7509F43D26F5F4942A2C382DD91F4FB7B9A7`. The package hash is `093BD7FB8DBC4A3B8EED909657CA58701235B328C101BDE0AB63099FD4EB95A1`. Debugger executables have valid Microsoft signatures. Binaries, symbols and machine-specific state are not redistributed; this public source is not a standalone install bundle.
-
-**Candidate mechanism, unproven:** the extracted FA507XI `UBTC.M318` AML copies firmware status into the OS mailbox and then clears parts of the firmware shadow. An upstream ASUS UM325 UCSI fix avoids an extra status read because a similar destructive copy can lose a pending notification. The new trace accounts for all observed command/ACK completions, including successful role correction on both DEG2 attachments; it does not demonstrate that mailbox quirk. Unsolicited notifications and physical mode entry remain separate questions. Comparing direct successful Dell-DEG2 enumeration is more discriminating than patching a completed command path on speculation.
-
-Windows UCSI exposes firmware commands/status rather than every packet on the USB-C CC wires. This capture does not supply a complete USB-PD wire transcript. If the failure remains entirely inside firmware, vendor firmware logging or a suitable physical PD analyzer is the next instrumentation layer. [Primary sources and exact precedent](research.md#deeper-negotiation-capture-and-ucsi-workaround-precedent).
-
-## Additional hardware comparisons, currently unavailable
-
-**N0 passed its adapter/link-status check; N1-N4 remain unperformed and need unavailable additional hardware.** These are optional comparisons for future access, not instructions to buy or obtain another hub now. For DEG2 comparisons, keep the same assembled GPU/dock/PSU, correct upstream port/mode and laptop barrel power. Change one named variable per comparison. Record the protocol/device milestone, not just fan activity or the Windows warning.
-
-### N0: existing-hardware USB4 peer test
-
-Microsoft documents [USB4NET between two Windows PCs](https://learn.microsoft.com/en-us/windows-hardware/design/component-guidelines/usb4-interdomain-connections). This is a separate test of USB4 host-to-host negotiation; it does not route the GPU through the Dell or test a PCIe device tunnel.
-
-1. Keep both laptops awake and signed into Windows, with their normal chargers. Disconnect the DEG2 upstream cable from the dock and ASUS.
-2. Connect that supplied cable directly between the ASUS USB4 port and the same Dell Thunderbolt port that successfully ran DEG2.
-3. Check for a newly present USB4 P2P network adapter on both laptops and whether its interface is Up. The initial test is only adapter enumeration/link state; no sharing, bridge, IP or firewall configuration is required.
-
-Read-only PowerShell check on each laptop:
-
-```powershell
-Get-NetAdapter -IncludeHidden |
-    Where-Object { $_.InterfaceDescription -match 'USB4|Thunderbolt' } |
-    Select-Object Name, InterfaceDescription, Status
-```
-
-**Observed:** ASUS Ethernet 4 and Dell Ethernet 9 both report `USB4(TM) P2P Network Adapter`, status `Up`, in owner-supplied output. The later [working-link rundown](peer-test.md#working-link-rundown-completed) confirms Gen 3, two bonded lanes and both lane adapters Up: reported aggregate 40 Gbps. It contains 1,666 events with no reported loss, formatting errors or unknown records. The ASUS also has the signed in-box USB4P2PNetAdapter 10.0.26100.9818 package. Payload transfer and GPU PCIe tunnelling remain untested.
-
-**Pass:** a newly connected, working P2P adapter provides evidence that ASUS can establish a USB4 host-to-host path with this cable and peer. It strengthens the case for pairing-dependent DEG2 interoperability, while leaving PCIe tunnelling, rate margins and GPU operation untested. Do not treat a virtual NIC's reported speed alone as measured physical USB4 bandwidth.
-
-**Failure:** record the warning and any new/problem PnP device on both machines. This does not prove a damaged ASUS port: peer-role negotiation, host interoperability or the work laptop's device-installation policy can also block this test. Microsoft documents compatible-ID policy blocking for `USB4\USB4NET` and an optional firmware workaround for host-to-host data-role correction. Do not bypass work-device policy. Disconnect the cable after the observation.
-
-### DEG2 cable and peripheral comparisons
-
-| ID / comparison | Method and result to record | What the result would change |
-| --- | --- | --- |
-| N1: suitable alternate 40 Gbps cable | Verify the cable is rated for USB4/TB4 data, then connect DEG2 directly to the same ASUS port. Check Windows USB4 settings for the external router; if present, record bandwidth and GPU enumeration. Use the Dell as a control for the replacement cable if available. | ASUS success makes cable-dependent interoperability a useful lead. It does not prove the original cable is universally faulty. Failure leaves host/dock/firmware and cable interactions open. |
-| N2: documented lower-speed USB4 cable | Separately try a cable documented for 20 Gbps USB4 operation. Record the actual negotiated rate if a router appears; the printed rating alone is not the measurement. | Other-model DEG2 reports motivate this test. Success suggests rate/cable-dependent negotiation; it does not identify a specific PD or signal-integrity defect. Failure does not rule out firmware. |
-| N3: another known-working USB4/Thunderbolt peripheral | Prefer a device with a PCIe function, such as a genuine USB4 NVMe enclosure or another eGPU. Verify it on a working host first. On ASUS, separately record external router presence and its PCIe function; avoid interpreting USB 3 fallback as success. | Another router plus functioning PCIe device demonstrates that ASUS can negotiate and tunnel in that tested pairing. DEG2-specific interoperability becomes more likely. Another failure broadens suspicion to the ASUS/host path, but does not by itself prove physical port damage. |
-| N4: borrowed TB4 hub between ASUS and DEG2 | Secondary workaround test only. First verify the hub's external router on ASUS, then connect DEG2 downstream and record both routers and GPU. | A working chain is a practical workaround and constrains the failing pairing. It changes topology and cable segments, so it cannot isolate a single firmware component. Do not buy a hub on an assurance that this works. |
-
-For N1-N4, report these milestones separately: **USB fallback -> external router -> PCIe GPU/device -> working driver/output -> stable workload**. Router enumeration alone does not prove PCIe tunneling, and GPU appearance alone does not prove workload stability. If a router appears but the GPU does not, the failure stage has changed and a new PCIe/device investigation becomes justified. N0 uses its separate P2P milestone; a peer host is not a managed external dock router.
-
-## Questions for an independent reviewer
-
-1. Which causal conclusions in this repository are too strong? In particular, challenge the inference from no external router to a pre-enumeration problem, and the limits of the fresh Windows baseline.
-2. Is there a documented FA507XI/JHL9480 interaction or overlooked host/PD/retimer requirement that fits both Windows failures and the working Dell? Separate exact-model evidence from other ASUS/AMD reports.
-3. Choose one next feasible test. State the hypothesis, prerequisites, exact observations to collect, what both outcomes mean and any rollback. If suggesting another Windows command or driver change, explain what new information it obtains beyond the completed tests.
-4. If proposing firmware, identify the exact product/revision, official source, applicability evidence and recovery path. A compatible chip family or another model's success is insufficient.
-
-Raw traces are not public. The excerpts and manifest are curated observations, not a substitute for independently decoding the originals. Request a specific sanitized event/property extraction if a conclusion depends on omitted detail. Do not assume the public repository contains undisclosed raw evidence or that the current interpretation is correct merely because it is detailed.
-
-## State to retain
-
-The separate Windows image, boot entry and private results remain available. Native boot and capture completed; boot-entry removal is untested. Recreating the image, repeating blanket driver resets or revisiting the inactive registry override has low value without a new mechanism to test. Do not discard evidence or flash another model's firmware as a routine next step.
-
-## Completed additional Windows investigation
-
-A full Task Manager live kernel snapshot was inspected offline using Microsoft's signed debugger and matching public symbols. USB4KD topology/port/tunnel queries worked. The [report](kernel-snapshot.md) records the direct policy result, retained recorder messages, UCSI state and decoder limits. An error-looking port status was checked against the matching constructor and proved to be an initial value, not a demonstrated failed operation.
-
-The follow-up expanded recorder/state-machine/ACPI inspection is also complete. Its missing firmware-region pages and finite histories limit retrospective diagnosis. Another identical snapshot cannot recover those absent pages. N0 subsequently supplied a working USB4 peer control using the existing hardware; the other [reviewed tools](research.md#further-windows-diagnostic-tools-reviewed-31-october-2026) remain untested and have no verified applicable repair.
-
-The owner subsequently requested a scripted firmware-buffer examination. A [LiveKD-backed probe](ucsi-memory-probe.md) discovers current mappings and attempts only the identified 48/64-byte reads. The first Administrator run at 12:18:59 UTC failed during debugger launch; the second at 12:26:17 UTC opened the live view but missed its relative command file after a directory change. Absolute script/log paths corrected that automation issue. Twenty PowerShell and twenty actual WinDbg JavaScript checks pass, including a deliberate directory change; full offline replay also passes.
-
-The third live capture at 12:35:05 UTC completed normally in about 1.57 seconds. Discovery was Validated; both PM08 (48 bytes) and EURM (64 bytes) reads were Unavailable. No firmware bytes were obtained. This is a completed examination with a view-access limitation, not another launcher failure or evidence of a firmware/GPU defect. The cause of the unavailable reads and helper unloading remain unverified. No patch is justified from this result; N0 subsequently supplied a working host-to-host control. An unchanged memory-probe rerun has no identified diagnostic benefit.
-
-The owner then requested capture during insertion. The [guided live window](hotplug-window.md) completed at 12:52-12:53 UTC. All 80 mapping discoveries and normal-kernel controls succeeded; all 160 firmware-buffer read attempts failed. First/last PTEs were valid and KD's cache was disabled. ETW start/stop succeeded; Xperf/TraceFmt recovered 8,221 events, zero lost events/buffers, zero formatting errors and two unknown records. Root-port reads succeeded but plugged/router-detected remained No, followed by Billboard fallback. No UCSI-labelled formatted records were observed. No external router/GPU or actionable patch resulted. This tested insertion during recording; repeated unchanged windows have no identified new variable. N0 subsequently passed adapter/link checks. The tool's 37 PowerShell and 27 WinDbg offline checks are separate software validation.
+[Documentation index](README.md) · [Current investigation plan](investigation-plan.md)

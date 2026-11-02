@@ -1,0 +1,34 @@
+name: Public files and offline checks
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: verify-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+      - uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1 # v6
+        with:
+          python-version: '3.12'
+      - name: Check evidence and generated reports
+        run: python tools/analysis/Run-Investigation.py --check
+      - name: Check evidence boundaries
+        run: python tools/analysis/Test-Investigation.py
+      - name: Check investigation logic
+        run: python tools/analysis/Test-InvestigationAutomation.py
+      - name: Check Linux collector without devices or mounts
+        run: python tools/linux/test_capture_usb4.py
+      - name: Check console launcher syntax
+        run: bash -n tools/linux/start-capture.sh
+      - name: Check local documentation links
+        run: python tools/analysis/Check-Docs.py

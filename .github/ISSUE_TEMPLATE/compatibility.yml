@@ -1,0 +1,31 @@
+name: Compatibility report
+description: Share what works or fails on a specific host and dock.
+title: "[Compatibility] Host and dock"
+body:
+  - type: markdown
+    attributes:
+      value: "Please keep serial numbers, support cases, raw dumps and unreviewed logs private. Unknown results are useful too."
+  - type: textarea
+    id: hardware
+    attributes:
+      label: Hardware and software
+      description: Host model/CPU, BIOS version, OS build, dock, GPU, cable rating and length.
+    validations:
+      required: true
+  - type: textarea
+    id: result
+    attributes:
+      label: What appears and what fails?
+      description: Separate ordinary USB, external USB4/TB router, PCIe GPU, display output and workload stability. Mark anything you have not checked.
+    validations:
+      required: true
+  - type: textarea
+    id: comparison
+    attributes:
+      label: Working comparison or change tested
+      description: Does the same assembled dock/cable/GPU work on another host? For a change, describe the exact before and after.
+  - type: textarea
+    id: sources
+    attributes:
+      label: Reviewed evidence or source links
+      description: Short observations and primary sources are preferred. Do not attach raw memory or firmware.

@@ -32,4 +32,4 @@ A custom read-only EFI application could instead inventory installed firmware pr
 
 ## Later preparation update
 
-The [Linux observation kit](linux-capture.md) is now prepared with a verified stock ISO and a separate capture overlay. Fourteen offline tests pass. It has not been booted or used on real hardware, and no USB device has been written. Earlier descriptions of a possible future collector record the state before this preparation.
+The [Linux observation kit](linux-capture.md) is now prepared with a verified stock ISO and a separate capture overlay. The launcher and model guard have now been checked in a virtual machine, and the collector has received a further code/workflow audit. Real USB saving and hardware capture remain untested. No physical USB has been written. Earlier descriptions of a possible future collector record the state before this preparation.

@@ -1,62 +1,65 @@
-# Linux USB4 comparison
+# Linux connection capture
 
-This kit asks whether FA507XI and DEG2 establish an external USB4 router under Linux. It records ordinary USB, Type-C roles/identity, USB4 topology and PCIe devices, plus kernel/uevent logs and available USB4/UCSI tracepoints. A router appearing is useful even if PCIe authorization is pending. GPU display output is not the pass criterion.
+This test asks whether ASUS can discover DEG2's external USB4/Thunderbolt router under Linux. It records PCIe devices too, while keeping pending authorization separate from a failed connection. It does not install Linux or apply a fix.
 
-**Preparation status:** stock SystemRescue13.02 downloaded and checked against the publisher's SHA256 and detached signature. Its embedded kernel configuration enables USB4, UCSI/ACPI and tracing. Collector Preview, offline boundary tests and launcher syntax are checked. The custom boot flow, real USB persistence and hardware capture have not been exercised. No Linux boot or physical-device change has occurred during preparation.
+**Ready:** the original SystemRescue 13.02 image has a verified checksum and signature. The console launcher and model guard have been checked in a virtual machine. **Still untested:** saving to a physical boot USB and capturing the real ASUS connection.
 
-## Files prepared on Windows
+## Before preparing the USB
 
-The private `local/LinuxCaptureBundle` folder contains:
+The private `local/LinuxCaptureBundle` folder contains the ISO, `USB-OVERLAY` and this guide as `START-HERE.md`. No physical USB has been written.
 
-- The original `systemrescue-13.02-amd64.iso`, unchanged, with its signature/checksum.
-- `USB-OVERLAY`, containing the collector, console launcher, configuration and payload hashes.
-- This guide as `START-HERE.md`.
+The earlier 8 GB stick may still contain research returns. Identify that exact drive and preserve its files independently before using a writer. Do not erase evidence to prepare this test. The Windows session must remain running while the owner is remote.
 
-The ISO is1381629952bytes. Its SHA256 is `ad4d670b72859d887c7960142a9a9d36a3e50446694a035e254442f65d6e7572`. The signature verifies with the key published by SystemRescue, primary fingerprint `0FF11AF081E98345594812037091115F8320B897`. No Windows trust store is modified. [Official download/checks](https://www.system-rescue.org/Download/).
+## Prepare the test USB when local access is available
 
-## Writing the USB is a separate later action
+1. Use the verified stock `systemrescue-13.02-amd64.iso` with Rufus, following [SystemRescue's Windows instructions](https://www.system-rescue.org/Installing-SystemRescue-on-a-USB-memory-stick/). Select **FAT32** and **ISO mode**, retaining the image's volume label. Writing the selected USB erases it.
+2. Copy the **contents** of `USB-OVERLAY` into the USB's root. Do not put the overlay folder itself inside another folder.
+3. Verify the copied payload hashes. The collector checks them again before asking for a connection. Keep at least 128 MiB free.
 
-No USB device has been selected, formatted or written. The previous8GB stick may contain original research returns. Its contents must be inventoried and independently preserved before a writer is used. Existing evidence must not be sacrificed to create this test media.
+The root should contain the normal SystemRescue files plus:
 
-SystemRescue's [Windows instructions](https://www.system-rescue.org/Installing-SystemRescue-on-a-USB-memory-stick/) use Rufus **ISO mode with FAT32**, retaining the ISO's label. That creates a writable filesystem onto which the overlay can be copied. A raw/DD write creates a read-only ISO filesystem and will not work with this collector's output guard. The kit deliberately rejects Ventoy/device-mapper and internal-disk destinations rather than guessing how to save results.
+```text
+USB4-CAPTURE-MEDIA.txt
+usb4/
+  capture_usb4.py
+  start-capture.sh
+  payload-manifest.json
+sysrescue.d/
+  900-usb4-capture.yaml
+```
 
-After the exact USB and its contents have been reviewed, the later preparation is:
+Raw/DD mode produces a read-only ISO filesystem and is rejected by this collector. Ventoy/device-mapper and internal-disk destinations are also rejected. If boot fails, keep the exact error for review; do not change BIOS settings or Secure Boot to work around it.
 
-1. Write the verified stock ISO to that USB using the official method. This erases the selected USB.
-2. Copy the **contents** of `USB-OVERLAY` to its root. Keep the directory layout. Do not place the whole overlay folder inside another folder.
-3. Verify the copied payload hashes. The collector checks them again before asking for a connection.
+## Run one observation
 
-The resulting root contains `USB4-CAPTURE-MEDIA.txt`, `usb4/`, `sysrescue.d/`, and the stock SystemRescue files. It needs at least128MiB free. Do not change BIOS settings or Secure Boot to make a failed boot proceed; retain the exact error for review. The existing remote Windows session is not to be restarted for this preparation.
+1. Save work and close Windows normally. Keep barrel power. Use the boot USB in a USB-A port. Keep unrelated USB-C devices out of this comparison.
+2. Leave DEG2 powered **ON**. Use the same tested ASUS USB4 port and cable. Start with DEG2 disconnected if possible.
+3. Boot the USB through the one-time boot menu. Choose **Boot SystemRescue using default options**. The collector should open on the console automatically.
+4. Press Enter at its prompt. At **GREEN**, connect DEG2 and leave it connected. The recording window is 45 seconds.
 
-## The single observation
+If DEG2 is already connected, or appears before the connect prompt, the collector keeps the connection unchanged and labels the timing. It does not discard the run or ask for a reconnect. If Linux exposes no host router, it saves that failure before asking you to attach anything.
 
-When local access is available, use the boot USB in a USB-A port and keep barrel power. DEG2 stays powered and uses the same tested ASUS USB4 port/cable. Keep unrelated USB-C attachments out of this comparison. Boot the stock SystemRescue entry; there is no Linux installation step. Its console should start the collector automatically.
+There is no dump-path entry or manual export step. Results go automatically into **`USB4-RESULTS/<run>` on the boot USB**. The program does not reboot the laptop. Leave its final message available for review; return to Windows with the owner present.
 
-The collector starts logging before the connection prompt. With DEG2 disconnected, press Enter when ready, then connect only at **GREEN**. It records a45-second observation and ends automatically. If a dock/router was already connected at startup, it instead offers an observation of that existing connection and marks the lack of a fresh attachment. An already-connected state does not silently become a fresh-attachment test.
+## What the result means
 
-Results are saved under `USB4-RESULTS/<run>` on the boot USB. The program independently checks the USB transport, FAT filesystem, marker, exact script location and payload hashes. It remounts only that already-mounted boot USB if needed, then restores its original read-only mount state. It never mounts an internal Windows volume. Files remain private; kernel logs may contain identifiers and pointers.
-
-The script has no automatic reboot. Leave the finished result available for review. A normal return to Windows can be planned with the owner present; remote reconnection is not assumed.
-
-## How the result is interpreted
-
-| Result | Meaning |
+| Message | Interpretation |
 | --- | --- |
-| ExternalRouterPresentAuthorizationPending | A USB4 router appeared. Linux has not authorized its PCIe access; missing GPU enumeration is not an entry failure |
-| ExternalRouterPresentRequiresTopologyReview | A router is visible; identify its route/device and PCIe endpoints before attributing it to DEG2 |
-| ExternalRouterObservedThenAbsent | The sampled history includes a router that is absent finally. Preserve the earlier transition |
-| DEG2FallbackObservedNoExternalRouter | The dock's USB signature appeared without an external router in the observations. The omitted/rejected-entry/training distinction remains unresolved |
-| AttachmentNotEstablished | The intended changed condition was not observed. It is not a valid USB4 failure comparison |
-| StoppedRequiresReview | Preparation/runtime prerequisite failed. Original and partial results remain available |
+| External router detected; PCIe access awaiting authorization | Router detection worked. A missing GPU is not yet an entry failure |
+| External router detected; identity/devices saved | Review the recorded identity, route and PCIe devices before attributing success to DEG2 |
+| Router appeared and disappeared | The earlier success is preserved even though the final state is absent |
+| Dock USB functions appeared; no external router observed | Fallback was seen. Entry rejection, routing and training are still not separated |
+| Intended attachment was not observed | The comparison did not establish the intended condition |
+| Recording stopped | Keep the error and any partial results. Do not repeat blindly |
 
-The internal NVIDIA GPU is excluded from the new-endpoint list by the disconnected baseline. Newly appearing display endpoints still need topology review; the program does not declare them the external RTX4080SUPER automatically. Missing sysfs attributes stay unknown. A Type-C identity directory is collected only if the driver exposes it.
+The internal GPU is not counted as a newly appearing external GPU. A router alone also does not distinguish native USB4 from Thunderbolt 3-compatible mode. The saved fields support that review where the driver exposes them.
 
-There are no authorization, role/mode, retimer scan, raw register, firmware update or security-setting writes. Only capture files and temporary logging controls are changed. The collector uses a private trace instance, requests a monotonic trace clock when available, records trace statistics, stops its own logger processes and removes its own trace instance. Each file is limited to32MiB. Trace availability, logger exits and errors are retained. The45seconds describe the observation window, not a guaranteed total runtime for every kernel operation.
+## What changes during the test
 
-## Limits
+The collector writes its evidence to the verified boot USB and uses a temporary, separate Linux trace instance. It restores the boot USB's original mount state and stops its own loggers. It does not mount an internal Windows volume or send authorization, role/mode, retimer-scan, firmware or reboot commands.
 
-A successful Linux connection would prove this pairing can work in that session. It would point toward an OS/firmware interaction; changed boot/power history remains a confound. Failure would not prove a hardware defect. An external router alone does not distinguish native USB4 from Thunderbolt3-compatible mode; retain the generation, Type-C mode and link fields for review. USB4 control-channel traces and driver-exposed discovery data do not automatically provide a raw CC/PD transcript or applied PS8830 state.
+Kernel logs may contain identifiers and memory addresses. Keep the returned folder private; publish only reviewed excerpts.
 
-This first kit does not bundle tbtools or change router registers. It needs no runtime package download. Further reads or a narrowly identified authorization operation can be considered from the returned evidence. No such operation is silently added to this observation.
+Linux success would establish that the pairing can work in that session and narrow the OS/firmware interaction. Different boot/power history remains a confound. Linux failure would not prove a hardware defect. The kit does not promise a raw PD-wire transcript or applied PS8830 state.
 
-The original firmware-consumer and Windows diagnostic-interface investigation remains open. Preparing this comparison is not a working Windows repair.
+[Collector design and validation](linux-capture-internals.md) · [Current findings](status.md) · [Tool guide](../tools/README.md)

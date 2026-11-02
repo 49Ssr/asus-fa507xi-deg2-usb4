@@ -1,5 +1,7 @@
 # What the traces say
 
+> Detailed research record. For the latest result and selected test, start with [current findings](status.md). Preparation statements below describe their dates; later results supersede them.
+
 **EC firmware follow-up, 1 November:** the BIOS314 executable EC image routes OEM table6 to a silent return, explaining the diagnostic response timeout in that build. Capability17 and `IT8853` are literal getters. A separate UCSI relay passes command/data bytes unchanged to the PD-controller bus boundary in2,306 offline cases;69 PMC cases also pass. This does not emulate the PD decision, mux or link training and does not establish a USB4 repair. [Evidence and exact scope](ec-firmware-decision.md).
 
 **Preconnected startup completed, 1 November:** powered DEG2 was connected to the same ASUS USB4 port before power-on and left connected, as confirmed by the owner. Both post-sign-in snapshots still show Billboard, no external USB4 router and no RTX 4080 SUPER; display N. The 20-second trace has 471,428 events, zero loss/format errors and 14 unknown formats. This sequence did not enable USB4. Initial BIOS/PD negotiation is outside the capture. [Measured observation](cold-start-observation.md), [structured evidence](../evidence/cold-start-result.json).

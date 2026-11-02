@@ -124,5 +124,7 @@
     "boots": 0,
     "network_configuration_changes": 0,
     "deletions": 0
-  }
+  },
+  "later_audit": "evidence/linux-kit-audit.json",
+  "record_scope": "Original preparation record, retained unchanged within prepared_kit. Current collector/source status is in the later audit."
 }

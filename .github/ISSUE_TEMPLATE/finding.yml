@@ -1,0 +1,23 @@
+name: Research finding
+description: Contribute a specific observation, code path or correction.
+title: "[Evidence] Finding or correction"
+body:
+  - type: textarea
+    id: finding
+    attributes:
+      label: What did you find?
+      description: State the observation and distinguish measured behavior, code behavior and your hypothesis.
+    validations:
+      required: true
+  - type: textarea
+    id: source
+    attributes:
+      label: Source and exact version
+      description: Link the original documentation/code or identify the capture and reviewed excerpt. Include model, version and date where relevant.
+    validations:
+      required: true
+  - type: textarea
+    id: implication
+    attributes:
+      label: What does this explain, and what remains uncertain?
+      description: For an intervention, identify its consumer, expected result and restoration method.

@@ -1,0 +1,108 @@
+{
+  "schema": 1,
+  "date": "2026-11-02",
+  "status": "Audited_RealUsbAndAsusCaptureUnexercised",
+  "collector_review": {
+    "sources": [
+      {
+        "path": "tools/linux/capture_usb4.py",
+        "sha256": "fdeed551c605c84f05a660e5f80dad1d34c1626375b4428de5066734ab94244a"
+      },
+      {
+        "path": "tools/linux/start-capture.sh",
+        "sha256": "fc015e26cca97b5e20c4c9fd771018d20bb160a1c906e8b0d927f2ff8deb87ff"
+      },
+      {
+        "path": "tools/linux/900-usb4-capture.yaml",
+        "sha256": "9f32e0ffa13dcc8e4112d2b52e6e4574904e05dc8f732d1a3b780ccca2c8f90e"
+      },
+      {
+        "path": "tools/linux/build_bundle.py",
+        "sha256": "faf46b44a8c7454f84144e2599ac7b171fe9909cea3c6f4ab289f7c9a26bfe25"
+      },
+      {
+        "path": "tools/linux/test_capture_usb4.py",
+        "sha256": "715aa763793665e49d39545a98e4b3a61433b6b5b3d338bcd37fe2650742aca2"
+      }
+    ],
+    "changes": [
+      "Interrupted preconnected captures retain the same timing label in partial results.",
+      "A connection before the prompt is observed and labelled rather than discarded or reconnected.",
+      "Initial, before-prompt and monotonic phase records are preserved.",
+      "A preparation error releases its own unused RAM lock so correction does not force another boot.",
+      "Logger cleanup attempts every owned child and output handle even when one fails.",
+      "Device removal during directory enumeration is retained as a read error instead of losing the run.",
+      "Console messages explain the outcome in plain language; machine-readable status fields remain.",
+      "The copied standalone guide resolves its documentation links to the public repository."
+    ],
+    "validation": {
+      "offline_tests": 23,
+      "scope": "Boundary checks, full-flow fixture simulations, source-record freshness and a harmless real child process. No device/mount operation is run in these tests.",
+      "bash_syntax": "passed",
+      "default_preview": "passed",
+      "real_usb_persistence": false,
+      "asus_hardware_capture": false
+    },
+    "unchanged_limits": [
+      "No raw CC/PD packet record or applied PS8830 state",
+      "No automatic authorization, role/mode change, raw register access, retimer scan, firmware update or reboot",
+      "Original stock ISO remains unchanged; overlay needs a verified writable FAT USB"
+    ]
+  },
+  "vm_startup": {
+    "environment": "QEMU11.1.0, TCG,2GiB RAM,2 virtual CPUs,UEFI,private modified DVD copy",
+    "normal_console_trial": {
+      "observed": "Live environment booted, launched start-capture.sh/Python automatically and reached the unsupported-model guard.",
+      "screenshot_sha256": "9f8c1f6d9eb0f38b6b2d0515df29679979c9a2a124a24aedf501d3463e2a5151",
+      "collector_message": "STOPPED: This collector is scoped to FA507XI or Latitude5540.",
+      "source_scope": "First audited candidate before later reporting changes; evidence payload preserved privately."
+    },
+    "other_trials": "An invalid initial UEFI image, a shorter graphical observation and the first serial timeout are retained. They do not count as successful startup observations.",
+    "network": false,
+    "host_disks": false,
+    "hardware_passthrough": false,
+    "usb4_emulation": false,
+    "limit": "Checks startup and scope rejection only. It does not validate a real USB writer, USB persistence, ASUS firmware behavior or a USB4 handshake.",
+    "serial_console_trial": {
+      "observed": true,
+      "elapsed_seconds": 126.39,
+      "collector_message": "STOPPED: This collector supports FA507XI or Latitude 5540.",
+      "capture_source_sha256": "f9bb60ddac0fe946b76cbff821599767ddc572ca4782a6beafc752fb4edea532",
+      "serial_log_sha256": "b07d083ae51484dc4dc9caa6a40b0975c3b4555e16655f6935843cedcdbdaf54",
+      "startup_entry_ast_matches_current": true,
+      "configuration": "Same launcher redirected to ttyS0 for headless observation; test-only DVD and UEFI files.",
+      "limit": "Later logger-cleanup, guide and formatting changes were tested offline, not re-booted. No USB persistence or USB4 operation was exercised."
+    }
+  },
+  "documentation": {
+    "canonical_status": "docs/status.md",
+    "beginner_explanation": "docs/connection.md",
+    "index": "docs/README.md",
+    "tools": "tools/README.md",
+    "history": "docs/history.md",
+    "previous_revision": "52e6e26890adf49c2846a0acc478089659808843",
+    "scope": "Short current pages replace stacked updates. Original dated pages remain at an immutable ancestor; original captures are not removed. Local links and filename case are checked."
+  },
+  "cleanup": {
+    "status": "Completed",
+    "method": "Windows Recycle Bin; receipt and tested payloads retained privately",
+    "recycled_targets_by_kind": {
+      "generated_bytecode": 58,
+      "temporary_vm_image": 3,
+      "extracted_vm_runtime": 1,
+      "temporary_formatter": 1
+    },
+    "bytes_moved_to_recycle_bin": 5449456771,
+    "space_reclaimed_claimed": false,
+    "original_captures_removed": 0,
+    "preserved": "Stock signed ISO, delivery bundle, original dumps/captures/firmware, VM source archive, exact tested payloads, screenshots, logs and failed attempts."
+  },
+  "hardware_changes": {
+    "usb_drives_written": 0,
+    "windows_restarts": 0,
+    "drivers_installed": 0,
+    "bios_or_security_changes": 0,
+    "network_configuration_changes": 0
+  },
+  "failed_attempts": "The initial GnuPG/VM setup errors, one fixture assertion, shorter VM observations and serial timeout remain private. They are not hardware-failure evidence."
+}

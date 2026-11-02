@@ -146,6 +146,11 @@
       "id": "LINUX-CAPTURE-KIT",
       "label": "Prepared SystemRescue13.02 collector, offline validation only",
       "limit": "Distribution and code checked; boot, USB persistence and ASUS/Dell hardware capture unexercised."
+    },
+    {
+      "id": "LINUX-VM-STARTUP",
+      "label": "Isolated live Linux VM startup",
+      "limit": "Virtual DVD, no host disks, network, passthrough or USB4 emulation; startup and model guard only."
     }
   ],
   "stages": [
@@ -1231,6 +1236,26 @@
         "LINUX-CAPTURE-KIT"
       ],
       "value_sha256": "5f5a38880d586c80f20ab6effe04bbaeac763a835f6590cc738eaad8940c206b"
+    },
+    {
+      "id": "LINUX-KIT-AUDIT",
+      "path": "evidence/linux-kit-audit.json",
+      "pointer": "/collector_review",
+      "kind": "code",
+      "cases": [
+        "LINUX-CAPTURE-KIT"
+      ],
+      "value_sha256": "5d45093014ed2215c569c594234a336a71b6d4b9260c2351aeab1d40801a6aa2"
+    },
+    {
+      "id": "LINUX-VM-STARTUP",
+      "path": "evidence/linux-kit-audit.json",
+      "pointer": "/vm_startup",
+      "kind": "capture",
+      "cases": [
+        "LINUX-VM-STARTUP"
+      ],
+      "value_sha256": "e2f1775199bd382e8b70add22842014a8e30f74126440b3e38c01c9853a7fc39"
     }
   ],
   "claims": [
@@ -2466,6 +2491,32 @@
         "LINUX-CAPTURE-KIT"
       ],
       "limit": "Preparation and14 offline tests only. No real Linux boot, persistence or hardware observation; no raw PD/retimer state, compatible runtime override or Windows repair is established."
+    },
+    {
+      "id": "C89",
+      "basis": "code_fact",
+      "stage": "control",
+      "statement": "The audited collector retains early and interrupted attachment timing, releases its own unused lock after preparation failure, and continues logger cleanup after an individual handle fails. Current source hashes and 23 passing offline tests are recorded.",
+      "sources": [
+        "LINUX-KIT-AUDIT"
+      ],
+      "cases": [
+        "LINUX-CAPTURE-KIT"
+      ],
+      "limit": "Fixtures exercise reporting and restoration paths without device or mount operations. Actual USB persistence and ASUS negotiation remain untested; no raw PD exchange, applied retimer state or repair is established."
+    },
+    {
+      "id": "C90",
+      "basis": "measured",
+      "stage": "control",
+      "statement": "An isolated UEFI VM booted the live environment, automatically launched the collector and reached its unsupported-model rejection. A later serial-console trial observed the same guard with the startup entry matching current source semantics.",
+      "sources": [
+        "LINUX-VM-STARTUP"
+      ],
+      "cases": [
+        "LINUX-VM-STARTUP"
+      ],
+      "limit": "No real USB storage or USB4 controller was exercised. Later logger cleanup and formatting changes were checked offline, not re-booted. This is startup evidence, not an ASUS/Dell hardware result."
     }
   ],
   "timeline_limit": "T0 is the first recorded Windows attachment report in each run, not physical insertion. Different runs, platforms, power contracts and capture dates are explicit. These tables align software reports only; proximity does not establish wire order or causation. The earlier Dell control supplies the Dell timeline; the deep Dell dump supplies cached-state comparison.",

@@ -788,6 +788,18 @@ Scope: LINUX-CAPTURE-KIT. Preparation and14 offline tests only. No real Linux bo
 
 [LINUX-CAPTURE-PREPARATION](../evidence/linux-capture-preparation.json) `/prepared_kit`
 
+**C89 — code_fact:** The audited collector retains early and interrupted attachment timing, releases its own unused lock after preparation failure, and continues logger cleanup after an individual handle fails. Current source hashes and 23 passing offline tests are recorded.
+
+Scope: LINUX-CAPTURE-KIT. Fixtures exercise reporting and restoration paths without device or mount operations. Actual USB persistence and ASUS negotiation remain untested; no raw PD exchange, applied retimer state or repair is established.
+
+[LINUX-KIT-AUDIT](../evidence/linux-kit-audit.json) `/collector_review`
+
+**C90 — measured:** An isolated UEFI VM booted the live environment, automatically launched the collector and reached its unsupported-model rejection. A later serial-console trial observed the same guard with the startup entry matching current source semantics.
+
+Scope: LINUX-VM-STARTUP. No real USB storage or USB4 controller was exercised. Later logger cleanup and formatting changes were checked offline, not re-booted. This is startup evidence, not an ASUS/Dell hardware result.
+
+[LINUX-VM-STARTUP](../evidence/linux-kit-audit.json) `/vm_startup`
+
 ## Separate runs and observation limits
 
 | Case | Meaning | Important limit |
@@ -820,6 +832,7 @@ Scope: LINUX-CAPTURE-KIT. Preparation and14 offline tests only. No real Linux bo
 | ASUS-BILLBOARD-20261102 | ASUS-DEG2 existing fallback connection, standard USB strings read on2 November2026 | Standard device descriptors from one exact binding; no PD packets, vendor diagnostics, retimer state or repaired USB4 link. |
 | PUBLIC-BOOT-TOOLS | Pinned public EFI and USB4 diagnostic reference implementations | Source/archive inspection only; no ASUS boot, installed interface, physical measurement or compatible repair established. |
 | LINUX-CAPTURE-KIT | Prepared SystemRescue13.02 collector, offline validation only | Distribution and code checked; boot, USB persistence and ASUS/Dell hardware capture unexercised. |
+| LINUX-VM-STARTUP | Isolated live Linux VM startup | Virtual DVD, no host disks, network, passthrough or USB4 emulation; startup and model guard only. |
 
 ## Software-report timelines
 

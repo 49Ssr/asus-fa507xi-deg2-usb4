@@ -1,5 +1,7 @@
 # Reading the missing state with the existing hardware
 
+> Detailed research record. For the latest result and selected test, start with [current findings](status.md). Preparation statements below describe their dates; later results supersede them.
+
 2 November 2026. The earlier stop described the end of the saved task list too broadly. The owner reopened the investigation with specific capture and hidden-setting leads. No working repair or live PD capture is claimed here.
 
 ## What the exact ASUS BIOS contains
