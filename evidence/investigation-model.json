@@ -136,6 +136,11 @@
       "id": "ASUS-BILLBOARD-20261102",
       "label": "ASUS-DEG2 existing fallback connection, standard USB strings read on2 November2026",
       "limit": "Standard device descriptors from one exact binding; no PD packets, vendor diagnostics, retimer state or repaired USB4 link."
+    },
+    {
+      "id": "PUBLIC-BOOT-TOOLS",
+      "label": "Pinned public EFI and USB4 diagnostic reference implementations",
+      "limit": "Source/archive inspection only; no ASUS boot, installed interface, physical measurement or compatible repair established."
     }
   ],
   "stages": [
@@ -1201,6 +1206,16 @@
         "ASUS-DEEP"
       ],
       "value_sha256": "60850589b9b2a7d9ee798436ccc35feba4cd66591d221f008ac7c03adfb74c91"
+    },
+    {
+      "id": "BOOT-TOOL-INTERFACES",
+      "path": "evidence/boot-tools-review.json",
+      "pointer": "/repository_interfaces",
+      "kind": "code",
+      "cases": [
+        "PUBLIC-BOOT-TOOLS"
+      ],
+      "value_sha256": "f0eb689cc74de0784db7af8fb5950879ac9260081040c48ea498e48461ec05d4"
     }
   ],
   "claims": [
@@ -2410,6 +2425,19 @@
         "ASUS-DEEP"
       ],
       "limit": "Invalid/unavailable capability metadata does not establish disabled USB4 or absent retimer hardware and is not a qualified policy-write target."
+    },
+    {
+      "id": "C87",
+      "basis": "code_fact",
+      "stage": "control",
+      "statement": "The inspected tbpd mode path selects only a ChromeOS EC backend. The inspected setup_var code accesses stored UEFI variables, and SREP source provides EFI image discovery/loading/execution. These are different access routes, not interchangeable controller diagnostics.",
+      "sources": [
+        "BOOT-TOOL-INTERFACES"
+      ],
+      "cases": [
+        "PUBLIC-BOOT-TOOLS"
+      ],
+      "limit": "Pinned public source only. No ASUS ITE/PS8830 transport, pre-OS collector, executed patch or working Windows repair is qualified by these projects."
     }
   ],
   "timeline_limit": "T0 is the first recorded Windows attachment report in each run, not physical insertion. Different runs, platforms, power contracts and capture dates are explicit. These tables align software reports only; proximity does not establish wire order or causation. The earlier Dell control supplies the Dell timeline; the deep Dell dump supplies cached-state comparison.",

@@ -776,6 +776,12 @@ Scope: ASUS-DEEP. Invalid/unavailable capability metadata does not establish dis
 
 [ASUS-PORT-CAPABILITY-VALIDITY](../evidence/rt0-attachment-order.json) `/capability_validity`
 
+**C87 — code_fact:** The inspected tbpd mode path selects only a ChromeOS EC backend. The inspected setup_var code accesses stored UEFI variables, and SREP source provides EFI image discovery/loading/execution. These are different access routes, not interchangeable controller diagnostics.
+
+Scope: PUBLIC-BOOT-TOOLS. Pinned public source only. No ASUS ITE/PS8830 transport, pre-OS collector, executed patch or working Windows repair is qualified by these projects.
+
+[BOOT-TOOL-INTERFACES](../evidence/boot-tools-review.json) `/repository_interfaces`
+
 ## Separate runs and observation limits
 
 | Case | Meaning | Important limit |
@@ -806,6 +812,7 @@ Scope: ASUS-DEEP. Invalid/unavailable capability metadata does not establish dis
 | INFINEON-GRIFFIN-REFERENCE | Public Infineon PMG app-common reference resolved from Griffin Creek dependency | Reference source only, not DEG2 firmware identity, enabled diagnostics or an ASUS observation. |
 | ASUS-STORED-20261102 | ASUS BIOS314 stored UEFI settings read on 2 November 2026 | Stored configuration at one timestamp; no paired attachment, resolved Auto policy or controller-state measurement. |
 | ASUS-BILLBOARD-20261102 | ASUS-DEG2 existing fallback connection, standard USB strings read on2 November2026 | Standard device descriptors from one exact binding; no PD packets, vendor diagnostics, retimer state or repaired USB4 link. |
+| PUBLIC-BOOT-TOOLS | Pinned public EFI and USB4 diagnostic reference implementations | Source/archive inspection only; no ASUS boot, installed interface, physical measurement or compatible repair established. |
 
 ## Software-report timelines
 

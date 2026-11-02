@@ -1,0 +1,209 @@
+{
+  "schema": 1,
+  "date": "2026-11-02",
+  "question": "Can Smokeless UMAF or related projects expose the missing controller state or supply a useful boot interface?",
+  "umaf_distribution": {
+    "repository": "https://github.com/DavidS95/Smokeless_UMAF",
+    "commit": "c003b126cab6e29b1d72d061d59cea9e721a6910",
+    "tree_scope": "Selected recursive tree contains README.md, five photographs and two ZIP archives; no source files in that tree.",
+    "archives": [
+      {
+        "name": "UniversalAMDFormBrowser.zip",
+        "sha256": "93b15e88cdc0f1d6f90ed41ffbab93f8b28d41f3bbefed9de2072fe01ba5b018",
+        "bytes": 148909,
+        "contents": [
+          {
+            "path": "DisplayEngine.efi",
+            "bytes": 63104,
+            "sha256": "061b1b1760bec1d4d7542019e73ee8d375899ae1f2abc1f4b3d3ce47bda61f72"
+          },
+          {
+            "path": "EFI/Boot/Bootx64.efi",
+            "bytes": 9024,
+            "sha256": "94fa8ac7f668bf4c6db1982b1a3a436a16a3f59e4d58dc56ba8ef3d5adb0af76"
+          },
+          {
+            "path": "SetupBrowser.efi",
+            "bytes": 73536,
+            "sha256": "c1b37e11367abae594bf5e656d85ad634dabd8109fcf6cae8e9922ba9ec38b49"
+          },
+          {
+            "path": "UiApp.efi",
+            "bytes": 163008,
+            "sha256": "a624c3160c9f7d763dfed273fef7c6fea247cb7246c162e878e44e710170140b"
+          }
+        ]
+      },
+      {
+        "name": "UMAF_BETA.zip",
+        "sha256": "b1d05bb3c8075e25e357cfd8b870f16be350f180646f37505eee1e7156265620",
+        "bytes": 161733,
+        "contents": [
+          {
+            "path": "DisplayEngine.efi",
+            "bytes": 63104,
+            "sha256": "061b1b1760bec1d4d7542019e73ee8d375899ae1f2abc1f4b3d3ce47bda61f72"
+          },
+          {
+            "path": "EFI/Boot/BOOTX64.efi",
+            "bytes": 16704,
+            "sha256": "53375d86baaab12e4d472f89e848d9958a2492b66019158e878392fe42f7dcd6"
+          },
+          {
+            "path": "Loader.efi",
+            "bytes": 9024,
+            "sha256": "94fa8ac7f668bf4c6db1982b1a3a436a16a3f59e4d58dc56ba8ef3d5adb0af76"
+          },
+          {
+            "path": "SetupBrowser.efi",
+            "bytes": 73536,
+            "sha256": "c1b37e11367abae594bf5e656d85ad634dabd8109fcf6cae8e9922ba9ec38b49"
+          },
+          {
+            "path": "SREP_Config.cfg",
+            "bytes": 77,
+            "sha256": "de4db35832d1c5e1fbb8451a3f71419713d56d8e42f9c0454e2825c6e17608cb"
+          },
+          {
+            "path": "SuppressIFPatcher.efi",
+            "bytes": 7360,
+            "sha256": "f21e31b9ceed7667a995ea5772a8462b05b3ca37c1bef2766524cc9cab0cadab"
+          },
+          {
+            "path": "UiApp.efi",
+            "bytes": 163008,
+            "sha256": "a624c3160c9f7d763dfed273fef7c6fea247cb7246c162e878e44e710170140b"
+          }
+        ]
+      }
+    ],
+    "beta_config_sequence": [
+      "LoadFromFS SuppressIFPatcher.efi",
+      "Exec",
+      "LoadFromFS Loader.efi",
+      "Exec"
+    ],
+    "meaning": "Author describes a replacement form browser exposing existing HII PBS/CBS forms. Package inventory and config do not qualify full executable behavior or ASUS compatibility.",
+    "execution": "Downloaded and inspected as ZIP data only; no extraction to a boot device or executable invocation."
+  },
+  "repository_interfaces": {
+    "sources": [
+      {
+        "name": "tbtools-typec.rs",
+        "url": "https://raw.githubusercontent.com/intel/tbtools/5de2ac9d5325c3746adbda7d9874b98397109ebb/src/typec.rs",
+        "bytes": 2723,
+        "sha256": "5f24b0b4944687962e3e5814911bf7ba78f3ed434f349012e6caba1737cb5216"
+      },
+      {
+        "name": "tbtools-tbpd.rs",
+        "url": "https://raw.githubusercontent.com/intel/tbtools/5de2ac9d5325c3746adbda7d9874b98397109ebb/src/bin/tbpd.rs",
+        "bytes": 2206,
+        "sha256": "7d37e91b6b41af3fbaad449d9e2c9147bf1ca30f17aba3b10335e1f955757429"
+      },
+      {
+        "name": "srep-opcode.c",
+        "url": "https://raw.githubusercontent.com/barlowhaydnb/SmokelessRuntimeEFIPatcher/76f1fd7997a9750509c9906c1a7ffa86f64e26c1/SmokelessRuntimeEFIPatcher/OpCode.c",
+        "bytes": 4646,
+        "sha256": "9519fb458a19c44a809d4f2a7c82493d1a99ec5a4704e9147a56818dee01b2c0"
+      },
+      {
+        "name": "setup-var-main.rs",
+        "url": "https://raw.githubusercontent.com/datasone/setup_var.efi/f36c98be3b2d8541bfb18800baaa734802fab888/src/main.rs",
+        "bytes": 4006,
+        "sha256": "54a2d089a15b3418e1d37c43f2a3279b1218bd6275aa971fe911df124ccdbf6a"
+      },
+      {
+        "name": "setup-var-utils.rs",
+        "url": "https://raw.githubusercontent.com/datasone/setup_var.efi/f36c98be3b2d8541bfb18800baaa734802fab888/src/utils.rs",
+        "bytes": 15191,
+        "sha256": "029a9ae9d37007b1f0b12fde859a0aa1abd9ce0e9fefb808434f485d78e3fe05"
+      }
+    ],
+    "srep": {
+      "repository": "https://github.com/barlowhaydnb/SmokelessRuntimeEFIPatcher",
+      "commit": "76f1fd7997a9750509c9906c1a7ffa86f64e26c1",
+      "code": "SmokelessRuntimeEFIPatcher/OpCode.c",
+      "functions": [
+        {
+          "name": "LoadFS",
+          "line_start": 3,
+          "line_end": 52
+        },
+        {
+          "name": "LoadFV",
+          "line_start": 54,
+          "line_end": 78
+        },
+        {
+          "name": "Exec",
+          "line_start": 80,
+          "line_end": 85
+        },
+        {
+          "name": "FindLoadedImageFromName",
+          "line_start": 87,
+          "line_end": 118
+        }
+      ],
+      "observed": "UEFI loaded-image discovery and LoadImage/StartImage calls; not an ASUS PD/retimer backend.",
+      "reuse_limit": "Reference design only. Not compiled, copied into a new collector, booted, used for a patch or qualified for exact ASUS firmware."
+    },
+    "setup_var": {
+      "repository": "https://github.com/datasone/setup_var.efi",
+      "commit": "f36c98be3b2d8541bfb18800baaa734802fab888",
+      "code": [
+        "src/main.rs:84-125",
+        "src/utils.rs:207-255"
+      ],
+      "observed": "Separate Read and Write argument branches; read_val returns a slice of stored variable data, while write_val calls runtime set_variable. main also has a requested reset path.",
+      "reuse_limit": "Variable GET logic could support a strict reader. Stored UEFI access is already working from Windows; this adds no demonstrated applied PD/retimer state."
+    },
+    "tbtools": {
+      "repository": "https://github.com/intel/tbtools",
+      "commit": "5de2ac9d5325c3746adbda7d9874b98397109ebb",
+      "code": [
+        "src/typec.rs:44-81",
+        "src/bin/tbpd.rs:36-75"
+      ],
+      "observed": "tbpd delegates mode read/entry to typec::controller(). That implementation opens cros::Ec and has only a TODO for standard connector-class support.",
+      "scope": "Linux router-register and control-channel tools can support a future OS comparison. The ChromeOS EC backend does not establish access to ASUS ITE mode control.",
+      "reuse_limit": "No Linux boot, kernel/backend compatibility check, register access, retimer scan or mode request was performed."
+    },
+    "hardware_limit": "These are public reference implementations, not an observed ASUS firmware decision, driver replacement, qualified runtime patch or working Windows fix."
+  },
+  "decision": {
+    "use_now": [
+      "Study identified source routines offline",
+      "Retain immutable source and distribution pins",
+      "Continue original ASUS policy-consumer and exact diagnostic-transport work"
+    ],
+    "possible_later": [
+      "A logged Linux comparison of external USB4-router and PCIe enumeration",
+      "A read-only EFI protocol/handoff-data exporter after its exact useful record is identified"
+    ],
+    "not_prepared": [
+      "No bootable diagnostic image",
+      "No ASUS SREP patch",
+      "No UMAF setting-change plan",
+      "No tbpd ASUS backend"
+    ],
+    "limits": [
+      "Linux success would be informative, with boot/power history still a confound.",
+      "Linux failure alone does not distinguish omitted/rejected entry from failed training.",
+      "USB4 control-channel tracing does not provide raw CC-wire PD traffic.",
+      "Retimer access may involve active enumeration; do not assume that a read command is electrically passive."
+    ]
+  },
+  "actions": {
+    "downloads_inspected_only": true,
+    "executed_downloads": 0,
+    "live_device_requests": 0,
+    "settings_written": 0,
+    "drivers_installed": 0,
+    "boots": 0,
+    "boot_entries_changed": 0,
+    "usb_drives_changed": 0,
+    "network_configuration_changes": 0,
+    "deletions": 0
+  }
+}

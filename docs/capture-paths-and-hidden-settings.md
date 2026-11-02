@@ -126,3 +126,7 @@ The DHgate page could not be retrieved with the web reader; its pasted broad buy
 A newly located [Phoenix/JHL9480 developer report](https://lore-kernel.gnuweeb.org/linux-usb/TYCPR01MB1092795BE7AB51121BBAB292496862@TYCPR01MB10927.jpnprd01.prod.outlook.com/) is relevant to power handling, but its dock router is detected before the downstream PCIe hierarchy fails. The ASUS–DEG2 record lacks that first detection. Keep it as a stage-specific comparison, not a demonstrated Windows fix or justification for global power changes.
 
 Next offline work: follow the exact PBS PD USB4-control field into its consumer; resolve the CBS router mapping and Auto policy; identify the dock diagnostic implementation or an existing retimer status interface. SDK access can proceed alongside this work. No new driver or blind boot is queued.
+
+## Boot tools reviewed against the missing state
+
+The [pinned UMAF/SREP/setup_var/tbtools review](boot-tools-review.md) separates menu access, stored-variable access, EFI image instrumentation and Linux USB4 diagnostics. The inspected tbpd entry backend is ChromeOS EC only; no ASUS ITE override or PD recorder follows from its mode option. Both UMAF archives were inventoried without execution. A future logged OS comparison could be useful; no bootable image or boot test was prepared or performed.
