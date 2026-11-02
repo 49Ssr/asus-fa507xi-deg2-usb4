@@ -1161,6 +1161,46 @@
         "ASUS-BIOS314"
       ],
       "value_sha256": "4e8fb3551096cbef5a21ced7c060522c1b47d207d6a9a7f55ebdf75d11c66aa1"
+    },
+    {
+      "id": "RT0-CONNECTOR-PLD",
+      "path": "evidence/rt0-attachment-order.json",
+      "pointer": "/acpi_mapping",
+      "kind": "code",
+      "cases": [
+        "ASUS-BIOS314"
+      ],
+      "value_sha256": "e8c0dd0aade23c4ae876938d40f233de9ca20d0b4f9dbe05378fb0638a423755"
+    },
+    {
+      "id": "ASUS-HUB-ROLE-ORDER",
+      "path": "evidence/rt0-attachment-order.json",
+      "pointer": "/captures/ASUS-DEEP",
+      "kind": "capture",
+      "cases": [
+        "ASUS-DEEP"
+      ],
+      "value_sha256": "e29b1877e8c7ebf73df0ad6fef20ec58dde31d1e136b10eb9c018d604e9e1120"
+    },
+    {
+      "id": "DELL-HUB-ROLE-ORDER",
+      "path": "evidence/rt0-attachment-order.json",
+      "pointer": "/captures/DELL-DEEP",
+      "kind": "capture",
+      "cases": [
+        "DELL-DEEP"
+      ],
+      "value_sha256": "0643df9d232a5d65c83f86c42f8ade777be2181574add6202f5ae8ad83d6a832"
+    },
+    {
+      "id": "ASUS-PORT-CAPABILITY-VALIDITY",
+      "path": "evidence/rt0-attachment-order.json",
+      "pointer": "/capability_validity",
+      "kind": "capture",
+      "cases": [
+        "ASUS-DEEP"
+      ],
+      "value_sha256": "60850589b9b2a7d9ee798436ccc35feba4cd66591d221f008ac7c03adfb74c91"
     }
   ],
   "claims": [
@@ -2329,6 +2369,47 @@
         "ASUS-BIOS314"
       ],
       "limit": "Original155-instruction span byte-verified. No invocation, atomic rollback, runtime Windows caller or exact MMIO-field meaning is established."
+    },
+    {
+      "id": "C84",
+      "basis": "code_fact",
+      "stage": "control",
+      "statement": "Original ACPI gives CR01 and both XHC3 companion ports identical PLD group0/position1; CR02 and XHC4 use position2. Existing verified USB4 associations map those controllers to NHI0/RT0 and NHI1/RT1 respectively.",
+      "sources": [
+        "RT0-CONNECTOR-PLD"
+      ],
+      "cases": [
+        "ASUS-BIOS314"
+      ],
+      "limit": "Six20-byte data anchors checked in original checksum-valid tables. Declarations do not measure physical wiring or applied retimer state."
+    },
+    {
+      "id": "C85",
+      "basis": "measured",
+      "stage": "fallback",
+      "statement": "The existing failed ASUS trace binds DEG2 devices to UcmConnectorId1/PCI function3 and records successful SuperSpeed-hub enumeration at00:52:17.8444045, after the post-SET_UOR UFP report at17.2060961. The working Dell trace supplies independently matched enumeration timings for the same device identities.",
+      "sources": [
+        "ASUS-HUB-ROLE-ORDER",
+        "DELL-HUB-ROLE-ORDER"
+      ],
+      "cases": [
+        "ASUS-DEEP",
+        "DELL-DEEP"
+      ],
+      "limit": "Completion61 and identity43 matched using both opaque device keys and parent port. Host enumeration works; physical DR_Swap, USB4 entry/training, negotiated bandwidth and causal timing remain unmeasured."
+    },
+    {
+      "id": "C86",
+      "basis": "measured",
+      "stage": "control",
+      "statement": "ASUS connector1 root-port rundown reports UsbCPortCapabilitiesValid=0 alongside zero USB4/PCIe/TBT3 capability fields and retimer count.",
+      "sources": [
+        "ASUS-PORT-CAPABILITY-VALIDITY"
+      ],
+      "cases": [
+        "ASUS-DEEP"
+      ],
+      "limit": "Invalid/unavailable capability metadata does not establish disabled USB4 or absent retimer hardware and is not a qualified policy-write target."
     }
   ],
   "timeline_limit": "T0 is the first recorded Windows attachment report in each run, not physical insertion. Different runs, platforms, power contracts and capture dates are explicit. These tables align software reports only; proximity does not establish wire order or causation. The earlier Dell control supplies the Dell timeline; the deep Dell dump supplies cached-state comparison.",
@@ -2574,6 +2655,12 @@
       "explanation": "Ending the saved offline candidate queue did not establish the end of useful capture research. Exact BIOS settings are a newly qualified read target; a read of stored policy remains separate from live PD/retimer state.",
       "sources": [
         "UEFI-USB4-SETTINGS"
+      ]
+    },
+    {
+      "explanation": "The earlier RT1 evidence companion_associations entry overstated XHC4 as having the same USB4 _DSD property as XHC3. This selected XHC4 scope instead contains a conditional _DEP reference to NHI1. Separate AMD RT1/function6/NHI1 identification is unaffected. Other table scopes or runtime overrides are not excluded.",
+      "sources": [
+        "RT0-CONNECTOR-PLD"
       ]
     }
   ],

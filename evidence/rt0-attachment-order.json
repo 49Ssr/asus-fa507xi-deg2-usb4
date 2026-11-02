@@ -1,0 +1,426 @@
+{
+  "schema": 1,
+  "date": "2026-11-02",
+  "question": "Which connector is RT0, and what succeeds across the failed ASUS attachment before or after its role correction?",
+  "acpi_mapping": {
+    "scope": "Original retained BIOS314 ACPI, independently checked in saved ASUS USBHUB3 records; no method evaluation.",
+    "pld_anchors": [
+      {
+        "table": "16-SSDT-CPMUCSI.bin",
+        "table_sha256": "5245ab44793308f094a431b82a798eba072eb4554cbeabd7e3929c0a13b4503e",
+        "object": "UBTC.CR01.PLD1",
+        "data_offset": "0x512",
+        "data_bytes": 20,
+        "data_sha256": "73f4e0f9341c58625c87973d3680faa642c3504217a89cdd60de6b02867bb1c0",
+        "group_token": 0,
+        "group_position": 1
+      },
+      {
+        "table": "16-SSDT-CPMUCSI.bin",
+        "table_sha256": "5245ab44793308f094a431b82a798eba072eb4554cbeabd7e3929c0a13b4503e",
+        "object": "UBTC.CR02.PLD1",
+        "data_offset": "0x54b",
+        "data_bytes": 20,
+        "data_sha256": "ddfb13715368a1c2f1f678f753f43f070271e7cd467df903fe5f5d7c38e72496",
+        "group_token": 0,
+        "group_position": 2
+      },
+      {
+        "table": "22-DSDT-Notebook.bin",
+        "table_sha256": "f57e3bb75b6a15725ff295ed451161d33f3b238bb6cfda683a45286851f1938a",
+        "object": "XHC3.RHUB.PRT1.PLD1",
+        "data_offset": "0xca0d",
+        "data_bytes": 20,
+        "data_sha256": "73f4e0f9341c58625c87973d3680faa642c3504217a89cdd60de6b02867bb1c0",
+        "group_token": 0,
+        "group_position": 1
+      },
+      {
+        "table": "22-DSDT-Notebook.bin",
+        "table_sha256": "f57e3bb75b6a15725ff295ed451161d33f3b238bb6cfda683a45286851f1938a",
+        "object": "XHC3.RHUB.PRT2.PLD2",
+        "data_offset": "0xca62",
+        "data_bytes": 20,
+        "data_sha256": "73f4e0f9341c58625c87973d3680faa642c3504217a89cdd60de6b02867bb1c0",
+        "group_token": 0,
+        "group_position": 1
+      },
+      {
+        "table": "22-DSDT-Notebook.bin",
+        "table_sha256": "f57e3bb75b6a15725ff295ed451161d33f3b238bb6cfda683a45286851f1938a",
+        "object": "XHC4.RHUB.PRT1.PLD3",
+        "data_offset": "0xcad9",
+        "data_bytes": 20,
+        "data_sha256": "ddfb13715368a1c2f1f678f753f43f070271e7cd467df903fe5f5d7c38e72496",
+        "group_token": 0,
+        "group_position": 2
+      },
+      {
+        "table": "22-DSDT-Notebook.bin",
+        "table_sha256": "f57e3bb75b6a15725ff295ed451161d33f3b238bb6cfda683a45286851f1938a",
+        "object": "XHC4.RHUB.PRT2.PLD4",
+        "data_offset": "0xcb2e",
+        "data_bytes": 20,
+        "data_sha256": "ddfb13715368a1c2f1f678f753f43f070271e7cd467df903fe5f5d7c38e72496",
+        "group_token": 0,
+        "group_position": 2
+      }
+    ],
+    "connector_child_addresses": [
+      {
+        "child": "CR01",
+        "adr": 0,
+        "name_adr_file_offset": "0x4fc"
+      },
+      {
+        "child": "CR02",
+        "adr": 1,
+        "name_adr_file_offset": "0x535"
+      }
+    ],
+    "prior_router_association": "evidence/rt1-router-mapping.json: original XHC3 companion USB4 association with NHI0 and AMD RT0/function5 record; XHC4 maps to NHI1/RT1/function6.",
+    "mapping": [
+      {
+        "ucm_connector_id": 1,
+        "ucsi_child": "CR01",
+        "xhci": "XHC3",
+        "nhi": "NHI0",
+        "router": "RT0"
+      },
+      {
+        "ucm_connector_id": 2,
+        "ucsi_child": "CR02",
+        "xhci": "XHC4",
+        "nhi": "NHI1",
+        "router": "RT1",
+        "association_limit": "XHC4-to-NHI1 association here is conditional _DEP code, not the XHC3-style _DSD property or a captured second-router link."
+      }
+    ],
+    "primary_reference": {
+      "url": "https://github.com/microsoft/Windows-driver-samples/blob/f4c1ff842b6a0001152f44cb61788b216a1c7627/usb/UcmTcpciCxClientSample/Sample.asl#L55-L76",
+      "pin": "f4c1ff842b6a0001152f44cb61788b216a1c7627",
+      "scope": "Sample says GroupToken/GroupPosition derive connector ID and correlate with the xHCI PLD; not proof of ASUS runtime wiring on its own."
+    },
+    "limit": "ACPI declarations plus matching captured Windows connector identities, not physical continuity measurement or controller mode programming.",
+    "companion_scope_checks": [
+      {
+        "object": "XHC3.RHUB.PRT2",
+        "table": "12-SSDT-INTGPP03.bin",
+        "table_sha256": "920a31bb1454bb8e8354731e6957ba2421cd474a0863ebf3b6f5f8e3a0ce79a0",
+        "scope_offset": "0x2808",
+        "scope_end_exclusive": "0x2b9a",
+        "scope_bytes": 914,
+        "scope_sha256": "51b6fb1610e5933beb86d77201cf1aada8442555e1e557eeabb8da8c690d5568",
+        "usb4_host_interface_property_in_this_scope": true,
+        "association": "Name _DSD identifies NHI0, usb4-port-number1"
+      },
+      {
+        "object": "XHC4.RHUB.PRT2",
+        "table": "12-SSDT-INTGPP03.bin",
+        "table_sha256": "920a31bb1454bb8e8354731e6957ba2421cd474a0863ebf3b6f5f8e3a0ce79a0",
+        "scope_offset": "0x38a5",
+        "scope_end_exclusive": "0x3bd5",
+        "scope_bytes": 816,
+        "scope_sha256": "66291592aa53075ba1f6ba7b6ab0a06b8ab409faef554bd5880f88115bea00ba",
+        "usb4_host_interface_property_in_this_scope": false,
+        "association": "Conditional _DEP refers to NHI1 when DDEP==1 and M046<0x0b; no corresponding usb4-host-interface property in this selected scope"
+      }
+    ],
+    "prior_record_correction": "The earlier RT1 evidence companion_associations entry overstated XHC4 as having the same USB4 _DSD property as XHC3. This selected XHC4 scope instead contains a conditional _DEP reference to NHI1. Separate AMD RT1/function6/NHI1 identification is unaffected. Other table scopes or runtime overrides are not excluded."
+  },
+  "captures": {
+    "ASUS-DEEP": {
+      "original_etl_sha256": "9e0501dae7910fc709aeca47ea64017a63539ae72cfaf240b602389ada0ef172",
+      "original_etl_bytes": 239206400,
+      "driver_messages_sha256": "75ea73f7f2eb11ce37ea11b6bc027b15b932b18e75ff0ca03cc8ce8a8bdd3158",
+      "private_xml_extract_sha256": "79c4eaf43542f3556a7e57c5f86ca4b131b20699b5d4750ea80ce6b64fc71cf3",
+      "selected_event_count": 31,
+      "matching": "Event61 and Event43 matched by both opaque device identifiers and parent hub port; identity taken from Event43. Opaque identifiers and instance paths are omitted.",
+      "ucsi_order": [
+        {
+          "utc": "2026-11-01T00:52:16.9317051Z",
+          "event": "Initial partner DFP, Type-C current mode",
+          "driver_message_line": 27
+        },
+        {
+          "utc": "2026-11-01T00:52:17.0075650Z",
+          "event": "First PD partner DFP",
+          "driver_message_line": 96
+        },
+        {
+          "utc": "2026-11-01T00:52:17.1299775Z",
+          "event": "Windows selects role correction",
+          "driver_message_line": 1124
+        },
+        {
+          "utc": "2026-11-01T00:52:17.1464315Z",
+          "event": "Windows sends SET_UOR DFP",
+          "driver_message_line": 1146
+        },
+        {
+          "utc": "2026-11-01T00:52:17.1631249Z",
+          "event": "SET_UOR completes",
+          "driver_message_line": 1153
+        },
+        {
+          "utc": "2026-11-01T00:52:17.2060961Z",
+          "event": "Partner UFP report",
+          "driver_message_line": 1217
+        }
+      ],
+      "usb_devices": [
+        {
+          "vid_pid": "8087:5787",
+          "reported_description": "Generic SuperSpeed USB Hub",
+          "enumeration_completed_utc": "2026-11-01T00:52:17.8444045Z",
+          "enumeration_ntstatus": 0,
+          "new_device_information_utc": "2026-11-01T00:52:17.8479526Z",
+          "parent": "root hub",
+          "parent_hub_port": 2,
+          "ucm_connector_id": 1,
+          "pci_function": 3,
+          "pci_device_id": "15c0"
+        },
+        {
+          "vid_pid": "0bda:0420",
+          "reported_description": "Generic SuperSpeed USB Hub",
+          "enumeration_completed_utc": "2026-11-01T00:52:17.8628680Z",
+          "enumeration_ntstatus": 0,
+          "new_device_information_utc": "2026-11-01T00:52:17.8648621Z",
+          "parent": "8087:5787",
+          "parent_hub_port": 4,
+          "ucm_connector_id": 1,
+          "pci_function": 3,
+          "pci_device_id": "15c0"
+        },
+        {
+          "vid_pid": "152d:0583",
+          "reported_description": "USB Attached SCSI (UAS) Mass Storage Device",
+          "enumeration_completed_utc": "2026-11-01T00:52:17.8808313Z",
+          "enumeration_ntstatus": 0,
+          "new_device_information_utc": "2026-11-01T00:52:17.8849482Z",
+          "parent": "0bda:0420",
+          "parent_hub_port": 4,
+          "ucm_connector_id": 1,
+          "pci_function": 3,
+          "pci_device_id": "15c0"
+        },
+        {
+          "vid_pid": "1d5c:5801",
+          "reported_description": "Generic USB Hub",
+          "enumeration_completed_utc": "2026-11-01T00:52:18.1612083Z",
+          "enumeration_ntstatus": 0,
+          "new_device_information_utc": "2026-11-01T00:52:18.1647511Z",
+          "parent": "root hub",
+          "parent_hub_port": 1,
+          "ucm_connector_id": 1,
+          "pci_function": 3,
+          "pci_device_id": "15c0"
+        },
+        {
+          "vid_pid": "0bda:5420",
+          "reported_description": "Generic USB Hub",
+          "enumeration_completed_utc": "2026-11-01T00:52:18.6528861Z",
+          "enumeration_ntstatus": 0,
+          "new_device_information_utc": "2026-11-01T00:52:18.6551097Z",
+          "parent": "1d5c:5801",
+          "parent_hub_port": 2,
+          "ucm_connector_id": 1,
+          "pci_function": 3,
+          "pci_device_id": "15c0"
+        },
+        {
+          "vid_pid": "0bda:8156",
+          "reported_description": "Realtek Gaming USB 2.5GbE Family Controller",
+          "enumeration_completed_utc": "2026-11-01T00:52:18.7097443Z",
+          "enumeration_ntstatus": 0,
+          "new_device_information_utc": "2026-11-01T00:52:18.9850695Z",
+          "parent": "0bda:0420",
+          "parent_hub_port": 3,
+          "ucm_connector_id": 1,
+          "pci_function": 3,
+          "pci_device_id": "15c0"
+        },
+        {
+          "vid_pid": "041f:d002",
+          "reported_description": "WinUsb Device",
+          "enumeration_completed_utc": "2026-11-01T00:52:18.7435261Z",
+          "enumeration_ntstatus": 0,
+          "new_device_information_utc": "2026-11-01T00:52:19.0453694Z",
+          "parent": "1d5c:5801",
+          "parent_hub_port": 4,
+          "ucm_connector_id": 1,
+          "pci_function": 3,
+          "pci_device_id": "15c0"
+        }
+      ]
+    },
+    "DELL-DEEP": {
+      "original_etl_sha256": "8af7fc2f9dbab760934d25ffcb5087e5502db96e7e8a3fbd5ccb2907d001a818",
+      "original_etl_bytes": 188874752,
+      "driver_messages_sha256": "6081a1c438433e96eed6b505a430e7d7677dda72ab5897416dd00be978fa3cd5",
+      "private_xml_extract_sha256": "7434529fe53587391a023e1d0da883bda82ed66bc232e3b43f8971282675fc59",
+      "selected_event_count": 25,
+      "matching": "Event61 and Event43 matched by both opaque device identifiers and parent hub port; identity taken from Event43. Opaque identifiers and instance paths are omitted.",
+      "ucsi_order": [
+        {
+          "utc": "2026-11-01T00:17:44.7184193Z",
+          "event": "Initial partner DFP, Type-C current mode",
+          "driver_message_line": 29
+        },
+        {
+          "utc": "2026-11-01T00:17:44.9977521Z",
+          "event": "First PD partner UFP",
+          "driver_message_line": 499
+        },
+        {
+          "utc": "2026-11-01T00:17:45.3105086Z",
+          "event": "Windows selects no role correction",
+          "driver_message_line": 1568
+        }
+      ],
+      "usb_devices": [
+        {
+          "vid_pid": "8087:5787",
+          "reported_description": "Generic SuperSpeed USB Hub",
+          "enumeration_completed_utc": "2026-11-01T00:17:45.7334882Z",
+          "enumeration_ntstatus": 0,
+          "new_device_information_utc": "2026-11-01T00:17:46.6470081Z",
+          "parent": "root hub",
+          "parent_hub_port": 2
+        },
+        {
+          "vid_pid": "1d5c:5801",
+          "reported_description": "Generic USB Hub",
+          "enumeration_completed_utc": "2026-11-01T00:17:45.8236493Z",
+          "enumeration_ntstatus": 0,
+          "new_device_information_utc": "2026-11-01T00:17:46.6482071Z",
+          "parent": "root hub",
+          "parent_hub_port": 1
+        },
+        {
+          "vid_pid": "0bda:0420",
+          "reported_description": "Generic SuperSpeed USB Hub",
+          "enumeration_completed_utc": "2026-11-01T00:17:46.6718074Z",
+          "enumeration_ntstatus": 0,
+          "new_device_information_utc": "2026-11-01T00:17:50.0042225Z",
+          "parent": "8087:5787",
+          "parent_hub_port": 4
+        },
+        {
+          "vid_pid": "0bda:5420",
+          "reported_description": "Generic USB Hub",
+          "enumeration_completed_utc": "2026-11-01T00:17:47.1283611Z",
+          "enumeration_ntstatus": 0,
+          "new_device_information_utc": "2026-11-01T00:17:50.0152642Z",
+          "parent": "1d5c:5801",
+          "parent_hub_port": 2
+        },
+        {
+          "vid_pid": "041f:d002",
+          "reported_description": "WinUsb Device",
+          "enumeration_completed_utc": "2026-11-01T00:17:47.1882700Z",
+          "enumeration_ntstatus": 0,
+          "new_device_information_utc": "2026-11-01T00:17:50.3255855Z",
+          "parent": "1d5c:5801",
+          "parent_hub_port": 4
+        },
+        {
+          "vid_pid": "0bda:8156",
+          "reported_description": "Realtek Gaming USB 2.5GbE Family Controller",
+          "enumeration_completed_utc": "2026-11-01T00:17:50.0207138Z",
+          "enumeration_ntstatus": 0,
+          "new_device_information_utc": "2026-11-01T00:17:50.4273547Z",
+          "parent": "0bda:0420",
+          "parent_hub_port": 3
+        },
+        {
+          "vid_pid": "152d:0583",
+          "reported_description": "USB Attached SCSI (UAS) Mass Storage Device",
+          "enumeration_completed_utc": "2026-11-01T00:17:50.1365552Z",
+          "enumeration_ntstatus": 0,
+          "new_device_information_utc": "2026-11-01T00:17:50.5371039Z",
+          "parent": "0bda:0420",
+          "parent_hub_port": 4
+        }
+      ]
+    }
+  },
+  "capability_validity": {
+    "private_port_extract_sha256": "247fa1bc63a666bd99e0046eaa1e93ed182ccf80ef0242fd462cd585be4aef0d",
+    "selected_event_count": 47,
+    "root_port_rundown": [
+      {
+        "utc": "2026-11-01T00:52:05.8493678Z",
+        "event_id": 7,
+        "version": 2,
+        "root_hub_port": 1,
+        "ucm_connector_id": 1,
+        "usb_c_capabilities_valid": false,
+        "reported_usb4_supported": 0,
+        "reported_pcie_tunneling_supported": 0,
+        "reported_tbt3_supported": 0,
+        "reported_retimer_count": 0
+      },
+      {
+        "utc": "2026-11-01T00:52:05.8493684Z",
+        "event_id": 8,
+        "version": 2,
+        "root_hub_port": 2,
+        "ucm_connector_id": 1,
+        "usb_c_capabilities_valid": false,
+        "reported_usb4_supported": 0,
+        "reported_pcie_tunneling_supported": 0,
+        "reported_tbt3_supported": 0,
+        "reported_retimer_count": 0
+      }
+    ],
+    "meaning": "The capability-valid flag is zero. Zero capability fields are not a disabled-policy measurement or a qualified repair target."
+  },
+  "method": {
+    "provider": "Microsoft-Windows-USB-USBHUB3",
+    "event_ids": [
+      6,
+      43,
+      60,
+      61,
+      64
+    ],
+    "additional_port_event_ids": [
+      7,
+      8,
+      25,
+      26
+    ],
+    "transport": "Get-WinEvent -FilterHashtable with existing ETL Path, ProviderName and Id, -Oldest; ToXml persisted privately.",
+    "event61": "Completion of USB Device Enumeration: NTSTATUS0 matched to Event43 identity.",
+    "event43": "New USB Device Information: exact VID/PID, parent relationships, PCI function and UcmConnectorId.",
+    "manifest": "Installed provider metadata contains matching observed versions; XML field names retained with originals privately.",
+    "attempt_limit": "An initial candidate join using Event60 device field as the new child was rejected. In these records that value matches the parent hub; only the independent Event61/Event43 full-key join is used for public completion times.",
+    "history_limit": "This extraction describes recorded events only. Enumeration is not a physical PD capture, a transfer benchmark, or continuous link-history proof."
+  },
+  "conclusions": {
+    "supported": [
+      "Captured DEG2 fallback is on connector1/XHC3/RT0; connector1 targeting was appropriate.",
+      "ASUS reports partner UFP after Windows role correction and subsequently completes enumeration of DEG2 SuperSpeed USB hub and downstream devices.",
+      "The first ASUS RouterDetected No predates that role correction, while Dell reports partner UFP by PD and RouterDetected Yes before its Windows no-correction decision."
+    ],
+    "unresolved": [
+      "Actual Enter_USB request and response",
+      "Applied PS8830 mode/orientation and first USB4 training result",
+      "Any earlier brief link and exit",
+      "An identified Windows runtime operation that repairs the failed state"
+    ],
+    "repair_status": "No working Windows fix established. Existing role-policy-only trial failed. No new device request or system change is justified by these timestamps alone."
+  },
+  "privacy": "No instance suffix, kernel pointer, original filesystem path, firmware binary or raw ETL/XML is published.",
+  "actions": {
+    "live_device_requests": 0,
+    "new_drivers": 0,
+    "setting_changes": 0,
+    "boots": 0,
+    "cable_changes": 0,
+    "network_changes": 0,
+    "deletions": 0
+  }
+}

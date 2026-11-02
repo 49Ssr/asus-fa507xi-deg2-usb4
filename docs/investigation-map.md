@@ -758,6 +758,24 @@ Scope: ASUS-BIOS314. Original155-instruction span byte-verified. No invocation, 
 
 [BIOS-SETTER-FULL-SCOPE](../evidence/windows-repair-route-review.json) `/bios_setter`
 
+**C84 — code_fact:** Original ACPI gives CR01 and both XHC3 companion ports identical PLD group0/position1; CR02 and XHC4 use position2. Existing verified USB4 associations map those controllers to NHI0/RT0 and NHI1/RT1 respectively.
+
+Scope: ASUS-BIOS314. Six20-byte data anchors checked in original checksum-valid tables. Declarations do not measure physical wiring or applied retimer state.
+
+[RT0-CONNECTOR-PLD](../evidence/rt0-attachment-order.json) `/acpi_mapping`
+
+**C85 — measured:** The existing failed ASUS trace binds DEG2 devices to UcmConnectorId1/PCI function3 and records successful SuperSpeed-hub enumeration at00:52:17.8444045, after the post-SET_UOR UFP report at17.2060961. The working Dell trace supplies independently matched enumeration timings for the same device identities.
+
+Scope: ASUS-DEEP, DELL-DEEP. Completion61 and identity43 matched using both opaque device keys and parent port. Host enumeration works; physical DR_Swap, USB4 entry/training, negotiated bandwidth and causal timing remain unmeasured.
+
+[ASUS-HUB-ROLE-ORDER](../evidence/rt0-attachment-order.json) `/captures/ASUS-DEEP`, [DELL-HUB-ROLE-ORDER](../evidence/rt0-attachment-order.json) `/captures/DELL-DEEP`
+
+**C86 — measured:** ASUS connector1 root-port rundown reports UsbCPortCapabilitiesValid=0 alongside zero USB4/PCIe/TBT3 capability fields and retimer count.
+
+Scope: ASUS-DEEP. Invalid/unavailable capability metadata does not establish disabled USB4 or absent retimer hardware and is not a qualified policy-write target.
+
+[ASUS-PORT-CAPABILITY-VALIDITY](../evidence/rt0-attachment-order.json) `/capability_validity`
+
 ## Separate runs and observation limits
 
 | Case | Meaning | Important limit |
@@ -895,6 +913,7 @@ Needed: Pairing-specific causal evidence before any cleanup patch is presented a
 - The flagged EC worker and the normal Windows command completions belong to different evidence classes. Their relation is an inference assuming the reviewed firmware applies, not a measured flag value. Sources: [FLAG-GATE](../evidence/ec-blocking-flag.json) `/outer_gate`, [EC-LIVE-MATCH](../evidence/ec-firmware-decision.json) `/source/live_flash_hash_verified`, [ASUS-COMPLETIONS](../evidence/asus-dell-matched-comparison.json) `/trace/terminal_command_completions`.
 - The official service-guide example PCB marking is not the fitted ASUS motherboard identity or a control-wiring schematic. The Infineon catalog link is not recovered source: the attempted version3.7 download returned401. Neither source closes the failed-connection mode-state gap. Sources: [BOARD-SDK-SOURCE-SCOPE](../evidence/board-and-sdk-access-review.json) `/source_qualification`.
 - Ending the saved offline candidate queue did not establish the end of useful capture research. Exact BIOS settings are a newly qualified read target; a read of stored policy remains separate from live PD/retimer state. Sources: [UEFI-USB4-SETTINGS](../evidence/firmware-settings-and-capture-paths.json) `/bios_settings`.
+- The earlier RT1 evidence companion_associations entry overstated XHC4 as having the same USB4 _DSD property as XHC3. This selected XHC4 scope instead contains a conditional _DEP reference to NHI1. Separate AMD RT1/function6/NHI1 identification is unaffected. Other table scopes or runtime overrides are not excluded. Sources: [RT0-CONNECTOR-PLD](../evidence/rt0-attachment-order.json) `/acpi_mapping`.
 
 ## Documentation used for architecture
 
