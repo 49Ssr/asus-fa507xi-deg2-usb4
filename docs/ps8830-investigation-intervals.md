@@ -24,6 +24,11 @@ Historical heartbeat before interval14 deletion: `trace-asus-ps8830-configuratio
 
 ## Current interval
 
+**Interval21:** traced a real firmware/Windows USB4 dependency-policy hook: SMM modifies PBS465, and native-USB4 platform _OSC can clear its ACPI dependency state. It is a different setting from PD-control9c, and the SMI writes configuration rather than reading diagnostics. [Original code and AML](../evidence/usb4-dependency-handshake.json).
+
+The existing ASUS dump supplies useful state: offline namespace lookup recovered M046=0x0c, DDEP=0x55 and DIMS=0xa7, without evaluating methods. The selected legacy NHI dependency branch requires DDEP==1 and M046<0x0b; both are false in that snapshot. This excludes that specific branch as the proposed setting fix, not every platform dependency or the USB4 failure. Stored465/current state and the9c consumer remain unknown. Next follow actual9c policy transfer and pair saved handoff evidence where available; no _OSC/SMI execution. No live request/change/deletion occurred.
+
+
 **Interval20:** the selected PEI method is native PCD `SetBool`, token10b. Original HII names its input as PCIe DXIO timing control; the associated32-bit fields are PCIe receiver-detection/L0 polling overrides. The earlier3c3 field is WWAN support, and1f is CLK_REQ6 clock power management. [Primary definitions, checked question bytes and route](../evidence/pbs-pcd-and-hii-identities.json). None identifies the distinct PD-control9c consumer.
 
 Three original PEI database copies are byte-identical. Their name table is absent and their734 local entries contain no HII-backed tokens; this is a scoped database result, not whole-image or runtime absence. Token10b has the expected Boolean type. Next follow the already located OEM SMM PBS reader at176b with bufferRBP-80 and its actual consumers. No live values, controller request or repair were established. No hardware request/change/deletion occurred.

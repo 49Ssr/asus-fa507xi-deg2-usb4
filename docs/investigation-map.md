@@ -680,6 +680,26 @@ Scope: ASUS-BIOS314. These identified settings are distinct from PD USB4-control
 
 [PBS-PCD-HII-IDENTITIES](../evidence/pbs-pcd-and-hii-identities.json) `/pcd_route`
 
+**C72 — code_fact:** Original SMM code and AML expose a USB4 ACPI dependency-policy path for PBS465. Its software-SMI handler can persist changes; platform-wide _OSC native-USB4 support can call that handler and clear DDEP. This is distinct from PD USB4-control9c.
+
+Scope: ASUS-BIOS314, ASUS-DEEP. Static semantics, not proof of invocation, current stored value, complete ACPI patch execution or a PD/retimer intervention.
+
+[USB4-DEP-FIRMWARE](../evidence/usb4-dependency-handshake.json) `/firmware_code`
+
+**C73 — measured:** Offline namespace inspection of the saved failed ASUS dump recovers M046=0x0c, DDEP=0x55 and DIMS=0xa7. No AML method was executed.
+
+Scope: ASUS-DEEP. Values at the original dump timestamp, not current NVRAM or current controller state.
+
+[USB4-DEP-SAVED-STATE](../evidence/usb4-dependency-handshake.json) `/saved_namespace`
+
+**C74 — inference:** The selected legacy NHI _DEP branch is inactive for the saved ASUS namespace values. Changing PBS465 is not justified as a repair for that selected branch.
+
+Scope: ASUS-BIOS314, ASUS-DEEP. One explicitly reviewed dependency branch at a saved snapshot. No whole-platform exclusion, current-state conclusion or diagnosis of the PD failure.
+
+Reason: The branch requires DDEP==1 and M046<0x0b; captured0x55 and0x0c fail both necessary conditions.
+
+[USB4-DEP-FIRMWARE](../evidence/usb4-dependency-handshake.json) `/firmware_code`, [USB4-DEP-SAVED-STATE](../evidence/usb4-dependency-handshake.json) `/saved_namespace`
+
 ## Separate runs and observation limits
 
 | Case | Meaning | Important limit |

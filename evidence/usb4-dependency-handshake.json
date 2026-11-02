@@ -1,0 +1,124 @@
+{
+  "schema": 1,
+  "date": "2026-11-02",
+  "interval": 21,
+  "firmware_code": {
+    "original_modules": {
+      "209-AmdCpmOemSmm": {
+        "sha256": "a36859844612357079ba94af7ee3adebb4df81836205acf46fbfa4e63f5ce962",
+        "spans": [
+          {
+            "rva_start_hex": "0x1889",
+            "rva_end_exclusive_hex": "0x18b2",
+            "sha256": "e47bbee72c8af2e8d0dd2d18033a81c0fd5090d1d268d20e6c728d6aa6c2c752"
+          },
+          {
+            "rva_start_hex": "0x1b8c",
+            "rva_end_exclusive_hex": "0x1c73",
+            "sha256": "14e4baad82800ac1f917ae9044dc599949182e19db3cc9192297cc7416fb28c5"
+          }
+        ],
+        "smm_variable_protocol_guid": "ed32d533-99e6-4209-9cc0-2d72cdd998a7"
+      },
+      "427-AmdCpmOemAcpi": {
+        "sha256": "ca6d8f6b7e71257ed91279a8edf13446d79ce80c0f38628e4840a86443d09e7b",
+        "spans": [
+          {
+            "rva_start_hex": "0xa74",
+            "rva_end_exclusive_hex": "0xaf1",
+            "sha256": "9c1aa5c01064319bdbf7ee6723d84c2d6fdfa74e4cd4d6574916fc43b4edee1c"
+          },
+          {
+            "rva_start_hex": "0xff9",
+            "rva_end_exclusive_hex": "0x110b",
+            "sha256": "d4c0b8e6ed6b5d28dc2026e73116ad721de7104977619d98c8b1774cb5737584"
+          },
+          {
+            "rva_start_hex": "0x11b4",
+            "rva_end_exclusive_hex": "0x1222",
+            "sha256": "2457024e882145d10dd2f3f0c4a6d09c0199e275302c35a89c019f1ff6589c65"
+          }
+        ]
+      },
+      "hii": {
+        "file_offset_hex": "909d",
+        "opcode_hex": "0591250226025500010065041410000100",
+        "variable_offset_hex": "465"
+      }
+    },
+    "cached_aml_tables": [
+      {
+        "file": "08-SSDT-CPMCMN.bin",
+        "sha256": "a1220f7837f40335b9f69de3f4b69304b2fa8f2d3718817cded016ba8236a2a0",
+        "bytes": 38945,
+        "checksum_valid": true
+      },
+      {
+        "file": "09-SSDT-CPMMSOSC.bin",
+        "sha256": "222f4b41bcc2839920a5453999323f2ee917e6b626fe515a2d41ab60845a1db0",
+        "bytes": 2390,
+        "checksum_valid": true
+      },
+      {
+        "file": "12-SSDT-INTGPP03.bin",
+        "sha256": "920a31bb1454bb8e8354731e6957ba2421cd474a0863ebf3b6f5f8e3a0ce79a0",
+        "bytes": 38509,
+        "checksum_valid": true
+      }
+    ],
+    "hii": "PBS465 is USB4 ACPI _DEP Support; distinct from PD USB4-control9c.",
+    "smm_handler": {
+      "registered_smi_hex": "a7",
+      "handler_rva_hex": "1b8c",
+      "buffer": "RSP+50; RBP=RSP+100, so loadRBP+3b5 selects PBS465",
+      "known_input_cases": [
+        {
+          "stored_465": 0,
+          "data": "any",
+          "effect": "Set465 to1 and persist whole variable"
+        },
+        {
+          "stored_465": 1,
+          "data_hex": "55",
+          "effect": "Set465 to0 and persist whole variable"
+        },
+        {
+          "stored_465": 1,
+          "data": "other",
+          "effect": "Selected code returns without changing465"
+        }
+      ],
+      "limit": "This is a state-changing handler, not a diagnostic read. No SMI was invoked."
+    },
+    "acpi_patch": "Selected OEM ACPI code initially copies PBS465 into a patch-context field; later platform checks can clear that context before the DDEP patch callback. Do not equate a namespace DDEP value with the current stored variable.",
+    "osc": "Under platform-wide _OSC revision1, DDEP==1 and OS support DWORD bit18 cause M232(DIMS,55,0) and clear namespace DDEP. M232 writes the software-SMI command/data ports.",
+    "dep": "Selected XHC3.RHUB.PRT2 _DEP requires DDEP==1, companion objects and M046<0x0b to return NHI0; otherwise it returns PCI0. M045 maps Windows2021 to0x0b and Windows2022 to0x0c.",
+    "primary_definitions": [
+      "https://github.com/tianocore/edk2/blob/496fd85f26d40871c97c5835bf5ed849b6eb8a70/MdeModulePkg/Include/Protocol/SmmVariable.h",
+      "https://uefi.org/specs/ACPI/6.6/06_Device_Configuration.html"
+    ],
+    "limit": "Static code/AML semantics only; no current NVRAM read, proof of _OSC call history, physical port mapping or PD entry decision."
+  },
+  "saved_namespace": {
+    "case": "ASUS-DEEP",
+    "snapshot_utc": "2026-11-01T00:53:54.969Z",
+    "source_dump_sha256": "fa979a86e3a586cf17a9c04c41564526a1cc748b8f8182df431eaf6a5773928c",
+    "log_sha256": "5e48f954912b8ee64d0f2aa27c7a7371f9e70635c515ff4020c3e5ef55a0a00c",
+    "method": "Offline CDB !amli dns object lookup; no AML method evaluation or live target",
+    "documentation": "https://learn.microsoft.com/en-us/windows-hardware/drivers/debuggercmds/-amli-dns",
+    "values_hex": {
+      "M046": "0xc",
+      "DDEP": "0x55",
+      "DIMS": "0xa7"
+    },
+    "interpretation": "At the saved failed-ASUS snapshot, both DDEP==1 and M046<0x0b are false. The selected legacy NHI dependency branch cannot be selected from those values.",
+    "limit": "Saved namespace values only. Not current state, storedPBS465, retimer/PD state, all dependency methods or proof the original failure cause is known."
+  },
+  "next": [
+    "Follow the remaining actual PBS9c consumers; do not propose465 as the discovered PD-control override.",
+    "Check existing Windows handoff/USB4 capability results only where the original _OSC implementation and saved trace can be paired. Do not re-evaluate _OSC or invoke the SMI."
+  ],
+  "hardware_requests": 0,
+  "aml_method_evaluations": 0,
+  "deletions": 0
+}

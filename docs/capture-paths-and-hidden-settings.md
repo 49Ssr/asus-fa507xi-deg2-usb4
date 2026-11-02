@@ -71,6 +71,12 @@ The [standard reader](../tools/Read-DEG2BillboardStrings.ps1) now has a default 
 
 Original question bytes now identify the selected firmware paths: PBS3ba controls PCIe DXIO timing overrides,3bb/3bf hold PCIe polling values,3c3 is WWAN support and1f is CLK_REQ6 clock power management. The selected PEI call writes a Boolean platform-configuration token, not a PD command. These findings distinguish those paths from the still-unlocated PD USB4-control9c consumer. They do not justify changing the settings to force USB4 entry. [Definitions and original-byte checks](../evidence/pbs-pcd-and-hii-identities.json).
 
+## What the existing dump says about USB4 dependency policy
+
+The firmware has a real USB4 ACPI dependency setting at PBS465 and a software-SMI writer. The platform-wide `_OSC` native-USB4 branch can clear this setting's dependency state. This is separate from PD USB4-control9c; invoking the SMI would change configuration.
+
+Offline inspection of the original failed ASUS dump recovered **M046=0x0c and DDEP=0x55**. The selected legacy dependency branch needs M046<0x0b and DDEP==1, so it is inactive at that snapshot. That is concrete evidence against changing this particular toggle as the fix. It does not reveal current NVRAM, PD negotiation or every other dependency. [Code, dump provenance and limits](../evidence/usb4-dependency-handshake.json).
+
 ## Would the Infineon SDK help?
 
 **Yes, as reference code and register/interface definitions. It is worth downloading; it is not a ready-made ASUS capture utility.** The [Host SDK guide](https://www.infineon.com/row/public/documents/30/316/infineon-ez-pd-ccgx-host-sdk-user-guide-productqualificationreport-en.pdf), pages10–11/38, describes AMD Phoenix reference firmware, APU/retimer interfaces and PS8830 selection. The public [hardware code](https://github.com/Infineon/pdaltmode/blob/fec544408cffffbfe459042262b5cd233a686722/cy_pdaltmode_hw.c) references AMD-specific headers and an APU mode-update function; the [retimer wrapper documentation source](https://github.com/Infineon/pdaltmode/blob/fec544408cffffbfe459042262b5cd233a686722/docs/xml/cy__pdaltmode__retimer__wrapper_8c.xml) calls AMD retimer initialisation. Those AMD implementations are not among the files in the inspected public tree.

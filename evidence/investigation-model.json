@@ -1040,6 +1040,27 @@
         "ASUS-BIOS314"
       ],
       "value_sha256": "661373b9c7c8de2699b05e0df96646a41f82997fa5ede5e70f9f7364f550e104"
+    },
+    {
+      "id": "USB4-DEP-FIRMWARE",
+      "path": "evidence/usb4-dependency-handshake.json",
+      "pointer": "/firmware_code",
+      "kind": "code",
+      "cases": [
+        "ASUS-BIOS314",
+        "ASUS-DEEP"
+      ],
+      "value_sha256": "de7ce8dfa1d2861a5dd3eb37ab633ac7c9cd25bd3148386142c07061be6dd2ed"
+    },
+    {
+      "id": "USB4-DEP-SAVED-STATE",
+      "path": "evidence/usb4-dependency-handshake.json",
+      "pointer": "/saved_namespace",
+      "kind": "capture",
+      "cases": [
+        "ASUS-DEEP"
+      ],
+      "value_sha256": "b91992b5707da5abc8f92106eba1755931e3b097b29a44b30a4de3c418ec5013"
     }
   ],
   "claims": [
@@ -2040,6 +2061,49 @@
         "ASUS-BIOS314"
       ],
       "limit": "These identified settings are distinct from PD USB4-control9c. Static source/byte linkage does not supply current values, Auto resolution, physical effects or the missing9c consumer."
+    },
+    {
+      "id": "C72",
+      "basis": "code_fact",
+      "stage": "entry",
+      "statement": "Original SMM code and AML expose a USB4 ACPI dependency-policy path for PBS465. Its software-SMI handler can persist changes; platform-wide _OSC native-USB4 support can call that handler and clear DDEP. This is distinct from PD USB4-control9c.",
+      "sources": [
+        "USB4-DEP-FIRMWARE"
+      ],
+      "cases": [
+        "ASUS-BIOS314",
+        "ASUS-DEEP"
+      ],
+      "limit": "Static semantics, not proof of invocation, current stored value, complete ACPI patch execution or a PD/retimer intervention."
+    },
+    {
+      "id": "C73",
+      "basis": "measured",
+      "stage": "entry",
+      "statement": "Offline namespace inspection of the saved failed ASUS dump recovers M046=0x0c, DDEP=0x55 and DIMS=0xa7. No AML method was executed.",
+      "sources": [
+        "USB4-DEP-SAVED-STATE"
+      ],
+      "cases": [
+        "ASUS-DEEP"
+      ],
+      "limit": "Values at the original dump timestamp, not current NVRAM or current controller state."
+    },
+    {
+      "id": "C74",
+      "basis": "inference",
+      "stage": "entry",
+      "statement": "The selected legacy NHI _DEP branch is inactive for the saved ASUS namespace values. Changing PBS465 is not justified as a repair for that selected branch.",
+      "sources": [
+        "USB4-DEP-FIRMWARE",
+        "USB4-DEP-SAVED-STATE"
+      ],
+      "cases": [
+        "ASUS-BIOS314",
+        "ASUS-DEEP"
+      ],
+      "reason": "The branch requires DDEP==1 and M046<0x0b; captured0x55 and0x0c fail both necessary conditions.",
+      "limit": "One explicitly reviewed dependency branch at a saved snapshot. No whole-platform exclusion, current-state conclusion or diagnosis of the PD failure."
     }
   ],
   "timeline_limit": "T0 is the first recorded Windows attachment report in each run, not physical insertion. Different runs, platforms, power contracts and capture dates are explicit. These tables align software reports only; proximity does not establish wire order or causation. The earlier Dell control supplies the Dell timeline; the deep Dell dump supplies cached-state comparison.",
