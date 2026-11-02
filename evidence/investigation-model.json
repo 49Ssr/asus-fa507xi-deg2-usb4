@@ -944,6 +944,16 @@
         "ASUS-BIOS314"
       ],
       "value_sha256": "6248721d8d6369b4a407f322e5012eb2520b0ef88e4ce124ff90fc4fca870d16"
+    },
+    {
+      "id": "PBS-RUNTIME-ACCESSOR",
+      "path": "evidence/pbs-runtime-variable-path.json",
+      "pointer": "/variable_code",
+      "kind": "code",
+      "cases": [
+        "ASUS-BIOS314"
+      ],
+      "value_sha256": "48a5a001d5302803dd04814da083f9b3b74c4fc4b75b445098c7e4c039dfce04"
     }
   ],
   "claims": [
@@ -1822,6 +1832,19 @@
         "ASUS-BIOS314"
       ],
       "limit": "Image definitions/defaults only. No current variable value, resolved Auto policy, physical mapping, field-consumer execution or successful repair has been observed. The prepared Windows reader has not run in Read mode."
+    },
+    {
+      "id": "C63",
+      "basis": "code_fact",
+      "stage": "entry",
+      "statement": "Original PBS code reads the named0x500-byte variable and has a missing-variable/default persistence path using attributes7. Its default initializer places1 at PD USB4-control offset9c through a wider word store. Question47 takes the reviewed callback handler's common return rather than a special direct-controller arm.",
+      "sources": [
+        "PBS-RUNTIME-ACCESSOR"
+      ],
+      "cases": [
+        "ASUS-BIOS314"
+      ],
+      "limit": "Static paths only; no observed current value/attributes, successful Windows GET, complete downstream consumer or retimer-mode execution. Attributes7 support a runtime read candidate but do not prove platform acceptance."
     }
   ],
   "timeline_limit": "T0 is the first recorded Windows attachment report in each run, not physical insertion. Different runs, platforms, power contracts and capture dates are explicit. These tables align software reports only; proximity does not establish wire order or causation. The earlier Dell control supplies the Dell timeline; the deep Dell dump supplies cached-state comparison.",

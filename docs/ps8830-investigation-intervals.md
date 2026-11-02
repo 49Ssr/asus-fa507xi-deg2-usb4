@@ -13,7 +13,7 @@ On 1 November 2026 the owner requested recurring research intervals tracing what
 
 Before each interval, read current Codex usage limits. Stop and disable the heartbeat at 1% or less remaining in any applicable allowance window, if ordinary usage is unavailable, or if the limit cannot be checked reliably. Do not buy credits, use resets, or automatically resume after a reset. Usage is account-wide; the check is a boundary guard, not an exact per-token billing cap. Recheck before expanding work and at the end.
 
-Heartbeat: `trace-asus-ps8830-configuration`, every 15 minutes in this chat (owner update before overnight work). Keep each research interval to at most 15 minutes. Notify only for meaningful findings, failures, completion, a usage stop or needed owner input. Stop if useful offline paths are exhausted; credit consumption is not a research objective.
+Historical heartbeat before interval14 deletion: `trace-asus-ps8830-configuration`, every 15 minutes in this chat (owner update before overnight work). Keep each research interval to at most 15 minutes. Notify only for meaningful findings, failures, completion, a usage stop or needed owner input. Stop if useful offline paths are exhausted; credit consumption is not a research objective.
 
 ## Starting evidence
 
@@ -23,6 +23,11 @@ Heartbeat: `trace-asus-ps8830-configuration`, every 15 minutes in this chat (own
 - [Updater evidence](parade-updater-failure.md) and [I2C prerequisites](i2c-read-prerequisites.md): real CFU target-lifetime issue, but working ASUS peer link is counterevidence to a universal USB4 blocker. No blind retry or updater patch deployment.
 
 ## Current interval
+
+**Interval15:** the original PBS accessor confirms the0x500-byte variable and a default-persistence branch using attributes7, including UEFI runtime access. Its initializer writes PD USB4-control1 through a word store at9b; literal9c searches were insufficient. Question47 has no special direct-controller branch in the reviewed form callback. [Exact code, source pins and limits](../evidence/pbs-runtime-variable-path.json). Windows GET remains prepared/unexecuted; a metadata guard now prevents enhanced-authenticated data from being decoded as plain settings.
+
+The complete PD-control consumer remains unlocated. Next: follow the known PBS-reader callers and setup/HOB/PCD transfer in retained AmdNbioPei rather than extending name-only or literal-offset absence claims. PEI is IA32 TE with0x180 stripped-header correction and per-image preferred base; validate raw bytes. Existing original names/GUIDs are triage, not proof of every consumer. Long-path disassembler failures and the corrected hash-identical short copies are retained. No hardware request, boot, setting change or deletion occurred.
+
 
 **Owner reopened work after interval14:** stopping at the old queue was too narrow. Follow the new [capture/settings investigation](capture-paths-and-hidden-settings.md). Exact BIOS HII settings are now identified; a Windows read-only variable reader is prepared, not executed. SDK login/download could add AMD/PS8830 reference definitions. Trace the actual setting consumer and identify a safe controller-state/log interface. The original failure remains unresolved. No blind boot, live bus request or new driver is authorized by this checkpoint.
 

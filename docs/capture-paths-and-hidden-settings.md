@@ -19,13 +19,19 @@ These are real settings in this image, not proof that a setting is wrong, writab
 
 The [UMAF README](https://github.com/DavidS95/Smokeless_UMAF/blob/c003b126cab6e29b1d72d061d59cea9e721a6910/README.md) explains that it replaces the boot's form browser to expose PBS/CBS menus. It is a settings interface, not a PD packet recorder. The linked [Flow X13 discussion](https://www.reddit.com/r/FlowX13/comments/1ci9u00/could_improper_usb_4_bios_installation_cause_egpu/) reports finding a USB4 toggle; it does not demonstrate a repaired FA507XI or even resolution of the original poster's problem. No UMAF download, boot or setting change was performed.
 
+## Original code behind the variable
+
+[The original PBS accessor](../evidence/pbs-runtime-variable-path.json) now confirms the exact0x500-byte read and a missing-variable path that constructs defaults and persists them with attributes7. Under the [UEFI runtime rules](https://uefi.org/specs/UEFI/2.11/08_Services_Runtime_Services.html#variable-services), those attributes include runtime visibility. This supports the prepared Windows GET as a specific access route; current attributes and acceptance still need the actual read.
+
+The initializer writes1 to PD USB4 control through a two-byte store beginning at9b. A search for literal9c byte stores alone would miss it. The question47 callback has no special controller arm in the reviewed handler; changing a visible setting is not evidence of an immediate PD transaction. The later setup-to-platform policy consumer is still being traced. Image defaults are not current values.
+
 ## Read stored settings from Windows first
 
 [Read-USB4FirmwareSettings.ps1](../tools/Read-USB4FirmwareSettings.ps1) defaults to Preview. Read mode uses Microsoft's documented [UEFI variable GET API](https://learn.microsoft.com/en-us/windows/win32/api/winbase/nf-winbase-getfirmwareenvironmentvariableexw) for exactly two named variables. It checks FA507XI/BIOS314, requires an administrator process, temporarily enables the documented process privilege and restores its previous state. There is no firmware setter, device IOCTL, driver installation or reboot.
 
-When convenient, right-click [READ-FIRMWARE-SETTINGS.cmd](../tools/READ-FIRMWARE-SETTINGS.cmd) and choose **Run as administrator**. The window stays open. No attachment/disconnection is needed. Raw values stay under private local/FirmwareSettings. Only exact expected layouts are decoded; errors, unexpected sizes and unknown values remain explicit. Firmware may make these variables unavailable to Windows. A failed GET is not a disabled setting.
+When convenient, right-click [READ-FIRMWARE-SETTINGS.cmd](../tools/READ-FIRMWARE-SETTINGS.cmd) and choose **Run as administrator**. The window stays open. No attachment/disconnection is needed. Raw values stay under private local/FirmwareSettings. Enhanced-authenticated payloads are retained without decoding because they can contain metadata. Only exact expected plain layouts are decoded; errors, unexpected sizes and unknown values remain explicit. Firmware may make these variables unavailable to Windows. A failed GET is not a disabled setting.
 
-PowerShell5.1 parsing, embedded C# compilation, default Preview and original-byte field verification passed. **Read mode has not been run:** this session's token is not elevated. The prepared reader captures stored configuration, not retimer execution or PD packets. If runtime access is unavailable, a UEFI variable export/view without saving settings is the alternative to investigate before any UMAF edit.
+PowerShell5.1 parsing, embedded C# compilation, default Preview and original-byte field verification passed. Five offline result cases also preserve unavailable values, unknown encodings, wrong sizes and enhanced-authentication metadata without guessing settings. **Read mode has not been run:** this session's token is not elevated. The prepared reader captures stored configuration, not retimer execution or PD packets. If runtime access is unavailable, a UEFI variable export/view without saving settings is the alternative to investigate before any UMAF edit.
 
 ## What an actual PD/retimer capture requires
 

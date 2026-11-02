@@ -622,6 +622,12 @@ Scope: ASUS-BIOS314. Image definitions/defaults only. No current variable value,
 
 [UEFI-USB4-SETTINGS](../evidence/firmware-settings-and-capture-paths.json) `/bios_settings`
 
+**C63 — code_fact:** Original PBS code reads the named0x500-byte variable and has a missing-variable/default persistence path using attributes7. Its default initializer places1 at PD USB4-control offset9c through a wider word store. Question47 takes the reviewed callback handler's common return rather than a special direct-controller arm.
+
+Scope: ASUS-BIOS314. Static paths only; no observed current value/attributes, successful Windows GET, complete downstream consumer or retimer-mode execution. Attributes7 support a runtime read candidate but do not prove platform acceptance.
+
+[PBS-RUNTIME-ACCESSOR](../evidence/pbs-runtime-variable-path.json) `/variable_code`
+
 ## Separate runs and observation limits
 
 | Case | Meaning | Important limit |

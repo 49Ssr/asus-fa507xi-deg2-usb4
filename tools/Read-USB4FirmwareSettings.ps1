@@ -105,7 +105,9 @@ foreach ($result in $results) {
     $record = [ordered]@{Name=$result.Name; Length=$result.Length; Attributes=$result.Attributes; Win32Error=$result.Error; Status='Unavailable'; Fields=@()}
     if ($result.Error -eq 0 -and $result.Length -gt 0) {
         [IO.File]::WriteAllBytes((Join-Path $run ($result.Name + '.private.bin')), $result.Data)
-        if ($result.Length -eq $definition.Size) {
+        if (($result.Attributes -band 0x80) -ne 0) {
+            $record.Status = 'EnhancedAuthenticationMetadata_NoDecode'
+        } elseif ($result.Length -eq $definition.Size) {
             $record.Status = 'StoredSettingsRead_NotLiveControllerState'
             foreach ($field in $definition.Fields) {
                 $value = [int]$result.Data[$field.Offset]

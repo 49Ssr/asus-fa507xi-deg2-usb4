@@ -1,0 +1,118 @@
+{
+  "schema": 1,
+  "date": "2026-11-02",
+  "interval": 15,
+  "variable_code": {
+    "module": "FA507XI BIOS314 AmdPbsSetupDxe",
+    "sha256": "8e4abbd3281f0855fdd72b4d9b6832889e001e2d973465004001030cc9f77d23",
+    "spans": [
+      {
+        "rva_start_hex": "530",
+        "rva_end_exclusive_hex": "570",
+        "purpose": "System-table runtime-services pointer binding",
+        "sha256": "d4834257fc70b1f369ff33e31ac2682963ecd5691462636edf095ddd308ce603"
+      },
+      {
+        "rva_start_hex": "25b0",
+        "rva_end_exclusive_hex": "27a4",
+        "purpose": "HII callback dispatch",
+        "sha256": "75a4d9717e55a52c1f582cf82857e13a2b70e800f1d1abef5d221b8d67a49e82"
+      },
+      {
+        "rva_start_hex": "1f88",
+        "rva_end_exclusive_hex": "2266",
+        "purpose": "Question-specific callback handler",
+        "sha256": "d4d410cbc82d9b6d5f5020f6f52dd7faa28be21a65863c920f96f51b388686a1"
+      },
+      {
+        "rva_start_hex": "28ec",
+        "rva_end_exclusive_hex": "2a9c",
+        "purpose": "PBS read/default creation wrapper",
+        "sha256": "1b0b4acf8be3abf662c2188095fe6ab8df72dc60ab8ef8b26d2c1eebcf4a4f64"
+      },
+      {
+        "rva_start_hex": "50a4",
+        "rva_end_exclusive_hex": "53c0",
+        "purpose": "PBS default initializer prefix",
+        "sha256": "08a293024439b5313d6aac6bc280aaa527297478ea5b8e509d1d7283ae504815"
+      },
+      {
+        "rva_start_hex": "5768",
+        "rva_end_exclusive_hex": "58cd",
+        "purpose": "PBS persistence helper",
+        "sha256": "f94540f9f6d07456845bee0da2499145f5cdc2a13ce67470164b37769ec4d813"
+      }
+    ],
+    "layout": "Selected PE sections have matching raw offsets and RVAs; original instruction bytes checked.",
+    "variable": "AMD_PBS_SETUP",
+    "read_path": {
+      "rva_hex": "28ec",
+      "identification": "Exact variable-name and vendor-GUID references; RuntimeServices GetVariable slot.",
+      "behavior": "Size probe expects EFI_BUFFER_TOO_SMALL and exactly0x500 bytes; allocates and reads that size. A missing variable enters the default initializer before a persistence branch.",
+      "creation_rva_hex": "2a59",
+      "creation_attributes": 7,
+      "creation_size_hex": "500",
+      "scope": "Code path, not observed execution or current variable attributes. These writes were not executed by the investigation.",
+      "runtime_table_binding": "RVA54b loads SystemTable+58; RVA569 stores the pointer used by the variable accessors."
+    },
+    "default_initializer": {
+      "rva_hex": "50a4",
+      "pd_usb4_control_write_rva_hex": "51bc",
+      "operation": "word at PBS offset9b set to0101, placing1 at offset9c. A literal9c-byte-store scan alone misses this wider write.",
+      "scope": "Default construction, not the active value or its runtime consumer."
+    },
+    "question_callback": {
+      "rva_hex": "25b0",
+      "question_hex": "47",
+      "reviewed_branch": "Question47 is below7f8 and differs from the six small-ID comparisons, so this reviewed handler reaches the common zero return at2259.",
+      "scope": "No special direct controller operation in this handler for question47. Generic form storage and later firmware policy consumption are separate; the complete setting consumer remains unlocated.",
+      "question_handler_hex": "1f88",
+      "outer_callback_action_value": 1
+    }
+  },
+  "runtime_reference": {
+    "url": "https://uefi.org/specs/UEFI/2.11/08_Services_Runtime_Services.html",
+    "section": "8.2.1 GetVariable",
+    "attributes": {
+      "nonvolatile": 1,
+      "bootservice": 2,
+      "runtime": 4,
+      "enhanced_authenticated": 128
+    },
+    "meaning": "Attributes7 include runtime visibility. Without runtime access, variables are not visible to GetVariable after ExitBootServices. Enhanced-authenticated payloads can include metadata and cannot be decoded as plain setup bytes."
+  },
+  "capture_implication": {
+    "result": "The original PBS persistence code supports the existing Windows read attempt as a specific runtime-variable target. Current existence/attributes and Windows acceptance remain unmeasured.",
+    "reader_change": "Keep raw enhanced-authenticated results private but refuse field decoding when attribute80 is set, even if length happens to match.",
+    "live_reads": 0,
+    "new_driver_or_boot": false,
+    "offline_reader_validation": {
+      "powershell": "5.1.26100.9818",
+      "cases": [
+        "normal forward/reverse encoding",
+        "unavailable203 remains unknown",
+        "wrong size refuses decode",
+        "enhanced-authenticated metadata refuses decode",
+        "unknown field value remains unknown"
+      ],
+      "passed": 5,
+      "firmware_api_invoked": false
+    }
+  },
+  "scan_scope": {
+    "body_files": 2473,
+    "pe_candidates_containing_variable_name": 17,
+    "additional_unique_te_candidates": 5,
+    "limits": "Exact name/GUID and selected instruction searches are triage, not whole-firmware reachability or absence proofs. PEI copies are duplicates by hash. Main PD-policy consumer not recovered."
+  },
+  "corrections": [
+    "Initial long extraction paths could not be opened by the disassembler; all zero-instruction results were rejected and retained. Hash-identical short-path copies corrected the problem.",
+    "Initial text search ignored relative-address ptr metadata and returned no name xrefs; ptr-target comparisons recovered the real calls.",
+    "The first targeted9c operand search was insufficient for stack-relative reads and wider9b default writes; no absence conclusion used."
+  ],
+  "next": [
+    "Trace the setup-to-platform policy transfer rather than treating the form callback as a retimer writer",
+    "Inspect exact consumers in the AMD platform/configuration modules, including copies or field tables",
+    "Continue controller-log/interface qualification independently of SDK login"
+  ]
+}
