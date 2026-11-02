@@ -812,6 +812,24 @@ Scope: ASUS-LINUX-01. Acknowledgement and connector-report definitions do not es
 
 [LINUX-ASUS-DECODE](../evidence/linux-asus-result.json) `/source_decode`
 
+**C93 — code_fact:** The signed EZ-PD Host SDK 3.9.0 package supplies AMD/PS8830 headers and ARM ELF objects implementing the missing APU and retimer routines. Setup was not executed; the package was extracted and source/object hashes retained.
+
+Scope: INFINEON-SDK39. Reference Infineon implementations, not ASUS ITE firmware. The missing functions are available in compiled form rather than matching plaintext C; no hardware effect or working repair follows.
+
+[SDK39-CONTENTS](../evidence/infineon-sdk-review.json) `/package`
+
+**C94 — code_fact:** The SDK reference APU status reader sends index80 and reads three bytes at the configured address in configuration mode1. Guard or transport failure returns0; successful transport returns2 or3 from status bit6. Seven offline executions of the original Thumb instructions checked this behavior.
+
+Scope: INFINEON-SDK39. Synthetic transport replies and RAM relocation only. No physical status, ASUS address/bit meaning or compatible live command was acquired. The operation targets the APU interface, not a demonstrated PS8830 register.
+
+[SDK39-AMD-REFERENCE](../evidence/infineon-sdk-review.json) `/reference_read_path`
+
+**C95 — code_fact:** The AMD notebook reference conditionally registers an HPI-to-I2C read/write tunnel. Its combined read checks transport status and byte counts; standalone read and retimer-write wrappers accept some non-success results as true.
+
+Scope: INFINEON-SDK39. Build-conditional reference code only. HPI is not established as DEG2 WinUSB or ASUS EC transport, and the permissive Boolean behavior is not evidence of an ASUS failure.
+
+[SDK39-AMD-REFERENCE](../evidence/infineon-sdk-review.json) `/reference_read_path`
+
 ## Separate runs and observation limits
 
 | Case | Meaning | Important limit |
@@ -846,6 +864,7 @@ Scope: ASUS-LINUX-01. Acknowledgement and connector-report definitions do not es
 | LINUX-CAPTURE-KIT | Prepared SystemRescue13.02 collector, offline validation only | Distribution and code checked; boot, USB persistence and ASUS/Dell hardware capture unexercised. |
 | LINUX-VM-STARTUP | Isolated live Linux VM startup | Virtual DVD, no host disks, network, passthrough or USB4 emulation; startup and model guard only. |
 | ASUS-LINUX-01 | Fresh ASUS DEG2 attachment under SystemRescue 13.02 / Linux 6.18.41 | One owner-directed attachment; software reports and enabled tracepoints, not a raw PD or applied retimer measurement. |
+| INFINEON-SDK39 | EZ-PD Host SDK 3.9.0 reference code and offline object analysis | Infineon controller reference only; no ASUS or DEG2 hardware execution, live state or Windows repair is established. |
 
 ## Software-report timelines
 

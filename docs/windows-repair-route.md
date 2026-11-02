@@ -1,5 +1,7 @@
 # Finding a Windows repair: the missing decision
 
+**New source available:** [SDK 3.9.0 has been acquired and inspected](infineon-sdk-review.md). The missing AMD headers and compiled functions are now available for comparison. No equivalence to the ASUS transport or a ready Windows logger is established.
+
 The repair is uncertain because the first failed RT0 transition is unobserved. The investigation can still have a specific target: recover that decision and identify a Windows operation that controls the affected state. Existing host-router samples locate the failure before usable external-router discovery; they do not distinguish all earlier causes.
 
 The [saved attachment sequence](rt0-attachment-order.md) now ties connector1 to RT0 and places successful DEG2 SuperSpeed-hub enumeration after the Windows role correction. This narrows the failure beyond a permanently wrong USB host/device role; actual USB4 entry and retimer/training state remain missing.

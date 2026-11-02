@@ -1,21 +1,25 @@
-# Research checkpoint
-
-Updated 2 November 2026. [Current findings](status.md) are the public summary; [the current plan](investigation-plan.md) names the open work.
-
-## Current work
-
-The RT0 mapping and USB enumeration order are established. The first failed PD/retimer/link operation remains unobserved. Follow the original RT0/PBS policy consumer or an identified controller diagnostic implementation.
-
-The [first ASUS Linux capture](linux-asus-result.md) booted, saved to USB and reproduced fallback. No external router or new PCIe device appeared; the host router was present and ACPI granted OS PCIe control. The trace's transmitted ERROR 0x7 packets are normal plug-event acknowledgements. A matching Dell Linux capture is currently unavailable. Use the saved successful Dell Windows captures; native detection and device-status comparisons already exist. Do not repeat Dell boot-menu attempts, the old Windows capture or ASUS unchanged. Continue from this result and the original policy/controller implementation; obtain a new capture only for a named missing record.
-
-## Operating constraints
-
-Scheduling remains paused. Physical boots/cables are owner-directed, and no unattended remote restart is authorized. No live EC/I2C/vendor command, driver change, mode override or flash is selected. Preserve original artifacts, failed attempts and private recovery records.
-
-Owner-directed usage stop remains 1% in any applicable known allowance window. Verify allowances before expanding sustained work, stop if unavailable, and never purchase credits, use resets or automatically resume scheduling.
-
-## Earlier journal
-
-The complete dated journal is preserved at [the pre-cleanup revision](https://github.com/49Ssr/asus-fa507xi-deg2-usb4/blob/52e6e26890adf49c2846a0acc478089659808843/docs/ps8830-investigation-intervals.md). Its old “next task”, unexecuted-read and scheduling statements describe their dates and do not override current state.
-
-[Evidence map](investigation-map.md) · [History index](history.md)
+# Research checkpoint
+
+Updated 2 November 2026. [Current findings](status.md) are the public summary; [the current plan](investigation-plan.md) names the open work.
+
+## Current work
+
+The RT0 mapping and USB enumeration order are established. The first failed PD/retimer/link operation remains unobserved. Follow the original RT0/PBS policy consumer or an identified controller diagnostic implementation.
+
+The [first ASUS Linux capture](linux-asus-result.md) booted, saved to USB and reproduced fallback. No external router or new PCIe device appeared; the host router was present and ACPI granted OS PCIe control. The trace's transmitted ERROR 0x7 packets are normal plug-event acknowledgements. A matching Dell Linux capture is currently unavailable. Use the saved successful Dell Windows captures; native detection and device-status comparisons already exist. Do not repeat Dell boot-menu attempts, the old Windows capture or ASUS unchanged. Continue from this result and the original policy/controller implementation; obtain a new capture only for a named missing record.
+
+## SDK checkpoint
+
+EZ-PD Host SDK 3.9.0 is extracted privately. [Review and source pins](infineon-sdk-review.md). The package contains the missing AMD headers and ELF implementations. The 80-byte APU status reader sends index 80 and reads three bytes in its selected configuration; seven emulator cases verified its guard and bit-6 result. No ASUS status was acquired. Next compare that APU transaction and the separate interrupt reader with the original ASUS controller-facing code. Do not conflate the reference HPI tunnel with DEG2 WinUSB or ASUS EC access.
+
+## Operating constraints
+
+Scheduling remains paused. Physical boots/cables are owner-directed, and no unattended remote restart is authorized. No live EC/I2C/vendor command, driver change, mode override or flash is selected. Preserve original artifacts, failed attempts and private recovery records.
+
+Owner-directed usage stop remains 1% in any applicable known allowance window. Verify allowances before expanding sustained work, stop if unavailable, and never purchase credits, use resets or automatically resume scheduling.
+
+## Earlier journal
+
+The complete dated journal is preserved at [the pre-cleanup revision](https://github.com/49Ssr/asus-fa507xi-deg2-usb4/blob/52e6e26890adf49c2846a0acc478089659808843/docs/ps8830-investigation-intervals.md). Its old “next task”, unexecuted-read and scheduling statements describe their dates and do not override current state.
+
+[Evidence map](investigation-map.md) · [History index](history.md)

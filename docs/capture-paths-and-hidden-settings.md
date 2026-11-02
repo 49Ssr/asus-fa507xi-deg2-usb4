@@ -2,6 +2,8 @@
 
 > Detailed research record. For the latest result and selected test, start with [current findings](status.md). Preparation statements below describe their dates; later results supersede them.
 
+**Later SDK result:** [SDK 3.9.0 is now extracted and inspected](infineon-sdk-review.md). Its AMD/PS8830 headers and compiled functions are available; earlier download-pending statements below describe their original stage.
+
 2 November 2026. The earlier stop described the end of the saved task list too broadly. The owner reopened the investigation with specific capture and hidden-setting leads. No working repair or live PD capture is claimed here.
 
 ## What the exact ASUS BIOS contains

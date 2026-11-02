@@ -1,0 +1,371 @@
+{
+  "schema": 1,
+  "date": "2026-11-02",
+  "status": "ReferenceImplementationRecovered_AsusMappingUnproven",
+  "package": {
+    "name": "ez-pd_host_sdk_3.9.0_Windows_x86-x64.exe",
+    "version": "3.9.0",
+    "bytes": 36939376,
+    "sha256": "0a841e5ef09894dd5c18ce441534c5958a4338c3fce4c767980409c3618e0b65",
+    "authenticode": "Valid",
+    "publisher": "Infineon Technologies IT-Services GmbH",
+    "setup_executed": false,
+    "extraction": "innoextract 1.9; long-path extraction completed with exit 0",
+    "archive_entries": 41676,
+    "selected_files": [
+      {
+        "path": "source/CCGxCFPDualAppAMD/mtb_shared/pdaltmode/release-v2.1.0/cy_pdaltmode_amd.h",
+        "bytes": 6971,
+        "sha256": "d3efc9e855ad939427168e7c08ad129b16853c15042d86c7702a1c17046d10d6"
+      },
+      {
+        "path": "source/CCGxCFPDualAppAMD/mtb_shared/pdaltmode/release-v2.1.0/cy_pdaltmode_amd_mtk_retimer.h",
+        "bytes": 9827,
+        "sha256": "d85c98038686a118dbc844ee5182a15792661930e41ea5a5ab88cd1950e4e19d"
+      },
+      {
+        "path": "source/CCGxCFPDualAppAMD/mtb_shared/pdaltmode/release-v2.1.0/cy_pdaltmode_hw.c",
+        "bytes": 34054,
+        "sha256": "e77a2c3ec66452f2accecc0e4c9bec7ba5e495529deb5424d8b740c3b080f37f"
+      },
+      {
+        "path": "source/CCGxCFPDualAppAMD/mtb_shared/pdaltmode/release-v2.1.0/cy_pdaltmode_retimer_wrapper.c",
+        "bytes": 22559,
+        "sha256": "34b43fbabe6ad953a72207f0fe108b0c62272ee2f485d26ae990f9adaae2e4ee"
+      },
+      {
+        "path": "source/CCGxCFPDualAppAMD/mtb_shared/pdaltmode/release-v2.1.0/cy_pdaltmode_defines.h",
+        "bytes": 80064,
+        "sha256": "e60ca5d2ab0b4e48dc827a55ad76cf26e3b191708ce24ea718d0294f269c6c1e"
+      },
+      {
+        "path": "source/CCGxCFPDualAppAMD/mtb_shared/pdaltmode/release-v2.1.0/COMPONENT_PDALTMODE_HOST_AMD/TOOLCHAIN_GCC_ARM/libpdaltmode_host_amd.a",
+        "bytes": 35638,
+        "sha256": "f1bca00fcdd30dad7aecf2c046389bd53c911549a408a325a0c68c65afa33636"
+      },
+      {
+        "path": "source/CCGxCFPDualAppAMD/CCGxCFPDualAppAMD/src/amd_wrapper.c",
+        "bytes": 9893,
+        "sha256": "6b53ac8cfd1006ea45b6cf68114f9c1cdb1b0ab40507b8d744ff5988b3c12e48"
+      },
+      {
+        "path": "source/CCGxCFPDualAppAMD/CCGxCFPDualAppAMD/main.c",
+        "bytes": 67645,
+        "sha256": "7bd4da243171315dd40b6f436227bc7fe5584e15c01c7645a79f360f643b36d1"
+      },
+      {
+        "path": "source/CCGxCFPDualAppAMD/CCGxCFPDualAppAMD/config.h",
+        "bytes": 15613,
+        "sha256": "3717db3b9ce9504ae01cd7a7f43a013d5f7db409dad84ac6a8f43e0fa9b7f1ae"
+      },
+      {
+        "path": "source/CCGxCFPDualAppAMD/mtb_shared/mtb-pdl-cat2/release-v2.19.0/drivers/include/cy_usbpd_config_table.h",
+        "bytes": 88696,
+        "sha256": "149ba28f696c1b8c61d4491f15821e9714c0692954bfd97f5c5987eb1b6c84df"
+      },
+      {
+        "path": "source/CCGxCFPDualAppAMD/mtb_shared/ccgx-host-common/release-v2.0.0/system/cy_i2cm.h",
+        "bytes": 8651,
+        "sha256": "ec837391386744521cfae5c6524c407d5fc06452081a17a4ea743e1104049753"
+      }
+    ],
+    "compiled_members": [
+      {
+        "member": "cy_pdaltmode_amd.o",
+        "sha256": "0b6fb2c454af96f07c22c4cc69281d6ec3e2593521aa2c25baaa990fc7a1f603",
+        "architecture": "ARM32 little-endian Thumb relocatable ELF",
+        "functions": [
+          {
+            "name": "Cy_PdAltMode_Amd_ReadIntSource",
+            "bytes": 64,
+            "calls": [
+              "Cy_PdAltMode_AmdMtk_WriteReadWrapper"
+            ]
+          },
+          {
+            "name": "Cy_PdAltMode_Amd_GetApuStatus",
+            "bytes": 80,
+            "calls": [
+              "Cy_PdAltMode_AmdMtk_WriteReadWrapper"
+            ]
+          },
+          {
+            "name": "Cy_PdAltMode_Amd_HpiRegWrHandler",
+            "bytes": 112,
+            "calls": [
+              "Cy_PdAltMode_RetimerSetPowerEnable",
+              "Cy_PdAltMode_AmdMtkRetimer_FwUpdtHpiCmd",
+              "Cy_Hpi_InitUserdefRegs"
+            ]
+          },
+          {
+            "name": "Cy_PdAltMode_Amd_SetMux",
+            "bytes": 1896,
+            "calls": [
+              "Cy_PdAltMode_RetimerWrapper_IsFwUpdateActive",
+              "Cy_PdAltMode_RetimerWrapper_DeInit",
+              "Cy_PdAltMode_RetimerWrapper_SetMux",
+              "Cy_PdUtils_SwTimer_StartWocb",
+              "Cy_PdAltMode_RetimerWrapper_SetMux",
+              "Cy_PdStack_Dpm_SetSolnBusy"
+            ]
+          },
+          {
+            "name": "Cy_PdAltMode_Amd_Task",
+            "bytes": 1996,
+            "calls": [
+              "get_pdstack_context",
+              "get_pdstack_context",
+              "Cy_PdUtils_SwTimer_Stop",
+              "get_pdstack_context",
+              "get_pdstack_context",
+              "Cy_PdUtils_SwTimer_Stop",
+              "Cy_PdAltMode_AmdMtkRetimer_IsHpdPending",
+              "Cy_PdAltMode_RetimerWrapper_Update",
+              "Cy_PdUtils_SwTimer_IsRunning",
+              "Cy_PdAltMode_HW_IsIdle",
+              "Cy_PdAltMode_Amd_ApuIntStatus",
+              "Cy_PdAltMode_Amd_ApuIntStatus",
+              "Cy_PdAltMode_RetimerWrapper_Update",
+              "Cy_PdAltMode_RetimerWrapper_IsBusy",
+              "Cy_PdAltMode_Amd_ApuIntStatus",
+              "Cy_PdAltMode_Amd_ApuIntStatus",
+              "Cy_PdAltMode_Amd_ReadIntSource",
+              "Cy_PdAltMode_Amd_ApuIntStatus",
+              "Cy_PdUtils_SwTimer_StartWocb",
+              "Cy_PdAltMode_AmdMtk_WriteReadWrapper",
+              "Cy_PdAltMode_Amd_GotoFail",
+              "Cy_PdAltMode_Amd_ReadIntSource",
+              "Cy_PdUtils_SwTimer_StartWocb",
+              "Cy_PdUtils_SwTimer_StartWocb",
+              "Cy_PdAltMode_Amd_ApuRstStatus",
+              "Cy_PdAltMode_Amd_GetApuStatus",
+              "Cy_PdUtils_SwTimer_IsRunning",
+              "Cy_PdUtils_SwTimer_Stop",
+              "Cy_PdAltMode_Amd_GotoIdle",
+              "Cy_PdAltMode_HW_SetMux",
+              "Cy_PdAltMode_HW_SetMux",
+              "Cy_PdAltMode_Amd_GetApuStatus",
+              "Cy_Hpi_SendHwErrorEvent",
+              "Cy_PdUtils_SwTimer_Start",
+              "Cy_PdUtils_SwTimer_Stop",
+              "Cy_PdAltMode_Amd_GotoIdle",
+              "Cy_PdAltMode_Amd_GotoFail",
+              "Cy_PdAltMode_Amd_ApuIntStatus",
+              "Cy_PdAltMode_AmdMtk_WriteWrapper",
+              "Cy_PdUtils_SwTimer_StartWocb",
+              "Cy_PdAltMode_AmdMtk_WriteWrapper",
+              "Cy_PdUtils_SwTimer_Start",
+              "Cy_PdAltMode_Amd_GotoFail",
+              "Cy_PdUtils_SwTimer_Stop",
+              "Cy_PdAltMode_AmdMtk_WriteReadWrapper",
+              "Cy_PdAltMode_Amd_GotoFail",
+              "Cy_PdAltMode_Amd_GotoIdle",
+              "Cy_PdUtils_SwTimer_StartWocb",
+              "Cy_PdAltMode_HW_SetMux"
+            ]
+          }
+        ]
+      },
+      {
+        "member": "cy_pdaltmode_amd_mtk_retimer.o",
+        "sha256": "c316732cf4768e9049592273a5744a3739896eb21196990179e07b5bfc66bfe3",
+        "architecture": "ARM32 little-endian Thumb relocatable ELF",
+        "functions": [
+          {
+            "name": "Cy_PdAltMode_AmdMtkRetimer_SetMux",
+            "bytes": 436,
+            "calls": [
+              "__gnu_thumb1_case_uqi",
+              "Cy_PdAltMode_Mngr_GetCblInfo",
+              "Cy_PdAltMode_AmdMtkRetimer_SetKBConfig",
+              "Cy_PdAltMode_Mngr_IsForceDisconnectEvt",
+              "Cy_PdAltMode_Mngr_GetCableUsbCap"
+            ]
+          }
+        ]
+      }
+    ],
+    "copyright_scope": "Installer, SDK files, libraries and disassembly remain private; no third-party source or binaries redistributed."
+  },
+  "reference_read_path": {
+    "config_fields": [
+      "amd_platform_type",
+      "amd_apu_mode",
+      "amd_apu_address",
+      "amd_apu_index",
+      "retimer_type",
+      "i2c_retimer_address",
+      "usb4_captive",
+      "host_support",
+      "usb4_support",
+      "usb3_support"
+    ],
+    "ps8830_selection": {
+      "value_hex": "04",
+      "scope": "AMD reference selection value; not a physical register address"
+    },
+    "status_reader": {
+      "function": "Cy_PdAltMode_Amd_GetApuStatus",
+      "bytes": 80,
+      "required_config_mode": 1,
+      "index_hex": "80",
+      "write_bytes": 1,
+      "read_bytes": 3,
+      "destination": "Configured APU address, not a demonstrated PS8830 or ASUS address",
+      "return_on_guard_or_transport_failure": 0,
+      "return_on_success": "2 + ((first_status_byte >> 6) & 1)",
+      "physical_bit6_meaning_established_on_asus": false
+    },
+    "interrupt_reader": {
+      "function": "Cy_PdAltMode_Amd_ReadIntSource",
+      "index_hex": "a2",
+      "write_bytes": 1,
+      "read_bytes": 1
+    },
+    "mode_flow": {
+      "observed_reference_symbols": [
+        "Cy_PdAltMode_Amd_SetMux",
+        "Cy_PdAltMode_Amd_Task",
+        "Cy_PdAltMode_RetimerWrapper_SetMux",
+        "Cy_PdAltMode_RetimerWrapper_Update",
+        "Cy_Hpi_SendHwErrorEvent"
+      ],
+      "limit": "Pending tasks, timers and error handling exist. The complete state machine and ASUS implementation have not been equated."
+    },
+    "hpi_tunnel": {
+      "source": "source/CCGxCFPDualAppAMD/CCGxCFPDualAppAMD/src/amd_wrapper.c",
+      "callback": "Cy_PdAltMode_AmdMtk_I2cmGenI2cTunnelCmd",
+      "registration": "source/CCGxCFPDualAppAMD/CCGxCFPDualAppAMD/main.c",
+      "conditional_on": [
+        "AMD_SUPP_ENABLE",
+        "GENERIC_HPI_TUNNELING_ENABLE",
+        "CY_HPI_PD_CMD_ENABLE"
+      ],
+      "transport": "Reference-controller HPI to its I2C master",
+      "read_branch": "Uses combined write/read wrapper and checks transport result and byte counts",
+      "max_data_array_bytes": 16,
+      "qualified_as_asus_or_deg2_command": false
+    },
+    "wrapper_result_limits": {
+      "strict_path": "Cy_PdAltMode_AmdMtk_WriteReadWrapper checks success and byte counts for both phases",
+      "permissive_paths": [
+        "Cy_PdAltMode_AmdMtk_ReadWrapper",
+        "Cy_PdAltMode_AmdMtk_WriteWrapper when is_retimer is true"
+      ],
+      "permissive_false_results": [
+        "CY_I2CM_RET_ARB_LOST",
+        "CY_I2CM_RET_BUS_BUSY"
+      ],
+      "other_error_results_can_return_true": true,
+      "asus_executes_this_code": null
+    },
+    "validation": {
+      "method": "Original Thumb instruction bytes; synthetic RAM relocation and one stubbed external transport call",
+      "cases": [
+        {
+          "configured_mode": 0,
+          "transport_success": true,
+          "injected_status_hex": "40",
+          "returned": 0,
+          "expected": 0,
+          "calls": []
+        },
+        {
+          "configured_mode": 1,
+          "transport_success": false,
+          "injected_status_hex": "40",
+          "returned": 0,
+          "expected": 0,
+          "calls": [
+            {
+              "index_byte": "80",
+              "write_bytes": 1,
+              "read_bytes": 3
+            }
+          ]
+        },
+        {
+          "configured_mode": 1,
+          "transport_success": true,
+          "injected_status_hex": "00",
+          "returned": 2,
+          "expected": 2,
+          "calls": [
+            {
+              "index_byte": "80",
+              "write_bytes": 1,
+              "read_bytes": 3
+            }
+          ]
+        },
+        {
+          "configured_mode": 1,
+          "transport_success": true,
+          "injected_status_hex": "40",
+          "returned": 3,
+          "expected": 3,
+          "calls": [
+            {
+              "index_byte": "80",
+              "write_bytes": 1,
+              "read_bytes": 3
+            }
+          ]
+        },
+        {
+          "configured_mode": 1,
+          "transport_success": true,
+          "injected_status_hex": "80",
+          "returned": 2,
+          "expected": 2,
+          "calls": [
+            {
+              "index_byte": "80",
+              "write_bytes": 1,
+              "read_bytes": 3
+            }
+          ]
+        },
+        {
+          "configured_mode": 1,
+          "transport_success": true,
+          "injected_status_hex": "c0",
+          "returned": 3,
+          "expected": 3,
+          "calls": [
+            {
+              "index_byte": "80",
+              "write_bytes": 1,
+              "read_bytes": 3
+            }
+          ]
+        },
+        {
+          "configured_mode": 1,
+          "transport_success": true,
+          "injected_status_hex": "ff",
+          "returned": 3,
+          "expected": 3,
+          "calls": [
+            {
+              "index_byte": "80",
+              "write_bytes": 1,
+              "read_bytes": 3
+            }
+          ]
+        }
+      ],
+      "hardware_requests": 0,
+      "hardware_status_sample": null,
+      "asus_transport": null
+    }
+  },
+  "limits": [
+    "Infineon reference controller differs from the ASUS ITE implementation.",
+    "No Windows PD packet recorder or compatible live request is established.",
+    "No ASUS or DEG2 device was queried, reset, flashed or reconfigured.",
+    "Host APU operations, physical retimer access and dock USB vendor commands remain separate."
+  ],
+  "next": "Compare reference APU transaction shape and status fields with the original ASUS controller-facing code; separately identify the exact DEG2 diagnostic implementation."
+}

@@ -1,6 +1,6 @@
 {
   "schema": 1,
-  "date": "2026-11-01",
+  "date": "2026-11-02",
   "goal": {
     "current": "Locate the first failed branch in the ASUS-DEG2 control/message flow, identify its owning component and an observable that distinguishes it, then select one reversible intervention with a predicted outcome.",
     "eventual": "With the existing dock, GPU and cable, restore ASUS router/GPU enumeration and display output using a reversible Windows remedy, then verify reconnect and removal/rollback. No working remedy is established."
@@ -156,6 +156,11 @@
       "id": "ASUS-LINUX-01",
       "label": "Fresh ASUS DEG2 attachment under SystemRescue 13.02 / Linux 6.18.41",
       "limit": "One owner-directed attachment; software reports and enabled tracepoints, not a raw PD or applied retimer measurement."
+    },
+    {
+      "id": "INFINEON-SDK39",
+      "label": "EZ-PD Host SDK 3.9.0 reference code and offline object analysis",
+      "limit": "Infineon controller reference only; no ASUS or DEG2 hardware execution, live state or Windows repair is established."
     }
   ],
   "stages": [
@@ -1281,6 +1286,26 @@
         "ASUS-LINUX-01"
       ],
       "value_sha256": "6ac685c2493d9514207cdd6ae0787db46eecfe75a77e379673f6dcbde5767fa1"
+    },
+    {
+      "id": "SDK39-CONTENTS",
+      "path": "evidence/infineon-sdk-review.json",
+      "pointer": "/package",
+      "kind": "code",
+      "cases": [
+        "INFINEON-SDK39"
+      ],
+      "value_sha256": "87aaf33f52d0249671c40c66ffa2e9d1a672c4d81168be0b56d3d3fbd376c20f"
+    },
+    {
+      "id": "SDK39-AMD-REFERENCE",
+      "path": "evidence/infineon-sdk-review.json",
+      "pointer": "/reference_read_path",
+      "kind": "code",
+      "cases": [
+        "INFINEON-SDK39"
+      ],
+      "value_sha256": "abbd6536f6c5ef545ee82c526eb4f38d64f4d334cbe1ce894e076dc85319481f"
     }
   ],
   "claims": [
@@ -2568,6 +2593,45 @@
         "ASUS-LINUX-01"
       ],
       "limit": "Acknowledgement and connector-report definitions do not establish USB4 entry, remote-router discovery, applied retimer state or a repair."
+    },
+    {
+      "id": "C93",
+      "basis": "code_fact",
+      "stage": "control",
+      "statement": "The signed EZ-PD Host SDK 3.9.0 package supplies AMD/PS8830 headers and ARM ELF objects implementing the missing APU and retimer routines. Setup was not executed; the package was extracted and source/object hashes retained.",
+      "sources": [
+        "SDK39-CONTENTS"
+      ],
+      "cases": [
+        "INFINEON-SDK39"
+      ],
+      "limit": "Reference Infineon implementations, not ASUS ITE firmware. The missing functions are available in compiled form rather than matching plaintext C; no hardware effect or working repair follows."
+    },
+    {
+      "id": "C94",
+      "basis": "code_fact",
+      "stage": "control",
+      "statement": "The SDK reference APU status reader sends index80 and reads three bytes at the configured address in configuration mode1. Guard or transport failure returns0; successful transport returns2 or3 from status bit6. Seven offline executions of the original Thumb instructions checked this behavior.",
+      "sources": [
+        "SDK39-AMD-REFERENCE"
+      ],
+      "cases": [
+        "INFINEON-SDK39"
+      ],
+      "limit": "Synthetic transport replies and RAM relocation only. No physical status, ASUS address/bit meaning or compatible live command was acquired. The operation targets the APU interface, not a demonstrated PS8830 register."
+    },
+    {
+      "id": "C95",
+      "basis": "code_fact",
+      "stage": "control",
+      "statement": "The AMD notebook reference conditionally registers an HPI-to-I2C read/write tunnel. Its combined read checks transport status and byte counts; standalone read and retimer-write wrappers accept some non-success results as true.",
+      "sources": [
+        "SDK39-AMD-REFERENCE"
+      ],
+      "cases": [
+        "INFINEON-SDK39"
+      ],
+      "limit": "Build-conditional reference code only. HPI is not established as DEG2 WinUSB or ASUS EC transport, and the permissive Boolean behavior is not evidence of an ASUS failure."
     }
   ],
   "timeline_limit": "T0 is the first recorded Windows attachment report in each run, not physical insertion. Different runs, platforms, power contracts and capture dates are explicit. These tables align software reports only; proximity does not establish wire order or causation. The earlier Dell control supplies the Dell timeline; the deep Dell dump supplies cached-state comparison.",
