@@ -616,6 +616,12 @@ Scope: PARADE-DRIVER-REFERENCE. This does not qualify the candidate mode-byte or
 
 [PARADE-MODE-READ-CONTRACT](../evidence/parade-mode-read-contract.json) `/transport_code`
 
+**C62 — code_fact:** Original FA507XI BIOS314 HII defines PD USB4 control, pre-CM, separate router/PCIe-tunnel controls and a reverse-encoded PD Thunderbolt3 toggle. Ten question records and their variable offsets match original module bytes.
+
+Scope: ASUS-BIOS314. Image definitions/defaults only. No current variable value, resolved Auto policy, physical mapping, field-consumer execution or successful repair has been observed. The prepared Windows reader has not run in Read mode.
+
+[UEFI-USB4-SETTINGS](../evidence/firmware-settings-and-capture-paths.json) `/bios_settings`
+
 ## Separate runs and observation limits
 
 | Case | Meaning | Important limit |
@@ -749,6 +755,7 @@ Needed: Pairing-specific causal evidence before any cleanup patch is presented a
 - The policy record has a historical key named current_state. It cannot establish current boot/security configuration; refresh live inventory only when a later action actually needs it. Sources: [POLICY-OLD-SNAPSHOT](../evidence/role-policy-experiment.json) `/current_state`.
 - The flagged EC worker and the normal Windows command completions belong to different evidence classes. Their relation is an inference assuming the reviewed firmware applies, not a measured flag value. Sources: [FLAG-GATE](../evidence/ec-blocking-flag.json) `/outer_gate`, [EC-LIVE-MATCH](../evidence/ec-firmware-decision.json) `/source/live_flash_hash_verified`, [ASUS-COMPLETIONS](../evidence/asus-dell-matched-comparison.json) `/trace/terminal_command_completions`.
 - The official service-guide example PCB marking is not the fitted ASUS motherboard identity or a control-wiring schematic. The Infineon catalog link is not recovered source: the attempted version3.7 download returned401. Neither source closes the failed-connection mode-state gap. Sources: [BOARD-SDK-SOURCE-SCOPE](../evidence/board-and-sdk-access-review.json) `/source_qualification`.
+- Ending the saved offline candidate queue did not establish the end of useful capture research. Exact BIOS settings are a newly qualified read target; a read of stored policy remains separate from live PD/retimer state. Sources: [UEFI-USB4-SETTINGS](../evidence/firmware-settings-and-capture-paths.json) `/bios_settings`.
 
 ## Documentation used for architecture
 

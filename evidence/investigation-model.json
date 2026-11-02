@@ -934,6 +934,16 @@
         "PUBLIC-BOARD-SOURCE-REFERENCE"
       ],
       "value_sha256": "729ff9a659c6b0d285fd1ae825d5b394394eb733c1a2e4339b8c4aa1d91a460c"
+    },
+    {
+      "id": "UEFI-USB4-SETTINGS",
+      "path": "evidence/firmware-settings-and-capture-paths.json",
+      "pointer": "/bios_settings",
+      "kind": "code",
+      "cases": [
+        "ASUS-BIOS314"
+      ],
+      "value_sha256": "6248721d8d6369b4a407f322e5012eb2520b0ef88e4ce124ff90fc4fca870d16"
     }
   ],
   "claims": [
@@ -1799,6 +1809,19 @@
         "PARADE-DRIVER-REFERENCE"
       ],
       "limit": "This does not qualify the candidate mode-byte or branch-marker read, establish a physical alias, or prove every alternative interface absent. No live read, endpoint switch or update command was attempted."
+    },
+    {
+      "id": "C62",
+      "basis": "code_fact",
+      "stage": "entry",
+      "statement": "Original FA507XI BIOS314 HII defines PD USB4 control, pre-CM, separate router/PCIe-tunnel controls and a reverse-encoded PD Thunderbolt3 toggle. Ten question records and their variable offsets match original module bytes.",
+      "sources": [
+        "UEFI-USB4-SETTINGS"
+      ],
+      "cases": [
+        "ASUS-BIOS314"
+      ],
+      "limit": "Image definitions/defaults only. No current variable value, resolved Auto policy, physical mapping, field-consumer execution or successful repair has been observed. The prepared Windows reader has not run in Read mode."
     }
   ],
   "timeline_limit": "T0 is the first recorded Windows attachment report in each run, not physical insertion. Different runs, platforms, power contracts and capture dates are explicit. These tables align software reports only; proximity does not establish wire order or causation. The earlier Dell control supplies the Dell timeline; the deep Dell dump supplies cached-state comparison.",
@@ -2038,6 +2061,12 @@
       "explanation": "The official service-guide example PCB marking is not the fitted ASUS motherboard identity or a control-wiring schematic. The Infineon catalog link is not recovered source: the attempted version3.7 download returned401. Neither source closes the failed-connection mode-state gap.",
       "sources": [
         "BOARD-SDK-SOURCE-SCOPE"
+      ]
+    },
+    {
+      "explanation": "Ending the saved offline candidate queue did not establish the end of useful capture research. Exact BIOS settings are a newly qualified read target; a read of stored policy remains separate from live PD/retimer state.",
+      "sources": [
+        "UEFI-USB4-SETTINGS"
       ]
     }
   ],

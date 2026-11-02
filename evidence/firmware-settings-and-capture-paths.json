@@ -1,0 +1,188 @@
+{
+  "schema": 1,
+  "date": "2026-11-02",
+  "bios_settings": {
+    "scope": "Original manufacturer BIOS314 HII definitions, not live variable values or measured controller state.",
+    "bios_capsule_sha256": "a72291441a378a38a1aa7d5198c4aeb91aed07f787a3025435393719351f4ed1",
+    "module_sha256": {
+      "AmdPbsSetupDxe": "8e4abbd3281f0855fdd72b4d9b6832889e001e2d973465004001030cc9f77d23",
+      "CbsSetupDxePHX": "7d90f43fbdafdea5b5b9da27b1c69aa95c3aeb1910e23be680ad761fa8a05d46"
+    },
+    "extractor": {
+      "release": "https://github.com/LongSoft/IFRExtractor-RS/releases/tag/v1.6.1",
+      "archive_sha256": "3a0d93ecd3a4cb092d210c499d125ffd782982311f5f8dc40a8b180b58c4ffe7",
+      "published_digest_verified": true
+    },
+    "records_independently_byte_checked": [
+      {
+        "module": "AmdPbsSetupDxe",
+        "prompt": "PD USB4 Control Enable/Disable",
+        "question_id_hex": "47",
+        "var_store_id_hex": "1",
+        "var_offset_hex": "9c",
+        "file_offset_hex": "8d9d",
+        "opcode_sha256": "972110f265e7ff7f2d16af9a0677e936eaf76eec6d545aef3baaa99c4a915cb8"
+      },
+      {
+        "module": "AmdPbsSetupDxe",
+        "prompt": "UCSI Support",
+        "question_id_hex": "50",
+        "var_store_id_hex": "1",
+        "var_offset_hex": "14",
+        "file_offset_hex": "8fee",
+        "opcode_sha256": "52c79de656bf810d8cd4800e028bc1ebc528a23f928ee42e12bf00587ff7345e"
+      },
+      {
+        "module": "AmdPbsSetupDxe",
+        "prompt": "  UCSI tunnel location",
+        "question_id_hex": "51",
+        "var_store_id_hex": "1",
+        "var_offset_hex": "15",
+        "file_offset_hex": "9017",
+        "opcode_sha256": "7e66f482c7c4ef75f9e900fd9a041c86bed3c8decc86eb2abdab80dfd02bd4ce"
+      },
+      {
+        "module": "AmdPbsSetupDxe",
+        "prompt": "PD Thunderbolt3 Alt Mode",
+        "question_id_hex": "54",
+        "var_store_id_hex": "1",
+        "var_offset_hex": "4d",
+        "file_offset_hex": "907c",
+        "opcode_sha256": "35ba55149e369900146042083e7d1103b3143134e5f2a4e29d7da356070f984b"
+      },
+      {
+        "module": "AmdPbsSetupDxe",
+        "prompt": "USB4 ACPI _DEP Support",
+        "question_id_hex": "55",
+        "var_store_id_hex": "1",
+        "var_offset_hex": "465",
+        "file_offset_hex": "909d",
+        "opcode_sha256": "649b8c3c704dcf0cea44d73979104c6a695f048811c19eb098b6bde57721ad34"
+      },
+      {
+        "module": "CbsSetupDxePHX",
+        "prompt": "USB4 pre-CM Enable",
+        "question_id_hex": "159",
+        "var_store_id_hex": "5000",
+        "var_offset_hex": "1a7",
+        "file_offset_hex": "10936",
+        "opcode_sha256": "b1b6106376b30890dd03a4263be40a05d5aa8271204ea6a8a97b35ba39369df9"
+      },
+      {
+        "module": "CbsSetupDxePHX",
+        "prompt": "RT0 Router Enable",
+        "question_id_hex": "15c",
+        "var_store_id_hex": "5000",
+        "var_offset_hex": "1a8",
+        "file_offset_hex": "10996",
+        "opcode_sha256": "671b9e1050eac3826313fe8a2c1588a20a8f53d26296b26a2d233d66a408827a"
+      },
+      {
+        "module": "CbsSetupDxePHX",
+        "prompt": "RT0 PCIe Tunnel",
+        "question_id_hex": "15d",
+        "var_store_id_hex": "5000",
+        "var_offset_hex": "1a9",
+        "file_offset_hex": "109ca",
+        "opcode_sha256": "196000e633e1c58e36001efe319d78811b80932ec9dcb209ba0847481c3fbae6"
+      },
+      {
+        "module": "CbsSetupDxePHX",
+        "prompt": "RT1 Router Enable",
+        "question_id_hex": "15e",
+        "var_store_id_hex": "5000",
+        "var_offset_hex": "1aa",
+        "file_offset_hex": "10a0e",
+        "opcode_sha256": "404f813065416f6b03303d6a2bc3ac681ce03634b87be9a13d2c9ec036f126dc"
+      },
+      {
+        "module": "CbsSetupDxePHX",
+        "prompt": "RT1 PCIe Tunnel",
+        "question_id_hex": "15f",
+        "var_store_id_hex": "5000",
+        "var_offset_hex": "1ab",
+        "file_offset_hex": "10a42",
+        "opcode_sha256": "a00c6d17a8741209ca86e766e186196ec44b133a703fa638f8acfd98d304c1e6"
+      }
+    ],
+    "image_defaults": {
+      "PD USB4 Control": 1,
+      "PD Thunderbolt3 Alt Mode": 0,
+      "USB4 pre-CM": 15,
+      "RT0 Router": 15,
+      "RT0 PCIe Tunnel": 15,
+      "RT1 Router": 0,
+      "RT1 PCIe Tunnel": 15
+    },
+    "interpretation_limits": [
+      "Defaults are not current settings.",
+      "RT router-instance number does not establish retimer or physical connector identity.",
+      "Auto is distinct from Enabled.",
+      "PD Thunderbolt3 Alt Mode has reversed encoding: Enabled0, Disabled1.",
+      "The actual field consumer and a failed-connection value remain unmeasured."
+    ]
+  },
+  "capture_routes": {
+    "stored_config": {
+      "tool": "tools/Read-USB4FirmwareSettings.ps1",
+      "default": "Preview",
+      "read_mode": "Prepared_NotExecuted",
+      "source": "https://learn.microsoft.com/en-us/windows/win32/api/winbase/nf-winbase-getfirmwareenvironmentvariableexw",
+      "fixed_variables": 2,
+      "decoded_fields": 10,
+      "checks": "PS5.1 parse/compile/Preview and raw-HII byte matches passed; current process not elevated.",
+      "guards": "Exact model/BIOS, administrator, previous process privilege restored, no setting write, exact-size decode, errors/unknown values explicit.",
+      "limit": "UEFI variables may lack runtime access. No firmware read result yet."
+    },
+    "dock_diagnostics": "Existing Billboard/WinUSB transport is a candidate; protocol and controller applicability still unqualified.",
+    "host_sideband": "Primary Linux retimer scan performs enumeration and sideband-enable operations; not an unchanged passive Windows capture.",
+    "wire_capture": "Existing ETW and Ethernet connection do not themselves provide CC-wire packets; a software route needs controller logging/state access."
+  },
+  "sdk_assessment": {
+    "helpful_for": "AMD/PS8830 reference definitions, control ordering and potential read/status registers; completeness of package source unverified.",
+    "not_provided": "ASUS ITE firmware, a qualified ASUS live transport, or physical PD packets by installing an SDK.",
+    "public_source_commit": "fec544408cffffbfe459042262b5cd233a686722",
+    "public_sources": [
+      {
+        "url": "https://raw.githubusercontent.com/Infineon/pdaltmode/fec544408cffffbfe459042262b5cd233a686722/cy_pdaltmode_hw.c",
+        "sha256": "de395160c0c8a648f1ad4b2720533c52bafb790398ae8ea2e22e0b0ef082ad52",
+        "bytes": 33503
+      },
+      {
+        "url": "https://raw.githubusercontent.com/Infineon/pdaltmode/fec544408cffffbfe459042262b5cd233a686722/cy_pdaltmode_usb4.c",
+        "sha256": "739b77018df231b6e58757f9a83926e4785c243583f92025f752757ed1e10b07",
+        "bytes": 24689
+      },
+      {
+        "url": "https://raw.githubusercontent.com/Infineon/pdaltmode/fec544408cffffbfe459042262b5cd233a686722/docs/xml/cy__pdaltmode__retimer__wrapper_8c.xml",
+        "sha256": "06894cce3f8a2cb1184805b9adc2a37b7386529d419f4b541d343014922ac9cf",
+        "bytes": 111677
+      }
+    ],
+    "concrete_symbols": [
+      "cy_pdaltmode_amd.h",
+      "cy_pdaltmode_amd_retimer.h",
+      "Cy_PdAltMode_Amd_SetMux",
+      "Cy_PdAltMode_AmdRetimer_Init"
+    ],
+    "download_page": "https://softwaretools.infineon.com/tools/com.ifx.tb.tool.ezpdhostsdk",
+    "package_status": "Not acquired; previous3.7 attempt401. Owner login/download would permit static inspection without running installer."
+  },
+  "supplied_links": {
+    "umaf_commit": "c003b126cab6e29b1d72d061d59cea9e721a6910",
+    "umaf_result": "Relevant HII settings exist in exact ASUS image. No UMAF boot/download/settings write performed.",
+    "reddit_result": "USB4 toggle anecdote; no demonstrated resolution or FA507XI match.",
+    "dhgate_result": "Web reader retrieval failed; no source-backed technical conclusion taken from the article."
+  },
+  "other_primary_report": {
+    "url": "https://lore-kernel.gnuweeb.org/linux-usb/TYCPR01MB1092795BE7AB51121BBAB292496862@TYCPR01MB10927.jpnprd01.prod.outlook.com/",
+    "scope": "Phoenix/JHL9480 downstream PCIe runtime-PM report; router is detected, unlike saved ASUS-DEG2 boundary. Not a demonstrated same-cause Windows repair."
+  },
+  "correction": "The earlier saved-queue stop was too narrow; owner-supplied capture/settings leads reopen useful work. No repair or complete physical capture route is claimed.",
+  "next": [
+    "Trace exact PBS PD USB4-control consumer and resolved policy",
+    "Read stored variables when owner chooses administrator launcher; no attachment needed",
+    "Qualify dock protocol or retimer read from actual code/SDK; no guessed requests"
+  ],
+  "hardware_actions": 0
+}

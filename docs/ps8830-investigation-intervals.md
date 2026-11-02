@@ -2,6 +2,9 @@
 
 ## Authorization and limits
 
+Owner-directed continuation is restored: heartbeat `investigate-asus-usb4-capture-and-firmware-settings`, every15minutes in this chat, ACTIVE and read back. Routine notifications are muted while the owner sleeps. The1% allowance stop remains. The interval14 deletion was real and is preserved as history; the new queue follows the owner's capture/settings leads.
+
+
 Latest owner change before sleep: the stop point is **1% remaining**, superseding the earlier10% threshold. The existing15-minute heartbeat was updated and its stored prompt/readback verified.
 
 Before overnight work, the owner requested more frequent research and explicitly welcomed controller/USB4 documentation, published papers, specifications, component images and public schematics. Use them to resolve concrete mode-control or wiring questions, identifying model/revision differences. Existing captures are sufficient for the saved offline tasks; no further general dump is requested now. Hardware evidence gaps and the absence of a working repair remain explicit. Project cleanup preserves originals and failed attempts.
@@ -21,9 +24,12 @@ Heartbeat: `trace-asus-ps8830-configuration`, every 15 minutes in this chat (own
 
 ## Current interval
 
+**Owner reopened work after interval14:** stopping at the old queue was too narrow. Follow the new [capture/settings investigation](capture-paths-and-hidden-settings.md). Exact BIOS HII settings are now identified; a Windows read-only variable reader is prepared, not executed. SDK login/download could add AMD/PS8830 reference definitions. Trace the actual setting consumer and identify a safe controller-state/log interface. The original failure remains unresolved. No blind boot, live bus request or new driver is authorized by this checkpoint.
+
+
 **Interval 14, completed:** inspected the official FA507X service guide and its original embedded board photographs. An example board reads `DA0NJSMBAD0 REV:D`, `MODEL:NJS`; this does not establish the owner's fitted board or USB-C control wiring. The images do not identify the attachment-time PS8830 writer. Infineon's official catalog provides an SDK source-distribution route, but the attempted3.7 package download returned401; no source package was acquired or executed. [Sources, limits and remaining evidence](../evidence/board-and-sdk-access-review.json).
 
-**Recurring research stopped:** the saved offline queue and finite public-source task have not produced a usable way to observe the candidate mode input during failure. Root cause and a Windows repair remain unresolved. More scans of unnamed flags or repeated general dumps would not close that gap. All original evidence and failed attempts are retained; no device request, driver, boot, firmware change or deletion occurred. The stop is for lack of a productive next offline task, not because the1% allowance threshold was reached.
+**Earlier interval14 stop, superseded by owner reopening above:** the saved offline queue and finite public-source task have not produced a usable way to observe the candidate mode input during failure. Root cause and a Windows repair remain unresolved. More scans of unnamed flags or repeated general dumps would not close that gap. All original evidence and failed attempts are retained; no device request, driver, boot, firmware change or deletion occurred. The stop is for lack of a productive next offline task, not because the1% allowance threshold was reached.
 
 Resume when new material identifies the ASUS controller interface/wiring, exposes the actual attachment-time mode/negotiation state, or provides relevant controller source. No new owner hardware test is requested by this checkpoint. Historical next-task text below is completed/deferred context, not a current queue.
 
@@ -115,7 +121,7 @@ Two primary references add a concrete architecture to follow. TI [ZHCAG60](https
 
 Next concrete tasks:
 
-1. **No further recurring task is queued.** The official service-guide photo/source-distribution review is complete; see interval14. A manufacturer SDK package link was located but its download requires authentication. No controller implementation, fitted-board wiring or safe live mode read was recovered. Resume only with new discriminating source/evidence, not repeated EC/register scans, a new driver, NACK retry, endpoint switch, reset, update or general dump.
+1. **Earlier interval14 queue decision, superseded above.** The official service-guide photo/source-distribution review is complete; see interval14. A manufacturer SDK package link was located but its download requires authentication. No controller implementation, fitted-board wiring or safe live mode read was recovered. Resume only with new discriminating source/evidence, not repeated EC/register scans, a new driver, NACK retry, endpoint switch, reset, update or general dump.
 2. The named EC candidate queue is classified/deferred. Do not repeat those scans without a new mode-control relationship. Bank2 CPUb5d4 address42/channel1 is mapped and deferred pending target/signal identity. Bank1 CPUc0d6 prepares70/channel1, and bank3 CPUc720 prepares98/channel4 and is now classified as shared read setup; none of these numbers is automatically a PS8830 address. Linear disassembly offsets must be translated through the8051 bank window. This initial static triage is not exhaustive/reachability proof; no new emulator was built.
 3. Follow captured native port-control writes and status ordering if the candidate suggests a distinguishing field. Do not force router detection, interpret a wake latch as a diagnosed fault, or apply TI/Linux values to unqualified ASUS hardware. Qualify any future read for read-clear/side effects and history coverage first.
 

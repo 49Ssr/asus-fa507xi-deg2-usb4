@@ -1,6 +1,9 @@
 # Independent review and next tests
 
-**Current status, 2 November:** recurring offline research has stopped with the cause unresolved and no working Windows repair. The service-guide board photo does not establish fitted-board wiring; the concrete Infineon SDK download requires authentication. The missing evidence is the controller's actual attachment-time mode/negotiation state and an identified way to read it. [Source review and resume conditions](../evidence/board-and-sdk-access-review.json). No new hardware test is queued. Earlier next-task notes below are historical.
+**Investigation reopened, 2 November:** the exact BIOS314 HII contains PD USB4 control, pre-CM and separate router/PCIe-tunnel settings. A Windows-only stored-variable reader is prepared (Read mode not executed); it does not capture PD packets. SDK reference inspection and controller-log access remain useful work. [Settings, capture routes and next work](capture-paths-and-hidden-settings.md). No blind test boot or setting change is queued.
+
+
+**Earlier interval14 status, superseded above:** recurring offline research stopped with the cause unresolved and no working Windows repair. The service-guide board photo does not establish fitted-board wiring; the concrete Infineon SDK download requires authentication. The missing evidence is the controller's actual attachment-time mode/negotiation state and an identified way to read it. [Source review and resume conditions](../evidence/board-and-sdk-access-review.json). No new hardware test is queued. Earlier next-task notes below are historical.
 
 **Current access gap:** the firmware mode decision is traced, but the existing Windows paths do not yet provide a qualified read of its inputs. HID status is cached, firmware-output reports can alter update state, and SPB reads use fixed endpoints. [Code and remaining requirements](../evidence/parade-mode-read-contract.json). No hardware test is queued; the wrong-mode hypothesis remains unmeasured.
 
