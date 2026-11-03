@@ -862,6 +862,30 @@ Scope: RESET-COMMAND-PATH. No current Windows interface readiness or live Data_R
 
 [RESET-WINDOWS-CODE](../evidence/data-reset-command-path.json) `/windows`, [RESET-BOOT-CODE](../evidence/data-reset-command-path.json) `/boot_interfaces`
 
+**C101 — measured:** The new Windows read through the existing signed ASUS driver returned cached controller-derived PD firmware bytes0053 using capability17 and fields10/11 hex. Both getter transport statuses were0; the handle closed and temporary SYSTEM task was removed.
+
+Scope: ASUS-PD-VERSION-CACHE. No direct PD-bus read, flash match, freshness proof, display-encoding proof or data-reset capability follows from the cache value.
+
+[PD-VERSION-CAPTURE](../evidence/pd-firmware-version.json) `/read`
+
+**C102 — code_fact:** The original ASUS B800 routine reads PD registerB6 into EC02ac/02ad. Getters10/11 return these bytes; failed refresh preserves old data. Original-instruction tests correct the earlier0f/10 note and stop that wrong draft before live use.
+
+Scope: ASUS-PD-VERSION-CACHE. RAM fixtures only for population/failure behavior; not proof of when the measured cache last refreshed.
+
+[PD-VERSION-CACHE-CODE](../evidence/pd-firmware-version.json) `/asus_cache_code`
+
+**C103 — code_fact:** Official ASUS packages supplied a63682-byte IT8853 V004 reference image and a131072-byte IT8857 USB4-card image. The former Windows helper uses B6 for firmware-version reporting. The latter package includes a UEFI tool advertising /ov version-only mode.
+
+Scope: ASUS-ITE-PD-REFERENCES. Different hardware; no laptop flash qualification, complete /ov startup/transport audit, updater execution or actual laptop Data_Reset handler.
+
+[PD-ITE-REFERENCES](../evidence/pd-firmware-version.json) `/reference_packages`
+
+**C104 — code_fact:** The signed Windows314 installer contains the same capsule as the analysed EZ Flash package and no separately listed PD image. Selected reference-pattern searches across the BIOS inputs produced no matches.
+
+Scope: ASUS-ITE-PD-REFERENCES. Limited package/signature search; does not prove that no differently built, packaged or compressed PD image exists.
+
+[PD-LAPTOP-IMAGE-SEARCH](../evidence/pd-firmware-version.json) `/laptop_image_search`
+
 ## Separate runs and observation limits
 
 | Case | Meaning | Important limit |
@@ -899,6 +923,8 @@ Scope: RESET-COMMAND-PATH. No current Windows interface readiness or live Data_R
 | INFINEON-SDK39 | EZ-PD Host SDK 3.9.0 reference code and offline object analysis | Infineon controller reference only; no ASUS or DEG2 hardware execution, live state or Windows repair is established. |
 | UCSI-RESET-REVIEW | UCSI reset version semantics and saved ASUS interface review | Offline sources and retained software fields only. No actual controller reset implementation, live command or repair is established. |
 | RESET-COMMAND-PATH | ASUS original reset forwarding and SDK reset-handler trace | Offline original-code execution and reference source review. Receiving ASUS PD firmware, physical reset and working Windows repair remain unverified. |
+| ASUS-PD-VERSION-CACHE | Windows controller-derived PD firmware cache read and original getter/refresh execution | Cached0053; no current physical PD register/flash read, proven display encoding, per-port state or USB4 repair. |
+| ASUS-ITE-PD-REFERENCES | Official ASUS ITE firmware references, UEFI option and exact-model package review | Other-platform reference code and static files; no running laptop flash match, updater execution or actual Data_Reset handler identification. |
 
 ## Software-report timelines
 

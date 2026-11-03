@@ -10,6 +10,10 @@ The [saved attachment sequence](rt0-attachment-order.md) now ties connector1 to 
 
 [USB-PD Data_Reset](ucsi-data-reset.md) could restart USB4 discovery after ASUS has corrected the data role, without undoing that role. This is not the older connector reset. The saved ASUS version is anomalous and a compatible data-reset command is unproven; no executable repair or hardware test is prepared. Follow the actual controller command handler before sending anything. [The command-path trace](data-reset-command-path.md) now confirms unchanged EC forwarding and a fixed initializer version; the receiving PD reset handler remains unidentified.
 
+## Controller firmware/version acquisition
+
+[The Windows cache read completed](pd-firmware-version.md): controller-derived bytes0053, successful transport and cleanup. Exact ITE firmware references and an advertised UEFI version-only option are now available from official ASUS packages for other platforms. The cached value is not a flash match or a data-reset capability declaration; the actual laptop reset handler remains unidentified.
+
 ## The records that choose the repair
 
 | What actually happened | Record needed | What a repair would need to change |

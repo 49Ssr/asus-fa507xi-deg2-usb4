@@ -22,6 +22,10 @@ The Linux kit is an observer, not a repair or a raw PD recorder. Current source/
 
 EZ-PD Host SDK 3.9.0 has been extracted privately without installation. Read [the SDK review](docs/infineon-sdk-review.md) and its source pins before continuing. Missing AMD headers and compiled implementations are now available; do not ask for another download. APU index 80/status-bit-6 behavior was checked in offline emulation, not on ASUS. Do not send reference HPI or I2C commands to ASUS/DEG2 without identifying the actual implementation.
 
+## PD firmware acquisition
+
+The [Windows PD cache read](docs/pd-firmware-version.md) completed: bytes0053, getters10/11 hex, driver status0, handle closed and temporary SYSTEM task removed. Older0f/10 notes were corrected before hardware use. The cache originates from PD registerB6 but can survive a failed refresh. Real ASUS IT8853 and IT8857 different-board references are privately available under local/PdFirmwareResearch; do not redownload them or run the updaters. The UEFI tool advertises /ov version-only mode; the laptop bus mapping/startup effects remain unverified. No exact laptop PD image or Data_Reset handler is established.
+
 ## Owner constraints
 
 Scheduling is PAUSED. Do not resume it. Physical boots, BIOS access and cable changes require owner direction. Do not restart an unattended remote session or infer network recovery from Tailscale availability. No live EC/I2C/vendor request, new driver, mode override, flash, security/network change or attachment emulation is selected.

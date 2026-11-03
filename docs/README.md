@@ -29,6 +29,8 @@ Start with [current findings](status.md). The detailed notes preserve the source
 
 ## Controller and firmware research
 
+- [Windows PD-version read: cached0053 and recovered ASUS ITE references](pd-firmware-version.md)
+
 - [Data reset after role correction: repair hypothesis and missing ASUS command](ucsi-data-reset.md)
 - [ASUS command path, fixed mailbox version and SDK reset handler](data-reset-command-path.md)
 

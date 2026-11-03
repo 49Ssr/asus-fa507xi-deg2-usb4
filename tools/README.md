@@ -24,6 +24,8 @@ Startup/model rejection was checked in a VM. The later [ASUS hardware run](../do
 
 These readers do not expose the physical PD exchange or applied retimer state. Repeating them unchanged is not the next test.
 
+The [PD firmware-version investigation](../docs/pd-firmware-version.md) also completed a private maintainer read through the existing ASUS driver. Its two cache getters returned0053; the reusable hardware runner is not distributed as a general repair tool. [Test-PdVersionCache.c](analysis/Test-PdVersionCache.c) reproduces the original cache getter/population behavior offline with a hash-pinned BIOS image and the same emu8051 build inputs as [the EC harness](analysis/Test-EcPmcFirmware.c).
+
 ## Offline evidence checks
 
 Run these from the repository root using Python 3.12 or later. They read public files and run fixtures; they do not install drivers or access hardware.

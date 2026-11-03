@@ -45,7 +45,7 @@ These offsets agree with [ITE's own UCSI driver submission](https://lists.openwa
 
 Original relay instructions preserve the command parameters and outgoing payload across every synthetic opcode byte and three payload patterns tested. This is **not a claim that all256 opcodes are valid or supported by the PD controller**. The tests stop at the controller bus boundary. The outer service's scheduling, asynchronous events, physical transport, power and mux/link training are not emulated.
 
-There are also controller-specific transactions, including cache population through register`b6`, and gated writes using`d8/d9`. Their exact mode-policy meaning and safe inverse are unqualified. They are **not prepared as Windows commands**. Table5 fields0f/10 read EC cache bytes`02ac/02ad`; they are not a raw negotiation trace. No cache query was sent this turn.
+There are also controller-specific transactions, including cache population through register`b6`, and gated writes using`d8/d9`. Their exact mode-policy meaning and safe inverse are unqualified. They are **not prepared as Windows commands**. **Correction from the later original-instruction replay:** table5 fields`10/11` hex read EC cache bytes`02ac/02ad`. The earlier `0f/10` mapping was incorrect. These are not a raw negotiation trace. No cache query was sent in the original 1 November work; [the later Windows read returned0053](pd-firmware-version.md).
 
 ## What this changes for the USB4 investigation
 

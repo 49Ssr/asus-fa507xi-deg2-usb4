@@ -1,6 +1,6 @@
 # Current findings
 
-Updated 2 November 2026. **The ASUS–DEG2 connection remains unresolved. No working Windows fix or firmware patch has been demonstrated.**
+Updated 3 November 2026. **The ASUS–DEG2 connection remains unresolved. No working Windows fix or firmware patch has been demonstrated.**
 
 The observed failure occurs before Windows discovers DEG2's external USB4 router. Its USB hub, storage/network functions and Billboard interface can still enumerate. GPU-driver changes cannot explain that earlier missing-router observation by themselves.
 
@@ -67,5 +67,9 @@ A matching Dell Linux capture is currently unavailable. The existing successful 
 ## New reference code available
 
 The acquired [Infineon SDK 3.9.0](infineon-sdk-review.md) supplies AMD/PS8830 definitions and compiled status/mode implementations missing from the earlier public reference. An actual reference status reader has been checked offline. Its connection to ASUS's ITE implementation and a usable Windows transport remain unproven; no live command or repair is selected.
+
+## PD firmware version path now works
+
+A new Windows read through the existing ASUS driver returned controller-derived cached firmware bytes **00 53**. The getter reads an EC cache populated from PD registerB6; failed refresh can preserve an old value, so freshness and a matching flash image remain unverified. Real IT8853 firmware and an advertised UEFI version-only interface were recovered from official ASUS packages for other hardware and retained privately. No reset or flash was sent. [Result, corrected offsets and source scope](pd-firmware-version.md).
 
 No vendor-confirmed root cause or applicable fix is recorded. [All documentation](README.md) · [Research handoff](handoff.md)

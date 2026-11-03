@@ -1,0 +1,164 @@
+{
+  "schema": 1,
+  "date": "2026-11-03",
+  "status": "CachedPdFirmwareWord0053Read_ReferenceIteImagesRecovered_ActualLaptopHandlerUnidentified",
+  "read": {
+    "kind": "Controller-derived EC firmware-version cache; not a live physical register/flash read",
+    "started_utc": "2026-11-03T00:05:14.2022032Z",
+    "finished_utc": "2026-11-03T00:05:24.4361408Z",
+    "api_version_hex": "01000100",
+    "capability": 17,
+    "word_hex": "0053",
+    "bytes": [
+      0,
+      83
+    ],
+    "getter": {
+      "command_hex": "dd",
+      "table": 5,
+      "selector": 1,
+      "fields_hex": [
+        "10",
+        "11"
+      ]
+    },
+    "replies": [
+      {
+        "field_hex": "10",
+        "value": 0,
+        "driver_transport_status": 0,
+        "win32_success": true,
+        "returned_bytes": 16,
+        "milliseconds": 50
+      },
+      {
+        "field_hex": "11",
+        "value": 83,
+        "driver_transport_status": 0,
+        "win32_success": true,
+        "returned_bytes": 16,
+        "milliseconds": 65
+      }
+    ],
+    "driver_requests": 4,
+    "ec_requests_including_capability": 3,
+    "live_pd_bus_read_requested": false,
+    "reset_sent": false,
+    "handle_closed": true,
+    "temporary_system_task_removed": true,
+    "new_driver_installed": false,
+    "driver_sha256": "eef750c7fb515d162a76423531f4f6773bcf837d9607069e797a26d198edd892",
+    "private_worker_sha256": "232daff70340affb42b712ea871abe3b75a0ea2f2a9cbf3ad3e6151a3f469e00",
+    "freshness_verified": false,
+    "display_encoding_verified": false,
+    "matching_flash_image_verified": false
+  },
+  "asus_cache_code": {
+    "firmware_record": "evidence/ec-firmware-decision.json",
+    "bank": 3,
+    "populate_pc_hex": "b800",
+    "controller_bus_channel": 4,
+    "controller_address_byte_hex": "98",
+    "register_hex": "b6",
+    "read_bytes": 2,
+    "ec_cache_hex": [
+      "02ac",
+      "02ad"
+    ],
+    "getter_entries_hex": [
+      "b102",
+      "b108"
+    ],
+    "fields_hex": [
+      "10",
+      "11"
+    ],
+    "refresh_failure_preserves_old_cache": true,
+    "correction": {
+      "earlier_fields_hex": [
+        "0f",
+        "10"
+      ],
+      "actual_fields_hex": [
+        "10",
+        "11"
+      ],
+      "wrong_offset_sent_to_hardware": false
+    },
+    "offline_test_source": "tools/analysis/Test-PdVersionCache.c",
+    "offline_test_source_sha256": "77c5ec81d770d948a18f94b940b7f15782c1a17350295c990ae5c343e8a4b1c6",
+    "offline_results": {
+      "cacheGetters": 6,
+      "b6PopulateCases": 2,
+      "getterReadsOnlyEcCache": true,
+      "failedRefreshPreservesOldCache": true,
+      "hardwareRequests": 0
+    },
+    "scope": "Original BIOS314 instructions; RAM bus replies and cache contents only."
+  },
+  "reference_packages": {
+    "z790e": {
+      "model": "ROG STRIX Z790-E GAMING WIFI",
+      "url": "https://dlcdnets.asus.com/pub/ASUS/mb/LGA1700/ROG_STRIX_Z790-E_GAMING_WIFI/ASUS_PD_update_tool_V004.zip",
+      "zip_sha256": "b7116991ad490387608a036edba5e40dac03e94d19799ff9005c0777c6c15fbf",
+      "published_zip_hash_available": false,
+      "outer_exe_sha256": "b3088f763fdb1b0fd272be4138cbcdd50b62f37ffe4a089e893bb90dabdcdc9c",
+      "outer_authenticode": "NotSigned",
+      "setup_executed": false,
+      "embedded_filename_string": "ASUS_Expresso_IT8853_V004.bin",
+      "firmware_bytes": 63682,
+      "firmware_sha256": "8586a30788c0a51a0a79fdb15ff60fd2290e320b5bddbe00712205b6eb2a99ba",
+      "windows_helper_sha256": "a1bf546b8f78282eff578d6a45cb4a9a5bf1259df22b2b31295e1f6d91496584",
+      "version_helper": {
+        "entry_rva_hex": "17ad0",
+        "select_register_hex": "b6",
+        "result_bytes": 2,
+        "caller_formats": "Firmware version as two bytes; decimal/hex style configurable"
+      },
+      "dispatch_analysis": "Raw candidate command tables and helpers with inline data located; no table is established as the ASUS laptop Data_Reset handler.",
+      "qualified_for_fa507xi_flash": false
+    },
+    "usb4_card": {
+      "model": "USB4 PCIE GEN4 CARD / IT8857 reference",
+      "support_url": "https://www.asus.com/uk/supportonly/usb4%20pcie%20gen4%20card/helpdesk_bios/",
+      "url": "https://dlcdnets.asus.com/pub/ASUS/mb/06USB/USB4_GEN4_CARD/USB4_PCIE_GEN4_CARD_PD_8857_FW_update_tool_V1.01_110_for_Linux.zip",
+      "zip_sha256": "4e50d61d0272b972e3353577ed77aa3f86d12792ebc22b52781224410ff12d50",
+      "published_sha256_matched": true,
+      "firmware_bytes": 131072,
+      "firmware_sha256": "12b21f53f9cbc83bc36e692cadac8de623ded605e3d563212377f521140694e3",
+      "efi_sha256": "ea3531946ef9f0aabdb94e7ef69d79d60beb466a16c6a5d1602ae609382970d3",
+      "advertised_version_only_option": "/ov",
+      "option_help": "Only show PD FW version without Update.",
+      "implementation_fully_audited": false,
+      "executed": false,
+      "laptop_bus_mapping_verified": false,
+      "qualified_for_fa507xi_flash": false
+    }
+  },
+  "laptop_image_search": {
+    "model": "FA507XI",
+    "current_driver_and_firmware_api_reviewed": true,
+    "separate_pd_image_identified_in_reviewed_listings": false,
+    "windows314_package_sha256": "6552a1b4b5251ab056a76c5279d9da56a455d176442cf590c7a1186cfae8f750",
+    "windows314_published_hash_matched": true,
+    "windows314_authenticode": "Valid ASUSTeK COMPUTER INC.",
+    "windows314_executed": false,
+    "extracted_capsule_sha256": "a72291441a378a38a1aa7d5198c4aeb91aed07f787a3025435393719351f4ed1",
+    "capsule_matches_ezflash": true,
+    "separate_pd_image_in_windows_package": false,
+    "signature_search": {
+      "binary_inputs_including_capsule": 4909,
+      "bytes": 96605466,
+      "selected_reference_pattern_matches": 0,
+      "limit": "Specific reference-family bytes/table layout and labels only; absence does not exclude a different or differently packaged PD image."
+    },
+    "absence_of_any_pd_image_proven": false
+  },
+  "limits": [
+    "Cached0053 is not proof of current flash bytes or UCSI2.0 support.",
+    "Reference firmware from another board is not an accepted laptop image.",
+    "Version-only help is not a completed audit of initialization and transport.",
+    "The FA507XI receiving Data_Reset handler remains unidentified."
+  ],
+  "next": "Correlate0053 with the exact laptop PD image/current-controller read. Audit the vendor version-only transport, preserve board scope and identify the actual receiving reset handler before sending Data_Reset."
+}

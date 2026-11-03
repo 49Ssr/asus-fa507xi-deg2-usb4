@@ -20,6 +20,10 @@ The [reset review](ucsi-data-reset.md) identifies a distinct hypothesis: retry U
 
 [Original-code trace](data-reset-command-path.md): the ASUS initializer writes a fixed UCSI0100 version without a PD-bus read, and the outgoing relay preserves the reset bit. The SDK primary build contains a UCSI2.0 data-reset handler and subsequent mux/timer handling. These do not identify the receiving ASUS PD firmware. The Windows transport is known; actual Data_Reset interpretation and current interface readiness are not. Linux debugfs reaches the same ACPI path and does not enumerate private controller operations. No new boot or live request is selected. Next identify the receiving handler/documentation or a supported physical-controller version read.
 
+## Controller firmware/version result
+
+[Windows returned cached PD firmware bytes0053](pd-firmware-version.md) through implemented fields10/11 hex, correcting the older0f/10 mapping before live use. The handle closed and temporary SYSTEM task was removed. The EC B6 refresh can retain old data on failure; cache freshness remains unverified. Official ASUS packages supplied an IT8853 different-board image and an IT8857 UEFI tool advertising /ov version-only mode; neither updater ran. The Windows314 capsule matches the existing EZ Flash image. Next correlate0053 with the exact laptop image or current-controller read and audit the vendor version-only transport; do not treat a raw candidate dispatch table as a Data_Reset handler.
+
 ## Operating constraints
 
 Scheduling remains paused. Physical boots/cables are owner-directed, and no unattended remote restart is authorized. No live EC/I2C/vendor command, driver change, mode override or flash is selected. Preserve original artifacts, failed attempts and private recovery records.
