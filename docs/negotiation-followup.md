@@ -34,9 +34,10 @@ Microsoft's [ACPI client sample](https://github.com/microsoft/Windows-driver-sam
 
 **1 November follow-up:** [Dell's recovered dump](dell-dump-recovery.md) now independently supplies `m_IsUsbDeviceControllerEnabled = 1`, versus ASUS 0, and loaded `_DSM` support mask `0x1f`, including function 4. Both firmware return fields are absent from the dump, so the cached value is not attributed exclusively to that function. This closes the earlier persistent-policy gap while leaving the causal link to native USB4 failure unresolved. Dell's No decision cannot be attributed exclusively to its later UFP report. The earlier interface class/protocol-version differences remain separate observations; no version override was changed.
 
-## A different test is justified
+<a id="a-different-test-is-justified"></a>
+## Why the completed Rp-only test was tried
 
-The ASUS advertises SET_CCOM support, connector-1 DRP operation and provider capability. Its recorded default attachment to powered DEG2 starts as power consumer/local UFP and later needs data-role correction. A single **Rp-only CC-mode selection before attachment** tests a different initial path: can ASUS attach as source/local host and enter USB4 without that later correction? This differs from repeating `SET_UOR`, exiting an alternate mode or reinstalling a controller.
+The ASUS advertises SET_CCOM support, connector-1 DRP operation and provider capability. Its recorded default attachment to powered DEG2 starts as power consumer/local UFP and later needs data-role correction. A single **Rp-only CC-mode selection before attachment** was intended to test a different initial path: can ASUS attach as source/local host and enter USB4 without that later correction? This differs from repeating `SET_UOR`, exiting an alternate mode or reinstalling a controller.
 
 [UCSI 1.22 section 4.5.8](https://www.intel.com/content/dam/www/public/us/en/documents/technical-specifications/usb-type-c-ucsi-spec.pdf) defines SET_CCOM and DRP as its reset/default for a DRP-capable connector. Microsoft's [UCSI test documentation](https://learn.microsoft.com/en-us/windows-hardware/drivers/usbcon/ucsi#ucsicontrol-exe) names the command SET_UOM and supplies the corresponding DFP/DRP examples. These are names for command `0x08`; this is not SET_NEW_CAM.
 

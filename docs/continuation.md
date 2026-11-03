@@ -1,11 +1,14 @@
 # Continuing this investigation
 
-This repository preserves the USB4 investigation after the original chat reached its limit. Start with [current findings](status.md), [research handoff](handoff.md) and [the tool guide](../tools/README.md).
+This repository carries the evidence across chats. Use these pages in order:
 
-The latest technical question is the failed RT0 USB4 entry/link transition. A stored setting, successful UCSI command or final missing router does not identify the physical cause. The Windows policy-only trial failed; no working repair is established.
+1. [Findings](status.md): measured results and remaining uncertainty.
+2. [Diagnosis plan](investigation-plan.md): ranked next steps and what they would distinguish.
+3. [Research handoff](handoff.md): where code work resumes and what state to preserve.
+4. [Tool guide](../tools/README.md): observers, offline checks and historical experiments.
 
-The Linux kit is the selected later comparison with existing hardware. It is prepared and audited, but real USB persistence and ASUS capture have not run. Physical access is required; the current remote session is not to be restarted for it.
+The ASUS Linux capture is complete and reproduced the failure. A Dell Linux capture is unavailable; the successful Dell Windows captures remain the control. No working repair has been demonstrated.
 
-Public JSON and code references are checked by the offline runner. Original private artifacts remain necessary for re-decoding. Automated checks and a VM startup do not certify a hardware fix.
+Older notes may describe tests as proposed or unperformed. Their dated statements remain part of the record; they do not override the current findings or authorize a repeat. Raw captures and firmware stay private. Public checks verify the published model and fixtures, not a hardware repair.
 
-Past decisions, failed attempts and earlier chat-recovery notes remain in the [investigation history](history.md). The [current plan](investigation-plan.md) names the work still open.
+[History](history.md) · [Documentation index](README.md)

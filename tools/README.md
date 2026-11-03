@@ -1,34 +1,32 @@
-# Tool guide
+# Tools
 
-There is no working repair tool. The current kit observes a connection and preserves evidence. Most older scripts are specific experiments retained for review.
+There is no working repair tool. This repository contains a Linux observer, Windows readers already used in the investigation, offline analysis, and older experiments.
 
-## Current Linux observation
+## Linux observer
 
-Read [the capture guide](../docs/linux-capture.md) before preparing media. The signed stock ISO and generated overlay remain local; binaries are not distributed through this repository.
+The [ASUS run](../docs/linux-asus-result.md) booted and saved a capture to USB. It reproduced ordinary USB fallback without an external router. A matching Dell Linux capture is unavailable. Repeating the same ASUS run would not expose the missing PD exchange.
 
 | File | Purpose |
 | --- | --- |
-| [capture_usb4.py](linux/capture_usb4.py) | Preview by default; explicit capture records topology/roles/logs on the prepared live USB |
-| [build_bundle.py](linux/build_bundle.py) | Verifies the pinned ISO and builds the private overlay; never writes a physical USB |
-| [start-capture.sh](linux/start-capture.sh), [console configuration](linux/900-usb4-capture.yaml) | Start the collector on the live console |
-| [test_capture_usb4.py](linux/test_capture_usb4.py) | Offline boundary and capture-flow checks; no real device/mount operations |
+| [capture_usb4.py](linux/capture_usb4.py) | Previews by default; explicit capture records topology, roles and logs on the prepared USB |
+| [build_bundle.py](linux/build_bundle.py) | Verifies the pinned ISO and builds the local overlay; does not write a physical USB |
+| [start-capture.sh](linux/start-capture.sh), [console configuration](linux/900-usb4-capture.yaml) | Launch the collector on the live console |
+| [test_capture_usb4.py](linux/test_capture_usb4.py) | Offline checks using fixtures; no real device or mount operations |
 
-Startup/model rejection was checked in a VM. The later [ASUS hardware run](../docs/linux-asus-result.md) booted and saved its capture to USB, reproducing USB fallback without an observed external router. A matching Dell Linux capture remains uncollected. The collector does not authorize PCIe devices, change roles/modes, scan retimers, flash firmware or reboot.
+Read the [capture guide](../docs/linux-capture.md) before preparing media. The ISO and overlay are not distributed in the repository. The collector does not authorize PCIe devices, change roles, scan retimers, flash firmware or reboot.
 
-## Windows readers already used
+## Windows readers
 
-| Tool | What it reads | Status |
-| --- | --- | --- |
-| [Read-USB4FirmwareSettings.ps1](Read-USB4FirmwareSettings.ps1) | Two exact BIOS314 variables | Read completed; stored USB4/TBT3 fields enabled. [Result](../evidence/firmware-settings-read.json) |
-| [Read-DEG2BillboardStrings.ps1](Read-DEG2BillboardStrings.ps1) | Standard descriptors through the existing USB hub driver | Read completed on one verified binding. [Result](../evidence/billboard-strings-result.json) |
+| Tool | Result already obtained |
+| --- | --- |
+| [Read-USB4FirmwareSettings.ps1](Read-USB4FirmwareSettings.ps1) | Read two BIOS 314 variables; stored USB4/TBT3 settings are enabled. [Evidence](../evidence/firmware-settings-read.json) |
+| [Read-DEG2BillboardStrings.ps1](Read-DEG2BillboardStrings.ps1) | Read standard descriptors on the identified device. [Evidence](../evidence/billboard-strings-result.json) |
 
-These readers do not expose the physical PD exchange or applied retimer state. Repeating them unchanged is not the next test.
+Neither reader exposes the physical PD exchange or applied retimer state. The private [PD version read](../docs/pd-firmware-version.md) returned cached bytes 00 53 through the existing ASUS driver. Its hardware runner is not distributed as a general-purpose tool.
 
-The [PD firmware-version investigation](../docs/pd-firmware-version.md) also completed a private maintainer read through the existing ASUS driver. Its two cache getters returned0053; the reusable hardware runner is not distributed as a general repair tool. [Test-PdVersionCache.c](analysis/Test-PdVersionCache.c) reproduces the original cache getter/population behavior offline with a hash-pinned BIOS image and the same emu8051 build inputs as [the EC harness](analysis/Test-EcPmcFirmware.c).
+## Offline checks
 
-## Offline evidence checks
-
-Run these from the repository root using Python 3.12 or later. They read public files and run fixtures; they do not install drivers or access hardware.
+Run from the repository root with Python 3.12 or later:
 
 ```text
 python tools/analysis/Run-Investigation.py --check
@@ -38,14 +36,17 @@ python tools/linux/test_capture_usb4.py
 python tools/analysis/Check-Docs.py
 ```
 
-The runner validates source/case relationships and regenerates reports when invoked without `--check`. A successful check means the public record is internally consistent, not that a fix works or private captures were independently decoded.
+These check public evidence relationships, generated reports, fixtures and links. They do not access hardware, independently decode unpublished captures or demonstrate a fix. The runner regenerates reports when used without `--check`.
 
-## Earlier experiments
+Two additional reference-code checks need separately acquired, pinned inputs:
 
-Windows VHDX preparation, UCSI role/mode experiments, test signing and the policy filter belong to completed or inconclusive investigations. Their source is preserved. Use [experiment results](../docs/experiments.md) and the [dated procedures](../docs/history.md) to understand them; no new driver installation or test boot is selected from those pages.
+- [Test-PdVersionCache.c](analysis/Test-PdVersionCache.c) executes the original EC cache behaviour using private BIOS data and the [EC harness](analysis/Test-EcPmcFirmware.c) build inputs.
+- [Test-Ps8802ReadBehavior.py](analysis/Test-Ps8802ReadBehavior.py) compiles pinned Chromium EC reader functions against a simulated bus. Use `source.c source.h --compiler cc`, or `--compiler cl` from a Visual Studio compiler environment. [Scope](../docs/component-behavior.md).
 
-[Current findings](../docs/status.md) · [Documentation index](../docs/README.md)
+Passing these checks verifies the tested code behaviour, not an ASUS hardware-access route.
 
-## Component reader reference check
+## Historical experiments
 
-`analysis/Test-Ps8802ReadBehavior.py source.c source.h --compiler cc` compiles three pinned Chromium EC reader functions against simulated bus/power/timer inputs. Use `--compiler cl` from a Visual Studio compiler environment on Windows. It performs no hardware access and does not certify an ASUS read path. [Scope and findings](../docs/component-behavior.md).
+Windows VHDX setup, role/mode commands, test signing and the policy filter belong to completed or inconclusive work. Their sources remain available for review. Read [results](../docs/experiments.md) and [history](../docs/history.md); those pages are not a new installation or test-boot request.
+
+[Diagnosis plan](../docs/investigation-plan.md) · [Documentation](../docs/README.md)

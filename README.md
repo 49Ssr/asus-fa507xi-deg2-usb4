@@ -1,46 +1,30 @@
-# ASUS FA507XI + Minisforum DEG2 USB4 investigation
+# ASUS FA507XI + Minisforum DEG2: USB4 failure investigation
 
-The DEG2's ordinary USB functions work on this ASUS TUF A15, but its external USB4 router and RTX 4080 SUPER do not appear. The same assembled dock, GPU, power supply and supplied cable work on a Dell Latitude 5540.
+The DEG2 and RTX 4080 SUPER work on a Dell Latitude 5540. On the ASUS TUF A15 FA507XI, the dock's ordinary USB devices appear, but its external USB4 router and GPU do not.
 
-**Status — 2 November 2026: no confirmed fix.** The first ASUS Linux capture also reproduced USB fallback: a 10 Gbps USB hub appeared, but no external USB4 router or new PCIe device was observed. The capture saved successfully to the boot USB. [Linux result](docs/linux-asus-result.md).
+**As of 3 November 2026, there is no confirmed fix.** The failure also occurs in a separate Windows installation and a live Linux session. The same ASUS port can establish a 40 Gbps host-to-host USB4 link with Dell. Those comparisons narrow the problem, but do not identify a defective chip or prove that ASUS can tunnel PCIe to this dock.
 
-## Start here
+## Read the investigation
 
-| What you need | Read |
+| Question | Page |
 | --- | --- |
-| The result, what has been ruled out, and what remains unknown | [Current findings](docs/status.md) |
-| A plain explanation of the components and connection sequence | [How the connection works](docs/connection.md) |
-| The proposed Linux comparison and its instructions | [Linux capture guide](docs/linux-capture.md) |
-| What has already been tried | [Experiment results](docs/experiments.md) |
-| Which scripts are useful now | [Tool guide](tools/README.md) |
-| Every research note, grouped by subject | [Documentation index](docs/README.md) |
+| What do we know, and what is still uncertain? | [Findings](docs/status.md) |
+| What should we do next, and why? | [Diagnosis plan](docs/investigation-plan.md) |
+| How do the controller, retimer and GPU fit together? | [Connection explained](docs/connection.md) |
+| What has already been tried? | [Experiment results](docs/experiments.md) |
+| Where are the detailed records? | [Documentation index](docs/README.md) |
+| What can I run? | [Tool guide](tools/README.md) |
 
-## What the evidence establishes
+## The unresolved part
 
-- Two Windows installations and a live Linux session on ASUS reproduce the missing-router failure.
-- ASUS completes the Windows-requested data-role change and then enumerates DEG2's SuperSpeed USB hub and downstream USB devices.
-- The failed connection maps to **connector 1 → XHC3 → NHI0 → RT0**. RT1 is a different host-router instance.
-- Stored USB4 and Thunderbolt 3 enable settings are already enabled. Their presence does not prove how the controller applies them.
-- A working ASUS–Dell peer connection demonstrates a 40 Gbps negotiated USB4 link on the tested ASUS port/cable. It does not establish eGPU PCIe tunnelling.
+ASUS corrects the USB data role and enumerates the dock's USB hub. The missing record is what happens during USB4 entry and link establishment: whether entry is requested, rejected, accepted but followed by failed training, or followed by a brief link that is lost.
 
-The missing evidence is the actual USB4-entry request/response and the retimer/link state during failure. We have not yet separated an omitted request, rejection, failed link training or a brief connection followed by loss. [Details and sources](docs/status.md).
+Board photographs identify **ITE IT8857FN** and **Parade PS8830 A3**. Knowing the parts helps us read the right reference code; it does not tell us which operation failed. The [diagnosis plan](docs/investigation-plan.md) ranks the remaining hardware comparisons and software-access work.
 
-## For other owners and contributors
+## Using or contributing to this repository
 
-This repository is a case study and diagnostic work in progress. The scripts that touch devices are restricted to the documented hardware and conditions. There is no universal driver, BIOS patch or registry fix to install.
+This is a case study, not a driver or patch to install. The Linux collector records a connection; older device-control scripts preserve specific experiments. Read their status in the [tool guide](tools/README.md) before using them.
 
-[Report a comparison or contribute evidence](CONTRIBUTING.md). Useful reports separate ordinary USB operation, external-router detection, PCIe-device detection, GPU output and workload stability. Keep raw dumps, serial numbers and unreviewed logs private.
+[Compatibility reports and contributions](CONTRIBUTING.md) are welcome. Report external-router detection separately from USB devices, GPU detection and display output. A USB hub working does not establish a working USB4 link.
 
-## Evidence and reproducibility
-
-Public JSON records, reviewed excerpts and pinned code references support the findings. Original memory dumps, ETL files, firmware and device inventories remain private. An outside reviewer can inspect the reasoning and run the public-file checks, but cannot independently re-decode unpublished captures. [Publication policy](docs/privacy.md).
-
-```text
-python tools/analysis/Run-Investigation.py --check
-python tools/analysis/Test-Investigation.py
-python tools/analysis/Test-InvestigationAutomation.py
-python tools/linux/test_capture_usb4.py
-python tools/analysis/Check-Docs.py
-```
-
-[Earlier investigation record](docs/history.md) · [Technical evidence map](docs/investigation-map.md)
+Public evidence includes decoded records, source references and offline checks. Raw dumps, traces, firmware and identifying inventories remain private, so the public repository alone cannot reproduce every decode. [Evidence policy](docs/privacy.md) · [History](docs/history.md)

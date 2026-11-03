@@ -1,54 +1,49 @@
-# Finding a Windows repair: the missing decision
+# Can Windows reach the missing controller state?
 
-**New source available:** [SDK 3.9.0 has been acquired and inspected](infineon-sdk-review.md). The missing AMD headers and compiled functions are now available for comparison. No equivalence to the ASUS transport or a ready Windows logger is established.
+**We know how Windows reaches ASUS's UCSI relay. We do not yet have a verified Windows read of the PD controller's entry decision or the PS8830's applied state.** That is the access problem behind the uncertain repair path.
 
-The repair is uncertain because the first failed RT0 transition is unobserved. The investigation can still have a specific target: recover that decision and identify a Windows operation that controls the affected state. Existing host-router samples locate the failure before usable external-router discovery; they do not distinguish all earlier causes.
+The [diagnosis plan](investigation-plan.md) ranks the next work. This page records what the available interfaces can and cannot do.
 
-The [saved attachment sequence](rt0-attachment-order.md) now ties connector1 to RT0 and places successful DEG2 SuperSpeed-hub enumeration after the Windows role correction. This narrows the failure beyond a permanently wrong USB host/device role; actual USB4 entry and retimer/training state remain missing.
+## Available interfaces
 
-## A specific reset hypothesis
-
-[USB-PD Data_Reset](ucsi-data-reset.md) could restart USB4 discovery after ASUS has corrected the data role, without undoing that role. This is not the older connector reset. The saved ASUS version is anomalous and a compatible data-reset command is unproven; no executable repair or hardware test is prepared. Follow the actual controller command handler before sending anything. [The command-path trace](data-reset-command-path.md) now confirms unchanged EC forwarding and a fixed initializer version; the receiving PD reset handler remains unidentified.
-
-## Controller firmware/version acquisition
-
-[The Windows cache read completed](pd-firmware-version.md): controller-derived bytes0053, successful transport and cleanup. Exact ITE firmware references and an advertised UEFI version-only option are now available from official ASUS packages for other platforms. The cached value is not a flash match or a data-reset capability declaration; the actual laptop reset handler remains unidentified.
-
-## The records that choose the repair
-
-| What actually happened | Record needed | What a repair would need to change |
+| Route | What has worked | What is missing |
 | --- | --- | --- |
-| ASUS did not send Enter_USB | Discovery results and the controller's entry decision | The specific host policy, capability interpretation or ordering that prevented entry. The completed Windows role-policy trial alone was insufficient |
-| DEG2 received entry and rejected it | The request and response, with their context | The request or compatibility condition responsible for rejection, if the host exposes control of it |
-| Entry was accepted but the link failed | Applied retimer mode/orientation and first training result | The affected routing/training decision through an identified interface |
-| A link/router appeared and was lost | The first successful state followed by the exit/power event | The specific later transition. Final absence alone does not prove that a link never existed |
+| UEFI-variable reads | Stored USB4/TBT3 settings and RT0/RT1 fields | The controller's applied attachment-time decision |
+| Windows USB4/UCSI traces and dumps | Roles, commands, topology and native router-detection samples | Private PD negotiation and complete physical-link history |
+| Standard DEG2 descriptors | BOS, Billboard status and strings | A fresh entry request/reply or retimer/training result |
+| Existing ASUS OEM driver | Fixed identity string and cached PD firmware word | A current controller-state read; the attempted dynamic PDO getter is a firmware stub |
+| ASUS Parade updater endpoint | Inspected code and retained failed requests | Proof that this endpoint reaches the runtime mode/status interface |
+| DEG2 WinUSB interface | Enumerated interface and a reference GUID match | The actual firmware's command handler, reply format and side effects |
+| IT8857 UEFI vendor tool | Acquired binary with an advertised version-only option | Audited startup/transport behaviour, laptop bus mapping and Windows accessibility |
 
-Changing a GPU driver or later PCIe tunnel setting cannot answer those earlier questions. RT1 targets the other router. PD USB4/TBT3 stored settings are already enabled. These facts narrow the candidates without proving that a Windows repair exists or is impossible.
+Supporting records: [settings](../evidence/firmware-settings-read.json), [attachment](rt0-attachment-order.md), [dock report](billboard-comparison.md), [OEM access](control-reachability.md), [PD version](pd-firmware-version.md), [interface review](../evidence/windows-repair-route-review.json).
 
-## What the present Windows interfaces actually expose
+## What the reference code contributes
 
-| Interface | Proven access | Missing information |
-| --- | --- | --- |
-| Stored UEFI settings | Successful two-variable read | Whether the controller consumed/applied them during failure |
-| Standard DEG2 USB descriptors | Successful exact-device BOS/string read | PD request/response and applied retimer/training state |
-| Windows USB4/UCSI evidence | Existing traces, dump and native register samples | Controller-private negotiation and complete earlier physical history |
-| DEG2 WinUSB vendor interface | Enumerated transport and matching reference GUID | A matching, versioned command implementation and useful log/state payload |
-| Existing ASUS OEM/Parade route | Reviewed implementations and retained failures | An implemented live read for the relevant controller state; the PDO stub and cached HID status do not provide it |
+The acquired [Infineon SDK 3.9.0](infineon-sdk-review.md) contains AMD/PS8830 definitions and compiled functions. It helps explain mode-setting order, status handling and failure paths. It is an Infineon implementation; ASUS's photographed controller is ITE IT8857FN. The transports and registers cannot be assumed interchangeable.
 
-## Three findings that change how we use those routes
+The [PS8830 reference](component-behavior.md) exposes software-written mode/orientation fields. Even a correct read of those fields would need an independent entry or training result. The SDK's APU status transaction is also distinct from a PS8830 read and from a DEG2 USB vendor command.
 
-**The matching WinUSB GUID is not a protocol fingerprint.** DEG2's current registry value matches the public Infineon Griffin Creek descriptor. An independent Bridgetek SDK also uses it as an example. The Infineon application conditionally dispatches DMC requests, and its wrapper calls the application handler before optional log handling. This does not qualify D6/D7/DE commands for DEG2. The documented D6/D7 fields concern component identity, image status and versions; they are not themselves the missing PD exchange.
+## Three tempting shortcuts that do not work as evidence
 
-**The reported mode word is not a success certificate.** In the inspected Infineon reference, BOS can start from a configuration template. Saved EUDO replaces its word only under a build option and runtime USB4-support condition. The data-status function also saves EUDO before calling the mux setter and returning its result. DEG2's zero/nonzero difference remains a real observation, but we cannot use it alone to label a failed request or successful retimer configuration. DEG2's exact implementation remains unproven.
+**A matching GUID does not identify a vendor protocol.** DEG2's interface matches an Infineon example, but the same GUID appears in an unrelated SDK. The inspected Infineon application conditionally dispatches DMC requests and invokes its application handler before optional log handling. Its D6/D7 fields describe component identity, image status and versions; they are not the missing PD exchange. That code does not establish DEG2's command implementation.
 
-**The identified BIOS setter is broader than USB4.** The complete selected Quanta function contains five variable-write sites across PBS, network stack, Setup and ASUS setup-item data, plus a fixed MMIO-byte update. Its early PBS write precedes other operations that can fail. It is not an established atomic port-only operation, and a Windows runtime caller is unqualified. This function was not invoked.
+**A cached mode word is not a packet transcript.** In the Infineon reference, BOS may start from a configuration template. Saving an EUDO can also precede the mux operation and its result. DEG2's ASUS/Dell difference remains a real device report, but it does not prove which entry packet was sent or accepted.
 
-[Source pins, original-byte checks, registry observation and limits](../evidence/windows-repair-route-review.json).
+**A BIOS variable setter is not a port-only repair.** The inspected Quanta function writes across PBS, network-stack, Setup and ASUS setup-item data, plus MMIO. An early write can precede a later failure. No atomic USB4-only operation or Windows runtime caller was established. It was not invoked.
 
-## Work that can continue without physical access
+[Original-code anchors and limits](../evidence/windows-repair-route-review.json).
 
-Follow the original RT0/PBS9c dataflow into the controller-facing code. Separately identify the DEG2 firmware/diagnostic implementation before sending a vendor request. A useful new read must supply one of the missing records in the first table; another unchanged descriptor read or generic dump is insufficient by itself.
+## Data_Reset remains a candidate, not a ready command
 
-SDK source can help identify control ordering and status interfaces. A matching DEG2 firmware package could identify the dock command handler. Neither package is a ready-made capture or a repair merely because it can be downloaded. The official support root's meta-refresh was followed; the exact DEG2 card presently exposes a manual and installation video, without a firmware link in that card. This is not proof that firmware is unavailable elsewhere.
+The proposed recovery is to restart USB4 discovery after role correction without undoing that role. The [command-path trace](data-reset-command-path.md) establishes EC forwarding, but not the laptop PD firmware's reset handler. UCSI reset meanings differ by version, and the retained version fields do not settle that question.
 
-Scheduled runs remain paused. No BIOS, cable, driver, restart or network change was made for this review. The only new local observation was existing Windows registry metadata; no new USB/EC/I2C/vendor request was sent.
+The existing transport is useful if the receiving operation can be identified. Building another unrestricted sender before then would not resolve the uncertainty. [Reset hypothesis and prerequisites](ucsi-data-reset.md).
+
+## What would change this assessment
+
+A matched controller implementation, documented logger or traced current-state reader could supply a useful Windows route. The first deliverable should state exactly which decision or result it observes, how current the value is, and whether reading it consumes an event or changes device state. If a route returns only identity or a cache, record that limit and pursue a different source.
+
+No usable route has been established yet. That does not prove that a Windows repair is impossible. It means the repository should not advertise a logger, reset test or patch before its actual behaviour is known.
+
+[Diagnosis plan](investigation-plan.md) · [Findings](status.md)

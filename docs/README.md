@@ -1,92 +1,88 @@
-# Documentation index
+# Documentation
 
-Start with [current findings](status.md). The detailed notes preserve the source trail; older procedures are not a current request to run them.
+Read [findings](status.md) for the evidence and [the diagnosis plan](investigation-plan.md) for the next steps. The technical notes below retain the reasoning, corrections and failed attempts. A dated procedure is not an instruction to repeat it.
 
-## Start here
+## Overview
 
-- [Current findings](status.md)
+- [Findings](status.md)
+- [Diagnosis plan](investigation-plan.md)
 - [How the connection works](connection.md)
-- [Linux USB4 comparison](linux-capture.md)
 - [Experiment results](experiments.md)
 - [Research handoff](handoff.md)
-- [Current investigation plan](investigation-plan.md)
-- [Continuing this investigation](continuation.md)
+- [Continuing in another chat](continuation.md)
+- [Tool guide](../tools/README.md)
 
-## Recorded comparisons
+## Hardware and comparison results
 
-- [Hardware and comparison baseline](hardware.md)
-- [Board photographs: IT8857FN identified; PS8830 A3 confirmed](board-photo-review.md)
-- [Component circuits and registers: what can actually be observed](component-behavior.md)
-- [ASUS Linux result: USB fallback reproduced](linux-asus-result.md)
-- [Fresh ASUS versus Dell: matched evidence comparison](asus-dell-matched-comparison.md)
-- [Fresh ASUS comparison against the recovered Dell](asus-local-comparison.md)
-- [Portable Intel Dell-DEG2 control](dell-control.md)
-- [Dell dump recovery and platform-policy comparison](dell-dump-recovery.md)
-- [Separate full-Windows result, 31 October 2026](fresh-windows.md)
-- [N0: ASUS-Dell USB4 peer link](peer-test.md)
-- [One preconnected cold-start observation](cold-start-observation.md)
-- [RT0: what succeeds before USB4 fails](rt0-attachment-order.md)
-- [DEG2's own USB4/DP report: ASUS versus Dell](billboard-comparison.md)
-- [What the traces say](findings.md)
+- [Hardware, cable and host details](hardware.md)
+- [Board photographs and corrected IT8857FN identification](board-photo-review.md)
+- [ASUS and Dell: matched Windows captures](asus-dell-matched-comparison.md)
+- [ASUS capture against the recovered Dell dump](asus-local-comparison.md)
+- [Working Dell control](dell-control.md)
+- [Dell dump recovery and platform policy](dell-dump-recovery.md)
+- [Separate Windows installation on ASUS](fresh-windows.md)
+- [ASUS Linux result](linux-asus-result.md)
+- [Working ASUS–Dell peer link](peer-test.md)
+- [Powered preconnected startup](cold-start-observation.md)
+- [Attachment order and RT0 port mapping](rt0-attachment-order.md)
+- [DEG2's Billboard and power reports](billboard-comparison.md)
+- [Earlier trace findings](findings.md)
 
-## Controller and firmware research
+## Controller access and firmware
 
-- [Windows PD-version read: cached0053 and recovered ASUS ITE references](pd-firmware-version.md)
+- [Available Windows interfaces and their limits](windows-repair-route.md)
+- [Component controls: IT8857, PS8830 and the other photographed chips](component-behavior.md)
+- [PD firmware cache and acquired ASUS reference images](pd-firmware-version.md)
+- [Data_Reset hypothesis](ucsi-data-reset.md)
+- [Reset command path and unknown receiving handler](data-reset-command-path.md)
+- [What the Infineon SDK 3.9.0 supplies](infineon-sdk-review.md)
+- [RT1 is a separate host instance](rt1-router-mapping.md)
+- [Hidden settings and possible capture interfaces](capture-paths-and-hidden-settings.md)
+- [UMAF and other boot tools](boot-tools-review.md)
+- [ASUS EC relay and stubbed diagnostic getter](ec-firmware-decision.md)
+- [EC blocking flag and its writers](ec-blocking-flag.md)
+- [OEM response wait: earlier IT8853-labelled investigation](it8853-transport.md)
+- [Recovered control paths and access failures](control-reachability.md)
+- [Earlier firmware-entry analysis](firmware-entry-followup.md)
+- [MCU read prerequisites and working-link counterexample](i2c-read-prerequisites.md)
+- [Parade updater failure](parade-updater-failure.md)
+- [Parade CFU image candidates](parade-cfu-candidates.md)
+- [Trace decoding and EC bus-transfer code](trace-gaps-and-ec-bus.md)
+- [OEM identity and power-profile getters](oem-pd-diagnostics.md)
+- [Retimer target-lifetime analysis](parade-lifecycle-test.md)
+- [Earlier reverse-engineering approach](reverse-engineering-approach.md)
+- [Research sources and earlier interpretations](research.md)
 
-- [Data reset after role correction: repair hypothesis and missing ASUS command](ucsi-data-reset.md)
-- [ASUS command path, fixed mailbox version and SDK reset handler](data-reset-command-path.md)
+## Previous tests and procedures
 
-- [Infineon SDK 3.9.0: recovered AMD/PS8830 reference implementation](infineon-sdk-review.md)
+These pages explain how the evidence was collected. Check [experiment results](experiments.md) before using any procedure.
 
-- [Finding a Windows repair: the missing decision](windows-repair-route.md)
-- [What RT1 controls on this ASUS](rt1-router-mapping.md)
-- [Reading the missing state with the existing hardware](capture-paths-and-hidden-settings.md)
-- [Useful boot tools for this investigation](boot-tools-review.md)
-- [BIOS314 EC firmware: silent telemetry stub and UCSI relay](ec-firmware-decision.md)
-- [EC blocking flag: writers, read address and remaining access problem](ec-blocking-flag.md)
-- [IT8853 follow-up: OEM response wait isolated](it8853-transport.md)
-- [Reaching the firmware: recovered code and tested access boundary](control-reachability.md)
-- [Firmware entry investigation, 1 November 2026](firmware-entry-followup.md)
-- [MCU read prerequisites and the working-link counterexample](i2c-read-prerequisites.md)
-- [Parade updater failure: registry, existing dump and native code](parade-updater-failure.md)
-- [Parade CFU firmware candidates: offline review](parade-cfu-candidates.md)
-- [Remaining trace records decoded; EC bus-transfer code exercised](trace-gaps-and-ec-bus.md)
-- [Matched comparison and firmware investigation](reverse-engineering-approach.md)
-- [Research and sources](research.md)
+- [Role-policy filter: measured result and removal](role-policy-test-result.md)
+- [Role-policy experiment design](role-policy-experiment.md)
+- [Initial-role experiment: no attachment](initial-role-test.md)
+- [Driver readiness review](driver-readiness-review.md)
+- [Test signing and restoration records](local-test-signing.md)
+- [Temporary Windows test setup](test-windows.md)
+- [Portable ASUS/Dell capture procedure](deep-compare-capture.md)
+- [Hot-plug trace](hotplug-window.md)
+- [Live kernel snapshot](kernel-snapshot.md)
+- [UCSI buffer examination](ucsi-memory-probe.md)
+- [Role-negotiation comparison and follow-up](negotiation-followup.md)
+- [Correction to EnableUSB4v2Support interpretation](policy-audit.md)
+- [Native-boot toolkit review](validation-audit.md)
 
-## Earlier Windows procedures and results
+## Tools, evidence and history
 
-- [Measured role-policy test, 1 November 2026](role-policy-test-result.md)
-- [One initial-role comparison with existing hardware](initial-role-test.md)
-- [Pre-attachment role-policy experiment](role-policy-experiment.md)
-- [Driver readiness review, 1 November 2026](driver-readiness-review.md)
-- [Local test signing and return to normal boot](local-test-signing.md)
-- [Temporary full-Windows test](test-windows.md)
-- [Portable matched capture: Dell first](deep-compare-capture.md)
-- [Live connection window: 31 October 2026](hotplug-window.md)
-- [Live kernel snapshot: 31 October 2026](kernel-snapshot.md)
-- [Scripted UCSI / EC buffer examination](ucsi-memory-probe.md)
-- [Role negotiation: follow-up on the existing captures](negotiation-followup.md)
-- [Correction: `EnableUSB4v2Support` was ignored](policy-audit.md)
-- [Native-boot toolkit validation audit](validation-audit.md)
-
-## Evidence and maintenance
-
-- [Linux collector: design and validation](linux-capture-internals.md)
-
-- [USB4 investigation: current evidence map](investigation-map.md)
-- [USB4 constraint table and next observations](investigation-truth-table.md)
-- [What we know, what we are missing, and what can be tested without another boot](investigation-gaps.md)
-- [Offline analysis and the saved router-detection difference](offline-investigation.md)
-- [Scope of a future USB4 diagnostic tool](tool-scope.md)
-- [Evidence and publication](privacy.md)
-- [Troubleshooting timeline](timeline.md)
-- [Investigation history](history.md)
+- [Linux collector instructions](linux-capture.md)
+- [Linux collector implementation and checks](linux-capture-internals.md)
+- [Generated evidence map](investigation-map.md)
+- [Generated constraint table](investigation-truth-table.md)
+- [Earlier evidence gaps](investigation-gaps.md)
+- [Offline analysis runner](offline-investigation.md)
+- [Possible future diagnostic tool](tool-scope.md)
+- [Evidence and privacy](privacy.md)
+- [Chronological record](timeline.md)
+- [History and preserved revisions](history.md)
 - [Research checkpoint](ps8830-investigation-intervals.md)
 
-## Additional technical notes
-
-- [ASUS OEM PD reads: fixed identity string and power-profile boundary](oem-pd-diagnostics.md)
-- [Retimer target leak: reproduced code path and controlled next test](parade-lifecycle-test.md)
-
-[Tool guide](../tools/README.md) · [Contributing](../CONTRIBUTING.md) · [Repository home](../README.md)
+[Contributing](../CONTRIBUTING.md) · [Repository home](../README.md)

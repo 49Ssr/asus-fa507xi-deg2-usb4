@@ -1,85 +1,55 @@
-# Current findings
+# Findings
 
-Updated 3 November 2026. **The ASUS–DEG2 connection remains unresolved. No working Windows fix or firmware patch has been demonstrated.**
+Updated 3 November 2026. **No working Windows fix or firmware patch has been demonstrated.**
 
-The observed failure occurs before Windows discovers DEG2's external USB4 router. Its USB hub, storage/network functions and Billboard interface can still enumerate. GPU-driver changes cannot explain that earlier missing-router observation by themselves.
+ASUS detects DEG2's ordinary USB devices but does not discover its external USB4 router at the recorded checks. The GPU is downstream of that missing connection. Changing the NVIDIA driver is therefore not the next diagnostic step.
 
-## Physical controller identification corrected
+## The comparisons that matter
 
-New board photographs show **ITE IT8857FN**, alongside **PS8830 A3**. The earlier `IT8853` OEM response comes from a fixed EC string. Preserve that measured result, but do not use it as the fitted chip identity. The already-acquired IT8857 add-in-card reference is now relevant at the part-family level; its board configuration and image remain unqualified for this laptop. [Photos, other components and remaining limits](board-photo-review.md).
-
-## Component documentation and read behavior
-
-[The component review](component-behavior.md) separates PS8830 software-written mode inputs, PS8802 status/mode registers and the ITE event/completion interface. Executing the original PS8802 reader with a simulated bus confirms that its read path includes wake/retry behavior. A generic register scan is not an established passive logger. No live controller read or Windows repair was performed.
-
-## The strongest comparisons
-
-| Comparison | Result | What it establishes |
+| Observation | What it tells us | What it does not tell us |
 | --- | --- | --- |
-| DEG2 + RTX 4080 SUPER + supplied cable on Dell Latitude 5540 | External router, GPU and display work | The assembled dock can operate on another host |
-| Same dock on ASUS FA507XI | Ordinary USB works; external router/GPU absent | The failure is reproducible in this pairing |
-| Separate Windows installation on ASUS | Same failure | Weakens an explanation confined to the original Windows installation |
-| SystemRescue 13.02 / Linux 6.18.41 on ASUS | 10 Gbps USB hub appears; no external router or new PCIe device observed | Reproduces the failure outside Windows; OS PCIe control was granted |
-| ASUS–Dell host-to-host connection through the tested ASUS port/cable | Negotiated Gen 3, two lanes, 40 Gbps | The ASUS path can establish a USB4 peer link; eGPU PCIe tunnelling remains a separate question |
+| The same DEG2, GPU, PSU and supplied cable work on Dell Latitude 5540 | The assembled dock can operate on another host | That it negotiates identically with ASUS, or has equal signal margins |
+| ASUS fails in two Windows installations and SystemRescue Linux | The failure is not confined to the original Windows installation | Whether firmware, physical signalling or an interaction between components is responsible |
+| ASUS–Dell peer connection reaches Gen 3, two lanes, 40 Gbps | The tested ASUS port and cable can establish this USB4 peer link | That PCIe tunnelling or DEG2 compatibility works |
+| ASUS completes the data-role correction, then enumerates DEG2's SuperSpeed hub | The connection is not stuck in the wrong USB host/device role | That USB4 entry or retimer configuration succeeded |
+| The dock's cached Billboard report says USB4 successful on Dell, not attempted or exited on ASUS | The dock reports different outcomes | Whether ASUS omitted entry, DEG2 rejected it, or entry was followed by an exit |
 
-Sources: [matched ASUS/Dell comparison](asus-dell-matched-comparison.md), [Dell control](dell-control.md), [separate Windows installation](fresh-windows.md), [peer connection](peer-test.md), [Linux attachment](linux-asus-result.md).
+Records: [matched comparison](asus-dell-matched-comparison.md), [separate Windows installation](fresh-windows.md), [Linux result](linux-asus-result.md), [peer link](peer-test.md), [attachment order](rt0-attachment-order.md), [dock report](billboard-comparison.md).
 
-## The role change succeeds; USB4 detection still fails
+The Linux recording saw a 10 Gbps USB hub, no external router and no new PCIe device in its 45-second observation. The host router was present and ACPI granted OS control of PCIe tunnelling. Its ERROR 0x7 packets were plug-event acknowledgements, not rejection messages from DEG2. It did not record the physical PD exchange or a new RouterDetected bit-13 sample.
 
-Both hosts initially report the partner in the host-facing data role. Dell reports the partner in the device-facing role by its first PD report and then detects the external router. ASUS reports that role later, after Windows requests the change.
+## Hardware and settings
 
-The saved ASUS trace independently confirms successful enumeration of DEG2's SuperSpeed hub after that correction. This rules out a permanently wrong USB host/device role in that attachment. It does not reveal the physical PD exchange or how PS8830 was configured.
+- Photographs identify **IT8857FN** and **PS8830 A3**. The earlier `IT8853` response is a fixed string in ASUS EC firmware, not the fitted chip identity. [Photo review](board-photo-review.md).
+- The captured failing port maps to **connector 1 → XHC3 → NHI0 → RT0**. RT1 is a separate host-router instance, not the retimer. [Mapping and correction to the earlier XHC4 description](rt0-attachment-order.md).
+- Stored PD USB4 and Thunderbolt 3 settings are enabled. RT0 and its PCIe tunnel are Auto; RT1 is Disabled. Stored values do not reveal the final controller decision. [Settings](../evidence/firmware-settings-read.json).
+- The Windows getter returned cached PD firmware bytes **00 53**. A failed refresh can leave old bytes in that cache. Their freshness, display encoding and matching laptop firmware image remain unknown. [Version read](pd-firmware-version.md).
 
-The first ASUS router-detection sample has bit 13 clear; Dell's is set. These are recorded samples, not a complete history proving that ASUS never formed a brief link. [Port mapping and exact timestamps](rt0-attachment-order.md), [native detection branch](../evidence/router-detection-branch.json).
+The first retained ASUS RouterDetected sample has bit 13 clear; Dell's is set. A sampled value is not proof that a link never appeared between observations. [Detection evidence](../evidence/router-detection-branch.json).
 
-## Settings already checked
+## Explanations weakened by the tests
 
-The Windows read of BIOS 314 stored variables found:
+The policy-filter trial changed Windows' role-correction behaviour without restoring USB4. Also, a working ASUS–Dell peer phase included a rejected Windows SET_UOR request. The existence of that request alone cannot explain failure. [Policy result](role-policy-test-result.md) · [Peer role sequence](negotiation-followup.md).
 
-| Setting | Stored value |
-| --- | --- |
-| PD USB4 Control | Enabled |
-| PD Thunderbolt 3 Alt Mode | Enabled |
-| RT0 router / PCIe tunnel | Auto / Auto |
-| RT1 router | Disabled |
+The retimer updater's target-lifetime bug coexisted with a working peer link, so it is not sufficient to explain all USB4 failure. The OEM diagnostic timeout led to a stubbed firmware getter; it is not a measurement of a timed-out PD handshake. [Updater](parade-updater-failure.md) · [EC getter](ec-firmware-decision.md).
 
-RT0 is the host instance associated with the failed connection. RT1 is the second instance, not the PS8830 retimer. Enabling RT1 is unsupported as a repair for this captured path. Stored Auto values are not a measurement of final applied policy. [Settings read](../evidence/firmware-settings-read.json), [router mapping](rt1-router-mapping.md).
+All four plug orientations and a powered preconnected startup have already been tried. The Rp-only experiment never established attachment and therefore did not test its intended condition. See [all experiment results](experiments.md).
 
-One earlier description of XHC4's ACPI association was too strong: the inspected scope contains a conditional dependency on NHI1, rather than the explicit USB4 property present for XHC3. The tested RT0 mapping remains supported. [Correction](rt0-attachment-order.md).
+## What remains unknown
 
-## Previous tests and their limits
+We have not distinguished these outcomes:
 
-The policy-only driver trial changed Windows' role-correction behavior but did not restore USB4. The driver was removed and stock policy verified. A powered preconnected startup also failed to produce the router/GPU. An Rp-only test did not establish attachment, so it did not test the intended changed condition. One alternate-mode exit request was rejected. [Complete results](experiments.md).
+1. USB4 entry is never requested.
+2. Entry is requested but rejected.
+3. Entry is accepted, but routing or link training fails.
+4. A link forms briefly and is lost.
 
-The OEM EC-response timeout was traced to a stubbed diagnostic getter in the inspected firmware. It is not a measured timeout of the PD handshake. The updater's retimer-target lifetime issue is real, but the working ASUS peer connection weakens it as a universal blocker. [EC timeout](ec-firmware-decision.md), [Parade updater analysis](parade-updater-failure.md).
+The Infineon SDK and component drivers describe reference implementations. They have not supplied the actual ASUS controller decision or a working Windows transport for reading it. PS8830 mode flags describe requested configuration, not independent proof of a trained link. [Access routes](windows-repair-route.md) · [Component controls](component-behavior.md).
 
-## The remaining question
+**The next work is ranked in the [diagnosis plan](investigation-plan.md).** Another generic dump or unchanged boot would repeat the same blind spot.
 
-We need to distinguish:
+## Recovery status
 
-1. ASUS never requests USB4 entry.
-2. DEG2 rejects the request.
-3. Entry is accepted but routing or link training fails.
-4. A usable link briefly appears and is then lost.
+The experimental filter was removed and stock policy verified. On 3 November, Windows reported Secure Boot off, test signing off and HVCI running. The exact test certificate was absent from both machine trust stores. Fresh BCD enumeration and complete boot-restoration verification remain incomplete. ASUS System Control Interface 3.1.73.0 is installed. [Readback and limits](../evidence/boot-state-20261103.json).
 
-The captures have not exposed the decisive controller record. A hidden menu, enabled setting, successful UCSI command or final missing router does not answer those questions on its own. No source-qualified Windows operation that repairs the missing transition has been found. [Windows repair research](windows-repair-route.md).
-
-## Linux reproduced the failure
-
-The [first ASUS Linux attachment](linux-asus-result.md) saved successfully to the boot USB. The host router was present and ACPI granted OS control of PCIe tunnelling. The reported data role changed correctly, DEG2's 10 Gbps USB hub appeared, and no external router or new PCIe device appeared in 45 recorded samples. The trace reports no dropped events or buffer overruns.
-
-The local host packets marked ERROR 0x7 are normal plug-event acknowledgements, not dock rejection replies. The trace does not provide the physical USB4-entry exchange or a new RouterDetected bit-13 sample. Firmware/controller/cable interaction remains a direction to investigate; no specific failed chip or repair is established.
-
-A matching Dell Linux capture is currently unavailable. The existing successful Dell Windows captures remain the control: they already contain a native router-detection readback and the dock's reported USB4 status. Another identical Dell Windows capture has no identified benefit. Continue with the controller record or original firmware code; no further boot attempt or unchanged ASUS repeat is selected. The [kit](linux-capture.md) remains an observer and does not force a mode, authorize devices, scan retimers or change firmware.
-
-## New reference code available
-
-The acquired [Infineon SDK 3.9.0](infineon-sdk-review.md) supplies AMD/PS8830 definitions and compiled status/mode implementations missing from the earlier public reference. An actual reference status reader has been checked offline. Its connection to ASUS's ITE implementation and a usable Windows transport remain unproven; no live command or repair is selected.
-
-## PD firmware version path now works
-
-A new Windows read through the existing ASUS driver returned controller-derived cached firmware bytes **00 53**. The getter reads an EC cache populated from PD registerB6; failed refresh can preserve an old value, so freshness and a matching flash image remain unverified. Real IT8853 firmware and an advertised UEFI version-only interface were recovered from official ASUS packages for other hardware and retained privately. No reset or flash was sent. [Result, corrected offsets and source scope](pd-firmware-version.md).
-
-**Boot-state readback, 3 November 2026:** Windows reports Secure Boot off, test signing off and HVCI running. The exact experiment certificate is absent from both machine trust stores, matching the saved prior state. Fresh BCD enumeration was not available to the non-elevated process, so complete restoration is not claimed. ASUS System Control Interface3.1.73.0 is already installed. No setting was changed. [Readback and limits](../evidence/boot-state-20261103.json).
-
-No vendor-confirmed root cause or applicable fix is recorded. [All documentation](README.md) · [Research handoff](handoff.md)
+[Documentation index](README.md) · [Research handoff](handoff.md)

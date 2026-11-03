@@ -1,33 +1,70 @@
-# Current investigation plan
+# Diagnosis plan
 
-**Goal:** determine why DEG2 enters a usable USB4 connection on Dell but fails on ASUS, then identify a specific repair that can be tested and undone.
+Updated 3 November 2026. The goal is a working ASUS–DEG2 connection. The immediate problem is choosing between a pairing-specific negotiation problem, a broader ASUS peripheral problem, and a cable/link interaction. The current evidence does not select one.
 
-## 1. Compare another OS with the existing hardware
+**The best next hardware comparison is another known-working USB4 PCIe device on ASUS. With only the existing hardware, the best code lead is the acquired IT8857 vendor tool's controller-access path.** These are recommendations based on the [findings](status.md), not new measured results. No new hardware operation is prepared by this page.
 
-The [first ASUS Linux run](linux-asus-result.md) reproduced USB fallback with no observed external router or new PCIe device. USB saving worked, the host router was present and OS PCIe control was granted. No unchanged ASUS repeat is selected.
+## 1. Find out whether ASUS can use another PCIe peripheral
 
-A Dell Linux run is currently unavailable. Continue using the [existing successful Dell Windows comparison](asus-dell-matched-comparison.md), including the native readbacks and the [dock's own status report](billboard-comparison.md). Another unchanged Windows capture is not selected. Any future acquisition must name a missing record that the chosen tool can actually read. The ASUS Linux failure leaves entry, routing and training unresolved; it does not establish a failed chip.
+Borrow a known-working USB4/TB enclosure or dock that exposes a PCIe device. A native USB4 device is the closest control; record the actual connection mode if using a Thunderbolt-compatible device. The existing UGREEN USB 3.2 hub cannot answer this question, and the working ASUS–Dell peer link does not exercise PCIe tunnelling.
 
-## 2. Trace the applied ASUS policy
+| Result on ASUS | Consequence |
+| --- | --- |
+| External router and PCIe device both appear | Concentrate on DEG2 compatibility and the cable/entry sequence used by that pairing |
+| External router appears, but PCIe device does not | Investigate the separate tunnel/authorization problem for that device; this is later than DEG2's observed failure |
+| No external router appears | A broader ASUS peripheral-entry problem becomes more plausible; confirm the borrowed assembly works elsewhere before drawing that conclusion |
 
-Follow the original RT0 and PBS PD USB4-control consumer into the code that actually communicates a controller decision. Stored USB4/TBT3 enable values are known; their applied effect remains unknown. Keep this independent of RT1 and unrelated setup fields. [Original-code research](capture-paths-and-hidden-settings.md), [RT0 mapping](rt0-attachment-order.md).
+Use the borrowed device's known-working cable first. If it works, try DEG2 with that cable as a separate comparison. This avoids changing the device and cable together and then attributing the result to one of them.
 
-## 3. Find the missing controller record
+A second useful control is DEG2 on another AMD USB4 host. Success would narrow the problem toward this ASUS platform or unit; failure would motivate a wider compatibility comparison. One additional AMD host cannot establish an AMD-wide defect. Manufacturer/router firmware, actual link mode and cable identity matter more than the CPU brand alone.
 
-The [acquired SDK 3.9.0](infineon-sdk-review.md) now supplies reference AMD/PS8830 definitions and compiled functions. Compare its APU status/interrupt transactions with the original ASUS code; preserve the distinction between APU status, retimer programming and dock USB commands.
+These comparisons need borrowed hardware. They are worth pursuing alongside code work rather than waiting for reverse engineering to finish. A second suitable cable alone is also useful: success on Dell does not exclude an ASUS-specific interaction. The unsuitable UGREEN cable previously tried was not that control. [Hardware and prior cable checks](hardware.md).
 
-Qualify a log/state interface by matching its actual implementation and reply semantics. The useful record must distinguish an omitted entry request, rejection, accepted entry with failed training, or a later exit. A non-unique WinUSB GUID, cached HID field or generic Billboard string does not qualify a vendor command. [Available Windows routes](windows-repair-route.md).
+## 2. With existing hardware: audit the IT8857 read path
 
-The [board photographs](board-photo-review.md) identify the actual fitted part as IT8857FN; the earlier IT8853 diagnostic is a fixed EC string. Prioritize that physical target and the already-acquired IT8857 reference without treating another board's image as compatible. The [controller-version acquisition](pd-firmware-version.md) supplies cached0053 and real ASUS ITE reference images. Identify the exact laptop firmware/current-controller read and follow its reset handler. The UEFI tool advertises version-only mode but its laptop bus mapping and startup behavior are not established.
+The photos corrected the target to IT8857FN. An official ASUS package already acquired for a different board contains an IT8857 tool with an advertised version-only option. Audit that path without running the updater:
 
-## 4. Acquire a record that distinguishes command from result
+1. Follow program startup and the version-only branch through transport selection to the controller transaction. Record any writes performed before the read, including initialization.
+2. Identify the bus/address conventions and how the tool selects a controller. Compare them with the recovered FA507XI EC relay. Equal channel numbers do not establish the same bus.
+3. Determine whether that transport can be reached from Windows through an existing interface. If it cannot, record the missing interface explicitly; do not turn a UEFI recipe into a Windows command by analogy.
+4. If a current controller read becomes possible, identify exactly what it returns. A B6 firmware version may help identify the program, but it will not reveal the failed entry sequence. A useful follow-on must expose current state or a log whose meaning is documented or recovered from the matching implementation.
 
-The [component review](component-behavior.md) identifies concrete fields and side effects. PS8830 connection registers are software-written mode inputs; they need an independent controller/training result. PS8802 mode reads can wake the chip, and the ITE event handler acknowledges events. First qualify an actual ASUS path to current PD version/status or PS8830 runtime mode; the existing updater endpoint and EC cache do not establish it. No generic bus scan or independent event-consuming poller is selected.
+The deliverable is a traced read path and an answer about Windows access, including side effects and missing pieces. It is **not** another search for the same firmware strings or another read of the existing `00 53` cache. [Acquired tool and cache semantics](pd-firmware-version.md) · [Known Windows interfaces](windows-repair-route.md).
 
-## Choosing a repair
+This audit may establish that the available route cannot supply the required record. That is an access limit, not proof that USB4 cannot be repaired. The exact laptop PD image is still missing; reference firmware for another board is not a substitute.
 
-A proposed change needs a named consumer, an expected observable effect and a verified way to restore the prior state. Test the smallest supported change against a known baseline. Preserve every original result, including failed conditions. A partial multi-write rollback is not proven by restoring one software flag.
+## 3. Ask for the information the vendor can actually supply
 
-No new experimental driver, BIOS setting, firmware flash, generic full dump or unchanged role trial is selected. The original [working-method notes](history.md) remain available for their source trail.
+The useful ASUS engineering request is specific: confirm the fitted IT8857/PS8830 firmware versions for this board, whether an applicable PD or retimer update exists, and whether a supported diagnostic records USB4 entry and the applied retimer state. Include the Dell success, ASUS Linux failure, working ASUS peer link and physical chip correction.
 
-[Current findings](status.md) · [Research handoff](handoff.md)
+Minisforum can independently confirm DEG2's PD-controller identity, firmware/diagnostic interface and known compatibility with this ASUS/AMD platform. Its reported router firmware is not necessarily the PD firmware. A firmware package or documented logger would be more useful than another generic reinstall recommendation. These are proposed requests; nothing has been sent by this plan.
+
+## The observation that would choose a repair
+
+| Missing observation | What it could distinguish |
+| --- | --- |
+| Controller entry decision plus partner/cable discovery | Why entry was not requested, or why a different mode was selected |
+| Entry request and reply | Omitted request versus rejected request; for native USB4 this includes Enter_USB |
+| Applied PS8830 mode/orientation plus an independent training result | Incorrect requested routing versus failure after the intended configuration |
+| First link success followed by exit/power events | A connection that was established and then lost |
+
+Do not assume that the host's UCSI log is a physical PD transcript, that a cached Billboard word is the last packet, or that a retimer configuration bit proves link training. Native USB4 and Thunderbolt compatibility paths also need to be distinguished. [Component semantics](component-behavior.md) · [Dock report](billboard-comparison.md).
+
+A software route could be sufficient if the controller exposes those records. None is established yet. A PD protocol analyser would observe the negotiation directly, but would not by itself prove the ASUS retimer's applied configuration. The current hardware inventory contains no identified raw PD recorder.
+
+## Where Data_Reset fits
+
+Data_Reset is a plausible recovery experiment if ASUS leaves USB4 discovery unfinished after correcting the data role. It is not yet a diagnosed remedy. The Windows-to-EC relay is understood; the receiving laptop controller's reset interpretation is not. The same UCSI bit has different meanings across versions.
+
+Before building a sender, identify the actual handler or a documented command for this firmware, its completion behaviour, and recovery from interruption. The test would then ask whether the external router appears after that one operation, while recording role and link changes. A successful request alone would not count as a repair. [Command-path evidence](data-reset-command-path.md) · [Reset hypothesis](ucsi-data-reset.md).
+
+## Work that does not currently justify another test
+
+- All four plug orientations, powered preconnection, the peer-to-DEG2 handoff and the policy-only driver trial have already been tried. The Rp-only test did not establish attachment. Repeating them needs a genuinely different condition. [Results](experiments.md).
+- An unchanged ASUS Linux or Dell Windows capture would not add the missing controller record. Dell USB boot is unavailable on the work laptop.
+- RT1 is the other host instance; the stored USB4/TBT3 enable fields are already enabled. A settings menu alone would not show the applied controller state.
+- GPU-driver work addresses a later stage. The observed blocker is external-router discovery.
+- Generic I2C scans, guessed vendor requests and unrelated firmware images do not identify the failed transition.
+- More reference-code fixtures are useful only when they resolve a question about the actual proposed read or command. They are not new measurements of this laptop.
+
+Scheduling remains paused. Physical tests, reboots and configuration changes remain owner-directed. The [handoff](handoff.md) records the outstanding recovery check separately from the USB4 diagnosis.

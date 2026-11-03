@@ -1,12 +1,15 @@
 # Experiment results
 
-This is the current summary. Completed, inconclusive and prepared tests are separated so the same failed comparison is not repeated under a different label.
+Results are summarised below. An intended condition that was never established is not a negative test of that hypothesis. The [diagnosis plan](investigation-plan.md) identifies useful remaining comparisons.
 
 | Test | Result | What it means |
 | --- | --- | --- |
 | Dell with the same assembled DEG2, GPU, PSU and supplied cable | Router, GPU and display work | Working control. [Record](dell-control.md) |
 | Separate Windows installation on ASUS | Same missing router/GPU | Failure is not confined to the original installation. [Record](fresh-windows.md) |
 | ASUS–Dell USB4 peer connection | 40 Gbps negotiated link | Establishes this peer path, not GPU PCIe tunnelling. [Record](peer-test.md) |
+| Move the cable from a working Dell peer connection to powered DEG2 | DEG2 still lacked router/GPU; root-router power state changed between partners | Did not preserve all of the working peer state. [Decoded handoff](negotiation-followup.md) |
+| All four USB-C plug orientations | No change reported | Orientation changes have already been tried. [Hardware record](hardware.md) |
+| Second UGREEN cable | No change; its capability was later found unsuitable | Not a valid second USB4 cable control. [Cable limitation](hardware.md#cable-limitation) |
 | Standard ASUS role correction | Completes; ordinary USB devices then enumerate; no external router at recorded checks | Permanent wrong USB role is insufficient as the explanation. [Record](rt0-attachment-order.md) |
 | Disable Windows automatic role correction with the experimental filter | Policy accepted; USB4 still failed | This policy alone was insufficient. Filter removed and stock policy verified. [Result and recovery](role-policy-test-result.md) |
 | Rp-only initial-role test | No attachment established; DRP restored | Intended comparison was not achieved. [Record](initial-role-test.md) |
