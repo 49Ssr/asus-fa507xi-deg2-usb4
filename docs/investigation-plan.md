@@ -2,9 +2,30 @@
 
 Updated 3 November 2026. The goal is a working ASUS–DEG2 connection. The immediate problem is choosing between a pairing-specific negotiation problem, a broader ASUS peripheral problem, and a cable/link interaction. The current evidence does not select one.
 
-**The best next hardware comparison is another known-working USB4 PCIe device on ASUS. With only the existing hardware, the next code question is whether ASUS's EC exposes a current PD read to Windows; the acquired IT8857 tool's access path has now been traced.** These are recommendations based on the [findings](status.md), not new measured results. No new hardware operation is prepared by this page.
+**The next comparison using existing hardware is the Arzopa monitor cable: first prove it can run DEG2 on Dell, then try the same assembly on ASUS.** The cable has not been tested for this purpose. Another known-working USB4 PCIe peripheral remains the stronger comparison if one can be borrowed. More reference-code analysis should have a specific connection to a reachable laptop read or command; it is not the default next action.
 
-## 1. Find out whether ASUS can use another PCIe peripheral
+## 1. Try the existing monitor cable on Dell, then ASUS
+
+The Arzopa USB-C video cable is a candidate, not a known USB4 cable. Its remembered charging capability does not establish its data capability. USB-IF's [cable compatibility table, slide 24](https://www.usb.org/sites/default/files/D1T1-2%20-%20USB%20Type-C%20System%20Overview.pdf) includes full-featured passive USB 3.2 Gen1/Gen2 cables for USB4 at 20 Gbps. That does not identify this cable's construction, electronics or supported speed.
+
+When the owner is present:
+
+1. Confirm DEG2 still works on Dell with the original cable and current dock/GPU setup. Keep the laptop's normal power supply attached.
+2. Disconnect only the upstream connection and substitute the Arzopa cable on the same Dell port. Keep DEG2, GPU, power and display unchanged. Check for the external router and RTX 4080 SUPER, not just dock USB ports. Record the connection mode and speed if Windows exposes them; leave unknown fields unknown.
+3. If the GPU connection works on Dell, move that same dock/cable assembly to ASUS's previously tested USB4 port. Keep ASUS on barrel power. Record router presence, GPU detection and display output separately. Do not add a reset, driver change or power-cycle experiment to this cable comparison.
+4. Return to the original cable afterwards. No software setting is changed by this comparison.
+
+| Outcome | What it means |
+| --- | --- |
+| Original cable no longer works on Dell | The working control has changed; resolve that before comparing cables |
+| Original works on Dell, Arzopa does not | This candidate cannot provide the intended comparison; its failure says nothing new about ASUS |
+| Arzopa works on Dell and ASUS | A cable-dependent connection difference is established; this may provide a usable connection, but does not prove the original cable is universally faulty |
+| Arzopa works on Dell, ASUS still has no external router | ASUS fails with a second cable that operates this dock elsewhere; entry versus link-training failure remains unresolved |
+| ASUS gets an external router but no GPU | The connection progressed beyond the previous observation; investigate PCIe discovery separately |
+
+A working 20 Gbps connection would still be useful for detection. Do not assume 40 Gbps or infer transfer performance from display output. This comparison is pending; no result is claimed.
+
+## 2. Find out whether ASUS can use another PCIe peripheral
 
 Borrow a known-working USB4/TB enclosure or dock that exposes a PCIe device. A native USB4 device is the closest control; record the actual connection mode if using a Thunderbolt-compatible device. The existing UGREEN USB 3.2 hub cannot answer this question, and the working ASUS–Dell peer link does not exercise PCIe tunnelling.
 
@@ -20,21 +41,23 @@ A second useful control is DEG2 on another AMD USB4 host. Success would narrow t
 
 These comparisons need borrowed hardware. They are worth pursuing alongside code work rather than waiting for reverse engineering to finish. A second suitable cable alone is also useful: success on Dell does not exclude an ASUS-specific interaction. The unsuitable UGREEN cable previously tried was not that control. [Hardware and prior cable checks](hardware.md).
 
-## 2. With existing hardware: follow the laptop EC command path
+## 3. What further firmware work must establish
 
 The [IT8857 tool audit is complete for its selected version path](it8857-version-path.md). It reads B6 after reconfiguring a CPU-visible I²C controller. Its address conversion agrees with the ASUS EC's normal address convention, but it supplies no established Windows route to the laptop's EC-controlled bus. Running that updater is not the next step.
 
-The [laptop EC comparison](it8857-runtime-commands.md#what-the-laptop-ec-actually-exports) found partial status and power reporting, not an identified Enter_USB result. B0/B1 reads keep only four raw bits; failures can preserve old cached values. The CC four-byte read feeds voltage/current/power arithmetic, and its OEM getter reports nonzero power. The separate card reference record still has no matched laptop reader. Identify controller-side status producers or another matched entry-result register next; repeating these power/cache getters would not recover the handshake. No Windows repair or new hardware request is established.
+The [laptop EC comparison](it8857-runtime-commands.md#what-the-laptop-ec-actually-exports) found partial status and power reporting, not an identified Enter_USB result. B0/B1 reads keep only four raw bits; failures can preserve old cached values. The CC four-byte read feeds voltage/current/power arithmetic, and its OEM getter reports nonzero power. The separate card reference record still has no matched laptop reader. Following a controller-side producer is useful only if it connects to a reachable laptop read or command; repeating these power/cache getters would not recover the handshake. No Windows repair or new hardware request is established.
 
 The useful result is an exact reachable read, or a clear account of which exposed handlers cannot provide it. A fresh firmware version could help identify the controller program; it would not itself reveal USB4 entry. Any subsequent state/log reader must identify what it observes and whether reading consumes an event or changes state. [Known Windows interfaces](windows-repair-route.md).
 
 This is an access investigation. It does not make another board's PD image suitable for the laptop, and it does not displace the hardware comparisons above.
 
-## 3. Ask for the information the vendor can actually supply
+## 4. Ask for the information the vendor can actually supply
 
 The useful ASUS engineering request is specific: confirm the fitted IT8857/PS8830 firmware versions for this board, whether an applicable PD or retimer update exists, and whether a supported diagnostic records USB4 entry and the applied retimer state. Include the Dell success, ASUS Linux failure, working ASUS peer link and physical chip correction.
 
 Minisforum can independently confirm DEG2's PD-controller identity, firmware/diagnostic interface and known compatibility with this ASUS/AMD platform. Its reported router firmware is not necessarily the PD firmware. A firmware package or documented logger would be more useful than another generic reinstall recommendation. These are proposed requests; nothing has been sent by this plan.
+
+On 3 November, the inspected DEG2 section of the [official global support page](https://www.minisforum.com/pages/product-info) linked a manual and installation video, with no linked firmware or diagnostic download under Drivers & Downloads. This does not rule out a support-supplied package. Ask specifically for a package matching DEG2 hardware, its supported version/status reads and whether it can record entry failures without flashing. No such package was acquired in this check.
 
 ## The observation that would choose a repair
 

@@ -4,7 +4,9 @@ Read [findings](status.md), then the [diagnosis plan](investigation-plan.md). Th
 
 ## Resume here
 
-The [laptop EC comparison](it8857-runtime-commands.md#what-the-laptop-ec-actually-exports) found partial status and power reporting, not an identified Enter_USB result. B0/B1 reads keep only four raw bits; failures can preserve old cached values. The CC four-byte read feeds voltage/current/power arithmetic, and its OEM getter reports nonzero power. The separate card reference record still has no matched laptop reader. Identify controller-side status producers or another matched entry-result register next; repeating these power/cache getters would not recover the handshake. No Windows repair or new hardware request is established.
+The next existing-hardware comparison is the Arzopa monitor cable, first on the working Dell–DEG2 setup, then on ASUS only if Dell detects the external GPU. The cable is not yet known suitable. The [plan](investigation-plan.md#1-try-the-existing-monitor-cable-on-dell-then-asus) gives the sequence and how to interpret each result. It requires the owner at the laptops; no remote attachment, boot or configuration change is selected.
+
+The [laptop EC comparison](it8857-runtime-commands.md#what-the-laptop-ec-actually-exports) found partial status and power reporting, not an identified Enter_USB result. B0/B1 reads keep only four raw bits; failures can preserve old cached values. The CC four-byte read feeds voltage/current/power arithmetic, and its OEM getter reports nonzero power. The separate card reference record still has no matched laptop reader. Further code work needs a specific link to a reachable laptop read or command; repeating these power/cache getters would not recover the handshake. No Windows repair or new hardware request is established.
 
 The strongest additional hardware comparison is another known-working USB4 PCIe peripheral on ASUS. The [plan](investigation-plan.md) explains what each possible result would change. No new test or borrowed device is assumed available.
 
