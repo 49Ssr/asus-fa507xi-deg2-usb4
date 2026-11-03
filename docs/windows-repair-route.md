@@ -15,6 +15,7 @@ The [diagnosis plan](investigation-plan.md) ranks the next work. This page recor
 | ASUS Parade updater endpoint | Inspected code and retained failed requests | Proof that this endpoint reaches the runtime mode/status interface |
 | DEG2 WinUSB interface | Enumerated interface and a reference GUID match | The actual firmware's command handler, reply format and side effects |
 | IT8857 UEFI vendor tool | Version branch, B6 transaction and address conversion traced | Reconfigures host I²C; no established Windows bridge or physical PD bus match. [Audit](it8857-version-path.md) |
+| EC PMC3 transfer handler | Original receiver and handlers execute offline; fixed update address80 | Update-side protocol and Windows receiver access remain unestablished. [Trace](ec-host-transfer.md) |
 
 Supporting records: [settings](../evidence/firmware-settings-read.json), [attachment](rt0-attachment-order.md), [dock report](billboard-comparison.md), [OEM access](control-reachability.md), [PD version](pd-firmware-version.md), [interface review](../evidence/windows-repair-route-review.json).
 

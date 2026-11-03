@@ -47,7 +47,7 @@ A search of 4,909 binary inputs, including the capsule and extracted artifacts, 
 
 ## Continue from these results
 
-The vendor-tool audit establishes the reference transaction but no Windows bridge to the laptop PD bus. Follow the FA507XI EC host-command dispatcher to determine whether a current PD read is exposed through its known bus engine. Distinguish such a handler from internal periodic refresh and the existing cached getters. Correlate the result with the exact laptop implementation before assigning reset semantics. Another generic dump or unchanged boot would not answer that access question.
+The [EC host-transfer path](ec-host-transfer.md) now executes in the offline model: PMC3 accepts staged bytes but fixes the destination at update address80, not normal address98. Failed transfer retrieval can return old data. The reviewed ASUS legacy request uses the separate PMC4 route. Next identify read semantics at80 in the acquired IT8857 tool and an existing Windows route to PMC3; no hardware command is selected.
 
 The [cache test](../tools/analysis/Test-PdVersionCache.c) is an offline original-instruction test using private, hash-pinned BIOS data. It has no live device backend. Firmware, updater binaries, raw memory and identifying receipts remain private.
 

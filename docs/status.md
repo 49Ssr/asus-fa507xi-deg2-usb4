@@ -50,7 +50,7 @@ The Infineon SDK and component drivers describe reference implementations. They 
 
 ## Latest access finding
 
-The acquired IT8857 tool's version-only branch reads B6 after reconfiguring the host I²C controller. Its address conversion matches the ASUS EC convention, but the host and EC bus channels are different interfaces. It is therefore not a ready Windows PD reader. The next code question is whether the laptop EC exposes a current read through its existing host-command path. [Audit and limits](it8857-version-path.md).
+The EC has a host-requested transfer path through PMC3, but it fixes the destination at update address80 rather than normal PD address98. Offline execution also shows that retrieval after a failed transfer can return old buffer contents. The reviewed ASUS Windows request uses the separate PMC4 route. The remaining access questions are the update interface's read protocol and an existing Windows route to PMC3. [Code and limits](ec-host-transfer.md).
 
 ## Recovery status
 

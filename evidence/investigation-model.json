@@ -201,6 +201,11 @@
       "id": "IT8857-UEFI-READ-PATH",
       "label": "IT8857 vendor version-only path and saved ASUS ACPI comparison",
       "limit": "Static different-board program and retained ACPI declarations; no vendor program execution, live controller read, electrical binding or repair."
+    },
+    {
+      "id": "EC-HOST-TRANSFER",
+      "label": "Original EC PMC3 transfer commands executed offline",
+      "limit": "Original instructions with a RAM bus fixture; no physical PD read or Windows bridge established."
     }
   ],
   "stages": [
@@ -1546,6 +1551,36 @@
         "IT8857-UEFI-READ-PATH"
       ],
       "value_sha256": "c22d708cfae3b532032dad85d264407cb904c7b1a9cb3cc8aeca394690d6d238"
+    },
+    {
+      "id": "EC-PMC3-TRANSFER",
+      "path": "evidence/ec-host-transfer.json",
+      "pointer": "/transfer",
+      "kind": "code",
+      "cases": [
+        "EC-HOST-TRANSFER"
+      ],
+      "value_sha256": "bec1363bb8b3f7e3b512dcdac111ed40a382e6feb7f8a1ebdb59f2f0ceeb7328"
+    },
+    {
+      "id": "EC-PMC3-RESULT",
+      "path": "evidence/ec-host-transfer.json",
+      "pointer": "/execution",
+      "kind": "code",
+      "cases": [
+        "EC-HOST-TRANSFER"
+      ],
+      "value_sha256": "69e6a30ec86603eb9e1174cb73742962e389c82843303e6adbc60cb9136883ce"
+    },
+    {
+      "id": "EC-LEGACY-HOST-PORTS",
+      "path": "evidence/ec-host-transfer.json",
+      "pointer": "/windows",
+      "kind": "code",
+      "cases": [
+        "EC-HOST-TRANSFER"
+      ],
+      "value_sha256": "d112222a3e122ee733c520d2e00a8cb6dd762f3a1e1a74180f73a272624ef30e"
     }
   ],
   "claims": [
@@ -3122,6 +3157,45 @@
         "IT8857-UEFI-READ-PATH"
       ],
       "limit": "Static resource declarations do not establish enabled runtime devices, PD attachment to those buses or a callable Windows PD interface."
+    },
+    {
+      "id": "C115",
+      "basis": "code_fact",
+      "stage": "control",
+      "statement": "The EC PMC3 transfer handler fixes channel4/address80; normal PD address98 is not selected by placing98 in its payload.",
+      "sources": [
+        "EC-PMC3-TRANSFER"
+      ],
+      "cases": [
+        "EC-HOST-TRANSFER"
+      ],
+      "limit": "No live request or hardware repair; target controller protocol and an existing Windows PMC3 bridge remain unestablished."
+    },
+    {
+      "id": "C116",
+      "basis": "code_fact",
+      "stage": "control",
+      "statement": "The original PMC3 path caps read length at32 and returns CC/EE completion. Result retrieval after a failed modeled transfer can return old buffer contents.",
+      "sources": [
+        "EC-PMC3-RESULT"
+      ],
+      "cases": [
+        "EC-HOST-TRANSFER"
+      ],
+      "limit": "No live request or hardware repair; target controller protocol and an existing Windows PMC3 bridge remain unestablished."
+    },
+    {
+      "id": "C117",
+      "basis": "code_fact",
+      "stage": "control",
+      "statement": "The reviewed AsusSAIO legacy request uses fixed25C/25D host ports and does not provide a PMC3 host-port selector.",
+      "sources": [
+        "EC-LEGACY-HOST-PORTS"
+      ],
+      "cases": [
+        "EC-HOST-TRANSFER"
+      ],
+      "limit": "No live request or hardware repair; target controller protocol and an existing Windows PMC3 bridge remain unestablished."
     }
   ],
   "timeline_limit": "T0 is the first recorded Windows attachment report in each run, not physical insertion. Different runs, platforms, power contracts and capture dates are explicit. These tables align software reports only; proximity does not establish wire order or causation. The earlier Dell control supplies the Dell timeline; the deep Dell dump supplies cached-state comparison.",

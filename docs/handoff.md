@@ -4,7 +4,7 @@ Read [findings](status.md), then the [diagnosis plan](investigation-plan.md). Th
 
 ## Resume here
 
-The [IT8857 version-path audit](it8857-version-path.md) recovered the B6 read and address conversion, but the utility reconfigures a host I²C controller and provides no established Windows bridge to the laptop's EC bus. Next trace the FA507XI EC host-command dispatcher for an implemented current PD read through its known engine. Separate reachable handlers from internal periodic refresh, cached getters and the stubbed table 6 request. Another `00 53` cache read would not reveal the handshake.
+The [EC host-transfer path](ec-host-transfer.md) now executes in the offline model: PMC3 accepts staged bytes but fixes the destination at update address80, not normal address98. Failed transfer retrieval can return old data. The reviewed ASUS legacy request uses the separate PMC4 route. Next identify read semantics at80 in the acquired IT8857 tool and an existing Windows route to PMC3; no hardware command is selected.
 
 The strongest additional hardware comparison is another known-working USB4 PCIe peripheral on ASUS. The [plan](investigation-plan.md) explains what each possible result would change. No new test or borrowed device is assumed available.
 

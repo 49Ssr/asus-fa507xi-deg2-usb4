@@ -1,0 +1,117 @@
+{
+  "schema": 1,
+  "date": "2026-11-03",
+  "basis": "code facts and offline original-instruction execution; no live device request",
+  "firmware_sha256": "103721578b66daed81dcf7a0bed06709c072f9da1dc75a6d7887321e6e32b060",
+  "spans": [
+    {
+      "bank": 0,
+      "start_hex": "a71",
+      "end_exclusive_hex": "aa7",
+      "sha256": "5f15ec2cd6ac5e846da528732404f4d366271fac8779d1a8c30d87dffd8ae801"
+    },
+    {
+      "bank": 0,
+      "start_hex": "30e6",
+      "end_exclusive_hex": "30f5",
+      "sha256": "63c554d6ea34577ffb8639dcc4150051d8163814f080ff9e3b7fcccad0b17195"
+    },
+    {
+      "bank": 3,
+      "start_hex": "b939",
+      "end_exclusive_hex": "b9f2",
+      "sha256": "dd7fd4d75c45efb362fd3fa42267d0d0b432f19a758b937e73349c15440f2ff2"
+    },
+    {
+      "bank": 3,
+      "start_hex": "ba32",
+      "end_exclusive_hex": "bacf",
+      "sha256": "aff7346d0317fa6489d5cea25850e3000e951e4f809b6dd9d13d944b0d2a116e"
+    },
+    {
+      "bank": 3,
+      "start_hex": "b6ee",
+      "end_exclusive_hex": "b73c",
+      "sha256": "eb8843b1196c6c476bb7d55407bf234436469a9130b46c812b160b8df78bfaa0"
+    },
+    {
+      "bank": 3,
+      "start_hex": "b7d6",
+      "end_exclusive_hex": "b850",
+      "sha256": "44e31defdcd63367ec3494d5730aee74ae483247994ac5d4b71d5d9a2a0b1770"
+    }
+  ],
+  "transfer": {
+    "receiver": "common0a71 PMC3 -> common30eb/30f0 -> bank3b947/b9aa",
+    "stage_opcode_hex": "71",
+    "transfer_opcode_hex": "70",
+    "retrieve_opcode_hex": "72",
+    "engine": "common1ff4",
+    "channel": 4,
+    "fixed_address_byte_hex": "80",
+    "normal_pd_address_byte_hex": "98",
+    "read_length_max": 32,
+    "success_reply_hex": "cc",
+    "failure_reply_hex": "ee",
+    "payload_contains_target_selector": false,
+    "internal_update_read_helper": "bank3b6ee sends two bytes to80 and reads one; bank3b7d6 calls it with ff/c0 and ff/c1 before normal B6 path"
+  },
+  "execution": {
+    "cases": 20,
+    "originalPmc3ReceiverExecuted": true,
+    "targetAddressHex": "80",
+    "channel": 4,
+    "readLengthClamp": 32,
+    "busIsRamDouble": true,
+    "hardwareRequests": 0,
+    "failed_transfer_can_return_old_buffer": true,
+    "read_lengths_tested": [
+      0,
+      2,
+      32,
+      33,
+      255
+    ],
+    "payload_lengths_tested": [
+      1,
+      2
+    ],
+    "physical_bus_tested": false
+  },
+  "windows": {
+    "driver": "AsusSAIO.sys",
+    "sha256": "eef750c7fb515d162a76423531f4f6773bcf837d9607069e797a26d198edd892",
+    "reviewed_path": "IOCTL80102070 -> RVA1aa0 -> RVA1828",
+    "fixed_data_status_ports_hex": [
+      "25c",
+      "25d"
+    ],
+    "request_supplies_host_port": false,
+    "pmc3_application_bridge_established": false,
+    "limit": "The reviewed legacy request is not a PMC3 selector. Low-level port helpers do not establish an exposed application API. Other interfaces are not excluded.",
+    "spans": [
+      {
+        "rva_hex": "1396",
+        "end_exclusive_hex": "143f",
+        "sha256": "f00530fc28a5510e1c4934a57dd4d9c7978d0196c9f57b03979a1f1924d7be5e"
+      },
+      {
+        "rva_hex": "1aa0",
+        "end_exclusive_hex": "1b08",
+        "sha256": "ea3cc50bcfc061ecb290e43a62ad28def18e9d7c71a5284535b6de7763ce375c"
+      },
+      {
+        "rva_hex": "1828",
+        "end_exclusive_hex": "1a6d",
+        "sha256": "c67cec81899ba754b87d38b36d3c2984b969bcf8ba73e48efc146c484a536c94"
+      }
+    ]
+  },
+  "test_source_sha256": "6194a5ce29a1fb58629d4bdf05a3451f9c0b0b7ef1de1b6b282a4745a04db086",
+  "remaining": "Identify update-address read semantics in acquired IT8857 code and an existing Windows route to PMC3; no live command selected.",
+  "limits": [
+    "BIOS package image, not a live EC flash match",
+    "RAM transfer fixture, not controller acceptance",
+    "No PD state, wire log or Windows repair obtained"
+  ]
+}

@@ -946,6 +946,24 @@ Scope: IT8857-UEFI-READ-PATH. Static resource declarations do not establish enab
 
 [IT8857-ASUS-BUS-COMPARISON](../evidence/it8857-version-path.json) `/asus_comparison`
 
+**C115 — code_fact:** The EC PMC3 transfer handler fixes channel4/address80; normal PD address98 is not selected by placing98 in its payload.
+
+Scope: EC-HOST-TRANSFER. No live request or hardware repair; target controller protocol and an existing Windows PMC3 bridge remain unestablished.
+
+[EC-PMC3-TRANSFER](../evidence/ec-host-transfer.json) `/transfer`
+
+**C116 — code_fact:** The original PMC3 path caps read length at32 and returns CC/EE completion. Result retrieval after a failed modeled transfer can return old buffer contents.
+
+Scope: EC-HOST-TRANSFER. No live request or hardware repair; target controller protocol and an existing Windows PMC3 bridge remain unestablished.
+
+[EC-PMC3-RESULT](../evidence/ec-host-transfer.json) `/execution`
+
+**C117 — code_fact:** The reviewed AsusSAIO legacy request uses fixed25C/25D host ports and does not provide a PMC3 host-port selector.
+
+Scope: EC-HOST-TRANSFER. No live request or hardware repair; target controller protocol and an existing Windows PMC3 bridge remain unestablished.
+
+[EC-LEGACY-HOST-PORTS](../evidence/ec-host-transfer.json) `/windows`
+
 ## Separate runs and observation limits
 
 | Case | Meaning | Important limit |
@@ -989,6 +1007,7 @@ Scope: IT8857-UEFI-READ-PATH. Static resource declarations do not establish enab
 | ITE-FAMILY-REFERENCE | ITE vendor UCSI-family binding and manufacturer component documentation | Reference interfaces/functions only; not the exact ASUS board firmware or permission for direct commands. |
 | COMPONENT-BEHAVIOR-REFERENCE | Manufacturer component documentation and original reference reader execution | Reference circuits/code with fixture inputs, not measured ASUS bus state, electrical net mapping or a Windows repair. |
 | IT8857-UEFI-READ-PATH | IT8857 vendor version-only path and saved ASUS ACPI comparison | Static different-board program and retained ACPI declarations; no vendor program execution, live controller read, electrical binding or repair. |
+| EC-HOST-TRANSFER | Original EC PMC3 transfer commands executed offline | Original instructions with a RAM bus fixture; no physical PD read or Windows bridge established. |
 
 ## Software-report timelines
 

@@ -4,7 +4,7 @@ Updated 3 November 2026. Scheduling is **paused**. This page preserves the resum
 
 ## Resume point
 
-The [IT8857 version path is traced](it8857-version-path.md): host-controller initialization precedes a B6 two-byte read; the selected return skips updating but does not restore host-controller settings. Its normal address mapping agrees with the ASUS EC convention, not a proven shared bus. Next trace the FA507XI EC host-command dispatcher for a current PD read through its known engine. The cached getters and stubbed table 6 request are already understood.
+The [EC host-transfer path](ec-host-transfer.md) now executes in the offline model: PMC3 accepts staged bytes but fixes the destination at update address80, not normal address98. Failed transfer retrieval can return old data. The reviewed ASUS legacy request uses the separate PMC4 route. Next identify read semantics at80 in the acquired IT8857 tool and an existing Windows route to PMC3; no hardware command is selected.
 
 This is an access investigation. A successful version read would still not supply the missing entry/retimer/training history. The [plan](investigation-plan.md) separately ranks the hardware comparisons and the controller records needed to choose a repair.
 

@@ -24,7 +24,7 @@ These comparisons need borrowed hardware. They are worth pursuing alongside code
 
 The [IT8857 tool audit is complete for its selected version path](it8857-version-path.md). It reads B6 after reconfiguring a CPU-visible I²C controller. Its address conversion agrees with the ASUS EC's normal address convention, but it supplies no established Windows route to the laptop's EC-controlled bus. Running that updater is not the next step.
 
-Trace the FA507XI EC host-command dispatcher for an implemented current PD read or transfer through the already-recovered bus engine. Determine whether Windows can invoke that specific handler through an existing driver. Internal periodic callers, cached getters and the stubbed table 6 request must remain distinct.
+The [EC host-transfer path](ec-host-transfer.md) now executes in the offline model: PMC3 accepts staged bytes but fixes the destination at update address80, not normal address98. Failed transfer retrieval can return old data. The reviewed ASUS legacy request uses the separate PMC4 route. Next identify read semantics at80 in the acquired IT8857 tool and an existing Windows route to PMC3; no hardware command is selected.
 
 The useful result is an exact reachable read, or a clear account of which exposed handlers cannot provide it. A fresh firmware version could help identify the controller program; it would not itself reveal USB4 entry. Any subsequent state/log reader must identify what it observes and whether reading consumes an event or changes state. [Known Windows interfaces](windows-repair-route.md).
 
