@@ -4,7 +4,7 @@ Updated 3 November 2026. Scheduling is **paused**. This page preserves the resum
 
 ## Resume point
 
-Audit the already-acquired IT8857 vendor tool's version-only path, including startup effects, bus selection and the actual transaction. Determine whether a Windows-accessible transport exists. Do not execute the updater or substitute the different-board image. [Acquired artifacts and open question](pd-firmware-version.md).
+The [IT8857 version path is traced](it8857-version-path.md): host-controller initialization precedes a B6 two-byte read; the selected return skips updating but does not restore host-controller settings. Its normal address mapping agrees with the ASUS EC convention, not a proven shared bus. Next trace the FA507XI EC host-command dispatcher for a current PD read through its known engine. The cached getters and stubbed table 6 request are already understood.
 
 This is an access investigation. A successful version read would still not supply the missing entry/retimer/training history. The [plan](investigation-plan.md) separately ranks the hardware comparisons and the controller records needed to choose a repair.
 
@@ -16,6 +16,7 @@ This is an access investigation. A successful version read would still not suppl
 | [RT0 mapping](rt0-attachment-order.md) | Connector 1 maps to XHC3/NHI0/RT0; role correction precedes USB enumeration |
 | [SDK 3.9.0](infineon-sdk-review.md) | AMD/PS8830 reference definitions and compiled functions acquired; no ASUS-equivalent transport established |
 | [Reset command path](data-reset-command-path.md) | EC forwards the relevant bit; the actual receiving controller's interpretation is unknown |
+| [IT8857 version-only path](it8857-version-path.md) | Direct host I²C initialization and address translation recovered; no Windows PD bridge established |
 | [PD version cache](pd-firmware-version.md) | Getters 10/11 hex returned 00 53; a failed refresh can preserve old bytes |
 | [Physical chip review](board-photo-review.md) | IT8857FN and PS8830 A3 identified; the earlier IT8853 response is a fixed string |
 | [Component controls](component-behavior.md) | PS8830 mode inputs differ from link results; PS8802 reads can wake it; ITE event handling acknowledges events |

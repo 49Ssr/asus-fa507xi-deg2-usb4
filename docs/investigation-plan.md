@@ -2,7 +2,7 @@
 
 Updated 3 November 2026. The goal is a working ASUS–DEG2 connection. The immediate problem is choosing between a pairing-specific negotiation problem, a broader ASUS peripheral problem, and a cable/link interaction. The current evidence does not select one.
 
-**The best next hardware comparison is another known-working USB4 PCIe device on ASUS. With only the existing hardware, the best code lead is the acquired IT8857 vendor tool's controller-access path.** These are recommendations based on the [findings](status.md), not new measured results. No new hardware operation is prepared by this page.
+**The best next hardware comparison is another known-working USB4 PCIe device on ASUS. With only the existing hardware, the next code question is whether ASUS's EC exposes a current PD read to Windows; the acquired IT8857 tool's access path has now been traced.** These are recommendations based on the [findings](status.md), not new measured results. No new hardware operation is prepared by this page.
 
 ## 1. Find out whether ASUS can use another PCIe peripheral
 
@@ -20,18 +20,15 @@ A second useful control is DEG2 on another AMD USB4 host. Success would narrow t
 
 These comparisons need borrowed hardware. They are worth pursuing alongside code work rather than waiting for reverse engineering to finish. A second suitable cable alone is also useful: success on Dell does not exclude an ASUS-specific interaction. The unsuitable UGREEN cable previously tried was not that control. [Hardware and prior cable checks](hardware.md).
 
-## 2. With existing hardware: audit the IT8857 read path
+## 2. With existing hardware: follow the laptop EC command path
 
-The photos corrected the target to IT8857FN. An official ASUS package already acquired for a different board contains an IT8857 tool with an advertised version-only option. Audit that path without running the updater:
+The [IT8857 tool audit is complete for its selected version path](it8857-version-path.md). It reads B6 after reconfiguring a CPU-visible I²C controller. Its address conversion agrees with the ASUS EC's normal address convention, but it supplies no established Windows route to the laptop's EC-controlled bus. Running that updater is not the next step.
 
-1. Follow program startup and the version-only branch through transport selection to the controller transaction. Record any writes performed before the read, including initialization.
-2. Identify the bus/address conventions and how the tool selects a controller. Compare them with the recovered FA507XI EC relay. Equal channel numbers do not establish the same bus.
-3. Determine whether that transport can be reached from Windows through an existing interface. If it cannot, record the missing interface explicitly; do not turn a UEFI recipe into a Windows command by analogy.
-4. If a current controller read becomes possible, identify exactly what it returns. A B6 firmware version may help identify the program, but it will not reveal the failed entry sequence. A useful follow-on must expose current state or a log whose meaning is documented or recovered from the matching implementation.
+Trace the FA507XI EC host-command dispatcher for an implemented current PD read or transfer through the already-recovered bus engine. Determine whether Windows can invoke that specific handler through an existing driver. Internal periodic callers, cached getters and the stubbed table 6 request must remain distinct.
 
-The deliverable is a traced read path and an answer about Windows access, including side effects and missing pieces. It is **not** another search for the same firmware strings or another read of the existing `00 53` cache. [Acquired tool and cache semantics](pd-firmware-version.md) · [Known Windows interfaces](windows-repair-route.md).
+The useful result is an exact reachable read, or a clear account of which exposed handlers cannot provide it. A fresh firmware version could help identify the controller program; it would not itself reveal USB4 entry. Any subsequent state/log reader must identify what it observes and whether reading consumes an event or changes state. [Known Windows interfaces](windows-repair-route.md).
 
-This audit may establish that the available route cannot supply the required record. That is an access limit, not proof that USB4 cannot be repaired. The exact laptop PD image is still missing; reference firmware for another board is not a substitute.
+This is an access investigation. It does not make another board's PD image suitable for the laptop, and it does not displace the hardware comparisons above.
 
 ## 3. Ask for the information the vendor can actually supply
 

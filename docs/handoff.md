@@ -4,7 +4,7 @@ Read [findings](status.md), then the [diagnosis plan](investigation-plan.md). Th
 
 ## Resume here
 
-The next offline code task is to audit startup, transport selection and the version-only branch of the already-acquired IT8857 vendor tool. Determine whether it provides a usable Windows read path before proposing execution. The cached `00 53` value is already acquired; another cache read would not reveal the handshake. [Source record](pd-firmware-version.md).
+The [IT8857 version-path audit](it8857-version-path.md) recovered the B6 read and address conversion, but the utility reconfigures a host I²C controller and provides no established Windows bridge to the laptop's EC bus. Next trace the FA507XI EC host-command dispatcher for an implemented current PD read through its known engine. Separate reachable handlers from internal periodic refresh, cached getters and the stubbed table 6 request. Another `00 53` cache read would not reveal the handshake.
 
 The strongest additional hardware comparison is another known-working USB4 PCIe peripheral on ASUS. The [plan](investigation-plan.md) explains what each possible result would change. No new test or borrowed device is assumed available.
 

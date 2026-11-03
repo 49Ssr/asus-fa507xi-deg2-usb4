@@ -14,7 +14,7 @@ The [diagnosis plan](investigation-plan.md) ranks the next work. This page recor
 | Existing ASUS OEM driver | Fixed identity string and cached PD firmware word | A current controller-state read; the attempted dynamic PDO getter is a firmware stub |
 | ASUS Parade updater endpoint | Inspected code and retained failed requests | Proof that this endpoint reaches the runtime mode/status interface |
 | DEG2 WinUSB interface | Enumerated interface and a reference GUID match | The actual firmware's command handler, reply format and side effects |
-| IT8857 UEFI vendor tool | Acquired binary with an advertised version-only option | Audited startup/transport behaviour, laptop bus mapping and Windows accessibility |
+| IT8857 UEFI vendor tool | Version branch, B6 transaction and address conversion traced | Reconfigures host I²C; no established Windows bridge or physical PD bus match. [Audit](it8857-version-path.md) |
 
 Supporting records: [settings](../evidence/firmware-settings-read.json), [attachment](rt0-attachment-order.md), [dock report](billboard-comparison.md), [OEM access](control-reachability.md), [PD version](pd-firmware-version.md), [interface review](../evidence/windows-repair-route-review.json).
 

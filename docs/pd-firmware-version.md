@@ -33,7 +33,7 @@ Candidate command-dispatch tables were found in the ITE image. Their command num
 
 The official USB4 PCIe Gen4 card package labelled for Linux contains `PDUTC101.efi`, a shell and an IT8857 firmware image. The download matches ASUS's published SHA-256. Its help advertises `/ov` for showing the PD firmware version without updating it. This is a concrete vendor interface to investigate. [ASUS package listing](https://www.asus.com/uk/supportonly/usb4%20pcie%20gen4%20card/helpdesk_bios/).
 
-It has not been executed or fully audited. The supplied recipes target an add-in card and other platforms. Its bus index is not established as the laptop EC's channel with the same number, and its slave address differs from the recovered laptop path. A version-only option does not establish that initialization or transport selection is suitable here. No boot or use of those recipes is selected.
+The [selected version-only path has now been traced](it8857-version-path.md). It initializes a host I²C controller before reading B6 and does not restore that controller's prior configuration on its selected return. It also maps the configured update address to a separate normal address: for IT8857, 80 becomes 98 and 84 becomes 9C. The first pair matches the laptop EC address convention, but the tool's host-controller channel is not the laptop EC's channel. The program has not been executed; no boot or use of the supplied recipes is selected.
 
 ## IT8857 reference version writer, added 3 November 2026
 
@@ -47,7 +47,7 @@ A search of 4,909 binary inputs, including the capsule and extracted artifacts, 
 
 ## Continue from these results
 
-Correlate raw cached word `0053` with an exact laptop image or a documented current-controller read. Audit the vendor version-only path and its transport separately. Follow the receiving reset handler once its identity is established; do not assign the SDK's semantics or another board's binary to this laptop. Another generic dump or unchanged boot has no identified role in that work.
+The vendor-tool audit establishes the reference transaction but no Windows bridge to the laptop PD bus. Follow the FA507XI EC host-command dispatcher to determine whether a current PD read is exposed through its known bus engine. Distinguish such a handler from internal periodic refresh and the existing cached getters. Correlate the result with the exact laptop implementation before assigning reset semantics. Another generic dump or unchanged boot would not answer that access question.
 
 The [cache test](../tools/analysis/Test-PdVersionCache.c) is an offline original-instruction test using private, hash-pinned BIOS data. It has no live device backend. Firmware, updater binaries, raw memory and identifying receipts remain private.
 

@@ -1,0 +1,188 @@
+{
+  "schema": 1,
+  "date": "2026-11-03",
+  "status": "VersionBranchTraced_DirectHostI2cInitialization_NoWindowsPdBridgeEstablished",
+  "method": "Static original-code review with Capstone 5.0.6, selected independent radare2 decodes, exact call/branch checks and saved ACPI resource comparison. The vendor program was not executed.",
+  "inputs": {
+    "tool_sha256": "ea3531946ef9f0aabdb94e7ef69d79d60beb466a16c6a5d1602ae609382970d3",
+    "tool_bytes": 96736,
+    "package_record": "evidence/pd-firmware-version.json",
+    "dsdt_iasl_sha256": "888f60898f75821af3a61dcd85342a147b0d19221ee8cbda119279113985c2ae",
+    "private_analysis_script_sha256": "e9747562b8a9c8e6eadfea90c3bc894bce39bdf9b8f1a4448e724e23a0ded705",
+    "private_verification_script_sha256": "dd6436f492854aa5729c0417f159831a64927fa65c1988112c2bcdc0881785c2",
+    "radare2_selected_decode_sha256": "70e54f22fa43b2dc8efce23e17a4971864b6c12b3b2c32cb6371b7decafaac45"
+  },
+  "spans": [
+    {
+      "name": "argument_parser",
+      "rva_start_hex": "4196",
+      "rva_end_exclusive_hex": "41b9",
+      "sha256": "3edb77bd8a6d5484bb360173a6f098059224e832057d6c79b74ccb2735e6a7f3"
+    },
+    {
+      "name": "platform_selection",
+      "rva_start_hex": "42db",
+      "rva_end_exclusive_hex": "43d5",
+      "sha256": "70db9b0d91edf9f0a169a712fac09808362581f2a88909bfb3c22774d6ec62a1"
+    },
+    {
+      "name": "amd_selection_and_read_exit",
+      "rva_start_hex": "444c",
+      "rva_end_exclusive_hex": "457a",
+      "sha256": "bc7b3658131754d421c7428aa4f53a4d6b4bb333cd43bd70a629fe1780f8a6b7"
+    },
+    {
+      "name": "address_mapping",
+      "rva_start_hex": "3414",
+      "rva_end_exclusive_hex": "34a6",
+      "sha256": "194c62137196b2ee79334784bcd6e9015de31b0047b56a9139c9fb9e83003742"
+    },
+    {
+      "name": "version_reader",
+      "rva_start_hex": "3628",
+      "rva_end_exclusive_hex": "369b",
+      "sha256": "be591e0ecd0783a877ea9f4b593c614feb705565a403b5d1e3fbd9e69e44a842"
+    },
+    {
+      "name": "controller_initialization",
+      "rva_start_hex": "2cb8",
+      "rva_end_exclusive_hex": "2e67",
+      "sha256": "ba7482e4b69050052e00f5df273ff7e1c0f59b05cb67972714826c28e0a512cb"
+    },
+    {
+      "name": "controller_timing_and_interrupts",
+      "rva_start_hex": "2b34",
+      "rva_end_exclusive_hex": "2cb5",
+      "sha256": "0079daf10f3c105e177dfed790a49562f49649390785bcbb3130a480c92fc96e"
+    },
+    {
+      "name": "controller_disable_enable",
+      "rva_start_hex": "2ab4",
+      "rva_end_exclusive_hex": "2b34",
+      "sha256": "d932e21ef07022b8ee3b6bed4b820aea9f5522dcfec84d1edd93346dcb8c8550"
+    },
+    {
+      "name": "target_address",
+      "rva_start_hex": "2e68",
+      "rva_end_exclusive_hex": "2ee6",
+      "sha256": "6bb3176144fd54f0f25f24604cee4f48244b21c03169bb2bbc28bb0f66bdcba8"
+    },
+    {
+      "name": "combined_read",
+      "rva_start_hex": "30e0",
+      "rva_end_exclusive_hex": "3297",
+      "sha256": "50c828d9811c341de1fd81d83c43674e81483e282abb9c8db2a66cc9030abad0"
+    }
+  ],
+  "version_branch": {
+    "kind": "code_fact",
+    "application_entry_rva_hex": "3ef0",
+    "ov_parser_rva_hex": "4196",
+    "initialize_call_rva_hex": "44c3",
+    "read_call_rva_hex": "4562",
+    "flag_check_rva_hex": "456b",
+    "return_rva_hex": "4614",
+    "normal_success_exits_before_update_sequence": true,
+    "failed_read_takes_error_return": true,
+    "controller_read": {
+      "helper_rva_hex": "3628",
+      "register_hex": "b6",
+      "selector_bytes": 1,
+      "reply_bytes": 2,
+      "print_format": "Two hexadecimal bytes, first byte then second"
+    },
+    "chip_id_validation_before_this_read": false,
+    "limit": "The selected version branch is traced, not every command-line combination or all UEFI library constructors/finalizers. No actual controller version was read."
+  },
+  "host_access": {
+    "kind": "code_fact",
+    "transport": "Direct x86 PCI configuration I/O and memory-mapped host I2C controller access; no Windows IOCTL/SPB request in this selected transport",
+    "amd_selection": "Six-entry hard-coded host-controller base table indexed by the i2c argument",
+    "amd_initialization": "Two fixed platform bytes are read-modify-written before the version transaction. Each clears bit1 and sets bit0; exact physical addresses retained privately.",
+    "host_controller_writes": [
+      "Disable/enable",
+      "Target address",
+      "Master configuration",
+      "Clock counts",
+      "FIFO thresholds",
+      "Interrupt mask",
+      "SDA hold"
+    ],
+    "application_restores_prior_controller_configuration_on_ov_success": false,
+    "unbounded_waits": [
+      "Controller disable status",
+      "Controller enable status",
+      "Controller activity wait during initialization"
+    ],
+    "standard_register_reference": "https://github.com/torvalds/linux/blob/46fec1c3029b552ec63b2d01af9d43a386f043ea/include/linux/designware_i2c.h",
+    "limit": "These are operations in a different-board tool, not measured ASUS changes or identified ASUS pin functions."
+  },
+  "address_mapping": {
+    "kind": "code_fact",
+    "configured_id": "8857",
+    "source": "Command-line selection; the version-only path has not first read the chip ID",
+    "pairs": [
+      {
+        "update_address_byte_hex": "80",
+        "normal_address_byte_hex": "98",
+        "hardware_target_7bit_hex": "4c"
+      },
+      {
+        "update_address_byte_hex": "84",
+        "normal_address_byte_hex": "9c",
+        "hardware_target_7bit_hex": "4e"
+      }
+    ],
+    "normal_address_98_matches_recovered_asus_ec_address_byte": true,
+    "matching_bus_or_wiring_proven": false
+  },
+  "asus_comparison": {
+    "kind": "code_fact",
+    "saved_acpi_matches": [
+      {
+        "tool_channel": 0,
+        "acpi_device": "I2CA",
+        "base_matches_saved_crs": true,
+        "resource_bytes_sha256": "4b8838f2f2b8ef7f3259647471e9a7d9b4ed8d5370099925aeb24d63fe0f7159"
+      },
+      {
+        "tool_channel": 1,
+        "acpi_device": "I2CB",
+        "base_matches_saved_crs": true,
+        "resource_bytes_sha256": "b0d14f3d416795e12b4cd764c76fcbb5450a18169be1ce58524227486c86f889"
+      },
+      {
+        "tool_channel": 2,
+        "acpi_device": "I2CC",
+        "base_matches_saved_crs": true,
+        "resource_bytes_sha256": "8b492aba1b568238a63d3dc3dd976794ae375b3b6944ddcc21192dd88ee2d3d3"
+      },
+      {
+        "tool_channel": 3,
+        "acpi_device": "I2CD",
+        "base_matches_saved_crs": true,
+        "resource_bytes_sha256": "2aa1c62321f22d077915efe1664602bfe3da3523e923bb092b35b2765b15f48e"
+      }
+    ],
+    "crs_execution_or_current_device_state_measured": false,
+    "ec_bus": "The recovered laptop relay uses EC engine channel4 and its own XDATA register bank; it is not the tool host-controller index.",
+    "all_six_tool_channels_bound_on_laptop": false,
+    "physical_pd_connection_to_host_i2c_established": false,
+    "windows_route": "No existing driver connection to this PD target established. Standard Windows SPB clients require assigned connection resources; an ordinary app cannot directly open a resource-hub connection.",
+    "windows_reference": "https://learn.microsoft.com/en-us/windows-hardware/drivers/spb/connection-ids-for-spb-connected-peripheral-devices"
+  },
+  "limits": [
+    "Version-only skips the update sequence but does not preserve host I2C configuration.",
+    "A matching address translation does not identify the physical bus.",
+    "A B6 version reply would not supply negotiation history or establish Data_Reset semantics.",
+    "The firmware image in the package remains unrelated-board reference material."
+  ],
+  "next": "Trace the FA507XI EC host-command dispatcher for an implemented current PD read or transfer using its known engine; distinguish reachable host commands from internal periodic callers and the already-stubbed table6 getter.",
+  "hardware_requests": 0,
+  "vendor_program_executed": false,
+  "new_driver_installed": false,
+  "reboot_or_flash": false,
+  "analysis_failures_preserved": [
+    "First radare2 attempt used an unmapped virtual view and yielded invalid bytes; corrected raw-file mode agrees with the PE file/RVA mapping. Initial fixed-length decode slices ended mid-instruction; complete instruction spans were rechecked."
+  ]
+}

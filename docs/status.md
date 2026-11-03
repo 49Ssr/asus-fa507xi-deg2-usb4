@@ -48,6 +48,10 @@ The Infineon SDK and component drivers describe reference implementations. They 
 
 **The next work is ranked in the [diagnosis plan](investigation-plan.md).** Another generic dump or unchanged boot would repeat the same blind spot.
 
+## Latest access finding
+
+The acquired IT8857 tool's version-only branch reads B6 after reconfiguring the host I²C controller. Its address conversion matches the ASUS EC convention, but the host and EC bus channels are different interfaces. It is therefore not a ready Windows PD reader. The next code question is whether the laptop EC exposes a current read through its existing host-command path. [Audit and limits](it8857-version-path.md).
+
 ## Recovery status
 
 The experimental filter was removed and stock policy verified. On 3 November, Windows reported Secure Boot off, test signing off and HVCI running. The exact test certificate was absent from both machine trust stores. Fresh BCD enumeration and complete boot-restoration verification remain incomplete. ASUS System Control Interface 3.1.73.0 is installed. [Readback and limits](../evidence/boot-state-20261103.json).

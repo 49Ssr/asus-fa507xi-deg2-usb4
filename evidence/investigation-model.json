@@ -196,6 +196,11 @@
       "id": "COMPONENT-BEHAVIOR-REFERENCE",
       "label": "Manufacturer component documentation and original reference reader execution",
       "limit": "Reference circuits/code with fixture inputs, not measured ASUS bus state, electrical net mapping or a Windows repair."
+    },
+    {
+      "id": "IT8857-UEFI-READ-PATH",
+      "label": "IT8857 vendor version-only path and saved ASUS ACPI comparison",
+      "limit": "Static different-board program and retained ACPI declarations; no vendor program execution, live controller read, electrical binding or repair."
     }
   ],
   "stages": [
@@ -1501,6 +1506,46 @@
         "COMPONENT-BEHAVIOR-REFERENCE"
       ],
       "value_sha256": "b3b82a32966162ab3647b0fd30b5693f2e2d2dda2fe27941df6455f78189379a"
+    },
+    {
+      "id": "IT8857-VERSION-BRANCH",
+      "path": "evidence/it8857-version-path.json",
+      "pointer": "/version_branch",
+      "kind": "code",
+      "cases": [
+        "IT8857-UEFI-READ-PATH"
+      ],
+      "value_sha256": "5f23bb1f459a6f3eeabc9e45a52644f40a39c1f5b1cf6d1316264b0dc0f7019f"
+    },
+    {
+      "id": "IT8857-HOST-I2C",
+      "path": "evidence/it8857-version-path.json",
+      "pointer": "/host_access",
+      "kind": "code",
+      "cases": [
+        "IT8857-UEFI-READ-PATH"
+      ],
+      "value_sha256": "ea1882bc0a26af9cc20cf4ca81fea7f9fe01d8ee085a0bef95fc9b6d4be83238"
+    },
+    {
+      "id": "IT8857-ADDRESS-MAP",
+      "path": "evidence/it8857-version-path.json",
+      "pointer": "/address_mapping",
+      "kind": "code",
+      "cases": [
+        "IT8857-UEFI-READ-PATH"
+      ],
+      "value_sha256": "8d9c887e8a8f0a55f582c2162d8c9ab9586fb367fb8cad55bcb084abeee37abe"
+    },
+    {
+      "id": "IT8857-ASUS-BUS-COMPARISON",
+      "path": "evidence/it8857-version-path.json",
+      "pointer": "/asus_comparison",
+      "kind": "code",
+      "cases": [
+        "IT8857-UEFI-READ-PATH"
+      ],
+      "value_sha256": "c22d708cfae3b532032dad85d264407cb904c7b1a9cb3cc8aeca394690d6d238"
     }
   ],
   "claims": [
@@ -3025,6 +3070,58 @@
         "COMPONENT-BEHAVIOR-REFERENCE"
       ],
       "limit": "Different-board static code. ASUS cached0053 freshness/encoding, exact installed image and receiving reset handler remain unproven."
+    },
+    {
+      "id": "C111",
+      "basis": "code_fact",
+      "stage": "control",
+      "statement": "The IT8857 vendor tool initializes host I2C before its B6 two-byte version read. Its selected successful /ov branch returns before the update sequence.",
+      "sources": [
+        "IT8857-VERSION-BRANCH"
+      ],
+      "cases": [
+        "IT8857-UEFI-READ-PATH"
+      ],
+      "limit": "The program was not executed; version-only does not mean no host-controller changes."
+    },
+    {
+      "id": "C112",
+      "basis": "code_fact",
+      "stage": "control",
+      "statement": "The AMD path uses a hard-coded host-I2C base table, modifies two platform bytes, and programs host-controller configuration before reading the PD version. The selected application return does not restore those settings.",
+      "sources": [
+        "IT8857-HOST-I2C"
+      ],
+      "cases": [
+        "IT8857-UEFI-READ-PATH"
+      ],
+      "limit": "Not the laptop EC bus; physical wiring and a Windows driver bridge remain unestablished. Initialization includes waits without a local timeout."
+    },
+    {
+      "id": "C113",
+      "basis": "code_fact",
+      "stage": "control",
+      "statement": "For configured ID8857, the reference tool maps update address80 to normal address98, or84 to9c, then shifts the normal address right by one for the host controller.",
+      "sources": [
+        "IT8857-ADDRESS-MAP"
+      ],
+      "cases": [
+        "IT8857-UEFI-READ-PATH"
+      ],
+      "limit": "This corroborates the address convention; it is not an independent chip-ID read or proof of the ASUS physical bus."
+    },
+    {
+      "id": "C114",
+      "basis": "code_fact",
+      "stage": "control",
+      "statement": "The first four reference host-I2C table bases match I2CA through I2CD resource buffers in the retained ASUS DSDT. The recovered ASUS PD relay instead uses an EC-internal bus engine.",
+      "sources": [
+        "IT8857-ASUS-BUS-COMPARISON"
+      ],
+      "cases": [
+        "IT8857-UEFI-READ-PATH"
+      ],
+      "limit": "Static resource declarations do not establish enabled runtime devices, PD attachment to those buses or a callable Windows PD interface."
     }
   ],
   "timeline_limit": "T0 is the first recorded Windows attachment report in each run, not physical insertion. Different runs, platforms, power contracts and capture dates are explicit. These tables align software reports only; proximity does not establish wire order or causation. The earlier Dell control supplies the Dell timeline; the deep Dell dump supplies cached-state comparison.",

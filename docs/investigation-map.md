@@ -922,6 +922,30 @@ Scope: COMPONENT-BEHAVIOR-REFERENCE. Different-board static code. ASUS cached005
 
 [IT8857-VERSION-WRITER](../evidence/component-behavior.json) `/it8857_reference_writer`
 
+**C111 — code_fact:** The IT8857 vendor tool initializes host I2C before its B6 two-byte version read. Its selected successful /ov branch returns before the update sequence.
+
+Scope: IT8857-UEFI-READ-PATH. The program was not executed; version-only does not mean no host-controller changes.
+
+[IT8857-VERSION-BRANCH](../evidence/it8857-version-path.json) `/version_branch`
+
+**C112 — code_fact:** The AMD path uses a hard-coded host-I2C base table, modifies two platform bytes, and programs host-controller configuration before reading the PD version. The selected application return does not restore those settings.
+
+Scope: IT8857-UEFI-READ-PATH. Not the laptop EC bus; physical wiring and a Windows driver bridge remain unestablished. Initialization includes waits without a local timeout.
+
+[IT8857-HOST-I2C](../evidence/it8857-version-path.json) `/host_access`
+
+**C113 — code_fact:** For configured ID8857, the reference tool maps update address80 to normal address98, or84 to9c, then shifts the normal address right by one for the host controller.
+
+Scope: IT8857-UEFI-READ-PATH. This corroborates the address convention; it is not an independent chip-ID read or proof of the ASUS physical bus.
+
+[IT8857-ADDRESS-MAP](../evidence/it8857-version-path.json) `/address_mapping`
+
+**C114 — code_fact:** The first four reference host-I2C table bases match I2CA through I2CD resource buffers in the retained ASUS DSDT. The recovered ASUS PD relay instead uses an EC-internal bus engine.
+
+Scope: IT8857-UEFI-READ-PATH. Static resource declarations do not establish enabled runtime devices, PD attachment to those buses or a callable Windows PD interface.
+
+[IT8857-ASUS-BUS-COMPARISON](../evidence/it8857-version-path.json) `/asus_comparison`
+
 ## Separate runs and observation limits
 
 | Case | Meaning | Important limit |
@@ -964,6 +988,7 @@ Scope: COMPONENT-BEHAVIOR-REFERENCE. Different-board static code. ASUS cached005
 | ASUS-BOARD-PHOTOS | Owner-supplied fitted-board photographs, 3 November 2026 | Physical markings and overlapping locations, not electrical continuity, live state or a flash-image match. |
 | ITE-FAMILY-REFERENCE | ITE vendor UCSI-family binding and manufacturer component documentation | Reference interfaces/functions only; not the exact ASUS board firmware or permission for direct commands. |
 | COMPONENT-BEHAVIOR-REFERENCE | Manufacturer component documentation and original reference reader execution | Reference circuits/code with fixture inputs, not measured ASUS bus state, electrical net mapping or a Windows repair. |
+| IT8857-UEFI-READ-PATH | IT8857 vendor version-only path and saved ASUS ACPI comparison | Static different-board program and retained ACPI declarations; no vendor program execution, live controller read, electrical binding or repair. |
 
 ## Software-report timelines
 
