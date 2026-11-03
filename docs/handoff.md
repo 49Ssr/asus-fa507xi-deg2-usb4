@@ -4,7 +4,7 @@ Read [findings](status.md), then the [diagnosis plan](investigation-plan.md). Th
 
 ## Resume here
 
-The [IT8857 runtime analysis](it8857-runtime-commands.md) recovered a reference command that requests Data_Reset and a separate four-byte per-port reader. Original instructions reproduce both paths offline. The record's writer, meaning and freshness remain unknown, as does the laptop's access to an equivalent interface. Trace those two connections next. The card image is not the laptop firmware; no new hardware request or Windows fix is established.
+The [IT8857 runtime analysis](it8857-runtime-commands.md) now follows the four-byte record back to an incoming Enter_USB handler and other software writers. Its tested entry masks are shared by USB2, USB3 and USB4 requests, so they are not unique USB4-active flags or link-training proof. Receiver initialization is traced, but its external bus meaning and laptop equivalent remain unknown. Next, compare the laptop EC's normal-PD reads and their consumers for an entry-result field. The card firmware is not the laptop image; no Windows repair or hardware request is established.
 
 The strongest additional hardware comparison is another known-working USB4 PCIe peripheral on ASUS. The [plan](investigation-plan.md) explains what each possible result would change. No new test or borrowed device is assumed available.
 

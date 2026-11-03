@@ -1671,6 +1671,36 @@
         "IT8857-RUNTIME"
       ],
       "value_sha256": "0a3b886b65ffc400694eeae5e2e8e4cff0ccf9237a9959ad0aa18facdfd73b43"
+    },
+    {
+      "id": "IT8857-ENTRY-RECORD",
+      "path": "evidence/it8857-state-producers.json",
+      "pointer": "/entry_producer",
+      "kind": "code",
+      "cases": [
+        "IT8857-RUNTIME"
+      ],
+      "value_sha256": "990d2ddc58d857e8892be95c88bcf68e21aae8e4fc0bc6cfa490ef80603be4c1"
+    },
+    {
+      "id": "IT8857-RECEIVER-INIT",
+      "path": "evidence/it8857-state-producers.json",
+      "pointer": "/receiver_init",
+      "kind": "code",
+      "cases": [
+        "IT8857-RUNTIME"
+      ],
+      "value_sha256": "121f7bf04ffb7aa6a510a1a8e03d9c26640ebc752496df3d95b81f3588163f47"
+    },
+    {
+      "id": "IT8857-RECORD-MEANING",
+      "path": "evidence/it8857-state-producers.json",
+      "pointer": "/interpretation",
+      "kind": "code",
+      "cases": [
+        "IT8857-RUNTIME"
+      ],
+      "value_sha256": "f5c94f838c9274ed14e2122a2b1ebab9eb338a2d13d684bcc887c4e4cc3fbf15"
     }
   ],
   "claims": [
@@ -3391,6 +3421,46 @@
       ],
       "limit": "No physical PD observation, laptop implementation match or Windows repair is claimed.",
       "reason": "The retained 24-bit mask is 0x0000bd, with bits8 and9 clear in the pinned UCSI definitions. Those optional commands therefore are not advertised, and the typed response command is not a general wire log."
+    },
+    {
+      "id": "C126",
+      "basis": "code_fact",
+      "stage": "control",
+      "statement": "The reference Enter_USB handler updates the per-port record only after its Accept-send helper returns1. The same masks are used in tested USB2, USB3 and USB4 mode cases.",
+      "sources": [
+        "IT8857-ENTRY-RECORD"
+      ],
+      "cases": [
+        "IT8857-RUNTIME"
+      ],
+      "limit": "Different-board reference only. No laptop transport, wire observation or repair. C126 partially resolves the earlier producer question in C124."
+    },
+    {
+      "id": "C127",
+      "basis": "code_fact",
+      "stage": "control",
+      "statement": "The card startup initializes the same fc00 peripheral block used by the runtime receiver. Register values and caller are traced; their physical bus meaning and laptop binding remain unidentified.",
+      "sources": [
+        "IT8857-RECEIVER-INIT"
+      ],
+      "cases": [
+        "IT8857-RUNTIME"
+      ],
+      "limit": "Different-board reference only. No laptop transport, wire observation or repair. C126 partially resolves the earlier producer question in C124."
+    },
+    {
+      "id": "C128",
+      "basis": "inference",
+      "stage": "control",
+      "statement": "Several original paths maintain the four-byte record in software. The traced entry masks are not unique USB4-active indicators and are not independent link-training measurements.",
+      "sources": [
+        "IT8857-RECORD-MEANING"
+      ],
+      "cases": [
+        "IT8857-RUNTIME"
+      ],
+      "limit": "Different-board reference only. No laptop transport, wire observation or repair. C126 partially resolves the earlier producer question in C124.",
+      "reason": "Multiple original routines write constants or masks into RAM, and the incoming Enter_USB producer makes the same mask update for modes0,1,2 after send-helper return1."
     }
   ],
   "timeline_limit": "T0 is the first recorded Windows attachment report in each run, not physical insertion. Different runs, platforms, power contracts and capture dates are explicit. These tables align software reports only; proximity does not establish wire order or causation. The earlier Dell control supplies the Dell timeline; the deep Dell dump supplies cached-state comparison.",

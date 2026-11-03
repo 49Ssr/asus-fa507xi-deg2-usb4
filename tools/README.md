@@ -46,6 +46,8 @@ Additional reference-code checks need separately acquired, pinned inputs:
 
 - [Test-It8857Dispatch.c](analysis/Test-It8857Dispatch.c) runs the pinned IT8857 card receiver, reset-state branch and per-port reader against RAM fixtures. Build with the pinned emu8051 sources and `bcrypt.lib`; pass the original card firmware as the only argument. [Scope and results](../docs/it8857-runtime-commands.md).
 
+- [Test-It8857StateRecord.c](analysis/Test-It8857StateRecord.c) adds original record-producer and receiver-initialization checks, reusing the dispatch fixture above. The send helper returns supplied results; no packet is transmitted. It emits two JSON Lines. [Evidence](../evidence/it8857-state-producers.json).
+
 Passing these checks verifies the tested code behaviour, not an ASUS hardware-access route.
 
 ## Historical experiments

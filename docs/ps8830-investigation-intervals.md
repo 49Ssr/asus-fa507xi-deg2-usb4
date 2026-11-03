@@ -4,7 +4,7 @@ Updated 3 November 2026. Scheduling is **paused**. This page preserves the resum
 
 ## Resume point
 
-The [IT8857 runtime analysis](it8857-runtime-commands.md) recovered a reference command that requests Data_Reset and a separate four-byte per-port reader. Original instructions reproduce both paths offline. The record's writer, meaning and freshness remain unknown, as does the laptop's access to an equivalent interface. Trace those two connections next. The card image is not the laptop firmware; no new hardware request or Windows fix is established.
+The [IT8857 runtime analysis](it8857-runtime-commands.md) now follows the four-byte record back to an incoming Enter_USB handler and other software writers. Its tested entry masks are shared by USB2, USB3 and USB4 requests, so they are not unique USB4-active flags or link-training proof. Receiver initialization is traced, but its external bus meaning and laptop equivalent remain unknown. Next, compare the laptop EC's normal-PD reads and their consumers for an entry-result field. The card firmware is not the laptop image; no Windows repair or hardware request is established.
 
 This is an access investigation. A successful version read would still not supply the missing entry/retimer/training history. The [plan](investigation-plan.md) separately ranks the hardware comparisons and the controller records needed to choose a repair.
 
@@ -12,7 +12,7 @@ This is an access investigation. A successful version read would still not suppl
 
 | Record | Result |
 | --- | --- |
-| [ITE runtime commands](it8857-runtime-commands.md) | Reference Data_Reset state request and four-byte read reproduced offline; laptop binding and field meanings unknown |
+| [ITE runtime commands](it8857-runtime-commands.md) | Reference reset/read paths and entry-record producer traced; masks are not unique USB4 indicators; laptop binding unknown |
 | [ASUS Linux capture](linux-asus-result.md) | USB fallback reproduced; no external router or new PCIe device observed |
 | [RT0 mapping](rt0-attachment-order.md) | Connector 1 maps to XHC3/NHI0/RT0; role correction precedes USB enumeration |
 | [SDK 3.9.0](infineon-sdk-review.md) | AMD/PS8830 reference definitions and compiled functions acquired; no ASUS-equivalent transport established |

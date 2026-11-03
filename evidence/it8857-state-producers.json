@@ -1,0 +1,240 @@
+{
+  "schema": 1,
+  "date": "2026-11-03",
+  "status": "ReferenceRecordProducersTraced_LaptopBindingStillUnknown",
+  "basis": "code facts and offline original-instruction execution",
+  "inputs": {
+    "firmware_sha256": "12b21f53f9cbc83bc36e692cadac8de623ded605e3d563212377f521140694e3",
+    "firmware_bytes": 131072,
+    "is_laptop_pd_image": false,
+    "test_source_sha256": "6bbbc0049c86e42dc28ce9436557c2c59d4260554af194e59ef58e61019f4013",
+    "included_dispatch_source_sha256": "3eac8c11bf3dbb0ff698f94c79d290e8d8b7e5dd4d9b067fbab51b5d90c5d5f3",
+    "emulator_commit": "5dc681275151c4a5d7b85ec9ff4ceb1b25abd5a8",
+    "pd_header": {
+      "url": "https://github.com/torvalds/linux/blob/46fec1c3029b552ec63b2d01af9d43a386f043ea/include/linux/usb/pd.h",
+      "sha256": "cb5ee9000a5a7bed466837305010a5fbab09f02ef26e2929cf08096929a12d78",
+      "lines": [
+        52,
+        619,
+        620,
+        621,
+        622,
+        623
+      ],
+      "scope": "Enter_USB data type8, mode field30:28, USB2=0, USB3=1, USB4=2"
+    }
+  },
+  "spans": [
+    {
+      "label": "Data-message switch table",
+      "bank": 0,
+      "cpu_start_hex": "23d3",
+      "cpu_end_exclusive_hex": "23f5",
+      "file_start_hex": "023d3",
+      "sha256": "db02d52e7c1a510f8b8c6eb50bf676587386acdd62fed15baf3a66cc4060a37d"
+    },
+    {
+      "label": "Incoming Enter_USB branch",
+      "bank": 0,
+      "cpu_start_hex": "2d4c",
+      "cpu_end_exclusive_hex": "2da8",
+      "file_start_hex": "02d4c",
+      "sha256": "86e08d058ce4ebf96268e8af3f2061aacbaa6d267baa14f6ddf22228ece1126a"
+    },
+    {
+      "label": "Startup receiver initializer call",
+      "bank": 0,
+      "cpu_start_hex": "7a8d",
+      "cpu_end_exclusive_hex": "7a92",
+      "file_start_hex": "07a8d",
+      "sha256": "b38cf3a4db7a5be6d433c445c486e68a0ed956f79d92e5c1186d1c9a8d93e68c"
+    },
+    {
+      "label": "Main-loop receiver call",
+      "bank": 0,
+      "cpu_start_hex": "7da9",
+      "cpu_end_exclusive_hex": "7dac",
+      "file_start_hex": "07da9",
+      "sha256": "3adf458140b493d7c90119d4635c4dbb6083c4c177e979dc53b6a249ccd4a973"
+    },
+    {
+      "label": "Entry record updater",
+      "bank": 1,
+      "cpu_start_hex": "c7c0",
+      "cpu_end_exclusive_hex": "c836",
+      "file_start_hex": "147c0",
+      "sha256": "62c03c431fa56dfdcd4b6028a344b12fd9bbe492ca63d919a7964ada0919a8cf"
+    },
+    {
+      "label": "Receiver initialization",
+      "bank": 2,
+      "cpu_start_hex": "c49d",
+      "cpu_end_exclusive_hex": "c51d",
+      "file_start_hex": "1c49d",
+      "sha256": "9e7d6583971d251be12acb5250489a1102ed8d6de153fe3d4f2e6c08cf09fe3e"
+    },
+    {
+      "label": "Replace record with1",
+      "bank": 2,
+      "cpu_start_hex": "d004",
+      "cpu_end_exclusive_hex": "d022",
+      "file_start_hex": "1d004",
+      "sha256": "3b3dd4f6e235617c47b3eda8bead4bfbfaedb47a564f1421872f5814fb67f3e7"
+    },
+    {
+      "label": "Clear record",
+      "bank": 2,
+      "cpu_start_hex": "d08e",
+      "cpu_end_exclusive_hex": "d0a6",
+      "file_start_hex": "1d08e",
+      "sha256": "25c6256b33153a2b53f035d917bad25ad00ac64e9b7367d64699a00b39eaaa35"
+    }
+  ],
+  "entry_producer": {
+    "message_type": 8,
+    "handler_cpu_hex": "2d4c",
+    "send_helper_cpu_hex": "4c5e",
+    "send_return_is_fixture": true,
+    "tested_mode_values": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "mode_0_1_2": "Selects Accept type3; only helper return1 reaches the record updater",
+    "mode_3": "Selects Reject type4; returns without record update",
+    "updater_common_trampoline_hex": "4c63",
+    "updater_bank": 1,
+    "updater_cpu_hex": "c7c0",
+    "record_xdata_hex": "05e4 + 18*port",
+    "set_mask_hex": "00001800",
+    "clear_mask_hex": "00000020",
+    "conditional_bit_1": "Sets bit1 when byte at1801+23*port equals1; otherwise preserves it. Physical field meaning unestablished.",
+    "notification": "Sets low bit of separate05d8+18*port record; sets bit5 of peripheralff50.",
+    "readback": "Original selector10 reader returns the produced word LSB first.",
+    "limit": "Original incoming handler only. No real message, send completion, partner acknowledgement, PS8830 read or trained link is supplied. These masks are shared by USB2/USB3/USB4 mode cases."
+  },
+  "other_producers": [
+    {
+      "common_trampoline_hex": "4c77",
+      "bank": 2,
+      "cpu_hex": "d004",
+      "effect": "Replaces record with00000001, separate notification record with00000003, and sets ff50 bit5."
+    },
+    {
+      "common_trampoline_hex": "4bf0",
+      "bank": 2,
+      "cpu_hex": "d08e",
+      "effect": "Replaces record with zero and clears separate05bd+4*port word. No MMIO in tested routine."
+    }
+  ],
+  "receiver_init": {
+    "startup_call_cpu_hex": "7a8d-7a92",
+    "argument": 1,
+    "common_trampoline_hex": "4b78",
+    "bank": 2,
+    "cpu_hex": "c49d",
+    "main_loop_call_cpu_hex": "7da9",
+    "receiver_trampoline_hex": "4b9b",
+    "receiver_bank": 2,
+    "receiver_cpu_hex": "8855",
+    "writes_from_zero_ram_fixture": [
+      [
+        "fc03",
+        "f0"
+      ],
+      [
+        "fc1f",
+        "f8"
+      ],
+      [
+        "ffc6",
+        "04"
+      ],
+      [
+        "ffc6",
+        "84"
+      ],
+      [
+        "fc07",
+        "ff"
+      ],
+      [
+        "fc00",
+        "80"
+      ],
+      [
+        "fc01",
+        "00"
+      ],
+      [
+        "fc04",
+        "ff"
+      ],
+      [
+        "fc01",
+        "01"
+      ],
+      [
+        "fc01",
+        "09"
+      ],
+      [
+        "fc00",
+        "a0"
+      ],
+      [
+        "fc06",
+        "10"
+      ]
+    ],
+    "limit": "MMIO is RAM. Register semantics, address convention and external wiring not established. f0 is a programmed register value, not a Windows target address."
+  },
+  "interpretation": {
+    "basis": "inference",
+    "conclusion": "This is a software-maintained record of controller transitions, not a direct PS8830 or physical-link read. Its masks cannot alone distinguish USB4 from the tested USB2/USB3 requests.",
+    "reason": "Multiple original routines write constants or masks into RAM, and the incoming Enter_USB producer makes the same mask update for modes0,1,2 after send-helper return1.",
+    "limit": "Not every writer/bit is decoded. A laptop equivalent, freshness guarantee and historical event log remain unestablished. No Windows read is selected."
+  },
+  "validation": {
+    "results": [
+      {
+        "cases": 40,
+        "receivedDataResetSop0ReplyType": 4,
+        "outboundStateHex": "0708",
+        "outboundControlType": 14,
+        "referenceReceiverCommand": 5,
+        "referenceResetSelector": 1,
+        "fourByteReadCommand": 16,
+        "stoppedBeforeTransmit": true,
+        "hardwareRequests": 0
+      },
+      {
+        "followupCases": 39,
+        "enterUsbModesTested": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "recordSetMaskHex": "00001800",
+        "recordClearMaskHex": "00000020",
+        "enterUsbRecordChangesOnlyAfterSendReturnsOne": true,
+        "receiverInitializationExecuted": true,
+        "hardwareRequests": 0
+      }
+    ],
+    "result_sha256": "2732fa7ff84ae89ab229b3ca052d51f6e07232c7c108435d53fcb74f49e3dea2",
+    "stderr_empty": true,
+    "send_helper_substitution": "At common4c5e, record message type and return supplied0/1 using the original call stack. No transmit code executes.",
+    "mmio": "Explicitly allowlisted RAM registers; other hardware addresses fail. No hardware backend.",
+    "corrections": [
+      "Initial fixture expected the same return point for both Accept and Reject branches; Reject returns directly.",
+      "A temporary diagnostic macro evaluated its argument twice; replaced with a single-evaluation function before successful final execution."
+    ],
+    "hardware_requests": 0,
+    "original_evidence_modified": false,
+    "windows_fix_demonstrated": false
+  },
+  "next_question": "Trace whether laptop normal-PD reads expose any corresponding entry-result field, using recovered EC transactions and consumers. Establish register/address semantics before treating the card receiver as reachable."
+}

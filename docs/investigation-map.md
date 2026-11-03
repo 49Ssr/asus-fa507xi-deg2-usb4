@@ -1014,6 +1014,26 @@ Reason: The retained 24-bit mask is 0x0000bd, with bits8 and9 clear in the pinne
 
 [ASUS-STANDARD-PD-READS](../evidence/it8857-runtime-commands.json) `/read_options`
 
+**C126 — code_fact:** The reference Enter_USB handler updates the per-port record only after its Accept-send helper returns1. The same masks are used in tested USB2, USB3 and USB4 mode cases.
+
+Scope: IT8857-RUNTIME. Different-board reference only. No laptop transport, wire observation or repair. C126 partially resolves the earlier producer question in C124.
+
+[IT8857-ENTRY-RECORD](../evidence/it8857-state-producers.json) `/entry_producer`
+
+**C127 — code_fact:** The card startup initializes the same fc00 peripheral block used by the runtime receiver. Register values and caller are traced; their physical bus meaning and laptop binding remain unidentified.
+
+Scope: IT8857-RUNTIME. Different-board reference only. No laptop transport, wire observation or repair. C126 partially resolves the earlier producer question in C124.
+
+[IT8857-RECEIVER-INIT](../evidence/it8857-state-producers.json) `/receiver_init`
+
+**C128 — inference:** Several original paths maintain the four-byte record in software. The traced entry masks are not unique USB4-active indicators and are not independent link-training measurements.
+
+Scope: IT8857-RUNTIME. Different-board reference only. No laptop transport, wire observation or repair. C126 partially resolves the earlier producer question in C124.
+
+Reason: Multiple original routines write constants or masks into RAM, and the incoming Enter_USB producer makes the same mask update for modes0,1,2 after send-helper return1.
+
+[IT8857-RECORD-MEANING](../evidence/it8857-state-producers.json) `/interpretation`
+
 ## Separate runs and observation limits
 
 | Case | Meaning | Important limit |
