@@ -44,6 +44,8 @@ Additional reference-code checks need separately acquired, pinned inputs:
 - [Test-Ps8802ReadBehavior.py](analysis/Test-Ps8802ReadBehavior.py) compiles pinned Chromium EC reader functions against a simulated bus. Use `source.c source.h --compiler cc`, or `--compiler cl` from a Visual Studio compiler environment. [Scope](../docs/component-behavior.md).
 - [Test-It8857UpdateRead.py](analysis/Test-It8857UpdateRead.py) executes the pinned updater parameter reader in Unicorn2.1.4 with RAM-only I2C substitutes. Pass the original `PDUTC101.efi` path and optionally `--deps` for an existing Unicorn installation. [Scope and results](../docs/update-interface-reads.md).
 
+- [Test-It8857Dispatch.c](analysis/Test-It8857Dispatch.c) runs the pinned IT8857 card receiver, reset-state branch and per-port reader against RAM fixtures. Build with the pinned emu8051 sources and `bcrypt.lib`; pass the original card firmware as the only argument. [Scope and results](../docs/it8857-runtime-commands.md).
+
 Passing these checks verifies the tested code behaviour, not an ASUS hardware-access route.
 
 ## Historical experiments

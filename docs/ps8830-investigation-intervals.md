@@ -4,7 +4,7 @@ Updated 3 November 2026. Scheduling is **paused**. This page preserves the resum
 
 ## Resume point
 
-The [update-interface review](update-interface-reads.md) found identity, flash/status reads and six parameters preserved across reset, but no identified live PD log. The parameter reader ignores errors and can issue a write. AsusEC_X64 uses either a HID device absent from the present inventory or a separate helper-driver path that can install a service; neither is an established existing PMC3 bridge. Continue with the controller-side state producer and a Windows PMC3 or equivalent route. No hardware request is selected.
+The [IT8857 runtime analysis](it8857-runtime-commands.md) recovered a reference command that requests Data_Reset and a separate four-byte per-port reader. Original instructions reproduce both paths offline. The record's writer, meaning and freshness remain unknown, as does the laptop's access to an equivalent interface. Trace those two connections next. The card image is not the laptop firmware; no new hardware request or Windows fix is established.
 
 This is an access investigation. A successful version read would still not supply the missing entry/retimer/training history. The [plan](investigation-plan.md) separately ranks the hardware comparisons and the controller records needed to choose a repair.
 
@@ -12,6 +12,7 @@ This is an access investigation. A successful version read would still not suppl
 
 | Record | Result |
 | --- | --- |
+| [ITE runtime commands](it8857-runtime-commands.md) | Reference Data_Reset state request and four-byte read reproduced offline; laptop binding and field meanings unknown |
 | [ASUS Linux capture](linux-asus-result.md) | USB fallback reproduced; no external router or new PCIe device observed |
 | [RT0 mapping](rt0-attachment-order.md) | Connector 1 maps to XHC3/NHI0/RT0; role correction precedes USB enumeration |
 | [SDK 3.9.0](infineon-sdk-review.md) | AMD/PS8830 reference definitions and compiled functions acquired; no ASUS-equivalent transport established |

@@ -2,6 +2,8 @@
 
 2 November 2026. **The EC forwarding path is established. The receiving PD controller's reset handler is not. No live reset or working repair is claimed.**
 
+**3 November follow-up:** the acquired IT8857 card reference now has a traced receiver-to-Data_Reset state request. Its separate per-port reader also executes offline. These are different-board paths, not the missing FA507XI UCSI reset implementation. [Reference handlers and limits](it8857-runtime-commands.md).
+
 ## Windows can reach the forwarding path
 
 | Layer | What the inspected code does |

@@ -50,7 +50,7 @@ The Infineon SDK and component drivers describe reference implementations. They 
 
 ## Latest access finding
 
-The [update-interface review](update-interface-reads.md) found identity, flash/status reads and six parameters preserved across reset, but no identified live PD log. The parameter reader ignores errors and can issue a write. AsusEC_X64 uses either a HID device absent from the present inventory or a separate helper-driver path that can install a service; neither is an established existing PMC3 bridge. Continue with the controller-side state producer and a Windows PMC3 or equivalent route. No hardware request is selected.
+The [IT8857 runtime analysis](it8857-runtime-commands.md) recovered a reference command that requests Data_Reset and a separate four-byte per-port reader. Original instructions reproduce both paths offline. The record's writer, meaning and freshness remain unknown, as does the laptop's access to an equivalent interface. Trace those two connections next. The card image is not the laptop firmware; no new hardware request or Windows fix is established.
 
 ## Recovery status
 

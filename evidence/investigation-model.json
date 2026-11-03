@@ -211,6 +211,11 @@
       "id": "IT8857-UPDATE-READS",
       "label": "IT8857 updater read semantics and ASUS Windows backend review",
       "limit": "Reference program, original-instruction RAM fixtures and Windows metadata; no live PD state or physical bus access."
+    },
+    {
+      "id": "IT8857-RUNTIME",
+      "label": "Reference ITE PD receiver, reset request and per-port record reader",
+      "limit": "Different-board original instructions and RAM peripherals; no laptop transport, wire capture or repair."
     }
   ],
   "stages": [
@@ -1626,6 +1631,46 @@
         "IT8857-UPDATE-READS"
       ],
       "value_sha256": "f46f93b549bd61581a9e01e3eb2011e7d3452d5d74a335bb589113c7d2847ab8"
+    },
+    {
+      "id": "IT8857-PD-DISPATCH",
+      "path": "evidence/it8857-runtime-commands.json",
+      "pointer": "/dispatch",
+      "kind": "code",
+      "cases": [
+        "IT8857-RUNTIME"
+      ],
+      "value_sha256": "bdef20a8afc9286004bef35ccecbfa2861f05de5dc9c2a845c5fe91339f4c771"
+    },
+    {
+      "id": "IT8857-RESET-REQUEST",
+      "path": "evidence/it8857-runtime-commands.json",
+      "pointer": "/reset_path",
+      "kind": "code",
+      "cases": [
+        "IT8857-RUNTIME"
+      ],
+      "value_sha256": "d7a508caa06a9d6635d97d0c230bafc244360963e49ca3051aaf7d41bae56774"
+    },
+    {
+      "id": "IT8857-STATE-READER",
+      "path": "evidence/it8857-runtime-commands.json",
+      "pointer": "/state_read",
+      "kind": "code",
+      "cases": [
+        "IT8857-RUNTIME"
+      ],
+      "value_sha256": "272cc9af25b9bced353885d1988bec642b0f3e2d7f172b3c4a9a809ac386c6a0"
+    },
+    {
+      "id": "ASUS-STANDARD-PD-READS",
+      "path": "evidence/it8857-runtime-commands.json",
+      "pointer": "/read_options",
+      "kind": "capture",
+      "cases": [
+        "IT8857-RUNTIME"
+      ],
+      "value_sha256": "0a3b886b65ffc400694eeae5e2e8e4cff0ccf9237a9959ad0aa18facdfd73b43"
     }
   ],
   "claims": [
@@ -3293,6 +3338,59 @@
         "IT8857-UPDATE-READS"
       ],
       "limit": "Windows software inventory only, not a physical bus measurement or exhaustive interface inventory; no protocol request."
+    },
+    {
+      "id": "C122",
+      "basis": "code_fact",
+      "stage": "control",
+      "statement": "The IT8857 reference table handles incoming PD control messages, not Windows UCSI commands; its Data_Reset branch selects Reject in the tested SOP0 cases.",
+      "sources": [
+        "IT8857-PD-DISPATCH"
+      ],
+      "cases": [
+        "IT8857-RUNTIME"
+      ],
+      "limit": "No physical PD observation, laptop implementation match or Windows repair is claimed."
+    },
+    {
+      "id": "C123",
+      "basis": "code_fact",
+      "stage": "control",
+      "statement": "The reference receiver selector05 with payload01 requests state0708; that state passes Data_Reset type0e to its send helper. A Windows/laptop binding is not established.",
+      "sources": [
+        "IT8857-RESET-REQUEST"
+      ],
+      "cases": [
+        "IT8857-RUNTIME"
+      ],
+      "limit": "No physical PD observation, laptop implementation match or Windows repair is claimed."
+    },
+    {
+      "id": "C124",
+      "basis": "code_fact",
+      "stage": "control",
+      "statement": "Reference read selector10 hex serializes four per-port RAM bytes in reverse order. Their producer, meaning and freshness remain unknown.",
+      "sources": [
+        "IT8857-STATE-READER"
+      ],
+      "cases": [
+        "IT8857-RUNTIME"
+      ],
+      "limit": "No physical PD observation, laptop implementation match or Windows repair is claimed."
+    },
+    {
+      "id": "C125",
+      "basis": "inference",
+      "stage": "control",
+      "statement": "The retained ASUS optional-feature mask0000bd does not advertise GET_PD_MESSAGE or GET_ATTENTION_VDO; it does not provide a standard packet-recording shortcut.",
+      "sources": [
+        "ASUS-STANDARD-PD-READS"
+      ],
+      "cases": [
+        "IT8857-RUNTIME"
+      ],
+      "limit": "No physical PD observation, laptop implementation match or Windows repair is claimed.",
+      "reason": "The retained 24-bit mask is 0x0000bd, with bits8 and9 clear in the pinned UCSI definitions. Those optional commands therefore are not advertised, and the typed response command is not a general wire log."
     }
   ],
   "timeline_limit": "T0 is the first recorded Windows attachment report in each run, not physical insertion. Different runs, platforms, power contracts and capture dates are explicit. These tables align software reports only; proximity does not establish wire order or causation. The earlier Dell control supplies the Dell timeline; the deep Dell dump supplies cached-state comparison.",

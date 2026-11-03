@@ -36,6 +36,7 @@ Read [findings](status.md) for the evidence and [the diagnosis plan](investigati
 - [IT8857 version-only tool: transaction, side effects and Windows access](it8857-version-path.md)
 - [EC host transfer: fixed update address and Windows access](ec-host-transfer.md)
 - [IT8857 update reads and Windows driver paths](update-interface-reads.md)
+- [ITE runtime reset request and per-port state reader](it8857-runtime-commands.md)
 - [Data_Reset hypothesis](ucsi-data-reset.md)
 - [Reset command path and unknown receiving handler](data-reset-command-path.md)
 - [What the Infineon SDK 3.9.0 supplies](infineon-sdk-review.md)

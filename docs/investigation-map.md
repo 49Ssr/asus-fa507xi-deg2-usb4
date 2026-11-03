@@ -988,6 +988,32 @@ Scope: IT8857-UPDATE-READS. Windows software inventory only, not a physical bus 
 
 [ASUS-EC-BACKEND-INVENTORY](../evidence/update-interface-reads.json) `/windows_inventory`
 
+**C122 — code_fact:** The IT8857 reference table handles incoming PD control messages, not Windows UCSI commands; its Data_Reset branch selects Reject in the tested SOP0 cases.
+
+Scope: IT8857-RUNTIME. No physical PD observation, laptop implementation match or Windows repair is claimed.
+
+[IT8857-PD-DISPATCH](../evidence/it8857-runtime-commands.json) `/dispatch`
+
+**C123 — code_fact:** The reference receiver selector05 with payload01 requests state0708; that state passes Data_Reset type0e to its send helper. A Windows/laptop binding is not established.
+
+Scope: IT8857-RUNTIME. No physical PD observation, laptop implementation match or Windows repair is claimed.
+
+[IT8857-RESET-REQUEST](../evidence/it8857-runtime-commands.json) `/reset_path`
+
+**C124 — code_fact:** Reference read selector10 hex serializes four per-port RAM bytes in reverse order. Their producer, meaning and freshness remain unknown.
+
+Scope: IT8857-RUNTIME. No physical PD observation, laptop implementation match or Windows repair is claimed.
+
+[IT8857-STATE-READER](../evidence/it8857-runtime-commands.json) `/state_read`
+
+**C125 — inference:** The retained ASUS optional-feature mask0000bd does not advertise GET_PD_MESSAGE or GET_ATTENTION_VDO; it does not provide a standard packet-recording shortcut.
+
+Scope: IT8857-RUNTIME. No physical PD observation, laptop implementation match or Windows repair is claimed.
+
+Reason: The retained 24-bit mask is 0x0000bd, with bits8 and9 clear in the pinned UCSI definitions. Those optional commands therefore are not advertised, and the typed response command is not a general wire log.
+
+[ASUS-STANDARD-PD-READS](../evidence/it8857-runtime-commands.json) `/read_options`
+
 ## Separate runs and observation limits
 
 | Case | Meaning | Important limit |
@@ -1033,6 +1059,7 @@ Scope: IT8857-UPDATE-READS. Windows software inventory only, not a physical bus 
 | IT8857-UEFI-READ-PATH | IT8857 vendor version-only path and saved ASUS ACPI comparison | Static different-board program and retained ACPI declarations; no vendor program execution, live controller read, electrical binding or repair. |
 | EC-HOST-TRANSFER | Original EC PMC3 transfer commands executed offline | Original instructions with a RAM bus fixture; no physical PD read or Windows bridge established. |
 | IT8857-UPDATE-READS | IT8857 updater read semantics and ASUS Windows backend review | Reference program, original-instruction RAM fixtures and Windows metadata; no live PD state or physical bus access. |
+| IT8857-RUNTIME | Reference ITE PD receiver, reset request and per-port record reader | Different-board original instructions and RAM peripherals; no laptop transport, wire capture or repair. |
 
 ## Software-report timelines
 

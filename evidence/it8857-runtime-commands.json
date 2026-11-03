@@ -1,0 +1,135 @@
+{
+  "schema": 1,
+  "date": "2026-11-03",
+  "status": "ReferenceResetAndStateReadFound_LaptopBindingUnknown",
+  "inputs": {
+    "card_pd_image_sha256": "12b21f53f9cbc83bc36e692cadac8de623ded605e3d563212377f521140694e3",
+    "bytes": 131072,
+    "card_image_is_laptop_image": false,
+    "test_source_sha256": "3eac8c11bf3dbb0ff698f94c79d290e8d8b7e5dd4d9b067fbab51b5d90c5d5f3",
+    "emulator_repository": "https://github.com/jarikomppa/emu8051",
+    "emulator_commit": "5dc681275151c4a5d7b85ec9ff4ceb1b25abd5a8",
+    "sdk_pd_message_definitions": {
+      "package": "EZ-PD Host SDK 3.9.0, mtb-pdl-cat2 release-v2.19.0",
+      "file": "drivers/include/cy_usbpd_defines.h",
+      "sha256": "aa41f7d03bdaa861d0bc34fb9adcee786988166f5b523f8a36dc8f7cbd83548c",
+      "lines": [
+        888,
+        889
+      ]
+    },
+    "ucsi_header_sha256": "dabac175703106f4043989fb72ef4f47b2d53c82f294482d75c3d516b17e0f8a",
+    "pd_header": {
+      "url": "https://github.com/torvalds/linux/blob/46fec1c3029b552ec63b2d01af9d43a386f043ea/include/linux/usb/pd.h",
+      "sha256": "cb5ee9000a5a7bed466837305010a5fbab09f02ef26e2929cf08096929a12d78",
+      "scope": "Reject=4 and Enter_USB=8; this Linux header reserves 14/15, so SDK definitions supply Data_Reset names."
+    }
+  },
+  "dispatch": {
+    "basis": "code_fact",
+    "control_entry_cpu_hex": "041e",
+    "table_cpu_hex": "0451",
+    "caller_cpu_hex": "642b-6467",
+    "finding": "The caller selects PD control/data handlers by data-object count. This is not a UCSI opcode dispatcher.",
+    "incoming_reset": {
+      "type_hex": "0e",
+      "handler_cpu_hex": "11bf",
+      "sop_0": "Passes type04 to common send helper4c5e for tested field values0..3",
+      "sop_1": "Returns2 without reaching send helper",
+      "limit": "No message was transmitted; this different-board handler is not an ASUS or DEG2 observation."
+    }
+  },
+  "reset_path": {
+    "basis": "code_fact",
+    "receiver_bank": 2,
+    "receiver_cpu_hex": "8855",
+    "receiver_file_hex": "18855",
+    "receiver_command_hex": "05",
+    "payload_length": 1,
+    "payload_hex": "01",
+    "state_request_cpu_hex": "8a55-8a6f",
+    "state_setter_cpu_hex": "4a71",
+    "requested_state_hex": "0708",
+    "policy_dispatch_cpu_hex": "547d",
+    "state_table_cpu_hex": "5493",
+    "state_handler_cpu_hex": "563f",
+    "send_helper_cpu_hex": "4c5e",
+    "outbound_control_type_hex": "0e",
+    "controls": {
+      "payload_00_or_03": "No state-setter call in receiver fixture",
+      "payload_02": "Requests state0001 with zero duration byte in fixture; full effects untested",
+      "state_0709": "No send-helper call"
+    },
+    "limit": "The receiver, state setter and send helper are separated test boundaries. Physical interface, slave address, laptop implementation and reset completion remain unknown."
+  },
+  "state_read": {
+    "basis": "code_fact",
+    "read_selector_hex": "10",
+    "read_dispatch_cpu_hex": "8a90",
+    "serializer_cpu_hex": "8b16-8b60",
+    "bytes": 4,
+    "per_port_record_xdata_hex": "05e4 + port*18",
+    "memory_to_output": "Reverse byte order: RAM12 34 56 78 produces78 56 34 12",
+    "index_4": "No output-register write",
+    "source_record_unchanged_in_fixture": true,
+    "selector_06": "Separate branch8b62; first byte is fixed5a, not the four-byte record",
+    "limit": "Record writer, bit meanings and freshness not identified. It is not established as a retimer register, physical link result, update-address read or laptop interface."
+  },
+  "read_options": {
+    "basis": "software_report_and_code",
+    "retained_capture_sha256": "84d8302789f0354fe274830460c82c8c768b648a025410bb5414014e41c43633",
+    "capture_utc": "2026-10-31T21:58:06.4812041Z",
+    "get_capability_bytes_hex": "45 41 00 00 02 bd 00 00 01 00 20 01 00 02 10 01",
+    "optional_features_hex": "0000bd",
+    "get_pd_message_advertised": false,
+    "get_attention_vdo_advertised": false,
+    "new_ucsi_command_sent": false,
+    "limit": "The feature bits are a retained firmware report. They do not prove private read interfaces are absent. GET_PD_MESSAGE is typed response retrieval, not a packet log."
+  },
+  "windows_routes": {
+    "basis": "code_fact_and_software_metadata",
+    "ext3rdcmd_rva_hex": "bb60",
+    "same_backend_call_rva_hex": "bba3",
+    "backend_rva_hex": "2e50",
+    "dll_sha256": "c7f337191d2366dfedbe90a6423ec743094a588a032c0a0cb2434dad688c29fe",
+    "metadata_utc": "2026-11-03T11:02:15.7168234Z",
+    "present_proxy_or_ite88xx_matches": 0,
+    "retained_acpi_files_searched": 23,
+    "acpi_identifier_matches": 0,
+    "acpi_search_receipt_sha256": "c56f56c2ba36a4cef0af0dc41f82068969a2d8cfc8368b7df7f4cd94f6603a08",
+    "sources": [
+      "https://learn.microsoft.com/en-us/windows/apps/develop/devices-sensors/enable-usermode-access",
+      "https://lore-kernel.gnuweeb.org/linux-usb/20260314013157.7181-3-edward.blair%40gmail.com/T/"
+    ],
+    "limit": "The desktop proposal is not the FA507XI transport. No device opened, DLL loaded, resource added or driver installed. Metadata absence is not exhaustive hardware absence."
+  },
+  "validation": {
+    "original_instruction_result": {
+      "cases": 40,
+      "receivedDataResetSop0ReplyType": 4,
+      "outboundStateHex": "0708",
+      "outboundControlType": 14,
+      "referenceReceiverCommand": 5,
+      "referenceResetSelector": 1,
+      "fourByteReadCommand": 16,
+      "stoppedBeforeTransmit": true,
+      "hardwareRequests": 0
+    },
+    "fixture_scope": "RAM peripherals; fixed bounded instruction budget; exact input hash; stops before state setter or transmission where specified",
+    "hardware_requests": 0,
+    "firmware_written": false,
+    "new_driver_loaded": false,
+    "fix_demonstrated": false,
+    "corrections": [
+      "PD control dispatcher initially considered a UCSI candidate; caller analysis corrected it.",
+      "Initial receiver ACK expectation missed its setup ACK; full receiver execution exposed this.",
+      "Read selector06 hypothesis failed; original branch and fixture identify10 hex.",
+      "An intermediate private JSON output had duplicate selector keys; final successful output rejects duplicate keys."
+    ],
+    "result_sha256": "4432ca932e02c235a32ada5e13c0d7ec2627339a1c065cb54fdd7d481e98217d"
+  },
+  "next_questions": [
+    "Trace writers of the four-byte per-port record and distinguish requested mode from observed result.",
+    "Trace receiver initialization, bus identity and binding; compare with laptop EC transport before selecting any operation."
+  ]
+}
