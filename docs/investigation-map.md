@@ -1034,6 +1034,24 @@ Reason: Multiple original routines write constants or masks into RAM, and the in
 
 [IT8857-RECORD-MEANING](../evidence/it8857-state-producers.json) `/interpretation`
 
+**C129 — code_fact:** BIOS314 projects only raw B0/B1 bits0,1,2,4 into cached status, discards the other raw bits in this path and preserves old cache on read failure.
+
+Scope: ASUS-BIOS314. Original instructions with RAM replies; no live PD state, physical connector mapping, Windows raw reader or repair is established.
+
+[LAPTOP-PD-STATUS](../evidence/laptop-pd-status-consumers.json) `/status_projection`
+
+**C130 — code_fact:** The tested PMC4 table5 field20 getter reports whether the computed power byte is nonzero. Fields12..1f return constant zero; these are not a recovered Enter_USB response reader.
+
+Scope: ASUS-BIOS314. Original instructions with RAM replies; no live PD state, physical connector mapping, Windows raw reader or repair is established.
+
+[LAPTOP-PD-POWER-GETTER](../evidence/laptop-pd-status-consumers.json) `/oem_getters`
+
+**C131 — code_fact:** Original BIOS314 CC parsing produces voltage, current and power from supplied fixed-PDO replies; a5V/3A fixture produces15. The downstream consumer copies these values into power-reporting state.
+
+Scope: ASUS-BIOS314. Original instructions with RAM replies; no live PD state, physical connector mapping, Windows raw reader or repair is established.
+
+[LAPTOP-PD-POWER-CONSUMER](../evidence/laptop-pd-status-consumers.json) `/power_path`
+
 ## Separate runs and observation limits
 
 | Case | Meaning | Important limit |

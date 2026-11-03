@@ -53,11 +53,29 @@ A separate public driver proposal for ASUS desktop boards led to Microsoft's Res
 
 The previously unreviewed `Ext3rdCmd` export in AsusEC_X64 also calls the same backend dispatcher already examined. It does not establish an alternate existing PMC3 route. [Earlier Windows backend analysis](update-interface-reads.md).
 
-## Continue from these two questions
+## What the laptop EC actually exports
 
-1. Do the laptop EC's existing normal-PD reads expose a corresponding entry-result field? Start from its recovered read transactions and consumers, rather than transplanting the card's addresses or bit layout.
-2. Can matched controller documentation or the actual laptop PD implementation establish the receiver's bus identity and register meanings? Its startup sequence is now known; its external binding is not.
+The laptop EC comparison has now followed the recovered normal-address reads into their consumers and the OEM getter. This uses the **BIOS314-supplied laptop EC image**, rather than treating the add-in-card program as its firmware. The running EC flash has not been read back. [Evidence and code locations](../evidence/laptop-pd-status-consumers.json).
 
-Answering those would make a reader or reset experiment concrete. The present finding does not justify guessing a target address, treating the card image as laptop firmware, or repeating an unchanged boot. No Windows fix is demonstrated.
+| Laptop path | Original code behaviour | Value for this diagnosis |
+| --- | --- | --- |
+| B0/B1, one byte each | Maps raw bits 0, 1, 2 and 4 into a cached status byte; the other raw bits are not retained by this projection | Partial status; physical connector mapping and raw-bit names are still unknown |
+| CC, four bytes | Decodes power-descriptor fields into voltage, current and power | Power reporting, not the card's four-byte transition record |
+| OEM table5 field20 hex | Returns 02 if the computed power byte is nonzero, otherwise 00 | Power presence, not an Enter_USB success flag |
+| Same table, fields12 through1f hex | Returns constant zero in the tested getter paths | No hidden entry-result data in these fields |
+
+For example, the original parser turns a supplied fixed-PDO reply for **5 V / 3 A into 5000, 3000 and 15**. The downstream consumer copies these results into its power-reporting state. This executes the arithmetic previously identified by static analysis; it is not a measured ASUS power contract. The fixture encoding follows the [pinned Linux PDO definitions](https://github.com/torvalds/linux/blob/46fec1c3029b552ec63b2d01af9d43a386f043ea/include/linux/usb/pd.h#L327).
+
+Two details matter for any future diagnostic. A failed status read preserves the old cached byte; the later power-read gate can still use that stale value. A failed CC read can preserve the old power result too. Also, the complete status-service routine can write event acknowledgements before reading status. Calling the routine is not equivalent to a passive register snapshot.
+
+[The offline test](../tools/analysis/Test-LaptopPdStatus.c) executes the original status projection for every possible input byte on both paths, with two cache seeds. It also checks failed reads, fixed-PDO examples, the original PMC4 getters, event acknowledgement branches and the disabled feature gate. The bus returns supplied RAM values; no controller is contacted. Build it with the same pinned emu8051 inputs and bcrypt.lib as the EC harness, then pass the pinned full BIOS314 EC image as its only argument.
+
+## What is still missing
+
+**These inspected laptop paths do not provide an identified equivalent of the card's Enter_USB response record.** That is a result about these particular consumers and getters, not proof that the PD controller has no useful private state.
+
+The remaining code question is what produces the controller's raw normal-register status, and whether another matched register retains an entry result. The laptop's own PD implementation or matched register documentation would establish that. The card reference can help form a comparison, but its field layout and receiver address cannot be transplanted.
+
+A reachable Windows transport remains a separate requirement. No new getter, reset, boot or hardware request is selected by this finding; repeating the version or power reads would not expose the missing exchange. No Windows fix is demonstrated.
 
 [Findings](status.md) · [Windows reset path](data-reset-command-path.md) · [Diagnosis plan](investigation-plan.md)

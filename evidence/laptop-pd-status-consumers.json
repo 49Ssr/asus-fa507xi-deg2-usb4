@@ -1,0 +1,174 @@
+{
+  "schema": 1,
+  "date": "2026-11-03",
+  "status": "Laptop EC status projection and power getter executed offline; no entry-result read established",
+  "source": {
+    "firmware_record": "evidence/ec-firmware-decision.json",
+    "firmware_sha256": "103721578b66daed81dcf7a0bed06709c072f9da1dc75a6d7887321e6e32b060",
+    "source_scope": "BIOS314-supplied FA507-family EC image, not live flash readback",
+    "spans": [
+      {
+        "label": "status_reader",
+        "bank": 3,
+        "start_hex": "bc3c",
+        "end_exclusive_hex": "be4e",
+        "sha256": "dc8f36f4d88a3d6d0584b06422ee7d0e43a3c88e91d86b11c1c0254e8d1e0d03"
+      },
+      {
+        "label": "table5_getters",
+        "bank": 3,
+        "start_hex": "b02e",
+        "end_exclusive_hex": "b14b",
+        "sha256": "a9dff21adcf33b5f48d2a4d2dc0cc8585936c72a56ec967436c0c1582070780b"
+      },
+      {
+        "label": "status_projection",
+        "bank": 3,
+        "start_hex": "c728",
+        "end_exclusive_hex": "c738",
+        "sha256": "1d8f64fa21355a87ffae0a280d47229ca60ecdcdc1f9c2b61f7856ebbfc8828c"
+      },
+      {
+        "label": "power_consumer",
+        "bank": 3,
+        "start_hex": "be59",
+        "end_exclusive_hex": "bef9",
+        "sha256": "33030299f962d6991e7a31a43a2ab828dcf330532ca364e811599b9189047984"
+      },
+      {
+        "label": "power_copy",
+        "bank": 3,
+        "start_hex": "c60a",
+        "end_exclusive_hex": "c641",
+        "sha256": "1decb9783fa1996b2ae75be25d4e17c4b412f1b10033167ffc5c0eb30803f79f"
+      }
+    ],
+    "prior_analysis": "evidence/ec-pd-readers-and-vendor-gates.json"
+  },
+  "status_projection": {
+    "entry_bank": 3,
+    "entry_hex": "bc3c",
+    "bus_channel": 4,
+    "bus_address_byte_hex": "98",
+    "selectors_hex": [
+      "b0",
+      "b1"
+    ],
+    "receive_bytes_each": 1,
+    "destinations_hex": [
+      "0730",
+      "0794"
+    ],
+    "raw_to_cached_bits": {
+      "0": 7,
+      "1": 6,
+      "2": 0,
+      "4": 3
+    },
+    "when_raw_bit0_clear": "Clears the entire selected cached byte.",
+    "when_raw_bit0_set": "Updates mapped bits and preserves other cached bits.",
+    "unrepresented_raw_bits": [
+      3,
+      5,
+      6,
+      7
+    ],
+    "failed_read": "Skips projection and preserves the previous cached byte. A failed b1 read can still be followed by the CC read if the old cache satisfies its gate.",
+    "scope": "All 256 raw-byte values exercised for each selector and two cache seeds. Physical connector mapping and raw-bit semantic names remain unestablished. This is not a complete inventory of every EC read path."
+  },
+  "power_path": {
+    "selector_hex": "cc",
+    "receive_bytes": 4,
+    "gate": "Cached0794 bits7/6 set and bit3 clear",
+    "parser_hex": "bd75..be4c",
+    "fixed_type0_outputs": {
+      "voltage_xdata_hex": "05c0..05c1",
+      "current_xdata_hex": "05c2..05c3",
+      "power_xdata_hex": "05bf"
+    },
+    "fixtures": [
+      {
+        "volts": 5,
+        "milliamps": 3000,
+        "power_byte": 15
+      },
+      {
+        "volts": 10,
+        "milliamps": 3000,
+        "power_byte": 30
+      },
+      {
+        "volts": 15,
+        "milliamps": 3000,
+        "power_byte": 45
+      },
+      {
+        "volts": 20,
+        "milliamps": 3000,
+        "power_byte": 60
+      }
+    ],
+    "fixture_encoding": "Big-endian fixed PDO; voltage in50mV units at bits19:10; current in10mA units at bits9:0. These are supplied test inputs, not measured contracts.",
+    "failed_read": "Leaves previous power result unchanged in the tested path.",
+    "consumer": "bank3 be59 uses05bf to select a local power-reporting state; c60a copies05bf and voltage/current values into05b1..05b5.",
+    "reference_url": "https://github.com/torvalds/linux/blob/46fec1c3029b552ec63b2d01af9d43a386f043ea/include/linux/usb/pd.h#L327",
+    "meaning_limit": "Fixed-PDO correspondence and tested arithmetic support power reporting. No raw reply, actual contract or USB4 link result was read."
+  },
+  "oem_getters": {
+    "receiver_hex": "9590",
+    "table": 5,
+    "selector": 1,
+    "field20_hex": "20",
+    "field20_entry_hex": "b138",
+    "field20_result": "Returns02 when05bf is nonzero; otherwise00. No bus request is made.",
+    "neighbour_fields_hex": "12..1f",
+    "neighbour_result": "All fourteen return constant00 in tested original getter paths.",
+    "windows_limit": "Same PMC4 receiver family used by the completed version getter. These additional fields were executed offline only; no new Windows query or raw status getter was demonstrated."
+  },
+  "event_effects": {
+    "register_hex": "bd",
+    "interrupt_gate_xdata_hex": "160a.bit1",
+    "feature_gate_xdata_hex": "0308.bit3",
+    "observed_instruction_paths": [
+      "BD fixture01 produces BC FD write",
+      "BD fixture00 plus interrupt bit1 clear produces BC FF write",
+      "Feature gate clear produces no transfer"
+    ],
+    "meaning": "The complete status-service routine can acknowledge events. It is not a passive diagnostic entry point. Peripheral meanings beyond prior ITE event correspondence and exact instruction effects are not assumed."
+  },
+  "comparison": {
+    "reference_record": "evidence/it8857-state-producers.json",
+    "conclusion": "No equivalent Enter_USB response field was identified among these laptop EC reads and OEM getters. The four-byte CC power descriptor is not the reference four-byte transition record.",
+    "limit": "This does not establish absence of a private entry record in the PD controller or every possible Windows-access path. Raw status bits and controller-side producers are still missing."
+  },
+  "validation": {
+    "tool": "tools/analysis/Test-LaptopPdStatus.c",
+    "tool_sha256": "14b4c6b846ac3f8d4d722fb052f58dc2020394b4103892fe0d54adea4c5f74cc",
+    "emulator_commit": "5dc681275151c4a5d7b85ec9ff4ceb1b25abd5a8",
+    "results": {
+      "statusMappingCases": 1024,
+      "failureCases": 3,
+      "fixedPdoCases": 4,
+      "getterCases": 19,
+      "eventAcknowledgementCases": 2,
+      "disabledGateCases": 1,
+      "rawStatusBitsRetained": [
+        0,
+        1,
+        2,
+        4
+      ],
+      "getter20IsPowerPresence": true,
+      "hardwareRequests": 0
+    },
+    "bus_boundary": "Original1ff4 call is replaced with supplied RAM replies/success values; original consumers and PMC4 receiver execute. Only explicitly listed peripheral locations are allowed.",
+    "physical_timing_or_live_flash_verified": false,
+    "hardware_requests": 0,
+    "new_boots": 0,
+    "driver_changes": 0,
+    "firmware_writes": 0,
+    "windows_fix_demonstrated": false,
+    "attempts": "Initial build launch used a wrong relative path and did not compile or execute. Corrected launch built successfully; first firmware test execution passed. Logs retained privately."
+  },
+  "next_question": "Identify the controller-side producer and meaning of normal-register status bytes, or another matched register holding the entry response. Do not repeat the power/cache reads as handshake diagnostics. Any Windows transport remains a separate requirement."
+}

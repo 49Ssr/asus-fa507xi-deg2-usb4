@@ -1701,6 +1701,36 @@
         "IT8857-RUNTIME"
       ],
       "value_sha256": "f5c94f838c9274ed14e2122a2b1ebab9eb338a2d13d684bcc887c4e4cc3fbf15"
+    },
+    {
+      "id": "LAPTOP-PD-STATUS",
+      "path": "evidence/laptop-pd-status-consumers.json",
+      "pointer": "/status_projection",
+      "kind": "code",
+      "cases": [
+        "ASUS-BIOS314"
+      ],
+      "value_sha256": "f1431abb1cf38548bcb3f2042da4a429d381de6a45d545a388e3380f7ca12a15"
+    },
+    {
+      "id": "LAPTOP-PD-POWER-GETTER",
+      "path": "evidence/laptop-pd-status-consumers.json",
+      "pointer": "/oem_getters",
+      "kind": "code",
+      "cases": [
+        "ASUS-BIOS314"
+      ],
+      "value_sha256": "3fc57fa8dd4bfb6d66c378128a5fa2d43a07467a49e73a50cfadc60f01246eee"
+    },
+    {
+      "id": "LAPTOP-PD-POWER-CONSUMER",
+      "path": "evidence/laptop-pd-status-consumers.json",
+      "pointer": "/power_path",
+      "kind": "code",
+      "cases": [
+        "ASUS-BIOS314"
+      ],
+      "value_sha256": "158ea61c2ecadfb24412b719308b1788a48b3c99e0e9ef30ad081943c0594f65"
     }
   ],
   "claims": [
@@ -3461,6 +3491,45 @@
       ],
       "limit": "Different-board reference only. No laptop transport, wire observation or repair. C126 partially resolves the earlier producer question in C124.",
       "reason": "Multiple original routines write constants or masks into RAM, and the incoming Enter_USB producer makes the same mask update for modes0,1,2 after send-helper return1."
+    },
+    {
+      "id": "C129",
+      "basis": "code_fact",
+      "stage": "control",
+      "statement": "BIOS314 projects only raw B0/B1 bits0,1,2,4 into cached status, discards the other raw bits in this path and preserves old cache on read failure.",
+      "sources": [
+        "LAPTOP-PD-STATUS"
+      ],
+      "cases": [
+        "ASUS-BIOS314"
+      ],
+      "limit": "Original instructions with RAM replies; no live PD state, physical connector mapping, Windows raw reader or repair is established."
+    },
+    {
+      "id": "C130",
+      "basis": "code_fact",
+      "stage": "control",
+      "statement": "The tested PMC4 table5 field20 getter reports whether the computed power byte is nonzero. Fields12..1f return constant zero; these are not a recovered Enter_USB response reader.",
+      "sources": [
+        "LAPTOP-PD-POWER-GETTER"
+      ],
+      "cases": [
+        "ASUS-BIOS314"
+      ],
+      "limit": "Original instructions with RAM replies; no live PD state, physical connector mapping, Windows raw reader or repair is established."
+    },
+    {
+      "id": "C131",
+      "basis": "code_fact",
+      "stage": "control",
+      "statement": "Original BIOS314 CC parsing produces voltage, current and power from supplied fixed-PDO replies; a5V/3A fixture produces15. The downstream consumer copies these values into power-reporting state.",
+      "sources": [
+        "LAPTOP-PD-POWER-CONSUMER"
+      ],
+      "cases": [
+        "ASUS-BIOS314"
+      ],
+      "limit": "Original instructions with RAM replies; no live PD state, physical connector mapping, Windows raw reader or repair is established."
     }
   ],
   "timeline_limit": "T0 is the first recorded Windows attachment report in each run, not physical insertion. Different runs, platforms, power contracts and capture dates are explicit. These tables align software reports only; proximity does not establish wire order or causation. The earlier Dell control supplies the Dell timeline; the deep Dell dump supplies cached-state comparison.",

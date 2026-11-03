@@ -48,6 +48,8 @@ Additional reference-code checks need separately acquired, pinned inputs:
 
 - [Test-It8857StateRecord.c](analysis/Test-It8857StateRecord.c) adds original record-producer and receiver-initialization checks, reusing the dispatch fixture above. The send helper returns supplied results; no packet is transmitted. It emits two JSON Lines. [Evidence](../evidence/it8857-state-producers.json).
 
+- [Test-LaptopPdStatus.c](analysis/Test-LaptopPdStatus.c) executes BIOS314 status projection, power parsing and PMC4 getters with RAM bus replies. Build with the same EC harness inputs; pass the pinned full EC image. [Evidence](../evidence/laptop-pd-status-consumers.json).
+
 Passing these checks verifies the tested code behaviour, not an ASUS hardware-access route.
 
 ## Historical experiments

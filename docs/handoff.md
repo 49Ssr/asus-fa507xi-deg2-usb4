@@ -4,7 +4,7 @@ Read [findings](status.md), then the [diagnosis plan](investigation-plan.md). Th
 
 ## Resume here
 
-The [IT8857 runtime analysis](it8857-runtime-commands.md) now follows the four-byte record back to an incoming Enter_USB handler and other software writers. Its tested entry masks are shared by USB2, USB3 and USB4 requests, so they are not unique USB4-active flags or link-training proof. Receiver initialization is traced, but its external bus meaning and laptop equivalent remain unknown. Next, compare the laptop EC's normal-PD reads and their consumers for an entry-result field. The card firmware is not the laptop image; no Windows repair or hardware request is established.
+The [laptop EC comparison](it8857-runtime-commands.md#what-the-laptop-ec-actually-exports) found partial status and power reporting, not an identified Enter_USB result. B0/B1 reads keep only four raw bits; failures can preserve old cached values. The CC four-byte read feeds voltage/current/power arithmetic, and its OEM getter reports nonzero power. The separate card reference record still has no matched laptop reader. Identify controller-side status producers or another matched entry-result register next; repeating these power/cache getters would not recover the handshake. No Windows repair or new hardware request is established.
 
 The strongest additional hardware comparison is another known-working USB4 PCIe peripheral on ASUS. The [plan](investigation-plan.md) explains what each possible result would change. No new test or borrowed device is assumed available.
 
