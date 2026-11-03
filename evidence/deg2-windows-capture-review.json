@@ -1,0 +1,252 @@
+{
+  "schema": 1,
+  "date": "2026-11-03",
+  "status": "Reference read handlers resolved; actual DEG2 negotiation capture remains unestablished",
+  "prior_record": "evidence/infineon-log-route-and-reader.json",
+  "new_scope": "Closes the prior unknown about the compiled reference getter and traces D6/D7 reply construction. The log format itself was already identified on 2 November.",
+  "source_pins": [
+    {
+      "source": "https://raw.githubusercontent.com/Infineon/pmg-app-common/9ed74f798cae23aa6744f206ee381f3593590554/cy_app_flash_log.h",
+      "file": "cy_app_flash_log.h",
+      "bytes": 15320,
+      "sha256": "ec298a4256f7a39850b04db2d9d4a5d989aaab3907e1c7fa9eef4c53e5c99242"
+    },
+    {
+      "source": "https://raw.githubusercontent.com/Infineon/pmg-app-common/9ed74f798cae23aa6744f206ee381f3593590554/cy_app_debug.h",
+      "file": "cy_app_debug.h",
+      "bytes": 17763,
+      "sha256": "2c7f8c5df5d22e36970f22c869ef70d600f547a790397a7ed051a81a926c57a3"
+    },
+    {
+      "source": "https://raw.githubusercontent.com/Infineon/pmg-app-common/9ed74f798cae23aa6744f206ee381f3593590554/cy_app_debug.c",
+      "file": "cy_app_debug.c",
+      "bytes": 3879,
+      "sha256": "81b9297edc480cc657727ebe2a60cbbcaf5d06e516b1d6f182834faba38f0005"
+    },
+    {
+      "source": "https://raw.githubusercontent.com/Infineon/pmg-app-common/9ed74f798cae23aa6744f206ee381f3593590554/cy_app_config.h",
+      "file": "cy_app_config.h",
+      "bytes": 13712,
+      "sha256": "6ee79b984957139f5f94e05efb9b8893602317c1b449669a5d79b5bfebb8314b"
+    },
+    {
+      "source": "https://raw.githubusercontent.com/Infineon/pmg-app-common/9ed74f798cae23aa6744f206ee381f3593590554/cy_app.c",
+      "file": "cy_app.c",
+      "bytes": 95580,
+      "sha256": "f609e6f4181931a3d8197772a359d72c61cee1af3694fd9cb747ef9c572287ef"
+    },
+    {
+      "source": "https://raw.githubusercontent.com/Infineon/pmg-app-common/9ed74f798cae23aa6744f206ee381f3593590554/COMPONENT_FLASH_LOG/TOOLCHAIN_GCC_ARM/libflash_log.a",
+      "file": "libflash_log.a",
+      "bytes": 5584,
+      "sha256": "1d877618451252a621ab96fecb45b39428c567b8bcd07fb4fbb7dcfd3dee3133"
+    },
+    {
+      "source": "https://raw.githubusercontent.com/Infineon/pmg-app-common/9ed74f798cae23aa6744f206ee381f3593590554/COMPONENT_DMC_FWUPDATE/TOOLCHAIN_GCC_ARM/libdmc_fwupdate.a",
+      "file": "libdmc_fwupdate.a",
+      "bytes": 34638,
+      "sha256": "3beb7411c59913662bd09ed222e8011c354fd78f6ccad82cbaae3c71ac121876"
+    },
+    {
+      "source": "https://raw.githubusercontent.com/fwupd/fwupd/5a209d7627cfe7f08c07fda74d1ec4377747fe05/plugins/ccgx-dmc/README.md",
+      "file": "fwupd-README.md",
+      "bytes": 3187,
+      "sha256": "e9970f3429f888a4c9ac90b6b13ac4e35dd8eddc363f1e318fbab9297b82787e"
+    },
+    {
+      "source": "https://raw.githubusercontent.com/fwupd/fwupd/5a209d7627cfe7f08c07fda74d1ec4377747fe05/plugins/ccgx-dmc/ccgx-dmc.quirk",
+      "file": "fwupd-ccgx-dmc.quirk",
+      "bytes": 3103,
+      "sha256": "136da9b7d742e9316336f8de9557ce54c182edddd0c908fa13bad22f44f28d96"
+    },
+    {
+      "source": "https://raw.githubusercontent.com/fwupd/fwupd/5a209d7627cfe7f08c07fda74d1ec4377747fe05/plugins/ccgx-dmc/fu-ccgx-dmc-device.c",
+      "file": "fwupd-fu-ccgx-dmc-device.c",
+      "bytes": 28505,
+      "sha256": "d1971391afb49299896831c6778082113e7eeef227c0b330b2a0b8440cc1a707"
+    },
+    {
+      "source": "https://raw.githubusercontent.com/fwupd/fwupd/5a209d7627cfe7f08c07fda74d1ec4377747fe05/plugins/ccgx-dmc/fu-ccgx-dmc.rs",
+      "file": "fwupd-fu-ccgx-dmc.rs",
+      "bytes": 6709,
+      "sha256": "8c479acb0942ea07c52a1d8506805026fc0402697ca5168523f361fe24a918f8"
+    },
+    {
+      "source": "https://raw.githubusercontent.com/Infineon/mtb-example-pmg1s3-griffin-creek-dock/e9104d5768c9b042244c7c705198be8926228d01/Makefile",
+      "file": "griffin-Makefile",
+      "bytes": 10846,
+      "sha256": "4a104e571fdd65159563d42a48c9d44b5631af35a325cacd5dfdd48f9241df6e"
+    },
+    {
+      "source": "https://raw.githubusercontent.com/Infineon/pmg-app-common/6e1aa9e5786abef91f288bf70b64d89ea400be81/cy_app_usb.c",
+      "file": "v3-cy_app_usb.c",
+      "bytes": 17073,
+      "sha256": "d6e8c842cb8792ca303f82571af329a0dd7942fe0d019db26f09d6ef1b7ef05a"
+    },
+    {
+      "source": "https://raw.githubusercontent.com/Infineon/pmg-app-common/6e1aa9e5786abef91f288bf70b64d89ea400be81/cy_app_debug.c",
+      "file": "v3-cy_app_debug.c",
+      "bytes": 5375,
+      "sha256": "2abff564eb9d9613d10ae2fdceb93da1ebc2b78830136c0b2a6a6eb8a2c8b175"
+    },
+    {
+      "source": "https://raw.githubusercontent.com/Infineon/pmg-app-common/6e1aa9e5786abef91f288bf70b64d89ea400be81/cy_app_flash_log.h",
+      "file": "v3-cy_app_flash_log.h",
+      "bytes": 16275,
+      "sha256": "3d5af412de18f0c452b784bb423319c084c935f2935516944f2026e95309da97"
+    },
+    {
+      "source": "https://raw.githubusercontent.com/Infineon/pmg-app-common/6e1aa9e5786abef91f288bf70b64d89ea400be81/cy_app_dmc_vendor.h",
+      "file": "v3-cy_app_dmc_vendor.h",
+      "bytes": 12821,
+      "sha256": "4415cbebbe449c701f4f22920cd6869da39fa116c1e4471cbd088ce74519d53a"
+    }
+  ],
+  "compiled_reads": {
+    "library_commit": "9ed74f798cae23aa6744f206ee381f3593590554",
+    "flash_getter": {
+      "symbol": "Cy_App_Debug_FlashReadLogs",
+      "function_bytes": 24,
+      "behavior": "Returns null when the initialized byte is zero, otherwise returns gl_flash_log_ptr. No stores or function calls occur in this function.",
+      "observation": "Does not start a new capture, clear the record, or request PD messages. The USB wrapper copies the existing 512-byte record to its reply.",
+      "limit": "Only this compiled reference getter and its inspected wrapper; not the whole firmware and not DEG2."
+    },
+    "status_d6": {
+      "handler": "Cy_App_Dmc_VendorRequestHandler",
+      "handler_function_bytes": 556,
+      "branch_offset_hex": "148",
+      "behavior": "Replies from gl_dock_status for min(requested length, stored status length); zero reply length returns not handled.",
+      "fields": "Eight-byte header with update status, component count, 16-bit length and 32-bit composite version; 32-byte component entries describe image modes/status and firmware/application versions.",
+      "limit": "Firmware inventory/update state; no identified entry request, reply or trained-link result."
+    },
+    "identity_d7": {
+      "branch_offset_hex": "16a",
+      "behavior": "Copies 72 identity bytes to the EP0 buffer, appends one metadata flag and replies with at most 73 bytes in this reference library.",
+      "version_difference": "The separately pinned fwupd schema includes a 74th model byte. Do not assume all generations return the same length or treat an absent byte as zero."
+    },
+    "flash_de_dispatch": "The compiled application handler returns not handled for DE. The separately compiled optional USB fallback then selects the flash-log getter; matching the public header alone is insufficient.",
+    "reset_d8": "Despite the v1 header calling D8 reserved/not implemented, the compiled handler has a branch calling Cy_App_Dmc_ResetState. It was not exercised or sent. This is an update-state reset, not an identified PD Data_Reset."
+  },
+  "log_contents": {
+    "already_known": true,
+    "bytes": 512,
+    "content": "Fault counters and compact three-byte event records with one extra data byte; no defined complete PD-message transcript or Enter_USB/Accept/Reject record in the inspected format.",
+    "filters": "Attachment and selected trace events are excluded from flash. The example disables disconnect-event flash logging. UART is a separate build-selected output.",
+    "latest_public_source": "Current master 6e1aa9e5786abef91f288bf70b64d89ea400be81 still has conditional DE/512-byte handling. This source inspection does not match a DEG2 build.",
+    "expected_use_if_matched": "A before/after fault record could expose a reset or electrical fault; an unchanged record could not rule out failed entry."
+  },
+  "windows_route": {
+    "retained_device_evidence": "evidence/control-reachability.json: deg2_usb_interface record",
+    "transport": "Retained descriptors advertise a WinUSB-compatible vendor interface. Microsoft documents user-mode vendor control transfers through Winusb.dll/Winusb.sys. No new kernel driver is inherently required for that interface, provided it is actually bound and accessible.",
+    "microsoft": "https://learn.microsoft.com/en-us/windows/win32/api/winusb/nf-winusb-winusb_controltransfer",
+    "official_tool": "Infineon PMG1-S3 Dock user guide sections 8 and 8.2 documents WinUSB and the Windows EZPD.FwUpdateUtility version/status query. This is component firmware inventory, not a raw CC capture.",
+    "guide_url": "https://www.infineon.com/assets/row/public/documents/24/44/infineon-ez-pd-pmg1-s3-dock-user-guide-usermanual-en-09018a9080d3e3ed.pdf",
+    "fwupd_pin": "5a209d7627cfe7f08c07fda74d1ec4377747fe05",
+    "fwupd_scope": "Independent DMC client uses D7 and D6 for inventory and defines a separate firmware-update interrupt protocol. The inspected ccgx-dmc.quirk has no 041F:D002 entry; this file alone is not an exhaustive compatibility database.",
+    "current_os_metadata": "The Windows present-device query returned zero matching 041F:D002 nodes. No handle or device transfer was attempted. This does not establish physical cable or dock-power state.",
+    "missing": "Actual DEG2 controller/build identification and supported commands. An interrupt IN endpoint is not proof it streams PD packets."
+  },
+  "dock_sdk": {
+    "already_acquired": "EZ-PD Host SDK 3.9.0; host/AMD reference package",
+    "separate_material": "EZ-PD Dock SDK for the Thunderbolt 5 PMG1-S3 design",
+    "vendor_statement_date": "2026-01-23",
+    "vendor_statement": "Infineon support directs CYPM1322 Thunderbolt 5 developers to request Dock SDK access; download link follows approval.",
+    "source": "https://community.infineon.com/t5/EZ-PD-USB-Type-C/CYPM1322-97BZXI-andThunderbolt-5/td-p/1172878",
+    "access_url": "https://softwaretools.infineon.com/assets/com.ifx.tb.tool.ezpddocksdk",
+    "value": "Review the TB5 dock USB dispatcher, firmware inventory and debug/log build options, then compare them with DEG2 evidence. More appropriate than assuming the public Goshen Ridge/Griffin Creek example is the TB5 implementation.",
+    "limit": "No proof of the fitted DEG2 PD chip, no Minisforum production firmware and no promised raw packet logger. Package not acquired; no login, access request or support message sent."
+  },
+  "validation": {
+    "original_function_checks": {
+      "source": "pmg-app-common 9ed74f798cae23aa6744f206ee381f3593590554",
+      "results": [
+        {
+          "function": "FlashReadLogs",
+          "initialized": false,
+          "result": "null",
+          "memory_writes": 0
+        },
+        {
+          "function": "FlashReadLogs",
+          "initialized": true,
+          "result": "stored_pointer",
+          "memory_writes": 0
+        },
+        {
+          "request_hex": "d6",
+          "requested_bytes": 8,
+          "reply_bytes": 8,
+          "return_status_hex": "00000000",
+          "effects": [
+            "get_ep0_buffer",
+            "send_control_reply"
+          ]
+        },
+        {
+          "request_hex": "d6",
+          "requested_bytes": 512,
+          "reply_bytes": 104,
+          "return_status_hex": "00000000",
+          "effects": [
+            "get_ep0_buffer",
+            "send_control_reply"
+          ]
+        },
+        {
+          "request_hex": "d6",
+          "requested_bytes": 0,
+          "reply_bytes": null,
+          "return_status_hex": "00220002",
+          "effects": [
+            "get_ep0_buffer"
+          ]
+        },
+        {
+          "request_hex": "d7",
+          "requested_bytes": 73,
+          "reply_bytes": 73,
+          "return_status_hex": "00000000",
+          "effects": [
+            "get_ep0_buffer",
+            "copy_identity_to_ep0_buffer",
+            "send_control_reply"
+          ]
+        },
+        {
+          "request_hex": "d7",
+          "requested_bytes": 512,
+          "reply_bytes": 73,
+          "return_status_hex": "00000000",
+          "effects": [
+            "get_ep0_buffer",
+            "copy_identity_to_ep0_buffer",
+            "send_control_reply"
+          ]
+        },
+        {
+          "request_hex": "de",
+          "requested_bytes": 512,
+          "reply_bytes": null,
+          "return_status_hex": "00220002",
+          "effects": [
+            "get_ep0_buffer"
+          ]
+        }
+      ],
+      "hardware_requests": 0,
+      "limits": "Original function bytes with synthetic RAM relocations and stubbed USB buffer/reply, memcpy and compiler switch helper. No actual dock firmware or USB transport executed.",
+      "objects": {
+        "cy_app_flash_log.o": "27d768d44945abf9ac7b62010e2529f2222f85f8b96ed0b262418ffe0fc5e7e8",
+        "cy_app_dmc_vendor.o": "d2c0ab14696853ec5c832b5ee3531859d6ae6dbabe2543c3e5297b8de3d9a570"
+      }
+    },
+    "check_script_sha256": "f653bbfca290455eaa8771f25165fcd616b414d8d335a1e6943800ea2c292a75",
+    "static_reader_sha256": "451474d6821fe5197610d45491f686425f57bdd455eed31cd71c3a5085640842",
+    "hardware_requests": 0,
+    "new_drivers": 0,
+    "boots": 0,
+    "firmware_writes": 0,
+    "fix_demonstrated": false
+  },
+  "next": "Obtain the TB5 Dock SDK or matched Minisforum diagnostic/firmware package and inspect its actual USB handler and logging implementation. Do not run a generic updater or send D6/D7/DE on descriptor resemblance alone. No unchanged dump or cable operation requested while owner is away."
+}

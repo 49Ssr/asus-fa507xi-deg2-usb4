@@ -26,6 +26,30 @@ The acquired [Infineon SDK 3.9.0](infineon-sdk-review.md) contains AMD/PS8830 de
 
 The [PS8830 reference](component-behavior.md) exposes software-written mode/orientation fields. Even a correct read of those fields would need an independent entry or training result. The SDK's APU status transaction is also distinct from a PS8830 read and from a DEG2 USB vendor command.
 
+## DEG2: firmware inventory versus negotiation capture
+
+**3 November:** the compiled Infineon reference reads are now traced. The earlier review already established that its flash log is a fault history, not a full PD transcript; this work closes the unknown about the getter itself. [Source pins, original-code checks and limits](../evidence/deg2-windows-capture-review.json).
+
+| Reference read | What the original code returns | What it can establish |
+| --- | --- | --- |
+| D6 status | Existing dock/component update state and firmware versions, limited to the requested/stored length | Component inventory if the protocol matches DEG2 |
+| D7 identity | At most 73 bytes in the inspected library | Configured identity; newer client formats can expect an additional byte |
+| DE flash log | Optional 512-byte fault/event record | Some retained resets or faults; not the Enter_USB request and reply |
+
+The 24-byte flash getter checks initialization and returns an existing pointer. It performs no stores or calls. It does not start a capture or clear the record. The application handler declines DE; only the optional fallback supplies the log. The original D6/D7 branches were also checked with supplied memory and mocked USB replies. These are tests of the published reference binary, not requests to DEG2.
+
+Windows itself has a usable transport for this class of interface: [WinUSB accepts user-mode vendor control transfers](https://learn.microsoft.com/en-us/windows/win32/api/winusb/nf-winusb-winusb_controltransfer). Infineon's [Dock user guide, sections 8 and 8.2](https://www.infineon.com/assets/row/public/documents/24/44/infineon-ez-pd-pmg1-s3-dock-user-guide-usermanual-en-09018a9080d3e3ed.pdf) documents a Windows component-version query through its tool. That is a possible inventory route once matched, not a packet recorder. No new kernel driver is inherently required for a working WinUSB binding.
+
+The independently maintained [fwupd DMC client](https://github.com/fwupd/fwupd/tree/5a209d7627cfe7f08c07fda74d1ec4377747fe05/plugins/ccgx-dmc) confirms the inventory protocol and separates it from update commands. Its inspected device list does not include DEG2's 041f:d002. Neither that absence nor the shared interface GUID settles compatibility. Reading an interrupt endpoint would not automatically capture PD: this reference uses interrupts for firmware-update messages.
+
+### The missing package is the Dock SDK
+
+The acquired **Host SDK 3.9.0** is different from the **Dock SDK**. In [an Infineon support answer](https://community.infineon.com/t5/EZ-PD-USB-Type-C/CYPM1322-97BZXI-andThunderbolt-5/td-p/1172878), the vendor directs developers working on PMG1-S3 Thunderbolt 5 firmware to the [Dock SDK access-request page](https://softwaretools.infineon.com/assets/com.ifx.tb.tool.ezpddocksdk). This is a concrete reason to request access; another Host SDK download is unnecessary.
+
+The useful review is its TB5 USB command handler, component identity and logging options, compared against DEG2. It would still be reference code, not Minisforum's production image. The public Griffin Creek example uses Goshen Ridge; its behavior cannot be assumed to describe DEG2's TB5 implementation. No raw PD logger or DEG2 firmware package has yet been acquired.
+
+For a manufacturer diagnostic to answer this case, it needs to retain the attachment sequence: partner/cable discovery, the entry request and reply (or the reason entry was skipped), any Data_Reset/exit, and the result passed between the PD and router controllers. A report of current mode alone cannot recover that sequence. A Windows USB trace cannot recover CC traffic that the controller never exports.
+
 ## Three tempting shortcuts that do not work as evidence
 
 **A matching GUID does not identify a vendor protocol.** DEG2's interface matches an Infineon example, but the same GUID appears in an unrelated SDK. The inspected Infineon application conditionally dispatches DMC requests and invokes its application handler before optional log handling. Its D6/D7 fields describe component identity, image status and versions; they are not the missing PD exchange. That code does not establish DEG2's command implementation.

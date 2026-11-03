@@ -1731,6 +1731,26 @@
         "ASUS-BIOS314"
       ],
       "value_sha256": "158ea61c2ecadfb24412b719308b1788a48b3c99e0e9ef30ad081943c0594f65"
+    },
+    {
+      "id": "DEG2-REFERENCE-FLASH-GETTER",
+      "path": "evidence/deg2-windows-capture-review.json",
+      "pointer": "/compiled_reads/flash_getter",
+      "kind": "code",
+      "cases": [
+        "INFINEON-GRIFFIN-REFERENCE"
+      ],
+      "value_sha256": "d6d7b547f690a51a44d92275975141f1d5bcab245f2a193745f9b669734847f4"
+    },
+    {
+      "id": "DEG2-REFERENCE-INVENTORY",
+      "path": "evidence/deg2-windows-capture-review.json",
+      "pointer": "/compiled_reads",
+      "kind": "code",
+      "cases": [
+        "INFINEON-GRIFFIN-REFERENCE"
+      ],
+      "value_sha256": "12d28e6a7fc943cce5ae7dc1eb9a4dfb9c56ca0f76a1b80016fe1ed3e8819686"
     }
   ],
   "claims": [
@@ -3530,6 +3550,32 @@
         "ASUS-BIOS314"
       ],
       "limit": "Original instructions with RAM replies; no live PD state, physical connector mapping, Windows raw reader or repair is established."
+    },
+    {
+      "id": "C132",
+      "basis": "code_fact",
+      "stage": "control",
+      "statement": "The compiled Infineon reference flash-log getter only returns null or its existing pointer; it performs no stores or calls and does not initiate a negotiation capture.",
+      "sources": [
+        "DEG2-REFERENCE-FLASH-GETTER"
+      ],
+      "cases": [
+        "INFINEON-GRIFFIN-REFERENCE"
+      ],
+      "limit": "Original published reference function bytes with synthetic memory and USB callbacks; no identified DEG2 build, live firmware or negotiation capture. Actual DEG2 behavior remains unestablished."
+    },
+    {
+      "id": "C133",
+      "basis": "code_fact",
+      "stage": "control",
+      "statement": "The compiled reference D6 and D7 branches return component-update/firmware status and identity. The selected reference has no full PD transcript in these reads; DE is handled only by the optional later USB fallback.",
+      "sources": [
+        "DEG2-REFERENCE-INVENTORY"
+      ],
+      "cases": [
+        "INFINEON-GRIFFIN-REFERENCE"
+      ],
+      "limit": "Original published reference function bytes with synthetic memory and USB callbacks; no identified DEG2 build, live firmware or negotiation capture. Actual DEG2 behavior remains unestablished."
     }
   ],
   "timeline_limit": "T0 is the first recorded Windows attachment report in each run, not physical insertion. Different runs, platforms, power contracts and capture dates are explicit. These tables align software reports only; proximity does not establish wire order or causation. The earlier Dell control supplies the Dell timeline; the deep Dell dump supplies cached-state comparison.",

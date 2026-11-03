@@ -50,6 +50,8 @@ The Infineon SDK and component drivers describe reference implementations. They 
 
 ## Latest access finding
 
+The [DEG2 read review](windows-repair-route.md#deg2-firmware-inventory-versus-negotiation-capture) traced the compiled reference status/identity handlers and flash getter. They supply firmware inventory or retained faults, not a negotiation transcript. Infineon identifies a separate TB5 Dock SDK available by access request; the acquired Host SDK is not that package. Review the TB5 dispatcher/logging implementation or a matched Minisforum package next. No DEG2 vendor request or Windows fix is established.
+
 The [laptop EC comparison](it8857-runtime-commands.md#what-the-laptop-ec-actually-exports) found partial status and power reporting, not an identified Enter_USB result. B0/B1 reads keep only four raw bits; failures can preserve old cached values. The CC four-byte read feeds voltage/current/power arithmetic, and its OEM getter reports nonzero power. The separate card reference record still has no matched laptop reader. Identify controller-side status producers or another matched entry-result register next; repeating these power/cache getters would not recover the handshake. No Windows repair or new hardware request is established.
 
 ## Recovery status

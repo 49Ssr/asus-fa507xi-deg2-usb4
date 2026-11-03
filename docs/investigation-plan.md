@@ -4,6 +4,10 @@ Updated 3 November 2026. The goal is a working ASUS–DEG2 connection. The immed
 
 **The next comparison using existing hardware is the Arzopa monitor cable: first prove it can run DEG2 on Dell, then try the same assembly on ASUS.** The cable has not been tested for this purpose. Another known-working USB4 PCIe peripheral remains the stronger comparison if one can be borrowed. More reference-code analysis should have a specific connection to a reachable laptop read or command; it is not the default next action.
 
+## Current work while the owner is away
+
+The [DEG2 read review](windows-repair-route.md#deg2-firmware-inventory-versus-negotiation-capture) traced the compiled reference status/identity handlers and flash getter. They supply firmware inventory or retained faults, not a negotiation transcript. Infineon identifies a separate TB5 Dock SDK available by access request; the acquired Host SDK is not that package. Review the TB5 dispatcher/logging implementation or a matched Minisforum package next. No DEG2 vendor request or Windows fix is established. The cable comparison remains pending; no remote reboot or attachment change is selected.
+
 ## 1. Try the existing monitor cable on Dell, then ASUS
 
 The Arzopa USB-C video cable is a candidate, not a known USB4 cable. Its remembered charging capability does not establish its data capability. USB-IF's [cable compatibility table, slide 24](https://www.usb.org/sites/default/files/D1T1-2%20-%20USB%20Type-C%20System%20Overview.pdf) includes full-featured passive USB 3.2 Gen1/Gen2 cables for USB4 at 20 Gbps. That does not identify this cable's construction, electronics or supported speed.

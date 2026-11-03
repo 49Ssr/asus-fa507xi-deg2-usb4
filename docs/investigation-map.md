@@ -1052,6 +1052,18 @@ Scope: ASUS-BIOS314. Original instructions with RAM replies; no live PD state, p
 
 [LAPTOP-PD-POWER-CONSUMER](../evidence/laptop-pd-status-consumers.json) `/power_path`
 
+**C132 — code_fact:** The compiled Infineon reference flash-log getter only returns null or its existing pointer; it performs no stores or calls and does not initiate a negotiation capture.
+
+Scope: INFINEON-GRIFFIN-REFERENCE. Original published reference function bytes with synthetic memory and USB callbacks; no identified DEG2 build, live firmware or negotiation capture. Actual DEG2 behavior remains unestablished.
+
+[DEG2-REFERENCE-FLASH-GETTER](../evidence/deg2-windows-capture-review.json) `/compiled_reads/flash_getter`
+
+**C133 — code_fact:** The compiled reference D6 and D7 branches return component-update/firmware status and identity. The selected reference has no full PD transcript in these reads; DE is handled only by the optional later USB fallback.
+
+Scope: INFINEON-GRIFFIN-REFERENCE. Original published reference function bytes with synthetic memory and USB callbacks; no identified DEG2 build, live firmware or negotiation capture. Actual DEG2 behavior remains unestablished.
+
+[DEG2-REFERENCE-INVENTORY](../evidence/deg2-windows-capture-review.json) `/compiled_reads`
+
 ## Separate runs and observation limits
 
 | Case | Meaning | Important limit |
