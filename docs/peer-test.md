@@ -43,6 +43,12 @@ The completed run used the historical collector's `-Mode Capture`. That collecto
 
 The script reuses ETW helpers that completed the guided DEG2 recording. It requires exactly one Up USB4 P2P adapter, checks its state again after capture, stops only its own uniquely named trace, and keeps output under ignored `local/`. It does not load LiveKD, restart a controller, flash firmware or configure networking. Windows PowerShell 5.1 parsing, Preview and this live capture completed. A three-second snapshot is not a sustained stability test.
 
+## Role comparison in the later peer phase
+
+The separately recorded working peer phase at20:08 on31October was already decoded in the [negotiation follow-up](negotiation-followup.md#the-narrower-comparison): Windows sent SET_UOR(Dfp) at20:08:43.330, firmware rejected it at.375, and the peer link subsequently worked. A Windows correction request is therefore not sufficient evidence of a broken USB4 path.
+
+The earlier13:37 three-second rundown above started after the peer link was Up and contains no UCSI-provider records in its derived record set. It cannot establish whether a role request occurred before that window. Its root-port IsDFP field is not a complete Type-C data-role history. Keep these two captures separate rather than treating missing events in the rundown as proof of no earlier request.
+
 ## Firmware/support consequence
 
 Minisforum's [official DEG2 support section](https://www.minisforum.com/pages/product-info) was rechecked on 31 October: headings for downloads are present, but no verified applicable DEG2 firmware image was obtained. That does not exclude an unpublished support package. The ASUS UK BIOS page could not be re-read through the research tool during this check; the previously verified BIOS listing is not presented as a fresh complete search.

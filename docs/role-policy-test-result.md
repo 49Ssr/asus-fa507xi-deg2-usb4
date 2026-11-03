@@ -1,5 +1,7 @@
 # Measured role-policy test, 1 November 2026
 
+**Readback added 3 November 2026:** Windows currently reports Secure Boot off, test signing off and HVCI running. The exact experiment certificate is absent from Root and TrustedPublisher, matching the saved prior state. The current non-elevated check did not enumerate BCD, so the full original-loader/boot-manager Verify remains uncompleted. No boot, trust or security setting was changed. [Fresh evidence](../evidence/boot-state-20261103.json).
+
 **Windows accepted the policy override and stopped issuing its automatic role correction, but DEG2 still fell back to Billboard.** No external USB4 router, RTX 4080 SUPER binding or display appeared. The experimental package was removed and stock policy 0 verified. The owned test loader and certificate trust were then removed; manual Secure Boot restoration and an original-loader boot still require final verification.
 
 ## Same-boot comparison

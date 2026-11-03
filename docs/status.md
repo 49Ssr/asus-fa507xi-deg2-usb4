@@ -80,4 +80,6 @@ The acquired [Infineon SDK 3.9.0](infineon-sdk-review.md) supplies AMD/PS8830 de
 
 A new Windows read through the existing ASUS driver returned controller-derived cached firmware bytes **00 53**. The getter reads an EC cache populated from PD registerB6; failed refresh can preserve an old value, so freshness and a matching flash image remain unverified. Real IT8853 firmware and an advertised UEFI version-only interface were recovered from official ASUS packages for other hardware and retained privately. No reset or flash was sent. [Result, corrected offsets and source scope](pd-firmware-version.md).
 
+**Boot-state readback, 3 November 2026:** Windows reports Secure Boot off, test signing off and HVCI running. The exact experiment certificate is absent from both machine trust stores, matching the saved prior state. Fresh BCD enumeration was not available to the non-elevated process, so complete restoration is not claimed. ASUS System Control Interface3.1.73.0 is already installed. No setting was changed. [Readback and limits](../evidence/boot-state-20261103.json).
+
 No vendor-confirmed root cause or applicable fix is recorded. [All documentation](README.md) · [Research handoff](handoff.md)

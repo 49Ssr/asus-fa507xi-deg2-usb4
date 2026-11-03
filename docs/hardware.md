@@ -20,7 +20,7 @@ The owner's photographs clearly show **ITE IT8857FN** and **Parade PS8830 A3**, 
 | Earlier Windows during testing | 26H2, builds 26300.9711 and 26300.9818 |
 | Current USB4 host driver | 10.0.26100.9818 |
 | Current host driver SHA-256 | `912EFBFCA273C62484DB952632EEB0D2B061BD7A1C830970FDA23CDB50BEEB1F` |
-| Boot security | Secure Boot retained; test-signing disabled |
+| Boot security, read 3 November 2026 | Windows reports Secure Boot off; test signing off; HVCI running. Fresh BCD enumeration/full restoration verification remain incomplete. [Readback](../evidence/boot-state-20261103.json) |
 
 The USB4 capability is documented for this model. It must not be relabelled as a Thunderbolt 4-certified laptop. The internal RTX 4070 is not evidence that the eGPU has run out of PCIe lanes. No evidence obtained during this investigation establishes a lane-allocation failure.
 

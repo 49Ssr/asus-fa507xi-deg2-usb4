@@ -1,0 +1,48 @@
+{
+  "schema": 1,
+  "date": "2026-11-03",
+  "utc": "2026-11-03T02:14:14.3091131Z",
+  "kind": "ReadOnlyWindowsBootTrustAndDriverState",
+  "capture_sha256": "ec4cca7bd90538dd0a09b590f01bb0adea64068ebec134dd4f4d89894204d652",
+  "worker_sha256": "85b78473f93cc9eb5cab6456826e4a1ab3615c3b1bb4ce3d73635ad297ebe555",
+  "secure_boot": {
+    "windows_registry_value": 0,
+    "windows_reports_enabled": false,
+    "direct_uefi_query_performed": false
+  },
+  "code_integrity": {
+    "native_flags_hex": "3401",
+    "test_signing": false,
+    "hvci_running": true
+  },
+  "experiment_certificate": {
+    "in_root": false,
+    "in_trusted_publisher": false,
+    "root_matches_saved_prior": true,
+    "publisher_matches_saved_prior": true
+  },
+  "bcd": {
+    "fresh_enumeration_completed": false,
+    "reason": "Current process was not elevated; no elevation prompt was requested.",
+    "owned_entry_absence_currently_verified": null
+  },
+  "recovery_key": {
+    "backup_verified": false,
+    "material_read_or_exported": false,
+    "limit": "No claim that a recovery key is missing; backup was not checked."
+  },
+  "system_control_interface": {
+    "installed_version": "3.1.73.0",
+    "official_listing_version": "3.1.73.0",
+    "official_listing_date": "2026-10-29",
+    "url": "https://www.asus.com/uk/supportonly/fa507xi/helpdesk_download/",
+    "usb4_repair_established": false
+  },
+  "scheduling": {
+    "observed_status": "PAUSED",
+    "status_changed": false
+  },
+  "full_historical_restore_verification_completed": false,
+  "machine_configuration_changes": 0,
+  "privacy": "Exact certificate identity, boot identifiers, raw state and owner paths remain private."
+}
