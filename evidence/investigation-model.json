@@ -181,6 +181,16 @@
       "id": "ASUS-ITE-PD-REFERENCES",
       "label": "Official ASUS ITE firmware references, UEFI option and exact-model package review",
       "limit": "Other-platform reference code and static files; no running laptop flash match, updater execution or actual Data_Reset handler identification."
+    },
+    {
+      "id": "ASUS-BOARD-PHOTOS",
+      "label": "Owner-supplied fitted-board photographs, 3 November 2026",
+      "limit": "Physical markings and overlapping locations, not electrical continuity, live state or a flash-image match."
+    },
+    {
+      "id": "ITE-FAMILY-REFERENCE",
+      "label": "ITE vendor UCSI-family binding and manufacturer component documentation",
+      "limit": "Reference interfaces/functions only; not the exact ASUS board firmware or permission for direct commands."
     }
   ],
   "stages": [
@@ -1436,6 +1446,26 @@
         "ASUS-ITE-PD-REFERENCES"
       ],
       "value_sha256": "a8ef7f62d4f2f938aa410681877d0201719c079829fa0d7402f1db437f109375"
+    },
+    {
+      "id": "BOARD-PHOTO-MARKINGS",
+      "path": "evidence/board-photo-review.json",
+      "pointer": "/markings",
+      "kind": "capture",
+      "cases": [
+        "ASUS-BOARD-PHOTOS"
+      ],
+      "value_sha256": "62b74e0319c4a3b1ae2afff9f42337ff4ceedef1b70345095f4c29c016be43f5"
+    },
+    {
+      "id": "BOARD-PART-REFERENCES",
+      "path": "evidence/board-photo-review.json",
+      "pointer": "/reference_scope",
+      "kind": "code",
+      "cases": [
+        "ITE-FAMILY-REFERENCE"
+      ],
+      "value_sha256": "1db5a93bb37666cff8f6d2183d472ff9e308fa407903903e0f54f7e8c0afd201"
     }
   ],
   "claims": [
@@ -2882,6 +2912,45 @@
         "ASUS-ITE-PD-REFERENCES"
       ],
       "limit": "Limited package/signature search; does not prove that no differently built, packaged or compressed PD image exists."
+    },
+    {
+      "id": "C105",
+      "basis": "measured",
+      "stage": "control",
+      "statement": "Two clear owner close-ups show the fitted ITE package marked IT8857FN, 2302-DXG, A1DCHA.",
+      "sources": [
+        "BOARD-PHOTO-MARKINGS"
+      ],
+      "cases": [
+        "ASUS-BOARD-PHOTOS"
+      ],
+      "limit": "Physical identity only; does not prove the exact EC relay binding, flash content or runtime state. The earlier fixed IT8853 diagnostic must not substitute for this marking."
+    },
+    {
+      "id": "C106",
+      "basis": "measured",
+      "stage": "control",
+      "statement": "Owner photographs confirm separate PS8830 A3, PS8802 A3 and PS8419 A1 packages; overlapping views distinguish their board locations.",
+      "sources": [
+        "BOARD-PHOTO-MARKINGS"
+      ],
+      "cases": [
+        "ASUS-BOARD-PHOTOS"
+      ],
+      "limit": "Part markings do not measure firmware versions, current mux modes or multilayer electrical connections."
+    },
+    {
+      "id": "C107",
+      "basis": "code_fact",
+      "stage": "control",
+      "statement": "ITE's vendor binding explicitly includes IT8857 in its compatible UCSI family and describes it as a two-connector part. The already-acquired ASUS USB4-card IT8857 image remains a different-board reference.",
+      "sources": [
+        "BOARD-PART-REFERENCES"
+      ],
+      "cases": [
+        "ITE-FAMILY-REFERENCE"
+      ],
+      "limit": "Family compatibility does not qualify the laptop program, a Data_Reset handler, updater bus mapping or another board's flash image."
     }
   ],
   "timeline_limit": "T0 is the first recorded Windows attachment report in each run, not physical insertion. Different runs, platforms, power contracts and capture dates are explicit. These tables align software reports only; proximity does not establish wire order or causation. The earlier Dell control supplies the Dell timeline; the deep Dell dump supplies cached-state comparison.",

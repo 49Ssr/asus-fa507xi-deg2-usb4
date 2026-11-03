@@ -1,6 +1,6 @@
 # Research checkpoint
 
-Updated 2 November 2026. [Current findings](status.md) are the public summary; [the current plan](investigation-plan.md) names the open work.
+Updated 3 November 2026. [Current findings](status.md) are the public summary; [the current plan](investigation-plan.md) names the open work.
 
 ## Current work
 
@@ -23,6 +23,10 @@ The [reset review](ucsi-data-reset.md) identifies a distinct hypothesis: retry U
 ## Controller firmware/version result
 
 [Windows returned cached PD firmware bytes0053](pd-firmware-version.md) through implemented fields10/11 hex, correcting the older0f/10 mapping before live use. The handle closed and temporary SYSTEM task was removed. The EC B6 refresh can retain old data on failure; cache freshness remains unverified. Official ASUS packages supplied an IT8853 different-board image and an IT8857 UEFI tool advertising /ov version-only mode; neither updater ran. The Windows314 capsule matches the existing EZ Flash image. Next correlate0053 with the exact laptop image or current-controller read and audit the vendor version-only transport; do not treat a raw candidate dispatch table as a Data_Reset handler.
+
+## Physical chip correction
+
+[Owner photographs](board-photo-review.md) identify IT8857FN and PS8830 A3. The original EC getter's IT8853 literal is not a physical ID. Prioritize the already-acquired IT8857 reference and vendor family implementation, then qualify the actual laptop image and transport. The photo map distinguishes PS8802 and HDMI PS8419 from PS8830; nearby eight-pin parts and the motherboard assembly/revision remain unidentified. No live read, reset or flash was performed.
 
 ## Operating constraints
 

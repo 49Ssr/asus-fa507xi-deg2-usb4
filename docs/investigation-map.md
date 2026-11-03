@@ -886,6 +886,24 @@ Scope: ASUS-ITE-PD-REFERENCES. Limited package/signature search; does not prove 
 
 [PD-LAPTOP-IMAGE-SEARCH](../evidence/pd-firmware-version.json) `/laptop_image_search`
 
+**C105 — measured:** Two clear owner close-ups show the fitted ITE package marked IT8857FN, 2302-DXG, A1DCHA.
+
+Scope: ASUS-BOARD-PHOTOS. Physical identity only; does not prove the exact EC relay binding, flash content or runtime state. The earlier fixed IT8853 diagnostic must not substitute for this marking.
+
+[BOARD-PHOTO-MARKINGS](../evidence/board-photo-review.json) `/markings`
+
+**C106 — measured:** Owner photographs confirm separate PS8830 A3, PS8802 A3 and PS8419 A1 packages; overlapping views distinguish their board locations.
+
+Scope: ASUS-BOARD-PHOTOS. Part markings do not measure firmware versions, current mux modes or multilayer electrical connections.
+
+[BOARD-PHOTO-MARKINGS](../evidence/board-photo-review.json) `/markings`
+
+**C107 — code_fact:** ITE's vendor binding explicitly includes IT8857 in its compatible UCSI family and describes it as a two-connector part. The already-acquired ASUS USB4-card IT8857 image remains a different-board reference.
+
+Scope: ITE-FAMILY-REFERENCE. Family compatibility does not qualify the laptop program, a Data_Reset handler, updater bus mapping or another board's flash image.
+
+[BOARD-PART-REFERENCES](../evidence/board-photo-review.json) `/reference_scope`
+
 ## Separate runs and observation limits
 
 | Case | Meaning | Important limit |
@@ -925,6 +943,8 @@ Scope: ASUS-ITE-PD-REFERENCES. Limited package/signature search; does not prove 
 | RESET-COMMAND-PATH | ASUS original reset forwarding and SDK reset-handler trace | Offline original-code execution and reference source review. Receiving ASUS PD firmware, physical reset and working Windows repair remain unverified. |
 | ASUS-PD-VERSION-CACHE | Windows controller-derived PD firmware cache read and original getter/refresh execution | Cached0053; no current physical PD register/flash read, proven display encoding, per-port state or USB4 repair. |
 | ASUS-ITE-PD-REFERENCES | Official ASUS ITE firmware references, UEFI option and exact-model package review | Other-platform reference code and static files; no running laptop flash match, updater execution or actual Data_Reset handler identification. |
+| ASUS-BOARD-PHOTOS | Owner-supplied fitted-board photographs, 3 November 2026 | Physical markings and overlapping locations, not electrical continuity, live state or a flash-image match. |
+| ITE-FAMILY-REFERENCE | ITE vendor UCSI-family binding and manufacturer component documentation | Reference interfaces/functions only; not the exact ASUS board firmware or permission for direct commands. |
 
 ## Software-report timelines
 

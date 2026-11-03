@@ -2,6 +2,10 @@
 
 **Board-number check, 1 November2026:** the owner's suggested `60NR0EB0-MB2010` is unverified on this machine. Read-only SMBIOS reports ASUS/FA507XI/version1.0 without that part number. The [official ASUS listing](https://partshop.asus.com/us/90nr0ff0-r00015.html) identifies an FA507XI/Ryzen9 replacement assembly as `90NR0FF0-R00015`; this does not identify the fitted PCB or its revision. Do not select a boardview, schematic or firmware from the proposed number alone. [Evidence and distinction](trace-gaps-and-ec-bus.md#motherboard-number-still-unverified).
 
+## Fitted chip markings, photographed 3 November 2026
+
+The owner's photographs clearly show **ITE IT8857FN** and **Parade PS8830 A3**, plus separate PS8802 A3 and PS8419 A1 parts. The earlier OEM `IT8853` response is a literal EC string, not a silicon-ID read. The physical marking corrects the hardware target; it does not identify the installed PD program or prove its bus/port binding. The suggested motherboard assembly number above remains unverified. [Photo findings and source pins](board-photo-review.md).
+
 ## Affected host
 
 | Item | Observed configuration |

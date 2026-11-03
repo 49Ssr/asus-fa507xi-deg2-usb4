@@ -1,4 +1,6 @@
-# Live ASUS PD access: IT8853 identified, power-profile boundary measured
+# ASUS OEM PD reads: fixed identity string and power-profile boundary
+
+**3 November 2026 correction:** the fitted chip is photographed as **IT8857FN**. The earlier `IT8853` reply remains an accurately captured literal EC string; it is not a physical silicon identification. The getter/transport findings below remain valid within their original scope. [Physical evidence](board-photo-review.md).
 
 **Firmware clarification:** subsequent recovery of BIOS314's executable EC image shows that its identity getter constructs `IT8853` from immediate constants and table6 has no reply-producing implementation. The live request completions below remain valid, but identity is EC-build metadata and the table6 timeout is not an independent PD-controller bus failure. [Firmware proof and original-instruction tests](ec-firmware-decision.md).
 

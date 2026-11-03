@@ -4,6 +4,10 @@ Updated 3 November 2026. **The ASUS–DEG2 connection remains unresolved. No wor
 
 The observed failure occurs before Windows discovers DEG2's external USB4 router. Its USB hub, storage/network functions and Billboard interface can still enumerate. GPU-driver changes cannot explain that earlier missing-router observation by themselves.
 
+## Physical controller identification corrected
+
+New board photographs show **ITE IT8857FN**, alongside **PS8830 A3**. The earlier `IT8853` OEM response comes from a fixed EC string. Preserve that measured result, but do not use it as the fitted chip identity. The already-acquired IT8857 add-in-card reference is now relevant at the part-family level; its board configuration and image remain unqualified for this laptop. [Photos, other components and remaining limits](board-photo-review.md).
+
 ## The strongest comparisons
 
 | Comparison | Result | What it establishes |

@@ -1,0 +1,278 @@
+{
+  "schema": 1,
+  "date": "2026-11-03",
+  "status": "PhysicalIT8857FNAndPS8830A3Confirmed_NoLiveStateOrRepair",
+  "acquisition": {
+    "kind": "Owner-supplied photographs",
+    "photo_count": 25,
+    "total_bytes": 6373296,
+    "byte_identical_duplicates": 0,
+    "originals_modified": false,
+    "raw_photos_published": false,
+    "privacy": "Raw photos, original names, labels, identifiers and owner paths stay private."
+  },
+  "markings": [
+    {
+      "component": "ITE PD-controller part",
+      "marking": [
+        "IT8857FN",
+        "2302-DXG",
+        "A1DCHA"
+      ],
+      "best_photos": [
+        "P15",
+        "P21"
+      ],
+      "context_photos": [
+        "P05",
+        "P08",
+        "P09",
+        "P22"
+      ],
+      "reading": "clear in two close-ups",
+      "limits": "Physical part identity, not a flash-image match or a proved EC-bus/connector assignment."
+    },
+    {
+      "component": "Parade USB4 retimer",
+      "marking": [
+        "PS8830",
+        "A3"
+      ],
+      "best_photos": [
+        "P20"
+      ],
+      "context_photos": [
+        "P10",
+        "P19",
+        "P22"
+      ],
+      "reading": "clear",
+      "limits": "A3 is transcribed package marking, not measured firmware version or current mode."
+    },
+    {
+      "component": "Parade HDMI retimer",
+      "marking": [
+        "PS8419",
+        "A1"
+      ],
+      "best_photos": [
+        "P17"
+      ],
+      "context_photos": [
+        "P10",
+        "P22"
+      ],
+      "reading": "clear",
+      "limits": "Manufacturer function identified; complete board nets not traced."
+    },
+    {
+      "component": "Parade USB-C 10Gbps switch/retimer",
+      "marking": [
+        "PS8802",
+        "A3"
+      ],
+      "best_photos": [
+        "P18"
+      ],
+      "context_photos": [
+        "P19",
+        "P22"
+      ],
+      "reading": "clear",
+      "limits": "Separate photographed part; detailed port ownership is not proved by proximity."
+    },
+    {
+      "component": "Display-path mux/redriver",
+      "marking": [
+        "PI3DPX8",
+        "121ZLDE"
+      ],
+      "identified_family": "PI3DPX8121",
+      "best_photos": [
+        "P16"
+      ],
+      "context_photos": [
+        "P08"
+      ],
+      "reading": "clear split-line marking",
+      "limits": "Near eDP connector; not a USB4 PD controller. This does not prove every routed connection."
+    },
+    {
+      "component": "Separate ITE package",
+      "marking": [
+        "8308FN",
+        "2241-CXA",
+        "S19HQB"
+      ],
+      "best_photos": [
+        "P15"
+      ],
+      "reading": "clear",
+      "limits": "Function not qualified in this review; distinct from IT8857FN."
+    }
+  ],
+  "identity_correction": {
+    "previous_software_string": "IT8853",
+    "ec_source": "evidence/ec-firmware-decision.json",
+    "original_getter": "Bank3 b038 returns literal IT8853, not a physical silicon-ID read.",
+    "physical_marking": "IT8857FN",
+    "interpretation": "The OEM name cannot bind the fitted PD silicon to IT8853. Keep the earlier measured bytes and EC tracing; use IT8857FN as the new physical target.",
+    "still_unknown": [
+      "Exact EC relay to photographed chip binding",
+      "Installed PD flash image",
+      "Current register state",
+      "Data_Reset receiving handler"
+    ]
+  },
+  "reference_scope": {
+    "ite_submission_date": "2026-09-24",
+    "ite_message_id": "20260924-ucsi-itepd-it527x-v3-1-a7392aa087f5@ite.com.tw",
+    "ite_statement_summary": "The vendor binding includes IT8857 in a compatible UCSI family and describes it as a two-connector variant. This is a reference interface claim, not ASUS firmware qualification.",
+    "ite_canonical_url": "https://lore.kernel.org/linux-usb/20260924-ucsi-itepd-it527x-v3-1-a7392aa087f5@ite.com.tw/",
+    "ite_readable_mirror_url": "https://lore.landau.one/lkml/20260924-ucsi-itepd-it527x-v3-1-a7392aa087f5@ite.com.tw/T/",
+    "source_files": [
+      {
+        "id": "ite-family",
+        "url": "https://lore.landau.one/lkml/20260924-ucsi-itepd-it527x-v3-1-a7392aa087f5@ite.com.tw/raw",
+        "sha256": "c1d898e71a411a5e899994aeeec671c0b84ab4a8a2c2e92151573f428c05392a",
+        "bytes": 6712
+      },
+      {
+        "id": "ps8830",
+        "url": "https://www.paradetech.com/products/ps8830/",
+        "sha256": "916e9669982d7c9f47295066c8dd99e056958ebe4c27c4fc2fd6b511202757a1",
+        "bytes": 50419
+      },
+      {
+        "id": "ps8802",
+        "url": "https://www.paradetech.com/products/ps8802/",
+        "sha256": "b632590c2fea0b3c44ca0e738ad351bc1db8d0e2517ab16cbf7487322a167d26",
+        "bytes": 50313
+      },
+      {
+        "id": "ps8419",
+        "url": "https://www.paradetech.com/products/ps8419/",
+        "sha256": "f7e4991a5c4315e5f0010286cfbf7f8e4858f90f4032e936b7dcb6d9a8a8aa40",
+        "bytes": 51150
+      },
+      {
+        "id": "pi3dpx8121",
+        "url": "https://www.diodes.com/assets/Databriefs/PI3DPX8121-Product-Brief.pdf",
+        "sha256": "cd554efac9deacb7886007250ba7ad7b34d57127fb18607bbe82a96359ed5b77",
+        "bytes": 539408
+      }
+    ],
+    "already_acquired_it8857_image": "evidence/pd-firmware-version.json",
+    "matching_part_family_is_not_matching_board_firmware": true,
+    "updaters_executed": false,
+    "live_commands_sent": false
+  },
+  "photo_pins": [
+    {
+      "id": "P05",
+      "sha256": "5a2d9af50c8cffe8390ebef2e3ee71f43d049f85e7fefe9b21e67dccb317772e",
+      "bytes": 208381,
+      "dimensions": [
+        1200,
+        1600
+      ]
+    },
+    {
+      "id": "P08",
+      "sha256": "fc382be84b1777eeb3e17e95d2d0c36be21b37319f6603fbab205acffd5d24fb",
+      "bytes": 268700,
+      "dimensions": [
+        1200,
+        1600
+      ]
+    },
+    {
+      "id": "P10",
+      "sha256": "371b53caf1c231659e8021005d2aef638800c9cec16222a5c0f41164d6c552a2",
+      "bytes": 286516,
+      "dimensions": [
+        1200,
+        1600
+      ]
+    },
+    {
+      "id": "P15",
+      "sha256": "0979f0fbed1dd05852fcfb44ac5131f5eeddbc28760e8c0007840f192680aa3a",
+      "bytes": 299431,
+      "dimensions": [
+        1200,
+        1600
+      ]
+    },
+    {
+      "id": "P16",
+      "sha256": "44df02ca76e657710bf57e3b494c9030b8603fe7c45ae00461011e0a8680020f",
+      "bytes": 278348,
+      "dimensions": [
+        1200,
+        1600
+      ]
+    },
+    {
+      "id": "P17",
+      "sha256": "ccd1d69dbd97be8868a8070ba7a644ea6904cf4eee23d417f85046476d723eec",
+      "bytes": 207002,
+      "dimensions": [
+        1200,
+        1600
+      ]
+    },
+    {
+      "id": "P18",
+      "sha256": "8d1341a7bed1340683b9c003c3341715fcc75cb226c156ae12c9fcffb062d323",
+      "bytes": 149954,
+      "dimensions": [
+        1200,
+        1600
+      ]
+    },
+    {
+      "id": "P19",
+      "sha256": "3c392d92c495abab30425f05af946825b396d0c0b270143c0dd539919992a7fd",
+      "bytes": 241019,
+      "dimensions": [
+        1200,
+        1600
+      ]
+    },
+    {
+      "id": "P20",
+      "sha256": "f592126da9529dc164482c7daa45f27670eba197eb0de5cd8c69af57ef1362ab",
+      "bytes": 233926,
+      "dimensions": [
+        1200,
+        1600
+      ]
+    },
+    {
+      "id": "P21",
+      "sha256": "79dfff09b29138a0043b800a35b7f20d0c50c4bdfa3fe4c4cc8de691de991678",
+      "bytes": 181571,
+      "dimensions": [
+        1200,
+        1600
+      ]
+    },
+    {
+      "id": "P22",
+      "sha256": "93a8a525776ab68c8948f75a4fa9b71d3a06cf921e96a45cca50dd6662930abe",
+      "bytes": 393921,
+      "dimensions": [
+        1600,
+        1200
+      ]
+    }
+  ],
+  "unresolved": [
+    "PCB assembly/revision not established from visible markings",
+    "External PD firmware-memory part not identified",
+    "Multilayer net connections not established",
+    "Failed USB4 entry/training state not visible in still photographs"
+  ],
+  "next_research": "Prioritize the already-acquired IT8857 reference and vendor UCSI family implementation, then bind the exact laptop firmware/transport. Do not transplant another board's flash or private commands."
+}

@@ -2,6 +2,10 @@
 
 **Windows returned controller-derived cached bytes `00 53`.** The implemented ASUS getter works. This is different from the fixed EC UCSI version and the retained Windows `ffff` field. It is not a live flash readback or a verified match to a firmware image. [Structured evidence](../evidence/pd-firmware-version.json).
 
+## Physical chip identity, added 3 November 2026
+
+Owner photographs now identify **IT8857FN**, not the literal `IT8853` returned by the EC diagnostic. This strengthens the reason to examine the already-acquired IT8857 reference while preserving its different-board limit. The cached `0053` read does not become a current flash-image match. [Photo evidence](board-photo-review.md).
+
 ## What was read
 
 The existing signed ASUS driver returned API version `00010001`, capability 17, then two successful one-byte replies through command DD/table5/selector1:

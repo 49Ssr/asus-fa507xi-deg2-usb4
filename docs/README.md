@@ -15,6 +15,7 @@ Start with [current findings](status.md). The detailed notes preserve the source
 ## Recorded comparisons
 
 - [Hardware and comparison baseline](hardware.md)
+- [Board photographs: IT8857FN identified; PS8830 A3 confirmed](board-photo-review.md)
 - [ASUS Linux result: USB fallback reproduced](linux-asus-result.md)
 - [Fresh ASUS versus Dell: matched evidence comparison](asus-dell-matched-comparison.md)
 - [Fresh ASUS comparison against the recovered Dell](asus-local-comparison.md)
@@ -84,7 +85,7 @@ Start with [current findings](status.md). The detailed notes preserve the source
 
 ## Additional technical notes
 
-- [Live ASUS PD access: IT8853 identified, power-profile boundary measured](oem-pd-diagnostics.md)
+- [ASUS OEM PD reads: fixed identity string and power-profile boundary](oem-pd-diagnostics.md)
 - [Retimer target leak: reproduced code path and controlled next test](parade-lifecycle-test.md)
 
 [Tool guide](../tools/README.md) · [Contributing](../CONTRIBUTING.md) · [Repository home](../README.md)

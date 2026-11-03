@@ -18,7 +18,7 @@ The [acquired SDK 3.9.0](infineon-sdk-review.md) now supplies reference AMD/PS88
 
 Qualify a log/state interface by matching its actual implementation and reply semantics. The useful record must distinguish an omitted entry request, rejection, accepted entry with failed training, or a later exit. A non-unique WinUSB GUID, cached HID field or generic Billboard string does not qualify a vendor command. [Available Windows routes](windows-repair-route.md).
 
-The [controller-version acquisition](pd-firmware-version.md) now supplies cached0053 and real ASUS ITE reference images. Identify the exact laptop firmware/current-controller read and follow its reset handler. The UEFI tool advertises version-only mode but its laptop bus mapping and startup behavior are not established.
+The [board photographs](board-photo-review.md) identify the actual fitted part as IT8857FN; the earlier IT8853 diagnostic is a fixed EC string. Prioritize that physical target and the already-acquired IT8857 reference without treating another board's image as compatible. The [controller-version acquisition](pd-firmware-version.md) supplies cached0053 and real ASUS ITE reference images. Identify the exact laptop firmware/current-controller read and follow its reset handler. The UEFI tool advertises version-only mode but its laptop bus mapping and startup behavior are not established.
 
 ## Choosing a repair
 
