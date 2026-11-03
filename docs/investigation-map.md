@@ -904,6 +904,24 @@ Scope: ITE-FAMILY-REFERENCE. Family compatibility does not qualify the laptop pr
 
 [BOARD-PART-REFERENCES](../evidence/board-photo-review.json) `/reference_scope`
 
+**C108 — code_fact:** The reviewed component interfaces separate PS8830 software-written mode registers, PS8802 status/mode registers and ITE completion/event registers; the ITE event handler also acknowledges events.
+
+Scope: COMPONENT-BEHAVIOR-REFERENCE. No actual ASUS bus/window binding, current mode, Enter_USB response or physical training result was acquired.
+
+[COMPONENT-REGISTER-ROLES](../evidence/component-behavior.json) `/register_roles`
+
+**C109 — code_fact:** The original pinned PS8802 C reader, compiled against RAM-only fixtures, performs wake and mode reads, retries after first-read failure and propagates final failures. Its wake path requests a500us wait.
+
+Scope: COMPONENT-BEHAVIOR-REFERENCE. Simulated bus, power state and time only; not ASUS timing or a qualified passive hardware logger.
+
+[COMPONENT-READER-EXECUTION](../evidence/component-behavior.json) `/reference_reader_execution`
+
+**C110 — code_fact:** The already-acquired IT8857 USB4-card reference contains instructions at file offset7a98 writing01 and10 into XDATA00b6/00b7.
+
+Scope: COMPONENT-BEHAVIOR-REFERENCE. Different-board static code. ASUS cached0053 freshness/encoding, exact installed image and receiving reset handler remain unproven.
+
+[IT8857-VERSION-WRITER](../evidence/component-behavior.json) `/it8857_reference_writer`
+
 ## Separate runs and observation limits
 
 | Case | Meaning | Important limit |
@@ -945,6 +963,7 @@ Scope: ITE-FAMILY-REFERENCE. Family compatibility does not qualify the laptop pr
 | ASUS-ITE-PD-REFERENCES | Official ASUS ITE firmware references, UEFI option and exact-model package review | Other-platform reference code and static files; no running laptop flash match, updater execution or actual Data_Reset handler identification. |
 | ASUS-BOARD-PHOTOS | Owner-supplied fitted-board photographs, 3 November 2026 | Physical markings and overlapping locations, not electrical continuity, live state or a flash-image match. |
 | ITE-FAMILY-REFERENCE | ITE vendor UCSI-family binding and manufacturer component documentation | Reference interfaces/functions only; not the exact ASUS board firmware or permission for direct commands. |
+| COMPONENT-BEHAVIOR-REFERENCE | Manufacturer component documentation and original reference reader execution | Reference circuits/code with fixture inputs, not measured ASUS bus state, electrical net mapping or a Windows repair. |
 
 ## Software-report timelines
 

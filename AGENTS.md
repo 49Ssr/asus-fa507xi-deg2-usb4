@@ -26,6 +26,10 @@ EZ-PD Host SDK 3.9.0 has been extracted privately without installation. Read [th
 
 The [Windows PD cache read](docs/pd-firmware-version.md) completed: bytes0053, getters10/11 hex, driver status0, handle closed and temporary SYSTEM task removed. Older0f/10 notes were corrected before hardware use. The cache originates from PD registerB6 but can survive a failed refresh. Real ASUS IT8853 and IT8857 different-board references are privately available under local/PdFirmwareResearch; do not redownload them or run the updaters. The UEFI tool advertises /ov version-only mode; the laptop bus mapping/startup effects remain unverified. No exact laptop PD image or Data_Reset handler is established. New owner photographs identify IT8857FN and PS8830 A3; the older IT8853 OEM response is a literal EC string, not silicon identification. Read docs/board-photo-review.md and prioritize the actual photographed part; preserve earlier captures and do not transplant the different-board IT8857 image.
 
+## Component behavior
+
+Read docs/component-behavior.md before proposing a register capture. PS8830 software-written mode flags are not physical-link proof; PS8802 reads can wake it; the ITE event handler acknowledges events. The original PS8802 reader runs against RAM-only fixtures in tools/analysis/Test-Ps8802ReadBehavior.py. Current ASUS state and transport bindings remain unqualified. The IT8857 card reference contains a B6/B7 writer for0110; it is not the laptop image.
+
 ## Owner constraints
 
 Scheduling is PAUSED. Do not resume it. Physical boots, BIOS access and cable changes require owner direction. Do not restart an unattended remote session or infer network recovery from Tailscale availability. No live EC/I2C/vendor request, new driver, mode override, flash, security/network change or attachment emulation is selected.

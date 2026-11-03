@@ -35,6 +35,10 @@ The official USB4 PCIe Gen4 card package labelled for Linux contains `PDUTC101.e
 
 It has not been executed or fully audited. The supplied recipes target an add-in card and other platforms. Its bus index is not established as the laptop EC's channel with the same number, and its slave address differs from the recovered laptop path. A version-only option does not establish that initialization or transport selection is suitable here. No boot or use of those recipes is selected.
 
+## IT8857 reference version writer, added 3 November 2026
+
+The already-acquired USB4-card image contains a writer at file offset7a98 that places bytes01/10 at XDATA00b6/00b7. This adds an IT8857 reference to the B6 version-metadata evidence. It is a static different-board code fact, not a fresh laptop read or proof of how the cached0053 value should be displayed. [Component review and pinned span](component-behavior.md).
+
 ## Where the laptop image search stands
 
 The current exact-model driver listing exposes the known Parade retimer package; the firmware listing exposes touchpad updates. The signed Windows BIOS 314 installer was also extracted. Its capsule is byte-identical to the analysed EZ Flash capsule, and its listed contents contain no separate PD image.

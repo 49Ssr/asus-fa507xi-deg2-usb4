@@ -20,6 +20,10 @@ Qualify a log/state interface by matching its actual implementation and reply se
 
 The [board photographs](board-photo-review.md) identify the actual fitted part as IT8857FN; the earlier IT8853 diagnostic is a fixed EC string. Prioritize that physical target and the already-acquired IT8857 reference without treating another board's image as compatible. The [controller-version acquisition](pd-firmware-version.md) supplies cached0053 and real ASUS ITE reference images. Identify the exact laptop firmware/current-controller read and follow its reset handler. The UEFI tool advertises version-only mode but its laptop bus mapping and startup behavior are not established.
 
+## 4. Acquire a record that distinguishes command from result
+
+The [component review](component-behavior.md) identifies concrete fields and side effects. PS8830 connection registers are software-written mode inputs; they need an independent controller/training result. PS8802 mode reads can wake the chip, and the ITE event handler acknowledges events. First qualify an actual ASUS path to current PD version/status or PS8830 runtime mode; the existing updater endpoint and EC cache do not establish it. No generic bus scan or independent event-consuming poller is selected.
+
 ## Choosing a repair
 
 A proposed change needs a named consumer, an expected observable effect and a verified way to restore the prior state. Test the smallest supported change against a known baseline. Preserve every original result, including failed conditions. A partial multi-write rollback is not proven by restoring one software flag.

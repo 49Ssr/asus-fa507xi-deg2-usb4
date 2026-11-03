@@ -1,0 +1,202 @@
+{
+  "schema": 1,
+  "date": "2026-11-03",
+  "status": "ComponentControlSemanticsReviewed_NoLiveControllerCaptureOrFix",
+  "source_pins": {
+    "ps8802.h": {
+      "url": "https://chromium.googlesource.com/chromiumos/platform/ec/+/08f5a1e6fc2c9467230444ac9b582dcf4d9f0068/driver/retimer/ps8802.h?format=TEXT",
+      "bytes": 3788,
+      "sha256": "0a3b223ad81f6e82bb8c987f93a749d9d1ddee32f3977f7621e2d9bb58ea0b77"
+    },
+    "ps8802.c": {
+      "url": "https://chromium.googlesource.com/chromiumos/platform/ec/+/08f5a1e6fc2c9467230444ac9b582dcf4d9f0068/driver/retimer/ps8802.c?format=TEXT",
+      "bytes": 6888,
+      "sha256": "9b16ed69de5b1eb5f8424a0d86f6c360c81c9314d56fe05e223eb82491c7b922"
+    },
+    "ps8419.pdf": {
+      "url": "https://e2e.ti.com/cfs-file/__key/communityserver-discussions-components-files/138/PS8419_5F00_DS_5F00_Version0.9_5F00_20200412.pdf",
+      "bytes": 923069,
+      "sha256": "923c3297f3713144c88b13ba9978923b00b946fe1a87bacb8af325d4a857d9fc"
+    },
+    "pi3ch480.pdf": {
+      "url": "https://www.diodes.com/assets/Datasheets/PI3CH480.pdf",
+      "bytes": 1288519,
+      "sha256": "c20c7fd8360c046a93c2886d68175913b5f6f97ace1ac31e574040c7d9fa6e3b"
+    },
+    "ps883x.c": {
+      "bytes": 15357,
+      "sha256": "2a07f62a89d644306e36929bbe55755cb5aa195037ca105bc619074ee0267c4f",
+      "url": "https://github.com/torvalds/linux/blob/46fec1c3029b552ec63b2d01af9d43a386f043ea/drivers/usb/typec/mux/ps883x.c"
+    },
+    "ite-ucsi-v7": {
+      "bytes": 13692,
+      "sha256": "09e73aed42074318107395c965f638313b396ae31d399366e5b6ff2b05b45f89",
+      "url": "https://lists.openwall.net/linux-kernel/2026/08/07/804"
+    },
+    "ite-dp-v2": {
+      "bytes": 16372,
+      "sha256": "0694d66b57c5ede6422a0f081db74e51a681a4e8589159d60277f27109add010",
+      "message_id": "20260918-ucsi-itepd-it527x-v2-2-7b2d9437cc72@ite.com.tw"
+    },
+    "pi3dpx8121.pdf": {
+      "bytes": 539408,
+      "sha256": "cd554efac9deacb7886007250ba7ad7b34d57127fb18607bbe82a96359ed5b77",
+      "url": "https://www.diodes.com/assets/Databriefs/PI3DPX8121-Product-Brief.pdf"
+    }
+  },
+  "documentation": [
+    {
+      "part": "IT8857FN",
+      "available": "ITE vendor UCSI driver/binding plus acquired different-board ITE firmware",
+      "missing": "Exact laptop electrical schematic, full qualified chip datasheet and installed PD image"
+    },
+    {
+      "part": "PS8830 A3",
+      "available": "Manufacturer block diagram and pinned upstream programming implementation",
+      "missing": "ASUS control-bus binding and a qualified physical link-status read"
+    },
+    {
+      "part": "PS8802 A3",
+      "available": "Manufacturer block diagram and pinned Chromium EC register/reader implementation",
+      "missing": "ASUS per-port binding and current register values"
+    },
+    {
+      "part": "PS8419 A1",
+      "available": "Manufacturer-authored22-page datasheet v0.9, dated12 April2020, publicly hosted on TI forum",
+      "missing": "ASUS local-I2C routing; HDMI part is not the first target for missing USB4 router"
+    },
+    {
+      "part": "PI3DPX8121",
+      "available": "Manufacturer brief describes DisplayPort mux/redriver with pin controls",
+      "missing": "ASUS GPIO/strap ownership"
+    },
+    {
+      "part": "PI3CH480",
+      "available": "Manufacturer12-page datasheet DS40329 rev5-2 and enable/select truth table",
+      "missing": "ASUS GPIO/strap ownership; no chip register scanner follows from these pins"
+    },
+    {
+      "part": "ITE8308FN",
+      "available": "Physical marking only in current qualified corpus",
+      "missing": "Authoritative matched function/register documentation"
+    }
+  ],
+  "register_roles": {
+    "ite": {
+      "reference_version_hex": "80",
+      "cci_hex": "84",
+      "message_in_hex": "88",
+      "control_hex": "98",
+      "event_hex": "bd",
+      "event_ack_write_hex": "bc",
+      "event_handler_is_read_only": false,
+      "event_handler_effect": "The reference handler reads events/completion, then writes an acknowledgement. It must not be attached as an independent passive poller beside the OS."
+    },
+    "ps8830": {
+      "mode_registers_hex": [
+        "00",
+        "01",
+        "02"
+      ],
+      "usb4_mode_request": {
+        "register_hex": "02",
+        "bit": 7
+      },
+      "semantic": "Software-written configuration in the reference driver; not independent confirmation of accepted Enter_USB, CDR lock, trained link or RouterDetected.",
+      "asus_updater_endpoint_is_runtime_control_interface": null
+    },
+    "ps8802": {
+      "tx_status": {
+        "page": 0,
+        "register_hex": "72"
+      },
+      "rx_status": {
+        "page": 0,
+        "register_hex": "76"
+      },
+      "status_bits": {
+        "normal_operation": 7,
+        "rate_10gbps": 5
+      },
+      "mode": {
+        "page": 2,
+        "register_hex": "06",
+        "dp_enable_bit": 6,
+        "usb_enable_bit": 4,
+        "flip_bit": 2
+      },
+      "read_can_wake_chip": true,
+      "first_read_failure_can_be_part_of_reference_wake": true,
+      "usb4_link_status_provided": false
+    },
+    "pi3ch480": {
+      "control": "Physical enable/select inputs, not an I2C register interface",
+      "truth_table_reviewed": true
+    },
+    "ps8419": {
+      "control": "Physical configuration pins or local I2C; a controller must be wired to that interface before software can use it",
+      "pinout_reviewed": true
+    },
+    "full_fa507xi_electrical_schematic_verified": false
+  },
+  "reference_reader_execution": {
+    "upstream_commit": "08f5a1e6fc2c9467230444ac9b582dcf4d9f0068",
+    "functions": [
+      "ps8802_i2c_read",
+      "ps8802_i2c_wake",
+      "ps8802_get_mux"
+    ],
+    "execution": "Original C function bodies compiled with a fixture transport/power state/timer; no source reimplementation of these bodies",
+    "fixture_bus_channel_and_address_are_asus_mapping": false,
+    "result": {
+      "scope": "Original reference reader with simulated bus/power/time",
+      "cases": 6,
+      "hardOffBusReads": 0,
+      "awakeBusReads": 2,
+      "firstNackThenSuccessReads": 3,
+      "firstNackThenSuccessDelays": 1,
+      "delayMicroseconds": 500,
+      "twoNacksReturnFailure": true,
+      "finalReadFailurePropagates": true,
+      "actualHardwareRequests": 0
+    },
+    "wrong_source_rejected_before_compilation": true,
+    "tool": "tools/analysis/Test-Ps8802ReadBehavior.py",
+    "tool_sha256": "04d74cec2f7cacb3e362f3ad91b51d16d2d9987f8423859a37f42059deeb1e1d",
+    "limit": "Reference behavior only. No ASUS GPIO, sleep timing, device register or hardware link was measured."
+  },
+  "it8857_reference_writer": {
+    "reference_image_sha256": "12b21f53f9cbc83bc36e692cadac8de623ded605e3d563212377f521140694e3",
+    "file_offset_hex": "7a98",
+    "span_bytes": 10,
+    "span_sha256": "a388737301cd46e77fd618a604b2f46ab635cb69b92cf22f06c423c8bb3bdf0c",
+    "static_effect": [
+      {
+        "xdata_address_hex": "00b6",
+        "value_hex": "01"
+      },
+      {
+        "xdata_address_hex": "00b7",
+        "value_hex": "10"
+      }
+    ],
+    "reference_version_bytes_hex": "0110",
+    "asus_cached_bytes_hex": "0053",
+    "limit": "Static different-board initialization instructions; no proof of current ASUS cache freshness, version encoding, image equivalence or reset interpretation."
+  },
+  "windows_observation": {
+    "hardware_requests_this_review": 0,
+    "new_driver_installs": 0,
+    "reset_or_flash_operations": 0,
+    "first_missing_records": [
+      "Current PD-reported UCSI version through a qualified transport",
+      "PS8830 requested mode/orientation with matched register framing",
+      "Separate entry/response or physical training/link result"
+    ],
+    "existing_oem_getters_provide_all_records": false,
+    "existing_limit": "Implemented getters provide fixed identity/cache; telemetry stub and retained MCU NACK do not supply the missing controller state.",
+    "selected_live_test": null,
+    "next_code_question": "Bind an actual ASUS path to the IT8857 version/status window or the PS8830 runtime mode window; identify read side effects before constructing the acquisition."
+  },
+  "privacy": "Original firmware, PDFs, binaries, capture files, host paths, labels and source acquisition failures remain private. Publish reviewed descriptions, hashes and the RAM-only source test."
+}

@@ -191,6 +191,11 @@
       "id": "ITE-FAMILY-REFERENCE",
       "label": "ITE vendor UCSI-family binding and manufacturer component documentation",
       "limit": "Reference interfaces/functions only; not the exact ASUS board firmware or permission for direct commands."
+    },
+    {
+      "id": "COMPONENT-BEHAVIOR-REFERENCE",
+      "label": "Manufacturer component documentation and original reference reader execution",
+      "limit": "Reference circuits/code with fixture inputs, not measured ASUS bus state, electrical net mapping or a Windows repair."
     }
   ],
   "stages": [
@@ -1466,6 +1471,36 @@
         "ITE-FAMILY-REFERENCE"
       ],
       "value_sha256": "1db5a93bb37666cff8f6d2183d472ff9e308fa407903903e0f54f7e8c0afd201"
+    },
+    {
+      "id": "COMPONENT-REGISTER-ROLES",
+      "path": "evidence/component-behavior.json",
+      "pointer": "/register_roles",
+      "kind": "code",
+      "cases": [
+        "COMPONENT-BEHAVIOR-REFERENCE"
+      ],
+      "value_sha256": "f68478ad94184746669e2cad4ee0280b601d39c7e84ab1612304fa22a39abaec"
+    },
+    {
+      "id": "COMPONENT-READER-EXECUTION",
+      "path": "evidence/component-behavior.json",
+      "pointer": "/reference_reader_execution",
+      "kind": "code",
+      "cases": [
+        "COMPONENT-BEHAVIOR-REFERENCE"
+      ],
+      "value_sha256": "5e60a74c89096abef0b0dd184e321daeab894a1aeff4e22c7ae0df5f1098440c"
+    },
+    {
+      "id": "IT8857-VERSION-WRITER",
+      "path": "evidence/component-behavior.json",
+      "pointer": "/it8857_reference_writer",
+      "kind": "code",
+      "cases": [
+        "COMPONENT-BEHAVIOR-REFERENCE"
+      ],
+      "value_sha256": "b3b82a32966162ab3647b0fd30b5693f2e2d2dda2fe27941df6455f78189379a"
     }
   ],
   "claims": [
@@ -2951,6 +2986,45 @@
         "ITE-FAMILY-REFERENCE"
       ],
       "limit": "Family compatibility does not qualify the laptop program, a Data_Reset handler, updater bus mapping or another board's flash image."
+    },
+    {
+      "id": "C108",
+      "basis": "code_fact",
+      "stage": "control",
+      "statement": "The reviewed component interfaces separate PS8830 software-written mode registers, PS8802 status/mode registers and ITE completion/event registers; the ITE event handler also acknowledges events.",
+      "sources": [
+        "COMPONENT-REGISTER-ROLES"
+      ],
+      "cases": [
+        "COMPONENT-BEHAVIOR-REFERENCE"
+      ],
+      "limit": "No actual ASUS bus/window binding, current mode, Enter_USB response or physical training result was acquired."
+    },
+    {
+      "id": "C109",
+      "basis": "code_fact",
+      "stage": "control",
+      "statement": "The original pinned PS8802 C reader, compiled against RAM-only fixtures, performs wake and mode reads, retries after first-read failure and propagates final failures. Its wake path requests a500us wait.",
+      "sources": [
+        "COMPONENT-READER-EXECUTION"
+      ],
+      "cases": [
+        "COMPONENT-BEHAVIOR-REFERENCE"
+      ],
+      "limit": "Simulated bus, power state and time only; not ASUS timing or a qualified passive hardware logger."
+    },
+    {
+      "id": "C110",
+      "basis": "code_fact",
+      "stage": "control",
+      "statement": "The already-acquired IT8857 USB4-card reference contains instructions at file offset7a98 writing01 and10 into XDATA00b6/00b7.",
+      "sources": [
+        "IT8857-VERSION-WRITER"
+      ],
+      "cases": [
+        "COMPONENT-BEHAVIOR-REFERENCE"
+      ],
+      "limit": "Different-board static code. ASUS cached0053 freshness/encoding, exact installed image and receiving reset handler remain unproven."
     }
   ],
   "timeline_limit": "T0 is the first recorded Windows attachment report in each run, not physical insertion. Different runs, platforms, power contracts and capture dates are explicit. These tables align software reports only; proximity does not establish wire order or causation. The earlier Dell control supplies the Dell timeline; the deep Dell dump supplies cached-state comparison.",

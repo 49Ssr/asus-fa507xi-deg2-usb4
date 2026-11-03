@@ -28,6 +28,10 @@ The [reset review](ucsi-data-reset.md) identifies a distinct hypothesis: retry U
 
 [Owner photographs](board-photo-review.md) identify IT8857FN and PS8830 A3. The original EC getter's IT8853 literal is not a physical ID. Prioritize the already-acquired IT8857 reference and vendor family implementation, then qualify the actual laptop image and transport. The photo map distinguishes PS8802 and HDMI PS8419 from PS8830; nearby eight-pin parts and the motherboard assembly/revision remain unidentified. No live read, reset or flash was performed.
 
+## Component circuit/register review
+
+[Component documentation](component-behavior.md) now records available pinouts, register roles and missing ASUS bindings. PS8802 status and software mode are distinct; its original reader wakes through a page2 read and retries, verified only with a simulated transport. The ITE reference event handler also writes an acknowledgement. The IT8857 card image has a B6/B7 writer for0110. These do not supply current laptop state. Next bind the actual ASUS transport to PD-reported version/status or PS8830 runtime mode, keeping update access separate from mode/control access. No new live command, driver, boot or flash was performed.
+
 ## Operating constraints
 
 Scheduling remains paused. Physical boots/cables are owner-directed, and no unattended remote restart is authorized. No live EC/I2C/vendor command, driver change, mode override or flash is selected. Preserve original artifacts, failed attempts and private recovery records.

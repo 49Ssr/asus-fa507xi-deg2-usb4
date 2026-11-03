@@ -45,3 +45,7 @@ The runner validates source/case relationships and regenerates reports when invo
 Windows VHDX preparation, UCSI role/mode experiments, test signing and the policy filter belong to completed or inconclusive investigations. Their source is preserved. Use [experiment results](../docs/experiments.md) and the [dated procedures](../docs/history.md) to understand them; no new driver installation or test boot is selected from those pages.
 
 [Current findings](../docs/status.md) · [Documentation index](../docs/README.md)
+
+## Component reader reference check
+
+`analysis/Test-Ps8802ReadBehavior.py source.c source.h --compiler cc` compiles three pinned Chromium EC reader functions against simulated bus/power/timer inputs. Use `--compiler cl` from a Visual Studio compiler environment on Windows. It performs no hardware access and does not certify an ASUS read path. [Scope and findings](../docs/component-behavior.md).

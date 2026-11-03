@@ -8,6 +8,10 @@ The observed failure occurs before Windows discovers DEG2's external USB4 router
 
 New board photographs show **ITE IT8857FN**, alongside **PS8830 A3**. The earlier `IT8853` OEM response comes from a fixed EC string. Preserve that measured result, but do not use it as the fitted chip identity. The already-acquired IT8857 add-in-card reference is now relevant at the part-family level; its board configuration and image remain unqualified for this laptop. [Photos, other components and remaining limits](board-photo-review.md).
 
+## Component documentation and read behavior
+
+[The component review](component-behavior.md) separates PS8830 software-written mode inputs, PS8802 status/mode registers and the ITE event/completion interface. Executing the original PS8802 reader with a simulated bus confirms that its read path includes wake/retry behavior. A generic register scan is not an established passive logger. No live controller read or Windows repair was performed.
+
 ## The strongest comparisons
 
 | Comparison | Result | What it establishes |

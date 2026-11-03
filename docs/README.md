@@ -16,6 +16,7 @@ Start with [current findings](status.md). The detailed notes preserve the source
 
 - [Hardware and comparison baseline](hardware.md)
 - [Board photographs: IT8857FN identified; PS8830 A3 confirmed](board-photo-review.md)
+- [Component circuits and registers: what can actually be observed](component-behavior.md)
 - [ASUS Linux result: USB fallback reproduced](linux-asus-result.md)
 - [Fresh ASUS versus Dell: matched evidence comparison](asus-dell-matched-comparison.md)
 - [Fresh ASUS comparison against the recovered Dell](asus-local-comparison.md)
