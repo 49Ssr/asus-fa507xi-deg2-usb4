@@ -35,6 +35,7 @@ Read [findings](status.md) for the evidence and [the diagnosis plan](investigati
 - [PD firmware cache and acquired ASUS reference images](pd-firmware-version.md)
 - [IT8857 version-only tool: transaction, side effects and Windows access](it8857-version-path.md)
 - [EC host transfer: fixed update address and Windows access](ec-host-transfer.md)
+- [IT8857 update reads and Windows driver paths](update-interface-reads.md)
 - [Data_Reset hypothesis](ucsi-data-reset.md)
 - [Reset command path and unknown receiving handler](data-reset-command-path.md)
 - [What the Infineon SDK 3.9.0 supplies](infineon-sdk-review.md)

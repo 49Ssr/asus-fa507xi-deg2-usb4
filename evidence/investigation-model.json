@@ -206,6 +206,11 @@
       "id": "EC-HOST-TRANSFER",
       "label": "Original EC PMC3 transfer commands executed offline",
       "limit": "Original instructions with a RAM bus fixture; no physical PD read or Windows bridge established."
+    },
+    {
+      "id": "IT8857-UPDATE-READS",
+      "label": "IT8857 updater read semantics and ASUS Windows backend review",
+      "limit": "Reference program, original-instruction RAM fixtures and Windows metadata; no live PD state or physical bus access."
     }
   ],
   "stages": [
@@ -1581,6 +1586,46 @@
         "EC-HOST-TRANSFER"
       ],
       "value_sha256": "d112222a3e122ee733c520d2e00a8cb6dd762f3a1e1a74180f73a272624ef30e"
+    },
+    {
+      "id": "IT8857-UPDATE-READ-INVENTORY",
+      "path": "evidence/update-interface-reads.json",
+      "pointer": "/read_inventory",
+      "kind": "code",
+      "cases": [
+        "IT8857-UPDATE-READS"
+      ],
+      "value_sha256": "ed037fe368f9fd45fff3c690e4010aca705fa1956e1d2997dd19dcf58b1619ae"
+    },
+    {
+      "id": "IT8857-PARAMETER-READ",
+      "path": "evidence/update-interface-reads.json",
+      "pointer": "/parameter_behavior",
+      "kind": "code",
+      "cases": [
+        "IT8857-UPDATE-READS"
+      ],
+      "value_sha256": "46134ace0209a33108bbc8b3e7511f7198d31adc219a01940d9ab65b2ecd9526"
+    },
+    {
+      "id": "ASUS-EC-DLL-BACKENDS",
+      "path": "evidence/update-interface-reads.json",
+      "pointer": "/windows_code",
+      "kind": "code",
+      "cases": [
+        "IT8857-UPDATE-READS"
+      ],
+      "value_sha256": "62c314437475b17fed64060dee5d9188254adb63e3a9930b7c9338b942d82b46"
+    },
+    {
+      "id": "ASUS-EC-BACKEND-INVENTORY",
+      "path": "evidence/update-interface-reads.json",
+      "pointer": "/windows_inventory",
+      "kind": "capture",
+      "cases": [
+        "IT8857-UPDATE-READS"
+      ],
+      "value_sha256": "f46f93b549bd61581a9e01e3eb2011e7d3452d5d74a335bb589113c7d2847ab8"
     }
   ],
   "claims": [
@@ -3196,6 +3241,58 @@
         "EC-HOST-TRANSFER"
       ],
       "limit": "No live request or hardware repair; target controller protocol and an existing Windows PMC3 bridge remain unestablished."
+    },
+    {
+      "id": "C118",
+      "basis": "code_fact",
+      "stage": "control",
+      "statement": "The pinned updater reads identity, update-engine status, firmware contents and saved parameters; none is identified as a live PD negotiation record.",
+      "sources": [
+        "IT8857-UPDATE-READ-INVENTORY"
+      ],
+      "cases": [
+        "IT8857-UPDATE-READS"
+      ],
+      "limit": "No live PD-state read or repair; reference fields and Windows-to-PMC3 binding remain unidentified."
+    },
+    {
+      "id": "C119",
+      "basis": "code_fact",
+      "stage": "control",
+      "statement": "The six-byte A0 reader ignores read status, conditionally writes 1E 01, and saves bytes for restoration after watchdog reset. RAM execution reproduces zeros after failure and a write after partial failed data.",
+      "sources": [
+        "IT8857-PARAMETER-READ"
+      ],
+      "cases": [
+        "IT8857-UPDATE-READS"
+      ],
+      "limit": "No live PD-state read or repair; reference fields and Windows-to-PMC3 binding remain unidentified."
+    },
+    {
+      "id": "C120",
+      "basis": "code_fact",
+      "stage": "control",
+      "statement": "AsusEC_X64 uses a matching HID device or its separately loaded EC helper driver. Its driver path can install an embedded service; it is not a demonstrated existing PMC3 bridge.",
+      "sources": [
+        "ASUS-EC-DLL-BACKENDS"
+      ],
+      "cases": [
+        "IT8857-UPDATE-READS"
+      ],
+      "limit": "No live PD-state read or repair; reference fields and Windows-to-PMC3 binding remain unidentified."
+    },
+    {
+      "id": "C121",
+      "basis": "measured",
+      "stage": "control",
+      "statement": "Present-device metadata shows no matching 0B05/4543 HID node; the ASUS/AsIO service filter shows AsusSAIO and the touchpad driver, not the DLL EC helper.",
+      "sources": [
+        "ASUS-EC-BACKEND-INVENTORY"
+      ],
+      "cases": [
+        "IT8857-UPDATE-READS"
+      ],
+      "limit": "Windows software inventory only, not a physical bus measurement or exhaustive interface inventory; no protocol request."
     }
   ],
   "timeline_limit": "T0 is the first recorded Windows attachment report in each run, not physical insertion. Different runs, platforms, power contracts and capture dates are explicit. These tables align software reports only; proximity does not establish wire order or causation. The earlier Dell control supplies the Dell timeline; the deep Dell dump supplies cached-state comparison.",

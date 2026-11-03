@@ -38,10 +38,11 @@ python tools/analysis/Check-Docs.py
 
 These check public evidence relationships, generated reports, fixtures and links. They do not access hardware, independently decode unpublished captures or demonstrate a fix. The runner regenerates reports when used without `--check`.
 
-Two additional reference-code checks need separately acquired, pinned inputs:
+Additional reference-code checks need separately acquired, pinned inputs:
 
 - [Test-PdVersionCache.c](analysis/Test-PdVersionCache.c) executes the original EC cache behaviour using private BIOS data and the [EC harness](analysis/Test-EcPmcFirmware.c) build inputs.
 - [Test-Ps8802ReadBehavior.py](analysis/Test-Ps8802ReadBehavior.py) compiles pinned Chromium EC reader functions against a simulated bus. Use `source.c source.h --compiler cc`, or `--compiler cl` from a Visual Studio compiler environment. [Scope](../docs/component-behavior.md).
+- [Test-It8857UpdateRead.py](analysis/Test-It8857UpdateRead.py) executes the pinned updater parameter reader in Unicorn2.1.4 with RAM-only I2C substitutes. Pass the original `PDUTC101.efi` path and optionally `--deps` for an existing Unicorn installation. [Scope and results](../docs/update-interface-reads.md).
 
 Passing these checks verifies the tested code behaviour, not an ASUS hardware-access route.
 

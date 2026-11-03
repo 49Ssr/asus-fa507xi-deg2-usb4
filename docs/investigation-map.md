@@ -964,6 +964,30 @@ Scope: EC-HOST-TRANSFER. No live request or hardware repair; target controller p
 
 [EC-LEGACY-HOST-PORTS](../evidence/ec-host-transfer.json) `/windows`
 
+**C118 — code_fact:** The pinned updater reads identity, update-engine status, firmware contents and saved parameters; none is identified as a live PD negotiation record.
+
+Scope: IT8857-UPDATE-READS. No live PD-state read or repair; reference fields and Windows-to-PMC3 binding remain unidentified.
+
+[IT8857-UPDATE-READ-INVENTORY](../evidence/update-interface-reads.json) `/read_inventory`
+
+**C119 — code_fact:** The six-byte A0 reader ignores read status, conditionally writes 1E 01, and saves bytes for restoration after watchdog reset. RAM execution reproduces zeros after failure and a write after partial failed data.
+
+Scope: IT8857-UPDATE-READS. No live PD-state read or repair; reference fields and Windows-to-PMC3 binding remain unidentified.
+
+[IT8857-PARAMETER-READ](../evidence/update-interface-reads.json) `/parameter_behavior`
+
+**C120 — code_fact:** AsusEC_X64 uses a matching HID device or its separately loaded EC helper driver. Its driver path can install an embedded service; it is not a demonstrated existing PMC3 bridge.
+
+Scope: IT8857-UPDATE-READS. No live PD-state read or repair; reference fields and Windows-to-PMC3 binding remain unidentified.
+
+[ASUS-EC-DLL-BACKENDS](../evidence/update-interface-reads.json) `/windows_code`
+
+**C121 — measured:** Present-device metadata shows no matching 0B05/4543 HID node; the ASUS/AsIO service filter shows AsusSAIO and the touchpad driver, not the DLL EC helper.
+
+Scope: IT8857-UPDATE-READS. Windows software inventory only, not a physical bus measurement or exhaustive interface inventory; no protocol request.
+
+[ASUS-EC-BACKEND-INVENTORY](../evidence/update-interface-reads.json) `/windows_inventory`
+
 ## Separate runs and observation limits
 
 | Case | Meaning | Important limit |
@@ -1008,6 +1032,7 @@ Scope: EC-HOST-TRANSFER. No live request or hardware repair; target controller p
 | COMPONENT-BEHAVIOR-REFERENCE | Manufacturer component documentation and original reference reader execution | Reference circuits/code with fixture inputs, not measured ASUS bus state, electrical net mapping or a Windows repair. |
 | IT8857-UEFI-READ-PATH | IT8857 vendor version-only path and saved ASUS ACPI comparison | Static different-board program and retained ACPI declarations; no vendor program execution, live controller read, electrical binding or repair. |
 | EC-HOST-TRANSFER | Original EC PMC3 transfer commands executed offline | Original instructions with a RAM bus fixture; no physical PD read or Windows bridge established. |
+| IT8857-UPDATE-READS | IT8857 updater read semantics and ASUS Windows backend review | Reference program, original-instruction RAM fixtures and Windows metadata; no live PD state or physical bus access. |
 
 ## Software-report timelines
 

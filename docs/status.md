@@ -50,7 +50,7 @@ The Infineon SDK and component drivers describe reference implementations. They 
 
 ## Latest access finding
 
-The EC has a host-requested transfer path through PMC3, but it fixes the destination at update address80 rather than normal PD address98. Offline execution also shows that retrieval after a failed transfer can return old buffer contents. The reviewed ASUS Windows request uses the separate PMC4 route. The remaining access questions are the update interface's read protocol and an existing Windows route to PMC3. [Code and limits](ec-host-transfer.md).
+The [update-interface review](update-interface-reads.md) found identity, flash/status reads and six parameters preserved across reset, but no identified live PD log. The parameter reader ignores errors and can issue a write. AsusEC_X64 uses either a HID device absent from the present inventory or a separate helper-driver path that can install a service; neither is an established existing PMC3 bridge. Continue with the controller-side state producer and a Windows PMC3 or equivalent route. No hardware request is selected.
 
 ## Recovery status
 

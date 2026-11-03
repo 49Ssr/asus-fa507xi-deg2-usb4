@@ -1,0 +1,260 @@
+{
+  "schema": 1,
+  "date": "2026-11-03",
+  "status": "UpdateReadsClassified_NoLivePdStateOrExistingWindowsBridge",
+  "inputs": {
+    "updater_sha256": "ea3531946ef9f0aabdb94e7ef69d79d60beb466a16c6a5d1602ae609382970d3",
+    "updater_bytes": 96736,
+    "asus_ec_dll_sha256": "c7f337191d2366dfedbe90a6423ec743094a588a032c0a0cb2434dad688c29fe",
+    "asus_saio_sha256": "eef750c7fb515d162a76423531f4f6773bcf837d9607069e797a26d198edd892",
+    "card_pd_image_sha256": "12b21f53f9cbc83bc36e692cadac8de623ded605e3d563212377f521140694e3",
+    "card_pd_image_is_laptop_image": false
+  },
+  "updater_spans": [
+    {
+      "rva_start_hex": "34a8",
+      "rva_end_exclusive_hex": "3627",
+      "sha256": "54df1ac0e5ef2a30a1a8b97e6bb6eb86743a2b2ced7a737826c285973b4ddda3"
+    },
+    {
+      "rva_start_hex": "3778",
+      "rva_end_exclusive_hex": "387c",
+      "sha256": "ec9d7043bbfc54ba1400e44aae83cc3b22e8034008b2d5fa71848201ce00f419"
+    },
+    {
+      "rva_start_hex": "387c",
+      "rva_end_exclusive_hex": "39c0",
+      "sha256": "d1f7df87d23d940869ac8e550ce5ec77826d1434fd44c7af46c831adb05fe934"
+    },
+    {
+      "rva_start_hex": "3a10",
+      "rva_end_exclusive_hex": "3bd8",
+      "sha256": "6ff66c121791ac01771896a26d4688799852b22f24e84f11c7ee18d8baeeea14"
+    },
+    {
+      "rva_start_hex": "3d04",
+      "rva_end_exclusive_hex": "3eee",
+      "sha256": "6201f07ec53dad301f6c7279eae22a02a49f07088777b4f5822a979814a7478a"
+    },
+    {
+      "rva_start_hex": "457a",
+      "rva_end_exclusive_hex": "4732",
+      "sha256": "18a4b32427d4534b29f9332e510e76bdd6950ed2ca6826c82badec017208c40e"
+    }
+  ],
+  "read_inventory": {
+    "basis": "code_fact",
+    "direct_calls_to_read_helper_rva_hex": [
+      "34e2",
+      "365d",
+      "3702",
+      "37bf",
+      "3832",
+      "385e",
+      "390b",
+      "3a81",
+      "3b8f",
+      "3dfb",
+      "3e9e"
+    ],
+    "scope": "Direct calls to the reviewed combined-read helper in this pinned tool; not an exhaustive IT8857 register specification.",
+    "update_reads": [
+      {
+        "selector_hex": "ffc0",
+        "bytes": 4,
+        "role": "Chip identity and flash-size derivation",
+        "anchor_hex": "34e2"
+      },
+      {
+        "selector_hex": "a0",
+        "bytes": 6,
+        "role": "Saved parameter block restored after reset; fields unidentified",
+        "anchor_hex": "37bf"
+      },
+      {
+        "selector_hex": "1e",
+        "bytes": 1,
+        "role": "Polling after conditional parameter-operation write",
+        "anchor_hex": "3832/385e"
+      },
+      {
+        "selector_hex": "fff7",
+        "bytes": 1,
+        "role": "Update-engine status for configured IT8857",
+        "anchor_hex": "390b"
+      },
+      {
+        "selector_hex": "ffff",
+        "bytes": 1,
+        "role": "Erase polling",
+        "anchor_hex": "3a81"
+      },
+      {
+        "selector_hex": "fff7",
+        "bytes": 128,
+        "role": "Flash read after flash address/control writes, eight blocks per routine",
+        "anchor_hex": "3b8f"
+      },
+      {
+        "selector_hex": "ffd3",
+        "bytes": 1,
+        "role": "Read-modify-write for watchdog reset, not USB PD Data_Reset",
+        "anchor_hex": "3dfb"
+      },
+      {
+        "selector_hex": "1a",
+        "bytes": 1,
+        "role": "Post-reset poll for5a before restoring saved parameters",
+        "anchor_hex": "3e9e"
+      }
+    ],
+    "normal_address_reads": [
+      "B6 version pair",
+      "Alternate version bytes E4/E3/E2/E1/E0/DD"
+    ],
+    "live_negotiation_log_identified": false,
+    "main_update_path_sends_stop_cpu_sequence_before_identity_and_flash": true,
+    "ec_relay_read_limit": 32,
+    "flash_read_128_byte_split_semantics_established": false
+  },
+  "parameter_behavior": {
+    "basis": "code_fact",
+    "reader_rva_hex": "3778",
+    "restore_rva_hex": "3ea9",
+    "selector_hex": "a0",
+    "bytes": 6,
+    "initial_status_checked": false,
+    "first_byte_nonzero_causes_write_hex": "1e01",
+    "saved_block_written_back_after_reset": true,
+    "individual_fields_identified": false,
+    "ps8830_live_state_proven": false,
+    "offline_execution": {
+      "scope": "Original updater instructions with RAM-only I2C fixtures",
+      "cases": [
+        {
+          "case": "zero first byte",
+          "initial_status": 0,
+          "saved": "001122334455",
+          "simulated_reads": 1,
+          "simulated_writes": []
+        },
+        {
+          "case": "nonzero first byte",
+          "initial_status": 0,
+          "saved": "011122334455",
+          "simulated_reads": 2,
+          "simulated_writes": [
+            "1e01"
+          ]
+        },
+        {
+          "case": "failed read leaves zero buffer",
+          "initial_status": 1,
+          "saved": "000000000000",
+          "simulated_reads": 1,
+          "simulated_writes": []
+        },
+        {
+          "case": "failed read with partial data",
+          "initial_status": 1,
+          "saved": "011122334455",
+          "simulated_reads": 2,
+          "simulated_writes": [
+            "1e01"
+          ]
+        },
+        {
+          "case": "poll remains nonzero",
+          "initial_status": 0,
+          "saved": "011122334455",
+          "simulated_reads": 7,
+          "simulated_writes": [
+            "1e01"
+          ]
+        }
+      ],
+      "actual_device_requests": 0,
+      "actual_pd_state_obtained": false
+    }
+  },
+  "windows_code": {
+    "basis": "code_fact",
+    "existing_saio": "Legacy IOCTL80102070 uses fixed25C/25D PMC4 framing; not a PMC3 selector.",
+    "dll_entry": "ExecuteECCommands ADA0 -> command dispatcher2E50; backend selection3E60",
+    "hid_backend": {
+      "selection_call_rva_hex": "a621",
+      "vid_hex": "0b05",
+      "pid_hex": "4543",
+      "usage_hex": "84",
+      "usage_page_hex": "ff32",
+      "transport": "HID reports on the matched device"
+    },
+    "driver_backend": {
+      "ioctl_hex": "9c40e058",
+      "request_rva_hex": "3bf2",
+      "load_chain": "A430 ->2CC80 ->2CC20 ->2C6C0/2C9E0; extract resource2E0E0",
+      "resource_read_rva_hex": "2e14c/2e161",
+      "file_write_rva_hex": "2e37a",
+      "create_service_rva_hex": "2cb66",
+      "helper_service_name": "ASUSECDriver",
+      "can_install_embedded_driver": true
+    },
+    "dll_spans": [
+      {
+        "rva_start_hex": "3b68",
+        "rva_end_exclusive_hex": "3d8f",
+        "sha256": "2734f71728d5d939578550389cf57ef987c934a1c19a5587807f782ad91aa619"
+      },
+      {
+        "rva_start_hex": "a600",
+        "rva_end_exclusive_hex": "a744",
+        "sha256": "bb89ed18835ceff3446c7464c8ccdb84699085a74a04fedf7a02c8bbf5bf9682"
+      },
+      {
+        "rva_start_hex": "2cc20",
+        "rva_end_exclusive_hex": "2d258",
+        "sha256": "2c044ef90d6511d3e48498a582895c8688fb715ad83a76e1b3d2d1d094d188f5"
+      },
+      {
+        "rva_start_hex": "2c9e0",
+        "rva_end_exclusive_hex": "2cc20",
+        "sha256": "f1ce67b5d94b69b78d4d473a0c644474a1c48df859bba8adea8799e995731244"
+      },
+      {
+        "rva_start_hex": "2e0e0",
+        "rva_end_exclusive_hex": "2e410",
+        "sha256": "c5cc68fabf09f71835390b53621c9c473a1bc1e5fbdad08409108466dec9f694"
+      }
+    ],
+    "pmc3_bridge_established": false,
+    "limit": "Only these reviewed routes; not every installed driver or alternate hardware identity."
+  },
+  "windows_inventory": {
+    "basis": "software_report",
+    "method": "Windows service and present PnP metadata; no protocol requests or endpoint opening",
+    "service_filter": "Name matches ASUS or AsIO",
+    "matching_services": [
+      {
+        "Name": "AsusPTPDrv",
+        "State": "Running",
+        "StartMode": "Manual"
+      },
+      {
+        "Name": "AsusSAIO",
+        "State": "Running",
+        "StartMode": "Manual"
+      }
+    ],
+    "matching_hid_nodes": 0,
+    "helper_seen_in_filtered_service_list": false,
+    "limit": "The filter and selected HID identity do not exhaust all driver names or possible endpoints."
+  },
+  "verification": {
+    "test_source_sha256": "1e1e909540267f9814a9865da94804af8b59755ddb3b50e0f267dd8ab5e34c68",
+    "radare2_decode_sha256": "2f5cd57c69389757a534b5d068af62a362be9bdb22e3256d9fb720aa61116617",
+    "code_assertions_passed": true,
+    "vendor_program_or_dll_loaded": false,
+    "hardware_protocol_requests": 0
+  },
+  "remaining": "Identify the live state producer/controller implementation and a Windows PMC3 or equivalent bridge. No current PD decision, link measurement or repair recovered."
+}

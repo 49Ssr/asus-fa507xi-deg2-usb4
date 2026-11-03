@@ -4,7 +4,7 @@ Updated 3 November 2026. Scheduling is **paused**. This page preserves the resum
 
 ## Resume point
 
-The [EC host-transfer path](ec-host-transfer.md) now executes in the offline model: PMC3 accepts staged bytes but fixes the destination at update address80, not normal address98. Failed transfer retrieval can return old data. The reviewed ASUS legacy request uses the separate PMC4 route. Next identify read semantics at80 in the acquired IT8857 tool and an existing Windows route to PMC3; no hardware command is selected.
+The [update-interface review](update-interface-reads.md) found identity, flash/status reads and six parameters preserved across reset, but no identified live PD log. The parameter reader ignores errors and can issue a write. AsusEC_X64 uses either a HID device absent from the present inventory or a separate helper-driver path that can install a service; neither is an established existing PMC3 bridge. Continue with the controller-side state producer and a Windows PMC3 or equivalent route. No hardware request is selected.
 
 This is an access investigation. A successful version read would still not supply the missing entry/retimer/training history. The [plan](investigation-plan.md) separately ranks the hardware comparisons and the controller records needed to choose a repair.
 
